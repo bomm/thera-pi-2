@@ -11,13 +11,16 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXPanel;
@@ -46,6 +49,11 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
 
 	JButton knopf1 = null;
 	JButton knopf2 = null;
+	
+	JRadioButton oben = null;
+	JRadioButton unten = null;
+	JCheckBox optimize = null;
+	ButtonGroup bgroup = new ButtonGroup();
 	
 
 	SysUtilAnsichtsOptionen(){
@@ -79,7 +87,7 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
         //      								1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu",
        //1.    2.  3.   4. 5.   6.  7.   8.   9.  10.  
-		"p, 10dlu, p, 2dlu,p, 10dlu, p, 10dlu, p, 10dlu");
+		"p, 5dlu, p, 5dlu,p,10dlu,p,40dlu,p, 2dlu,p, 10dlu, p, 10dlu, p, 10dlu");
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
 		builder.getPanel().setOpaque(false);	
@@ -96,20 +104,40 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
 		knopf2.setPreferredSize(new Dimension(70, 20));
 		knopf2.addActionListener(this);		
 		knopf2.setActionCommand("abbrechen");
-		knopf2.addKeyListener(this);		
+		knopf2.addKeyListener(this);	
+		
+		oben = new JRadioButton((SystemConfig.desktopHorizontal ? "oberen" : "linken")+ " Container");
+		oben.setHorizontalTextPosition(SwingConstants.LEFT);
+		oben.setOpaque(false);
+		bgroup.add(oben);
+		unten = new JRadioButton((SystemConfig.desktopHorizontal ? "unteren" : "rechten")+ " Container");
+		unten.setHorizontalTextPosition(SwingConstants.LEFT);
+		unten.setOpaque(false);
+		bgroup.add(unten);
+		
+		optimize = new JCheckBox("Fenstergröße automatisch optimieren");
+		optimize.setHorizontalTextPosition(SwingConstants.LEFT);
+		optimize.setOpaque(false);
+		
+		builder.addLabel("Fenster startet....",cc.xy(1,1));
+		builder.add(oben,cc.xyw(3, 1,3,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		builder.add(unten,cc.xyw(3, 3,3,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		builder.add(optimize,cc.xyw(2, 5,4,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		
+		builder.addSeparator("", cc.xyw(1, 6, 5,CellConstraints.DEFAULT,CellConstraints.CENTER));
 		
 		startWochenAnz= new JCheckBox();
 		startWochenAnz.setSelected(SystemConfig.KalenderStartWochenAnsicht);
-		builder.addLabel("Terminkalender in der Wochenansicht starten",cc.xy(1, 1));
-		builder.add(startWochenAnz, cc.xy(5, 1, CellConstraints.RIGHT, CellConstraints.BOTTOM));
+		builder.addLabel("Terminkalender in der Wochenansicht starten",cc.xy(1, 7));
+		builder.add(startWochenAnz, cc.xy(5, 7, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		
-		builder.addLabel("Wochenanzeige mit folgendem Behandler starten", cc.xy(1, 3));
+		builder.addLabel("Wochenanzeige mit folgendem Behandler starten", cc.xy(1, 9));
 		defaultWA = new JComboBox();
-		builder.add(defaultWA, cc.xyw(3,3,3));
+		builder.add(defaultWA, cc.xyw(3,9,3));
 		
-		builder.addLabel("Normalansicht mit folgendem Behandlerset starten", cc.xy(1, 5));
+		builder.addLabel("Normalansicht mit folgendem Behandlerset starten", cc.xy(1, 11));
 		defaultNA = new JComboBox();
-		builder.add(defaultNA, cc.xyw(3,5,3));
+		builder.add(defaultNA, cc.xyw(3,11,3));
 
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
@@ -117,14 +145,26 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
        	  	}
 		});
 		
-		builder.add(knopf1,cc.xy(3,7));
-		builder.add(knopf2, cc.xy(5,7));
-		builder.addSeparator("", cc.xyw(1, 9, 5));
+		builder.add(knopf1,cc.xy(3,13));
+		builder.add(knopf2, cc.xy(5,13));
+		builder.addSeparator("", cc.xyw(1, 15, 5));
 		
 		builder.getPanel().addKeyListener(this);
 		return builder.getPanel();
 	}
 	/**************************************************************************/
+	private void fuelleMitWerten(){
+		if(SystemConfig.hmContainer.get("Kalender") == 0){
+			oben.setSelected(true);
+		}else{
+			unten.setSelected(true);
+		}
+		if(SystemConfig.hmContainer.get("KalenderOpti") == 0){
+			optimize.setSelected(false);
+		}else{
+			optimize.setSelected(true);
+		}
+	}	
 	@SuppressWarnings("unchecked")
 	private void comboFuellen(){
 		int von = 0;
@@ -159,7 +199,17 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
 	/**************************************************************************/	
 	private void speichernHandeln(){
 		try{
+			String wert;
 			INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kalender.ini");
+			
+			wert = (unten.isSelected() ? "1" : "0");
+			SystemConfig.hmContainer.put("Kalender", Integer.valueOf(wert));
+			ini.setStringProperty("Container", "StarteIn",wert , null);
+			
+			wert = (optimize.isSelected() ? "1" : "0");
+			SystemConfig.hmContainer.put("KalenderOpti",Integer.valueOf(wert));
+			ini.setStringProperty("Container", "ImmerOptimieren",wert , null);
+
 			ini.setStringProperty("Kalender", "StartWochenAnsicht", (startWochenAnz.isSelected() ? "1" : "0"), null);
 			ini.setStringProperty("Kalender", "AnsichtDefault", defaultWA.getSelectedItem()+"@"+defaultNA.getSelectedItem(), null);
 			ini.save();

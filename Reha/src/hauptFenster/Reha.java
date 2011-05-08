@@ -1918,6 +1918,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
       		   }
       		   int i;
       		   for(i=0;i<1;i++){
+      			   //links
       			   if(xvariante==1){
       				   if(jSplitLR.getDividerLocation()>250){
       					   jSplitLR.setDividerLocation(dividerLocLR-10);
@@ -1930,6 +1931,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
       				   }
       				   break;
       			   }
+      			   //rechts
       			   if(xvariante==2){
       				   if(jSplitLR.getDividerLocation()<250){
       					   jSplitLR.setDividerLocation(dividerLocLR+10);

@@ -276,9 +276,9 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		CellConstraints cc = new CellConstraints();
 		
 		builder.addLabel("Fenster startet im ..." , cc.xy(1, 1, CellConstraints.LEFT, CellConstraints.BOTTOM));
-		builder.addLabel("oberen Container", cc.xyw(4, 1, 2, CellConstraints.RIGHT, CellConstraints.BOTTOM));
+		builder.addLabel((SystemConfig.desktopHorizontal ? "oberen" : "linken")+ " Container", cc.xyw(4, 1, 2, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.add(oben, cc.xy(6, 1, CellConstraints.RIGHT, CellConstraints.BOTTOM));
-		builder.addLabel("unteren Container", cc.xyw(4, 3, 2, CellConstraints.RIGHT, CellConstraints.BOTTOM));
+		builder.addLabel((SystemConfig.desktopHorizontal ? "unteren" : "rechten")+ " Container", cc.xyw(4, 3, 2, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.add(unten, cc.xy(6, 3, CellConstraints.RIGHT, CellConstraints.BOTTOM));
 		builder.addLabel("Fenstergröße automatisch optimieren", cc.xy(1, 5));
 		builder.add(optimize, cc.xy(6,5, CellConstraints.RIGHT, CellConstraints.BOTTOM));
