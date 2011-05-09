@@ -477,8 +477,9 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		JMenuItem  jmen = new JMenuItem();
 		jmen.setText((this.desktop==0 ? "in den "+(SystemConfig.desktopHorizontal ? "unteren" : "rechten" )+
 				" Container verschieben" : "in den "+(SystemConfig.desktopHorizontal ? "oberen" : "linken" )+" Container verschieben"));
-		jmen.setIcon((this.desktop==0 ? new ImageIcon(Reha.proghome+"/icons/unten.gif") :
-			new ImageIcon(Reha.proghome+"/icons/oben.gif")));
+
+		jmen.setIcon((this.desktop==0 ? new ImageIcon(Reha.proghome+(SystemConfig.desktopHorizontal ? "/icons/unten.gif" : "/icons/forward.gif")) :
+			new ImageIcon(Reha.proghome+(SystemConfig.desktopHorizontal ? "/icons/oben.gif" : "/icons/backward.gif"))));
 		jmen.setRolloverEnabled(true);
 		jmen.setEnabled(true);
 		jmen.setActionCommand("verschieben");
