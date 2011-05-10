@@ -1294,7 +1294,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		abrDlg.setLocationRelativeTo(getInstance());
 		abrDlg.setzeLabel("starte Aufbereitung E-Bericht");
 		abrDlg.setVisible(true);
-
+		
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -1311,12 +1311,17 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 							"Vermutlich wurde dieser Fall nicht im 301-Verfahren übermittelt");
 					return null;
 				}
-				RVMeldung301 meldung301 = new RVMeldung301(4,id);
+				RVMeldung301 meldung301 = new RVMeldung301(4,id,1);
 				meldung301.doEbericht(getInstance());
 				setCursor(Reha.thisClass.normalCursor);
 				abrDlg.setVisible(false);
 				abrDlg.dispose();
 				abrDlg = null;
+				if(Reha.thisClass.dta301panel != null){
+					Reha.thisClass.dta301panel.aktualisieren(
+							SqlInfo.holeEinzelFeld("select rez_nr from dta301 where berichtid='"+berichtid+"' LIMIT 1")
+							);
+				}
 				return null;
 			}
 			

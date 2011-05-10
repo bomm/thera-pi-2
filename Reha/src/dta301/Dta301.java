@@ -837,7 +837,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 	private boolean doRegle301(int art,String id){
 		if(art==0){
 			if(!executeNachricht(art)){return false;}
-			RVMeldung301 meldung301 = new RVMeldung301(art,id);
+			RVMeldung301 meldung301 = new RVMeldung301(art,id,1);
 			int aufnahmeart = -1;
 			for(int i = 0; i < 3;i++){
 				if(beginnradio[i].isSelected()){
@@ -854,7 +854,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 		}
 		if(art==1){
 			if(!executeNachricht(art)){return false;}
-			RVMeldung301 meldung301 = new RVMeldung301(art,id);
+			RVMeldung301 meldung301 = new RVMeldung301(art,id,
+					Integer.parseInt(SqlInfo.holeEinzelFeld("select count(*) from dtafall where nachrichtorg like '%PRC+ADMIN6%' AND rez_nr='"+this.reznummer+"'" ))+1);
 			int iart = -1;
 			for(int i  = 0; i < 3; i++){
 				if(ubradio[i].isSelected()){
@@ -869,7 +870,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 		}
 		if(art==2){
 			if(!executeNachricht(art)){return false;}
-			RVMeldung301 meldung301 = new RVMeldung301(art,id);
+			RVMeldung301 meldung301 = new RVMeldung301(art,id,
+					Integer.parseInt(SqlInfo.holeEinzelFeld("select count(*) from dtafall where nachrichtorg like '%PRC+ETG%' AND rez_nr='"+this.reznummer+"'" ))+1 );
 			//JRtaCheckBox entlassmitfahrgeld = null;
 			//JRtaTextField entlassfahrgeld = null;
 			//JTextArea entlasstpan = null;
@@ -889,7 +891,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 		}
 		if(art==3){
 			if(!executeNachricht(art)){return false;}
-			RVMeldung301 meldung301 = new RVMeldung301(art,id);
+			RVMeldung301 meldung301 = new RVMeldung301(art,id,
+					Integer.parseInt(SqlInfo.holeEinzelFeld("select count(*) from dtafall where nachrichtorg like '%PRC+ADMIN4%' AND rez_nr='"+this.reznummer+"'" ))+1);		
 			int iart = -1;
 			for(int i  = 0; i < 3; i++){
 				if(vbradio[i].isSelected()){

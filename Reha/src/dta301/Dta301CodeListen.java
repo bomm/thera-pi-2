@@ -6,7 +6,65 @@ import java.util.List;
 import systemTools.StringTools;
 
 public class Dta301CodeListen {
-	
+	private static List<String> fettListe = Arrays.asList(new String[] {
+			/*****1.*******/
+			StringTools.do301String("1. Allgemeine und klinische Anamnese:"),
+			StringTools.do301String("Familienanamnese:"),
+			StringTools.do301String("Eigenanamnese:"),
+			StringTools.do301String("Spezielle Anamnese:"),
+			StringTools.do301String("Bisherige Reha-Aufenthalte:"),
+			StringTools.do301String("Spezielle männliche Anamnese:"),
+			StringTools.do301String("Spezielle weibliche Anamnese:"),
+			StringTools.do301String("Vegetative Anamnese:"),
+			StringTools.do301String("Risikofaktoren:"),
+			/*****2.*******/
+			StringTools.do301String("2. Jetzige Beschwerden:"),
+			StringTools.do301String("Funktionelle Einschränkungen der Aktivitäten/Teilhabe:"),
+			StringTools.do301String("Krankheitsverständnis des"),
+			StringTools.do301String("Krankheitsverständnis der"),
+			/*****3.*******/
+			StringTools.do301String("3. Gegenwärtige Therapie, behandelnde Ärzte:"),
+			StringTools.do301String("Medikation:"),
+			StringTools.do301String("Sonstige Maßnahmen:"),
+			StringTools.do301String("Behandelnde Ärzte:"),
+			/*****4.*******/
+			StringTools.do301String("4. Allgemeine Sozialanamnese:"),
+			/*****5.*******/
+			StringTools.do301String("5. Arbeits- und Berufsanamnese:"),
+			/*****6.*******/
+			StringTools.do301String("6. Aufnahmebefund, Vorbefunde:"),
+			StringTools.do301String("Orthopädischer Befund:"),
+			StringTools.do301String("Neurologischer Befund:"),
+			StringTools.do301String("Neurologische Untersuchung:"),
+			StringTools.do301String("Psychischer Befund:"),
+			StringTools.do301String("Internistisch-körperlicher Befund:"),
+			StringTools.do301String("Internistisch- körperlicher Untersuchungsbefund:"),
+			StringTools.do301String("Vor-Befunde:"),
+			StringTools.do301String("Röntgen:"),
+			StringTools.do301String("Labor bei der Aufnahme und EKG:"),
+			StringTools.do301String("Labor und EKG:"),
+			StringTools.do301String("RR-Messungen:"),
+			/*****7.*******/
+			StringTools.do301String("7. Rehabilitationsziele:"),
+			/*****8.*******/
+			StringTools.do301String("8. Rehabilitationsverlauf:"),
+			/*****9.*******/
+			StringTools.do301String("9. Rehabilitationsergebnis:"),
+			/****10.*******/
+			StringTools.do301String("10. Sozialmedizinische Epikrise:"),
+			StringTools.do301String("Sozialmedizinische Leistungsbeurteilung:"),
+			StringTools.do301String("10.1 Teilhabe am Arbeitsleben:"),
+			StringTools.do301String("10.1.1 Aussage zur letzten beruflichen Tätigkeit:"),
+			StringTools.do301String("10.1.2 Positives und negatives Leistungsbild:"),
+			StringTools.do301String("10.1.3 Selbsteinschätzung des Patienten zur Teilhabe am Arbeitsleben:"),
+			StringTools.do301String("10.2 Teilhabe am Leben in der Gesellschaft:"),
+			StringTools.do301String("10.3 Prognose:"),
+			StringTools.do301String("10.4 Therapieempfehlungen:"),
+			StringTools.do301String("Therapieempfehlungen:"),
+			StringTools.do301String("Nachsorgekonzept:"),
+			StringTools.do301String("Letzte Medikation:")
+	});
+
 	//Arbeitsfähigkeit (nur RV)
 	private static String[][] codeB01 = {
 		{"0","Maßnahme nicht ordnungsgemäß abgeschlossen gestorben"},
@@ -376,40 +434,7 @@ public class Dta301CodeListen {
 		{"J","JA"},
 		{"N","NEIN"}
 	};
-	private static List<String> fettDruck(){
-		List<String> liste = Arrays.asList(new String[] {"Allgemeine und klinische",
-				"Familienanamnese:","Eigenanamnese:",
-				"Bisherige Reha-Aufenthalte",
-				"Vegetative Anamnese",
-				"Risikofaktoren",
-				"Jetzige Beschwerden",
-				StringTools.do301String("Spezielle männliche Anamnese"),
-				"Spezielle weibliche",
-				StringTools.do301String("Funktionelle Einschränkungen der Aktivitäten/Teilhabe"),
-				StringTools.do301String("Krankheitsverständnis des"),
-				StringTools.do301String("Krankheitsverständnis der"),
-				StringTools.do301String("Gegenwärtige Therapie"),
-				StringTools.do301String("Medikation:"),
-				StringTools.do301String("Sonstige Maßnahmen:"),
-				StringTools.do301String("Behandelnde Ärzte:"),
-				StringTools.do301String("Allgemeine Sozialanamnese:"),
-				StringTools.do301String("Arbeits- und Berufsanamnese:"),
-				StringTools.do301String("Aufnahmebefund, Vorbefunde,"),
-				StringTools.do301String("Vor-Befunde"),
-				StringTools.do301String("Internistisch-körperlicher"),
-				StringTools.do301String("Orthopädischer Befund:"),
-				StringTools.do301String("Neurologischer Befund:"),
-				StringTools.do301String("Psychischer Befund:"),
-				StringTools.do301String("Vor-Befunde:"),
-				StringTools.do301String("Labor bei der Aufnahme und EKG:"),
-				StringTools.do301String("Rehabilitationsziele:"),
-				StringTools.do301String("Rehabilitationsverlauf:"),
-				StringTools.do301String("Rehabilitationsergebnis:"),
-				StringTools.do301String("Sozialmedizinische Epikrise:"),
-				StringTools.do301String("Therapieempfehlungen:"),
-		});
-		return liste;                                           
-	}
+
 
 	public static String[][] getCodeListe(String codeListe){
 		String[][] ret = {{"unbekannt","unbekannt"}};
@@ -471,10 +496,15 @@ public class Dta301CodeListen {
 		return sret;
 	}
 	public static boolean mussFettDruck(String string){
-		for(int i = 0 ; i < fettDruck().size() ; i++){
-			if( string.contains(fettDruck().get(i))){
+		for(int i = 0 ; i < fettListe.size() ; i++){
+			if( string.startsWith(fettListe.get(i))){
 				return true;
 			}
+			/*
+			if( string.startsWith(fettDruck().get(i))){
+				return true;
+			}
+			*/
 		}
 		return false;
 		

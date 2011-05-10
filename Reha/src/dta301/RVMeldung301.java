@@ -78,10 +78,11 @@ public class RVMeldung301 {
 	int anzahlUnhs = 1;
 	int aktUnh = 1;
 	int lastCIN = -1;
+	int lfdNr = -1;
 	boolean shouldBreak = false;
 	boolean imtest = false;
 	
-	public RVMeldung301(int art, String id){
+	public RVMeldung301(int art, String id,int lfdNr){
 		
 		/*
 		EMPFAENGERIK = recipient;
@@ -111,6 +112,7 @@ public class RVMeldung301 {
 		anzahlUnhs = 1;
 		aktUnh = 1;
 		EMPFAENGERIK = vecdta.get(0).get(3);
+		this.lfdNr = lfdNr; 
 		
 	}
 	/************************************************************/
@@ -626,8 +628,9 @@ public class RVMeldung301 {
 		if(vart==1){
 			buf301Body.append("BGM+03++10'"+NEWLINE);zeilen++;	
 		}
+		
 		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
-		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		buf301Body.append("RFF+ACD:"+StringTools.fuelleMitZeichen(Integer.toString(this.lfdNr), "0", true, 2)+"'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
 		buf301Body.append("PNA+MS++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(6).toString())+EOL+NEWLINE);zeilen++;
@@ -698,7 +701,8 @@ public class RVMeldung301 {
 			buf301Body.append("UNH+"+aktunh+"+MEDR02:D:01A:KR:97B'"+NEWLINE);zeilen++;
 			buf301Body.append("BGM+05++10'"+NEWLINE);zeilen++;
 			buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
-			buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+			buf301Body.append("RFF+ACD:"+StringTools.fuelleMitZeichen(Integer.toString(this.lfdNr+1), "0", true, 2)+"'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+			//buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
 			buf301Body.append("PNA+MS++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
 			buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
 			buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(6).toString())+EOL+NEWLINE);zeilen++;
@@ -802,7 +806,8 @@ public class RVMeldung301 {
 		buf301Body.append("UNH+"+aktunh+"+MEDR02:D:01A:KR:97B'"+NEWLINE);zeilen++;
 		buf301Body.append("BGM+06++10'"+NEWLINE);zeilen++; 
 		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
-		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		buf301Body.append("RFF+ACD:"+StringTools.fuelleMitZeichen(Integer.toString(this.lfdNr), "0", true, 2)+"'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		//buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
 		buf301Body.append("PNA+MS++"+vecdta.get(0).get(4).toString()+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+MR++"+(EMPFAENGERIK = vecdta.get(0).get(3).toString())+EOL+NEWLINE);zeilen++;
 		buf301Body.append("PNA+BY++"+(KOSTENTRAEGER = vecdta.get(0).get(6).toString())+EOL+NEWLINE);zeilen++;
@@ -1016,7 +1021,8 @@ public class RVMeldung301 {
 		buf301Body.append("BGM+30++10'"+NEWLINE);zeilen++; 
 		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
 		buf301Body.append("DTM+3:"+DATUM10+":102'"+NEWLINE);zeilen++;
-		buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		buf301Body.append("RFF+ACD:"+StringTools.fuelleMitZeichen(Integer.toString(this.lfdNr), "0", true, 2)+"'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		//buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
 		//Rechnungsnummer im RTA
 		//int rnummer = SqlInfo.erzeugeNummer("rnr");
 		buf301Body.append("RFF+CKN:"+Integer.toString(xrnummer)+EOL+NEWLINE);zeilen++; //Hier die Datenbank untersuchen

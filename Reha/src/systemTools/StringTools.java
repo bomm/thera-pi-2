@@ -3,6 +3,7 @@ package systemTools;
 import java.util.Vector;
 
 public class StringTools {
+	public static String TRIGGER_EINRUECKEN = "          ";
 	
 	public static String EGross(String string){
 		if(string == null){
@@ -376,7 +377,8 @@ public class StringTools {
 				dtavec.add("");
 			}else if(ohneumbruch.length() > 0 && ohneumbruch.length() <= max_line_lenght){
 				if(ohneumbruch.trim().length()>0){
-					dtavec.add(ohneumbruch.trim());
+					//dtavec.add(ohneumbruch.trim() );
+					dtavec.add( (ohneumbruch.startsWith(TRIGGER_EINRUECKEN) ? ohneumbruch : ohneumbruch.trim()) );
 				}
 				//hier neu >= anstatt >
 			}else if(ohneumbruch.length() > max_line_lenght){
@@ -384,16 +386,19 @@ public class StringTools {
 				for(int i2 = 0; i2 < reststring.length();i2++){
 					if(reststring.length() <= max_line_lenght){
 						if(reststring.trim().length() > 0){
-							dtavec.add(reststring.trim());
+							//dtavec.add(reststring.trim());
+							dtavec.add( (reststring.startsWith(TRIGGER_EINRUECKEN) ? reststring : reststring.trim()) );
 						}
 						break;
 					}else{
 						for(int i3 = max_line_lenght-1; i3 >= 0; i3--){
 							if(reststring.substring(i3,i3+1).equals(LEER)){
 								if(reststring.substring(0,i3).trim().length()>0){
-									dtavec.add(reststring.substring(0,i3).trim());
+									//dtavec.add(reststring.substring(0,i3).trim());
+									dtavec.add( (reststring.substring(0,i3).startsWith(TRIGGER_EINRUECKEN) ? reststring.substring(0,i3) : reststring.substring(0,i3).trim()) );
 								}
-								reststring = reststring.substring(i3).trim();
+								//reststring = reststring.substring(i3).trim();
+								reststring = (reststring.substring(i3).startsWith(TRIGGER_EINRUECKEN) ? reststring.substring(i3) : reststring.substring(i3).trim());
 								break;
 							}else if(i == 0){
 								//hier neu >= anstatt >
