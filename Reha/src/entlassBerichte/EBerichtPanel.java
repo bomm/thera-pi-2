@@ -977,6 +977,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		return jtb;
 	}
 	public void testeFreiText(){
+		if(document==null){return;}
 		if(document.isModified()){
 			String meldung = "<html><b><font color='#ff0000' size=+2>Achtung!</font><br><br>"+
 			"Der Freitext des E-Berichts wurde seit dem letzten Speichern verändert.<br><br>"+
