@@ -57,6 +57,7 @@ import systemTools.ListenerTools;
 
 import com.jgoodies.looks.plastic.PlasticInternalFrameUI;
 
+import entlassBerichte.EBerichtPanel;
 import events.RehaEvent;
 import events.RehaEventClass;
 

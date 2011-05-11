@@ -160,6 +160,7 @@ public class Eb3 implements RehaEventListener  {
 				        			zugabe = (zugabe ? false : true);
 		        				}
 		        			});
+		        			eltern.document.setModified(false);
 			        	}else{
 							if(!Reha.officeapplication.isActive()){
 								//System.out.println("Aktiviere Office...");
@@ -185,6 +186,11 @@ public class Eb3 implements RehaEventListener  {
 							        				public void run(){
 									        			eltern.jry.setSize(eltern.jry.getWidth()+(zugabe ? 1 : -1), eltern.jry.getHeight());
 									        			zugabe = (zugabe ? false : true);
+									        			try {
+															eltern.document.setModified(false);
+														} catch (DocumentException e) {
+															e.printStackTrace();
+														}
 							        				}
 							        			});
 						        			}catch(Exception ex){
@@ -195,6 +201,11 @@ public class Eb3 implements RehaEventListener  {
 							        				public void run(){
 									        			eltern.jry.setSize(eltern.jry.getWidth()+(zugabe ? 1 : -1), eltern.jry.getHeight());
 									        			zugabe = (zugabe ? false : true);
+									        			try {
+															eltern.document.setModified(false);
+														} catch (DocumentException e) {
+															e.printStackTrace();
+														}
 							        				}
 							        			});
 						        			}
@@ -205,11 +216,13 @@ public class Eb3 implements RehaEventListener  {
 								        	OOTools.setzeRaender(eltern.document, Integer.valueOf(1000), Integer.valueOf(1000),Integer.valueOf(1000),Integer.valueOf(1000));
 								        	framegetrennt = false;
 											eltern.meldeInitOk(2);
+											eltern.document.setModified(false);
 											//JOptionPane.showMessageDialog(null, "Kann Daten aus Datenbank nicht öffnen");
 					        			}
 					        			if(ins != null){
 					        				ins.close();
 					        			}
+					        			eltern.document.setModified(false);
 									}catch(Exception ex2){
 										inseitenaufbau = false;
 										ex2.printStackTrace();
@@ -225,7 +238,6 @@ public class Eb3 implements RehaEventListener  {
 						        			outtemp = new ByteArrayOutputStream();
 						    				eltern.document.getPersistenceService().export(outtemp, new RTFFilter());
 						    				eltern.document.getPersistenceService().export(url, new PDFFilter());
-						    				eltern.document.setModified(false);
 						    				outtemp.close();
 						    				bytebufferok = true;
 						    				pdfok = true;
@@ -233,6 +245,7 @@ public class Eb3 implements RehaEventListener  {
 												ex.printStackTrace();
 												inseitenaufbau = false;
 											}
+											eltern.document.setModified(false);
 						    				return null;
 
 										}
@@ -251,6 +264,7 @@ public class Eb3 implements RehaEventListener  {
 						        	framegetrennt = false;
 									eltern.meldeInitOk(2);
 				        			pan.setSize(pan.getWidth()+1, pan.getHeight());
+				        			eltern.document.setModified(false);
 									return null;
 								}
 			        		}.execute();
@@ -448,6 +462,7 @@ public class Eb3 implements RehaEventListener  {
 				}			
 			}
 			out.close();
+	    	eltern.document.setModified(false);
 			//EBerichtPanel.document.close();
 			Reha.thisClass.progressStarten(false);
 			
@@ -489,10 +504,10 @@ public class Eb3 implements RehaEventListener  {
 	    ITextRange textRange = viewCursor.getStartTextRange();
 	    textRange.setText(xtext);
 	    try {
-	    	eltern.document.setModified(false);
 	    	eltern.officeFrame.setFocus();
 	    	eltern.officeFrame.updateDispatches();
     		refreshSize();
+	    	eltern.document.setModified(false);
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
@@ -581,6 +596,9 @@ public class Eb3 implements RehaEventListener  {
 							outtemp.close();
 						}
 						if(eltern != null){
+							if(eltern.document.isModified()){
+								
+							}
 					 		   if(eltern.document != null){
 					 			   if(eltern.document.isOpen()){
 					 				  eltern.document.close();

@@ -12,6 +12,8 @@ import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
+import org.jdesktop.swingx.JXPanel;
+
 import systemTools.ListenerTools;
 import entlassBerichte.EBerichtPanel;
 import events.RehaEvent;
@@ -56,11 +58,14 @@ public class JGutachtenInternal extends JRehaInternal implements RehaEventListen
 	public void internalFrameClosing(InternalFrameEvent arg0) {
 		// TODO Auto-generated method stub
 		////System.out.println("Internal-GutachtenFrame in schliessen***************");
+		
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
 		//System.out.println("Lösche Gutachten-Internal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		//nächsten JInternalFrame aktivieren
+		//System.out.println("Größe = "+this.getWidth()+"/"+this.getHeight()+" Location = "+this.getLocation().x+"/"+this.getLocation().y);
+		((EBerichtPanel)this.inhalt).testeFreiText();		
 		Reha.thisClass.aktiviereNaechsten(this.desktop);		
 		//JInternalFram von Desktop lösen
 		Reha.thisClass.desktops[this.desktop].remove(this);

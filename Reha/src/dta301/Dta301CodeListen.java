@@ -14,7 +14,10 @@ public class Dta301CodeListen {
 			StringTools.do301String("Spezielle Anamnese:"),
 			StringTools.do301String("Bisherige Reha-Aufenthalte:"),
 			StringTools.do301String("Spezielle männliche Anamnese:"),
+			StringTools.do301String("Urologische Anamnese:"),
 			StringTools.do301String("Spezielle weibliche Anamnese:"),
+			StringTools.do301String("Gynäkologische Anamnese:"),
+			StringTools.do301String("Spezielle orthopädische Anamnese:"),
 			StringTools.do301String("Vegetative Anamnese:"),
 			StringTools.do301String("Risikofaktoren:"),
 			/*****2.*******/
@@ -33,6 +36,7 @@ public class Dta301CodeListen {
 			StringTools.do301String("5. Arbeits- und Berufsanamnese:"),
 			/*****6.*******/
 			StringTools.do301String("6. Aufnahmebefund, Vorbefunde:"),
+			StringTools.do301String("6. Aufnahmebefund, Vorbefunde, ergänzende Diagnostik:"),
 			StringTools.do301String("Orthopädischer Befund:"),
 			StringTools.do301String("Neurologischer Befund:"),
 			StringTools.do301String("Neurologische Untersuchung:"),

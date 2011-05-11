@@ -196,6 +196,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public JXStatusBar jXStatusBar = null;
 	private int dividerLocLR = 0; 
 	public JLabel shiftLabel = null;
+	public static boolean dividerOk = false;
 	public JLabel messageLabel = null;
 	public JLabel dbLabel = null;
 	public JLabel mousePositionLabel = null;
@@ -313,6 +314,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public RehaIOServer rehaIOServer = null;
 	public static int xport = 6000;
 	public static boolean isStarted = false;
+	public static int divider1 = -1;
+	public static int divider2 = -1;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -512,7 +515,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				rehaBackImg = new ImageIcon(Reha.proghome+"icons/therapieMT1.gif");
 				application.getJFrame();
 				Reha.thisFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( Reha.proghome+"icons/pi.png" ) );
-				Reha.thisClass.setDivider(5);
+				
+				if(!dividerOk){
+					//Reha.thisClass.setDivider(5);
+				}
+				
+				//
 				Reha.thisClass.doCompoundPainter();
 				Reha.thisClass.starteTimer();
 				
@@ -547,6 +555,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
 		System.exit(0);
 	}
 	public void beendeSofort(){
@@ -580,6 +591,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
 		System.exit(0);
 	}
 	
@@ -1694,7 +1708,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 								e2.printStackTrace();
 							}
 						}
-
+						INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+						SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
+						SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
 						System.exit(0);
 					}else{
 						return;
@@ -1896,8 +1912,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         }, AWTEvent.MOUSE_EVENT_MASK);
         */
     }
-    public void setVertDivider(int variante){
-    	System.out.println("Variante = "+variante);
+    public void setVertDivider(final int variante){
+    	//System.out.println("Variante = "+variante);
     	//Diese Funktion wäre etwas für Michael Schütt
     	/*
     	 * Im Grunde würde es genügen wenn Strg+Pfeil-Links/oder Rechts gedrückt wird,
@@ -1905,6 +1921,38 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
     	 * den Rest müßte man dann einfacht mit der Maus herstellen.
     	 * 
     	 */
+    	SwingUtilities.invokeLater(new Runnable(){
+    		public void run(){
+    			//links
+    	    	if(variante==1){
+    	    		
+    	    	
+    	        	if(desktops[0].getWidth() <= 25){
+    	        		jSplitRechtsOU.setDividerLocation(0);
+    	        		vollsichtbar = 1;
+    	        		return;
+    	        	}else if(desktops[0].getWidth() > 25){
+    	    			jSplitRechtsOU.setDividerLocation((jSplitRechtsOU.getDividerLocation()-25));
+    	    			vollsichtbar = -1;
+    	    			return;
+    	    		}
+    	    		
+    	        //rechts	
+    	    	}else if(variante==2){
+    	    		if(desktops[1].getWidth() <= 25){
+    	        		jSplitRechtsOU.setDividerLocation(jSplitRechtsOU.getWidth()-7);
+    	        		vollsichtbar = 0;
+    	        		return;
+    	    		}else{
+    	    			jSplitRechtsOU.setDividerLocation((jSplitRechtsOU.getDividerLocation()+25));
+    	    			vollsichtbar = -1;
+    	    			return;
+    	    		}
+    	    	}
+    	    	vollsichtbar = -1;
+    			
+    		}
+    	});
     }
     public void setDivider(int variante){
     	final int xvariante = variante;
@@ -1987,7 +2035,33 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
      	});
 
     }
-    
+    public int getSichtbar(){
+    	/*
+		System.out.println("\n\nDivider-Location = "+jSplitRechtsOU.getDividerLocation());
+		System.out.println("Divider-Ok 		 = "+Reha.dividerOk);
+		System.out.println("Höhe der RootPane = "+thisFrame.getRootPane().getHeight()+"\n");
+		System.out.println("Höhe von Desktop[0] = "+desktops[0].getHeight());
+		System.out.println("Höhe von Desktop[1] = "+desktops[1].getHeight());
+		System.out.println("Breite von Desktop[0] = "+desktops[0].getWidth());
+		System.out.println("Breite von Desktop[1] = "+desktops[1].getWidth());
+		*/
+		if(SystemConfig.desktopHorizontal){
+			if(desktops[0].getHeight() <= 10){
+				return 1;
+			}else if(desktops[1].getHeight() <= 10){
+				return 0;
+			}
+		}else{
+			/*
+			if(desktops[0].getWidth() <= 10){
+				return 1;
+			}else if(desktops[1].getWidth() <= 10){
+				return 0;
+			}
+			*/
+		}
+		return -1;
+    }
     public void setFocusWatcher() {
 		long mask = AWTEvent.FOCUS_EVENT_MASK;
 		/*
@@ -2172,7 +2246,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					e.printStackTrace();
 				}
 			}
-			
+			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+			SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
+			SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
 			System.exit(0);
 		}else{
 			return;
@@ -2724,11 +2800,40 @@ final class ErsterLogin implements Runnable{
 		SwingUtilities.invokeLater(new Runnable(){
 			public  void run(){
 				Reha.thisFrame.setMinimumSize(new Dimension(800,600));
+				Reha.thisFrame.setPreferredSize(new Dimension(800,600));
 				Reha.thisFrame.setExtendedState(JXFrame.MAXIMIZED_BOTH);
-				Reha.thisClass.setDivider(5);
+				Reha.thisFrame.setVisible(true);
+				INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+				if(inif.getIntegerProperty("HauptFenster", "Divider1") != null){
+					Reha.thisClass.jSplitLR.setDividerLocation((Reha.divider1=inif.getIntegerProperty("HauptFenster", "Divider1")));
+					Reha.thisClass.jSplitRechtsOU.setDividerLocation((Reha.divider2=inif.getIntegerProperty("HauptFenster", "Divider2")));
+					System.out.println("Divider gesetzt");
+					System.out.println("Divider 1 = "+inif.getIntegerProperty("HauptFenster", "Divider1"));
+					System.out.println("Divider 2 = "+inif.getIntegerProperty("HauptFenster", "Divider2")+"\n\n");
+					Reha.dividerOk= true;
+					//Hier mußt noch eine funktion getSichtbar() entwickelt werden
+					//diese ersetzt die nächste Zeile 
+					//System.out.println("Sichtbar Variante = "+Reha.thisClass.getSichtbar());
+				}else{
+					System.out.println("Divider-Angaben sind noch null");
+					Reha.thisClass.setDivider(5);	
+				}
+
 				Reha.thisFrame.getRootPane().validate();
 				Reha.isStarted = true;
+				
 				Reha.thisFrame.setVisible(true);
+				
+
+				if(Reha.dividerOk){
+					Reha.thisClass.vollsichtbar = Reha.thisClass.getSichtbar();
+					if(!SystemConfig.desktopHorizontal){
+						Reha.thisClass.jSplitRechtsOU.setDividerLocation((Reha.divider2));	
+					}
+					System.out.println("Wert für Vollsichtbar = "+Reha.thisClass.vollsichtbar);
+				}
+
+				//Reha.thisFrame.pack();
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {

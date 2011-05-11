@@ -19,8 +19,13 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +52,8 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.therapi.reha.patient.LadeProg;
 
+import com.mysql.jdbc.PreparedStatement;
+
 import rechteTools.Rechte;
 import rehaInternalFrame.JGutachtenInternal;
 import sqlTools.SqlInfo;
@@ -62,6 +69,7 @@ import terminKalender.DatFunk;
 import abrechnung.AbrechnungDlg;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentException;
+import ag.ion.bion.officelayer.filter.PDFFilter;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextRange;
@@ -73,6 +81,7 @@ import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import dialoge.ToolsDialog;
 import dta301.RVMeldung301;
+import errorMail.ErrorMail;
 import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
@@ -537,6 +546,11 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					JOptionPane.showMessageDialog(null,"Fehler beim speichern des Entlassberichtes!!!");
 				}
 			}
+			try {
+				document.setModified(false);
+			} catch (DocumentException e) {
+				e.printStackTrace();
+			}
 		}else if(berichtart.equals("nachsorgedokumentation")){
 			if(this.neu){
 				doSpeichernNachsorgeNeu();
@@ -962,6 +976,26 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		}
 		return jtb;
 	}
+	public void testeFreiText(){
+		if(document.isModified()){
+			String meldung = "<html><b><font color='#ff0000' size=+2>Achtung!</font><br><br>"+
+			"Der Freitext des E-Berichts wurde seit dem letzten Speichern verändert.<br><br>"+
+			"Soll der geänderte Text jetzt abgespeichert werden?</b><br></html>";
+			int frage = JOptionPane.showConfirmDialog(this,meldung,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+			if(frage==JOptionPane.YES_OPTION){
+				boolean saveok = false;
+				saveok = textSpeichernInDB();
+				if(!saveok){
+					JOptionPane.showMessageDialog(this, "Speichern des Feitextes fehlgeschlagen.\n\nVeränderungen wurden nicht übernommen!!!\n");
+				}
+				new ErrorMail("Abfrage nach ungespeichertem Freitext",
+						SystemConfig.dieseMaschine.toString(),
+						Reha.aktUser,
+						SystemConfig.hmEmailIntern.get("Username"),
+						"Fehler-Mail");
+			}
+		}
+	}
 	@Override
 	public void rehaEventOccurred(RehaEvent evt) {
 		// TODO Auto-generated method stub
@@ -992,6 +1026,80 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 		}
 	}
+	/*****************************************/
+	public boolean textSpeichernInDB(){
+		Statement stmt = null;;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		boolean fehler = false;
+
+		try {
+			if(document==null){
+				Reha.thisClass.progressStarten(false);
+				System.out.println("Document == null");
+				return false;
+			}
+			if(!document.isOpen()){
+				System.out.println("Document ist closed()");
+				Reha.thisClass.progressStarten(false);
+				return false;
+			}
+			Reha.thisClass.progressStarten(true);
+			//byte[] barr = null;
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			try{
+				document.getPersistenceService().store(out);
+			}catch(Exception ex){
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(null,"Fehler beim speichern, bitte erneut speichern drücken");
+				fehler = true;
+			}
+			if(fehler){
+				return false;
+			}
+			
+			
+			InputStream ins = new ByteArrayInputStream(out.toByteArray());
+			String select = "Update bericht2 set freitext = ? where berichtid = ? LIMIT 1";
+			ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
+			ps.setAsciiStream(1,ins);
+			ps.setInt(2, berichtid);
+			ps.execute();
+			ins.close();
+			out.close();
+			Reha.thisClass.progressStarten(false);
+		}catch(Exception ex){
+			ex.printStackTrace();
+			Reha.thisClass.progressStarten(false);
+			return false;
+		}
+		finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException sqlEx) { // ignore }
+					rs = null;
+				}
+			}	
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+			if(ps != null){
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return true;
+		
+	}
+	
 	/*****************************************/
 	public void finalise(){
 		for(int i = 0; i < btf.length;i++){
