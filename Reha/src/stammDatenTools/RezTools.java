@@ -86,7 +86,7 @@ public class RezTools {
 		boolean trigger = false;
 		boolean testen = true;
 		int doppelbehindex = -1;
-		String doppelbehpos = "";
+		ArrayList<String> doppelbehpos = new ArrayList<String>();
 		
 		ArrayList<String> positionen = new ArrayList<String>();
 		String behandlungen = null;
@@ -104,12 +104,12 @@ public class RezTools {
 				aktpos = String.valueOf(rezvec.get(i));
 				
 			}else{
-				if(rezvec.get(i).equals(aktpos)){
+				if(rezvec.get(i).equals(rezvec.get(i-1)/*aktpos*/)){
 					doppelbeh = true;
 					if(testen){
 						doppelbehindex = Integer.valueOf(i)-1;
-						doppelbehpos = String.valueOf(rezvec.get(i));
-						testen = false;
+						doppelbehpos.add(String.valueOf(rezvec.get(i)));
+						//testen = false;
 					}
 				}
 				positionen.add(String.valueOf(rezvec.get(i)));
@@ -128,10 +128,10 @@ public class RezTools {
 				for(int i2 = 0; i2 < einzelbehandlung.length;i2++){
 					if(doppelbeh){
 						index = positionen.indexOf(einzelbehandlung[i2]);
-						if( (einzelbehandlung[i2].equals(doppelbehpos)) && (!durchlaufen)){
+						if( (doppelbehpos.contains(einzelbehandlung[i2])) && (!durchlaufen)){
 							trigger = true;
 							anzahl.set(index, anzahl.get(index)+1);
-						}else if((einzelbehandlung[i2].equals(doppelbehpos)) && (durchlaufen)){
+						}else if(doppelbehpos.contains(einzelbehandlung[i2]) && (durchlaufen)){
 							anzahl.set(positionen.lastIndexOf(einzelbehandlung[i2]), anzahl.get(positionen.lastIndexOf(einzelbehandlung[i2]))+1);
 						}else{
 							anzahl.set(index, anzahl.get(index)+1);
@@ -139,6 +139,8 @@ public class RezTools {
 						if(trigger){
 							durchlaufen = true;
 							trigger = false;
+						}else{
+							durchlaufen = false;
 						}
 					}else{
 						index = positionen.indexOf(einzelbehandlung[i2]); 
