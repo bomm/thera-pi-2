@@ -422,7 +422,7 @@ public class RVMeldung301 {
 	}
 	
 	/************************************************************/
-	public boolean doBeginn(String beginnDatum,String uhrZeit,String fliesstext,int aufnahmeart,boolean bewilligt){
+	public boolean doBeginn(String beginnDatum,String uhrZeit,String fliesstext,int aufnahmeart,boolean bewilligt,String kkhentlassDatum){
 		holeVector();
 		int zeilen = 1;
 		shouldBreak = false;
@@ -494,6 +494,13 @@ public class RVMeldung301 {
 			}
 			buf301Body.append("DTM+194:"+mache10erDatum(beginnDatum)+":102"+EOL+NEWLINE);zeilen++;
 			buf301Body.append("DTM+163:"+uhrZeit+":401"+EOL+NEWLINE);zeilen++;
+			if(kkhentlassDatum != null){
+				if(kkhentlassDatum.trim().equals(".  .")){
+					JOptionPane.showMessageDialog(null,"Fehler kein oder falsches Krankenhaus-Entlassdatum angegeben");
+					return false;
+				}
+				buf301Body.append("DTM+293:"+mache10erDatum(kkhentlassDatum)+":102"+EOL+NEWLINE);zeilen++;
+			}
 			if(!fliesstext.equals("")){
 				Vector<String> flvec = new Vector<String>();
 				test = StringTools.do301String(fliesstext);

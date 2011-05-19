@@ -80,7 +80,8 @@ public class RezTools {
 		Vector<String> rezvec = SqlInfo.holeSatz("verordn", "termine,pos1,pos2,pos3,"+
 				"pos4", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));
 		Vector<String> termvec = holeEinzelZiffernAusRezept(null,rezvec.get(0));
-
+		
+		
 		boolean doppelbeh = false;
 		boolean durchlaufen = false;
 		boolean trigger = false;
@@ -147,6 +148,20 @@ public class RezTools {
 						anzahl.set(index, anzahl.get(index)+1);
 					}
 				}
+			}else{
+				//Behandlungen wurden gelöscht oder nicht angegeben
+				//dann volle Packung eintragen
+				for(int i2 = 1; i2 < 5;i2++){
+					if(! rezvec.get(i2).trim().equals("")){
+						if(positionen.size() < i2){
+							positionen.add(String.valueOf(rezvec.get(i2).trim()));
+							anzahl.add(1);
+						}else{
+							anzahl.set(i2-1,anzahl.get(i2-1)+1 );
+						}
+					}
+				}
+				
 			}
 		}	
 		for(int i = (anzahl.size()-1); i >= 0; i--){

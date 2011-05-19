@@ -91,6 +91,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 	JRtaTextField beginnminute = null;
 	JTextArea beginneditpan = null;
 	JRtaCheckBox beginncheck = null;
+	JRtaCheckBox beginnahbcheck = null;
+	JRtaTextField beginnahbentlass = null;
 	
 	//Unterbrechungsmeldung
 	JRtaRadioButton[] ubradio = {null,null,null};
@@ -230,6 +232,15 @@ public class Dta301 extends JXPanel implements FocusListener {
 						TableTool.loescheRowAusModel(tabuebersicht, row);
 					}
 				}
+				if(cmd.equals("ahbfall")){
+					if(! beginnahbcheck.isSelected()){
+						beginnahbentlass.setText(Reha.thisClass.NULL_DATE);
+						beginnahbentlass.setEnabled(false);
+					}else{
+						beginnahbentlass.setEnabled(true);
+						beginnahbentlass.requestFocus();
+					}
+				}
 
 				
 			}
@@ -307,8 +318,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 		pan.setOpaque(false);
 		//                 1             2           3   4   5   
 		String xwerte = "100dlu,right:max(100dlu;p),50dlu,p,20dlu:g";
-		//		          1    2  3   4  5   6  7   8   9   10    11  12   13
-		String ywerte = "25dlu,p,2dlu,p,2dlu,p,2dlu,p,20dlu,p,2dlu,p,2dlu,35dlu,2dlu,p,fill:0:grow(1.0)";
+		//		          1    2  3   4  5   6  7   8   9   10 11 12  13  14 15  16    17  18     19
+		String ywerte = "25dlu,p,2dlu,p,2dlu,p,2dlu,p,20dlu,p,2dlu,p,2dlu,p,2dlu,35dlu,2dlu,p,fill:0:grow(1.0)";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
@@ -361,6 +372,17 @@ public class Dta301 extends JXPanel implements FocusListener {
 		pan2.add(beginnminute,cc2.xy(3, 1));
 		pan2.validate();
 		pan.add(pan2,cc.xy(4, 12,CellConstraints.FILL,CellConstraints.FILL));
+		/*********AHB-Klinikentlassdatum*************/
+		beginnahbcheck = new JRtaCheckBox("AHB/AR-Fall (KKH-Entlassdatum)");
+		beginnahbcheck.setOpaque(false);
+		beginnahbcheck.setActionCommand("ahbfall");
+		beginnahbcheck.addActionListener(al);
+		beginnahbcheck.setForeground(Color.BLUE);
+		beginnahbentlass = new JRtaTextField("DATUM",true);
+		beginnahbentlass.setText(Reha.thisClass.NULL_DATE);
+		beginnahbentlass.setEnabled(false);
+		pan.add(beginnahbcheck,cc.xyw(2, 14, 3, CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(beginnahbentlass,cc.xy(4,14));
 		/*********Textfeld für die Nachricht*********/
 		beginneditpan = new JTextArea();
 		beginneditpan.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -374,10 +396,10 @@ public class Dta301 extends JXPanel implements FocusListener {
 		beginneditpan.setForeground(Color.BLUE);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(beginneditpan);
 		jscr.validate();
-		pan.add(jscr,cc.xyw(2,14,3,CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(jscr,cc.xyw(2,16,3,CellConstraints.FILL,CellConstraints.FILL));
 		/*********Button zum Abfeuern********/
 		buts[0] = ButtonTools.macheBut("Nachricht erzeugen und senden", "beginnsenden", al);
-		pan.add(buts[0],cc.xyw(2, 16, 3, CellConstraints.FILL,CellConstraints.FILL));
+		pan.add(buts[0],cc.xyw(2, 18, 3, CellConstraints.FILL,CellConstraints.FILL));
 		pan.validate();
 		headerpan.add(getHeader(0),BorderLayout.NORTH);
 		headerpan.add(pan,BorderLayout.CENTER);
@@ -847,7 +869,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 			}
 			meldung301.doBeginn(this.beginndatum.getText().trim(),
 					this.beginnstunde.getText().trim()+this.beginnminute.getText().trim(),
-					beginneditpan.getText().trim(),aufnahmeart,beginncheck.isSelected()
+					beginneditpan.getText().trim(),aufnahmeart,beginncheck.isSelected(),
+					(this.beginnahbcheck.isSelected() ? beginnahbentlass.getText().trim() : null)
 					);
 			doTabelleFuellen();
 			return true;
@@ -1069,6 +1092,8 @@ public class Dta301 extends JXPanel implements FocusListener {
 				"Narchittyp: <b>Aufnahmemitteilung"+
 				"</b><br><br>Aufnahmedatum: <b>"+beginndatum.getText()+
 				"</b><br><br>Aufnahme Uhrzeit: <b>"+beginnstunde.getText()+":"+beginnminute.getText()+
+				"</b><br><br>Fallart: <b>"+(this.beginnahbcheck.isSelected() ? "AHB/AR Fall" : "medizinische Reha")+
+				(this.beginnahbcheck.isSelected() ? "</b><br><br>KKH-Entlassdatum: <b>"+this.beginnahbentlass.getText() : "<b>")+ 
 				"</b><br><br><b>Begründung bei Aufnahme i.d.R. nicht erforderlich</b>"+
 				"</html>";		
 			}else if(aufnahmeart == 1){
