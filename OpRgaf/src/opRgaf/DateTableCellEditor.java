@@ -248,11 +248,11 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
             } 
         }
         */
-        if(DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) >= 120 ||
-        		DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) <= -120){
-        	//JOptionPane.showMessageDialog(null,"Der eingebene Datumswert ist zwar ein kalendarisch korrektes Datum,\n"+
-        		//	"trotzdem würde ich an Ihrer Stelle das Datum noch einmal prüfen.....");
-        }
+        try{
+            if(DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) >= 120 ||
+            		DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) <= -120){
+            }
+        }catch(Exception ex){}
         fireEditingStopped();
         return super.stopCellEditing();
     }

@@ -352,6 +352,7 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 		
 		
 		tabmod.setValueAt((Double)restbetrag.doubleValue(), tab.convertRowIndexToModel(row), 6);
+		tabmod.setValueAt((Date)new Date(), tab.convertRowIndexToModel(row), 7);
 
 		
 		int id = (Integer) tabmod.getValueAt(tab.convertRowIndexToModel(row), 15);
@@ -691,7 +692,13 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 					}else{
 						String test = tabmod.getValueAt(row,col).toString();
 						if(test.contains(".")){
-							value = DatFunk.sDatInSQL(test);
+							if(test.trim().length()==10){
+								value = DatFunk.sDatInSQL(test);	
+							}else{
+								value = null;
+							}
+						}else if(test.trim().equals("-  -")){
+							value = null;
 						}else{
 							value = test;
 						}
@@ -704,7 +711,7 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 				}else if(tabmod.getColumnClass(col) == String.class){
 					value = tabmod.getValueAt(row,col).toString();
 				}
-				String cmd = "update rliste set "+colname+"='"+value+"' where id='"+id+"' LIMIT 1";
+				String cmd = "update rliste set "+colname+"=" + (value != null ? "'"+value+"'" : "null") +" where id='"+id+"' LIMIT 1";
 				//System.out.println(cmd);
 				SqlInfo.sqlAusfuehren(cmd);
 				tfs[0].setText(dcf.format((Double)tabmod.getValueAt(tab.convertRowIndexToModel(row), 6)));
