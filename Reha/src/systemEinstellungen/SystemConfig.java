@@ -803,10 +803,11 @@ public class SystemConfig {
 	public static void DesktopLesen(){
 		hmContainer = new HashMap<String,Integer>();
 		String[] fenster = {"Kasse","Patient","Kalender","Arzt","Gutachten","Abrechnung"};
-		String[] files = {"kasse.ini","patient.ini","kalender.ini","arzt.ini","abrechnung.ini"};
+		String[] files = {"kasse.ini","patient.ini","kalender.ini","arzt.ini","gutachten.ini","abrechnung.ini"};
 		INIFile inif = null;
 		for(int i = 0; i < fenster.length;i++){
 			inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/"+files[i]);
+			
 			//desktopPane 0 oder 1
 			if(inif.getIntegerProperty("Container", "StarteIn")==null)
 				UpdateIni(inif,"Container","StarteIn",1,null);
