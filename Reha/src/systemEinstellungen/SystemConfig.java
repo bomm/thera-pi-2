@@ -807,109 +807,31 @@ public class SystemConfig {
 		INIFile inif = null;
 		for(int i = 0; i < fenster.length;i++){
 			inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/"+files[i]);
-			hmContainer.put(fenster[i], inif.getIntegerProperty("Container", "StarteIn"));	
+			//desktopPane 0 oder 1
+			if(inif.getIntegerProperty("Container", "StarteIn")==null)
+				UpdateIni(inif,"Container","StarteIn",1,null);
+			hmContainer.put(fenster[i], inif.getIntegerProperty("Container", "StarteIn"));
+			//immer auf maximale Größe
+			if(inif.getIntegerProperty("Container", "ImmerOptimieren")==null)
+				UpdateIni(inif,"Container","ImmerOptimieren",0,null);
 			hmContainer.put(fenster[i]+"Opti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
+			//X-Position
 			if(inif.getIntegerProperty("Container", "ZeigeAnPositionX")==null)
 				UpdateIni(inif,"Container","ZeigeAnPositionX",5,null);
 			hmContainer.put(fenster[i]+"LocationX", inif.getIntegerProperty("Container", "ZeigeAnPositionX"));
+			//Y-Position
 			if(inif.getIntegerProperty("Container", "ZeigeAnPositionY")==null)
 				UpdateIni(inif,"Container","ZeigeAnPositionY",5,null);
 			hmContainer.put(fenster[i]+"LocationY", inif.getIntegerProperty("Container", "ZeigeAnPositionY"));
+			//X-Größe
 			if(inif.getIntegerProperty("Container", "DimensionX")==null)
 				UpdateIni(inif,"Container","DimensionX",-1,null);
 			hmContainer.put(fenster[i]+"DimensionX", inif.getIntegerProperty("Container", "DimensionX"));
+			//Y-Größe
 			if(inif.getIntegerProperty("Container", "DimensionY")==null)
 				UpdateIni(inif,"Container","DimensionY",-1,null);
 			hmContainer.put(fenster[i]+"DimensionY", inif.getIntegerProperty("Container", "DimensionY"));
-			
 		}
-		/*
-		//Parameter für das Kassenfenster
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
-		hmContainer.put("Kasse", inif.getIntegerProperty("Container", "StarteIn"));	
-		hmContainer.put("KasseOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
-		if(inif.getIntegerProperty("Container", "ZeigeAnPositionX")==null)
-			UpdateIni(inif,"Container","ZeigeAnPositionX",5,null);
-		hmContainer.put("KasseLocationX", inif.getIntegerProperty("Container", "ZeigeAnPositionX"));
-		if(inif.getIntegerProperty("Container", "ZeigeAnPositionY")==null)
-			UpdateIni(inif,"Container","ZeigeAnPositionY",5,null);
-		hmContainer.put("KasseLocationY", inif.getIntegerProperty("Container", "ZeigeAnPositionY"));
-		if(inif.getIntegerProperty("Container", "DimensionX")==null)
-			UpdateIni(inif,"Container","DimensionX",-1,null);
-		hmContainer.put("KasseDimensionX", inif.getIntegerProperty("Container", "DimensionX"));
-		if(inif.getIntegerProperty("Container", "DimensionY")==null)
-			UpdateIni(inif,"Container","DimensionY",-1,null);
-		hmContainer.put("KasseDimensionY", inif.getIntegerProperty("Container", "DimensionY"));
-
-		//Parameter für das Patientenfenster
-		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
-		hmContainer.put("Patient", inif.getIntegerProperty("Container", "StarteIn"));	
-		hmContainer.put("PatientOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
-		if(inif.getIntegerProperty("Container", "ZeigeAnPositionX")==null)
-			UpdateIni(inif,"Container","ZeigeAnPositionX",5,null);
-		hmContainer.put("PatientLocationX", inif.getIntegerProperty("Container", "ZeigeAnPositionX"));
-		if(inif.getIntegerProperty("Container", "ZeigeAnPositionY")==null)
-			UpdateIni(inif,"Container","ZeigeAnPositionY",5,null);
-		hmContainer.put("PatientLocationY", inif.getIntegerProperty("Container", "ZeigeAnPositionY"));
-		if(inif.getIntegerProperty("Container", "DimensionX")==null)
-			UpdateIni(inif,"Container","DimensionX",-1,null);
-		hmContainer.put("PatientDimensionX", inif.getIntegerProperty("Container", "DimensionX"));
-		if(inif.getIntegerProperty("Container", "DimensionY")==null)
-			UpdateIni(inif,"Container","DimensionY",-1,null);
-		hmContainer.put("PatientDimensionY", inif.getIntegerProperty("Container", "DimensionY"));
-
-		//Parameter für den Terminkalender
-		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kalender.ini");
-		hmContainer.put("Kalender", inif.getIntegerProperty("Container", "StarteIn"));
-		hmContainer.put("KalenderOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
-		if(inif.getIntegerProperty("Container", "ZeigeAnPositionX")==null)
-			UpdateIni(inif,"Container","ZeigeAnPositionX",5,null);
-		hmContainer.put("KalenderLocationX", inif.getIntegerProperty("Container", "ZeigeAnPositionX"));
-		if(inif.getIntegerProperty("Container", "ZeigeAnPositionY")==null)
-			UpdateIni(inif,"Container","ZeigeAnPositionY",5,null);
-		hmContainer.put("KalenderLocationY", inif.getIntegerProperty("Container", "ZeigeAnPositionY"));
-		if(inif.getIntegerProperty("Container", "DimensionX")==null)
-			UpdateIni(inif,"Container","DimensionX",-1,null);
-		hmContainer.put("KalenderDimensionX", inif.getIntegerProperty("Container", "DimensionX"));
-		if(inif.getIntegerProperty("Container", "DimensionY")==null)
-			UpdateIni(inif,"Container","DimensionY",-1,null);
-		hmContainer.put("KalenderDimensionY", inif.getIntegerProperty("Container", "DimensionY"));
-		
-		//Parameter für das Arztfenster
-		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arzt.ini");
-		hmContainer.put("Arzt", inif.getIntegerProperty("Container", "StarteIn"));	
-		hmContainer.put("ArztOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
-		if(inif.getIntegerProperty("Container", "ZeigeAnPositionX")==null)
-			UpdateIni(inif,"Container","ZeigeAnPositionX",5,null);
-		hmContainer.put("ArztLocationX", inif.getIntegerProperty("Container", "ZeigeAnPositionX"));
-		if(inif.getIntegerProperty("Container", "ZeigeAnPositionY")==null)
-			UpdateIni(inif,"Container","ZeigeAnPositionY",5,null);
-		hmContainer.put("ArztLocationY", inif.getIntegerProperty("Container", "ZeigeAnPositionY"));
-		if(inif.getIntegerProperty("Container", "DimensionX")==null)
-			UpdateIni(inif,"Container","DimensionX",-1,null);
-		hmContainer.put("ArztDimensionX", inif.getIntegerProperty("Container", "DimensionX"));
-		if(inif.getIntegerProperty("Container", "DimensionY")==null)
-			UpdateIni(inif,"Container","DimensionY",-1,null);
-		hmContainer.put("ArztDimensionY", inif.getIntegerProperty("Container", "DimensionY"));
-
-		//Parameter für das Gutachtenfenster
-		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/gutachten.ini");
-		hmContainer.put("Gutachten", inif.getIntegerProperty("Container", "StarteIn"));	
-		hmContainer.put("GutachtenOpti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
-		if(inif.getIntegerProperty("Container", "ZeigeAnPositionX")==null)
-			UpdateIni(inif,"Container","ZeigeAnPositionX",5,null);
-		hmContainer.put("GutachtenLocationX", inif.getIntegerProperty("Container", "ZeigeAnPositionX"));
-		if(inif.getIntegerProperty("Container", "ZeigeAnPositionY")==null)
-			UpdateIni(inif,"Container","ZeigeAnPositionY",5,null);
-		hmContainer.put("GutachtenLocationY", inif.getIntegerProperty("Container", "ZeigeAnPositionY"));
-		if(inif.getIntegerProperty("Container", "DimensionX")==null)
-			UpdateIni(inif,"Container","DimensionX",-1,null);
-		hmContainer.put("ArztDimensionX", inif.getIntegerProperty("Container", "DimensionX"));
-		if(inif.getIntegerProperty("Container", "DimensionY")==null)
-			UpdateIni(inif,"Container","DimensionY",-1,null);
-		hmContainer.put("ArztDimensionY", inif.getIntegerProperty("Container", "DimensionY"));
-		*/
-		
 	}
 	public static void PatientLesen(){
 		vPatMerker = new Vector<String>();
