@@ -859,7 +859,6 @@ public void ProgPatientenVerwaltung(int setPos) {
 			}
 		}
 		Reha.thisClass.progressStarten(false);
-		//Reha.thisClass.patpanel.setzeFocus();
 		((JPatientInternal)patient).setzeSuche();
 		return;
 	}
@@ -872,7 +871,7 @@ public void ProgPatientenVerwaltung(int setPos) {
 	patjry = new JPatientInternal("thera-\u03C0 Patientenverwaltung "+
 			Reha.thisClass.desktops[1].getComponentCount()+1 ,SystemConfig.hmSysIcons.get("patstamm"),containerNr) ;
 	/***************************/
-	//Hier muß anstelle der Hartcodierung 0 oder 1 die Variable containerNr erscheinen	
+	//Hier muß anstelle der Hartcodierung 0 oder 1 (3. Parameter) die Variable containerNr erscheinen	
 	/***************************/	
 	AktiveFenster.setNeuesFenster(name,(JComponent)patjry,containerNr,(Container)patjry.getContentPane());
 	patjry.setName(name);
@@ -891,24 +890,16 @@ public void ProgPatientenVerwaltung(int setPos) {
 		int xsize = SystemConfig.hmContainer.get("PatientDimensionX");
 		int ysize = SystemConfig.hmContainer.get("PatientDimensionY");
 		patjry.setLocation(new Point(xloc,yloc));
+		// Wenn size <= 0 dann die Originalgröße
 		patjry.setSize(new Dimension( (xsize <= 0 ? 900 : xsize) ,(ysize <= 0 ? 650 : ysize) ));
 		patjry.setPreferredSize(new Dimension( (xsize <= 0 ? 900 : xsize) ,(ysize <= 0 ? 650 : ysize) ));
-		//Originalgroesse
-		//patjry.setSize(new Dimension(900,650));
-		//patjry.setPreferredSize(new Dimension(900,650));
 	}	
 	/***************************/
 	//Definition der Größe und der Position - Ende	
 	/***************************/	
-
-	
-
 	Reha.thisClass.patpanel = new PatientHauptPanel(name,patjry);
 	patjry.setContent(Reha.thisClass.patpanel);
-	
 	patjry.addComponentListener(Reha.thisClass);
-	//int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
-	//patjry.setLocation(comps*10, comps*10);
 	patjry.pack();
 	patjry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(patjry);
@@ -916,14 +907,12 @@ public void ProgPatientenVerwaltung(int setPos) {
 	//Definition ob immer auf maximale Größe getrimmt wird oder nicht	
 	/***************************/	
 	((JRehaInternal)patjry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") == 1 ? true : false));
-	////System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	LinkeTaskPane.thisClass.setCursor(Reha.thisClass.normalCursor);
 	((JPatientInternal)patjry).aktiviereDiesenFrame(((JPatientInternal)patjry).getName());
 	SwingUtilities.invokeLater(new Runnable(){
 	 	   public  void run()
 	 	   {
 	 		   patjry.setzeSuche();
-	 			////System.out.println("Focus auf PatPanel gesetzt");
 	 	   }
 	});
 	Reha.thisClass.progressStarten(false);
