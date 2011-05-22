@@ -871,13 +871,14 @@ public void ProgPatientenVerwaltung(int setPos) {
 	containerHandling(containerNr);
 	patjry = new JPatientInternal("thera-\u03C0 Patientenverwaltung "+
 			Reha.thisClass.desktops[1].getComponentCount()+1 ,SystemConfig.hmSysIcons.get("patstamm"),containerNr) ;
+	/***************************/
+	//Hier muß anstelle der Hartcodierung 0 oder 1 die Variable containerNr erscheinen	
+	/***************************/	
 	AktiveFenster.setNeuesFenster(name,(JComponent)patjry,containerNr,(Container)patjry.getContentPane());
-	
-	//patjry.setDoNotClose(true);
-	
 	patjry.setName(name);
 	
 /***************************/
+//Definition der Größe und der Position - Anfang	
 /***************************/	
 	if(SystemConfig.hmContainer.get("PatientOpti")==1){
 		patjry.setLocation(new Point(0,0));
@@ -896,6 +897,9 @@ public void ProgPatientenVerwaltung(int setPos) {
 		//patjry.setSize(new Dimension(900,650));
 		//patjry.setPreferredSize(new Dimension(900,650));
 	}	
+	/***************************/
+	//Definition der Größe und der Position - Ende	
+	/***************************/	
 
 	
 
@@ -908,6 +912,9 @@ public void ProgPatientenVerwaltung(int setPos) {
 	patjry.pack();
 	patjry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(patjry);
+	/***************************/
+	//Definition ob immer auf maximale Größe getrimmt wird oder nicht	
+	/***************************/	
 	((JRehaInternal)patjry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") == 1 ? true : false));
 	////System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	LinkeTaskPane.thisClass.setCursor(Reha.thisClass.normalCursor);
