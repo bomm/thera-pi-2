@@ -29,7 +29,6 @@ public class FrameSave {
 					SystemConfig.hmContainer.put(hashmap+"LocationY",(autosize==1 ? 0 : position.y));
 					SystemConfig.hmContainer.put(hashmap+"DimensionX",(autosize==1 ? -1 : groesse.width));
 					SystemConfig.hmContainer.put(hashmap+"DimensionY",(autosize==1 ? -1 : groesse.height));
-					System.out.println("Beschreibe File -> "+Reha.proghome+"ini/"+Reha.aktIK+"/"+xinifile);
 					/*
 					System.out.println("Beschreibe File -> "+Reha.proghome+"ini/"+Reha.aktIK+"/"+xinifile);
 					System.out.println("Container = "+container+" / AutoSize = "+autosize+

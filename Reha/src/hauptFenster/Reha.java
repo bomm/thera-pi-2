@@ -2807,15 +2807,15 @@ final class ErsterLogin implements Runnable{
 				if(inif.getIntegerProperty("HauptFenster", "Divider1") != null){
 					Reha.thisClass.jSplitLR.setDividerLocation((Reha.divider1=inif.getIntegerProperty("HauptFenster", "Divider1")));
 					Reha.thisClass.jSplitRechtsOU.setDividerLocation((Reha.divider2=inif.getIntegerProperty("HauptFenster", "Divider2")));
-					System.out.println("Divider gesetzt");
-					System.out.println("Divider 1 = "+inif.getIntegerProperty("HauptFenster", "Divider1"));
-					System.out.println("Divider 2 = "+inif.getIntegerProperty("HauptFenster", "Divider2")+"\n\n");
+					//System.out.println("Divider gesetzt");
+					//System.out.println("Divider 1 = "+inif.getIntegerProperty("HauptFenster", "Divider1"));
+					//System.out.println("Divider 2 = "+inif.getIntegerProperty("HauptFenster", "Divider2")+"\n\n");
 					Reha.dividerOk= true;
 					//Hier mußt noch eine funktion getSichtbar() entwickelt werden
 					//diese ersetzt die nächste Zeile 
 					//System.out.println("Sichtbar Variante = "+Reha.thisClass.getSichtbar());
 				}else{
-					System.out.println("Divider-Angaben sind noch null");
+					//System.out.println("Divider-Angaben sind noch null");
 					Reha.thisClass.setDivider(5);	
 				}
 
@@ -2830,7 +2830,7 @@ final class ErsterLogin implements Runnable{
 					if(!SystemConfig.desktopHorizontal){
 						Reha.thisClass.jSplitRechtsOU.setDividerLocation((Reha.divider2));	
 					}
-					System.out.println("Wert für Vollsichtbar = "+Reha.thisClass.vollsichtbar);
+					//System.out.println("Wert für Vollsichtbar = "+Reha.thisClass.vollsichtbar);
 				}
 
 				//Reha.thisFrame.pack();

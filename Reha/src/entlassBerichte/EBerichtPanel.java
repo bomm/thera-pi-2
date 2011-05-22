@@ -52,8 +52,6 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.therapi.reha.patient.LadeProg;
 
-import com.mysql.jdbc.PreparedStatement;
-
 import rechteTools.Rechte;
 import rehaInternalFrame.JGutachtenInternal;
 import sqlTools.SqlInfo;
@@ -69,7 +67,6 @@ import terminKalender.DatFunk;
 import abrechnung.AbrechnungDlg;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.filter.PDFFilter;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextRange;
@@ -77,6 +74,9 @@ import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.filter.OpenOfficeFilter;
+
+import com.mysql.jdbc.PreparedStatement;
+
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import dialoge.ToolsDialog;
