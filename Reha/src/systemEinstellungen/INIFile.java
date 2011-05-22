@@ -704,6 +704,7 @@ public final class INIFile
         }
         catch (IOException IOExIgnore)
         {
+        	IOExIgnore.printStackTrace();
         }
         finally
         {

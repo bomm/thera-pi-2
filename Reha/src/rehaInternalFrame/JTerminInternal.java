@@ -1,8 +1,11 @@
 package rehaInternalFrame;
 
 import hauptFenster.AktiveFenster;
+import hauptFenster.FrameSave;
 import hauptFenster.Reha;
 
+import java.awt.Dimension;
+import java.awt.Point;
 import java.beans.PropertyVetoException;
 
 import javax.accessibility.Accessible;
@@ -20,6 +23,7 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 	/**
 	 * 
 	 */
+	public static boolean inIniSave = false;
 	private static final long serialVersionUID = -3063788551323647566L;
 	RehaEventClass rEvent = null;
 	public JTerminInternal(String titel, ImageIcon img, int desktop) {
@@ -40,6 +44,16 @@ public class JTerminInternal extends JRehaInternal implements RehaEventListener{
 	*/
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
+		if(! this.isIcon && !inIniSave ){
+			inIniSave = true;
+			new FrameSave ((Dimension)this.getSize().clone(), 
+					(Point)this.getLocation().clone(), 
+					(Integer) Integer.valueOf(this.desktop), 
+					(Integer) Integer.valueOf((this.getImmerGross()? 1 : 0)),
+					String.valueOf("kalender.ini"),
+					String.valueOf("Kalender"));	
+		}
+
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		this.removeInternalFrameListener(this);
 		Reha.thisFrame.requestFocus();

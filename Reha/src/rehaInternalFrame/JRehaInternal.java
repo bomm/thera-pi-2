@@ -57,7 +57,6 @@ import systemTools.ListenerTools;
 
 import com.jgoodies.looks.plastic.PlasticInternalFrameUI;
 
-import entlassBerichte.EBerichtPanel;
 import events.RehaEvent;
 import events.RehaEventClass;
 
@@ -468,6 +467,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		if(this.isIcon){
 		}
 	}
+	
 	public void showPopUp(java.awt.event.MouseEvent evt){
 		////System.out.println("Aufruf des PopUpMenues an der Stelle X="+evt.getX()+" / Y="+evt.getY());
 		JPopupMenu jPop = getTerminPopupMenu();

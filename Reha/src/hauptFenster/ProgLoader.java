@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 
 import krankenKasse.KassenPanel;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.therapi.reha.patient.PatientHauptPanel;
 
 import rechteTools.Rechte;
@@ -37,6 +38,7 @@ import rehaInternalFrame.JUmsaetzeInternal;
 import rehaInternalFrame.JUrlaubInternal;
 import rehaInternalFrame.JVerkaufInternal;
 import roogle.RoogleFenster;
+import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemInit;
 import systemTools.PassWort;
@@ -135,12 +137,23 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 				terminjry = new JTerminInternal("Terminkalender - "+DatFunk.sHeute(),new ImageIcon(Reha.proghome+"icons/calendar.png"),containerNr);
 			}
 			terminjry.setName(name);
-			((JRehaInternal)terminjry).setImmerGross(true);
+			((JRehaInternal)terminjry).setImmerGross((SystemConfig.hmContainer.get("KalenderOpti")==1 ? true : false));
 			Reha.thisClass.terminpanel = new TerminFenster();
 			terminjry.setContent(Reha.thisClass.terminpanel.init(containerNr, xansicht,terminjry));
-			terminjry.setLocation(new Point(5,5));
-			terminjry.setSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
-			terminjry.setPreferredSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
+			if(SystemConfig.hmContainer.get("KalenderOpti")==1){
+				terminjry.setLocation(new Point(0,0));
+				//Reha.thisClass.jpOben muss noch ersetzt werden durch Reha.thisClass.desktops[containerNr]
+				//terminjry.setSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
+				//terminjry.setPreferredSize(new Dimension(Reha.thisClass.jpOben.getWidth(),Reha.thisClass.jpOben.getHeight()));
+				terminjry.setSize(new Dimension(Reha.thisClass.desktops[containerNr].getWidth(),Reha.thisClass.desktops[containerNr].getHeight()));
+				terminjry.setPreferredSize(new Dimension(Reha.thisClass.desktops[containerNr].getWidth(),Reha.thisClass.desktops[containerNr].getHeight()));
+
+			}else{
+				terminjry.setLocation(new Point(SystemConfig.hmContainer.get("KalenderLocationX"),SystemConfig.hmContainer.get("KalenderLocationY")));
+				terminjry.setSize(new Dimension(SystemConfig.hmContainer.get("KalenderDimensionX"),SystemConfig.hmContainer.get("KalenderDimensionY")));
+				terminjry.setPreferredSize(new Dimension(SystemConfig.hmContainer.get("KalenderDimensionX"),SystemConfig.hmContainer.get("KalenderDimensionY")));
+			}
+			terminjry.inIniSave = false;
 			terminjry.pack();
 			terminjry.setVisible(true);
 			Reha.thisClass.desktops[containerNr].add(terminjry);
@@ -858,28 +871,44 @@ public void ProgPatientenVerwaltung(int setPos) {
 	containerHandling(containerNr);
 	patjry = new JPatientInternal("thera-\u03C0 Patientenverwaltung "+
 			Reha.thisClass.desktops[1].getComponentCount()+1 ,SystemConfig.hmSysIcons.get("patstamm"),containerNr) ;
-	AktiveFenster.setNeuesFenster(name,(JComponent)patjry,0,(Container)patjry.getContentPane());
+	AktiveFenster.setNeuesFenster(name,(JComponent)patjry,containerNr,(Container)patjry.getContentPane());
 	
 	//patjry.setDoNotClose(true);
 	
 	patjry.setName(name);
-	patjry.setSize(new Dimension(900,650));
-	patjry.setPreferredSize(new Dimension(900,650));
 	
-	//Bisheriges Fenster
-	//Reha.thisClass.patpanel = new PatGrundPanel(patjry);
-	//patjry.setContent(Reha.thisClass.patpanel);
-	//Vorschlag
+/***************************/
+/***************************/	
+	if(SystemConfig.hmContainer.get("PatientOpti")==1){
+		patjry.setLocation(new Point(0,0));
+		patjry.setSize(new Dimension(Reha.thisClass.desktops[containerNr].getWidth(),Reha.thisClass.desktops[containerNr].getHeight()));
+		patjry.setPreferredSize(new Dimension(Reha.thisClass.desktops[containerNr].getWidth(),Reha.thisClass.desktops[containerNr].getHeight()));
+
+	}else{
+		int xloc = SystemConfig.hmContainer.get("PatientLocationX");
+		int yloc = SystemConfig.hmContainer.get("PatientLocationY");
+		int xsize = SystemConfig.hmContainer.get("PatientDimensionX");
+		int ysize = SystemConfig.hmContainer.get("PatientDimensionY");
+		patjry.setLocation(new Point(xloc,yloc));
+		patjry.setSize(new Dimension( (xsize <= 0 ? 900 : xsize) ,(ysize <= 0 ? 650 : ysize) ));
+		patjry.setPreferredSize(new Dimension( (xsize <= 0 ? 900 : xsize) ,(ysize <= 0 ? 650 : ysize) ));
+		//Originalgroesse
+		//patjry.setSize(new Dimension(900,650));
+		//patjry.setPreferredSize(new Dimension(900,650));
+	}	
+
+	
+
 	Reha.thisClass.patpanel = new PatientHauptPanel(name,patjry);
 	patjry.setContent(Reha.thisClass.patpanel);
 	
 	patjry.addComponentListener(Reha.thisClass);
-	int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
-	patjry.setLocation(comps*10, comps*10);
+	//int comps = Reha.thisClass.desktops[containerNr].getComponentCount();
+	//patjry.setLocation(comps*10, comps*10);
 	patjry.pack();
 	patjry.setVisible(true);
 	Reha.thisClass.desktops[containerNr].add(patjry);
-	((JRehaInternal)patjry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") > 0 ? true : false));
+	((JRehaInternal)patjry).setImmerGross( (SystemConfig.hmContainer.get("PatientOpti") == 1 ? true : false));
 	////System.out.println("Anzahl Fenster = "+Reha.thisClass.desktops[containerNr].getComponentCount());
 	LinkeTaskPane.thisClass.setCursor(Reha.thisClass.normalCursor);
 	((JPatientInternal)patjry).aktiviereDiesenFrame(((JPatientInternal)patjry).getName());
@@ -1086,4 +1115,6 @@ public static void containerHandling(int cont){
 	}
 	
 }
+
+
 }

@@ -12,8 +12,6 @@ import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
-import org.jdesktop.swingx.JXPanel;
-
 import systemTools.ListenerTools;
 import entlassBerichte.EBerichtPanel;
 import events.RehaEvent;

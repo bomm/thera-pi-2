@@ -1,8 +1,12 @@
 package rehaInternalFrame;
 
 import hauptFenster.AktiveFenster;
+import hauptFenster.FrameSave;
+import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
 
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.FocusListener;
 import java.beans.PropertyVetoException;
 
@@ -32,13 +36,23 @@ public class JPatientInternal extends JRehaInternal implements FocusListener, Re
 
 	@Override
 	public void internalFrameClosing(InternalFrameEvent arg0) {
-		////System.out.println("Internal-Pat-Frame in schliessen***************");
+		//System.out.println("Internal-Pat-Frame in schliessen***************");
 	}
 	@Override
 	public void internalFrameClosed(InternalFrameEvent arg0) {
 		try{
 		////System.out.println("Lösche Patient von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		//Nächsten JInternalFrame aktivieren
+			if(! this.isIcon){
+				new FrameSave((Dimension)this.getSize().clone(), 
+						(Point)this.getLocation().clone(), 
+						(Integer) Integer.valueOf(this.desktop), 
+						(Integer) Integer.valueOf((this.getImmerGross()? 1 : 0)),
+						String.valueOf("patient.ini"),
+						String.valueOf("Patient"));				
+			}
+			
+	
 		Reha.thisClass.aktiviereNaechsten(this.desktop);
 		//JInternalFram von Desktop lösen
 		Reha.thisClass.desktops[this.desktop].remove(this);
