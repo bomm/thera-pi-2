@@ -15,7 +15,6 @@ import javax.swing.SwingUtilities;
 
 import krankenKasse.KassenPanel;
 
-import org.jdesktop.swingworker.SwingWorker;
 import org.therapi.reha.patient.PatientHauptPanel;
 
 import rechteTools.Rechte;
@@ -38,7 +37,6 @@ import rehaInternalFrame.JUmsaetzeInternal;
 import rehaInternalFrame.JUrlaubInternal;
 import rehaInternalFrame.JVerkaufInternal;
 import roogle.RoogleFenster;
-import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemInit;
 import systemTools.PassWort;
@@ -153,7 +151,7 @@ public void ProgTerminFenster(int setPos,int ansicht) {
 				terminjry.setSize(new Dimension(SystemConfig.hmContainer.get("KalenderDimensionX"),SystemConfig.hmContainer.get("KalenderDimensionY")));
 				terminjry.setPreferredSize(new Dimension(SystemConfig.hmContainer.get("KalenderDimensionX"),SystemConfig.hmContainer.get("KalenderDimensionY")));
 			}
-			terminjry.inIniSave = false;
+			JTerminInternal.inIniSave = false;
 			terminjry.pack();
 			terminjry.setVisible(true);
 			Reha.thisClass.desktops[containerNr].add(terminjry);
