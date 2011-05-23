@@ -23,10 +23,7 @@ import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.text.ITextContentService;
-import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.ITextDocumentImage;
 import ag.ion.noa.graphic.GraphicInfo;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
@@ -37,7 +34,6 @@ import com.sun.star.container.XNameContainer;
 import com.sun.star.graphic.XGraphic;
 import com.sun.star.graphic.XGraphicProvider;
 import com.sun.star.lang.XMultiServiceFactory;
-import com.sun.star.lib.uno.helper.UnoUrl;
 import com.sun.star.text.HoriOrientation;
 import com.sun.star.text.TextContentAnchorType;
 import com.sun.star.text.VertOrientation;
@@ -47,7 +43,6 @@ import com.sun.star.text.XTextCursor;
 import com.sun.star.uno.AnyConverter;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
-import com.sun.star.util.URL;
 
 
 
@@ -91,10 +86,9 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         String imagePath = (Reha.proghome+"ScreenShots/termin__temp.jpg").replace("\\", "/");
         //String imagePath = "file:///"+Reha.proghome.replace("C:/", "/")+"ScreenShots/termin__temp.jpg";
         
+        // Tip aus dem NOA-Forum
         imagePath = "file:///"+imagePath;
-        System.out.println(imagePath);
-        
-        //"file:///tmp/myDocument.odt
+
         GraphicInfo graphicInfo = null;
 
         float fx =  new Float(pixelWidth);
@@ -128,11 +122,18 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
           Thread.sleep(100);
 
 
+          multiServiceFactory = (XMultiServiceFactory) UnoRuntime.queryInterface(XMultiServiceFactory.class,
+                  textDocument.getXTextDocument());
+          XText xText = textDocument.getXTextDocument().getText();
+          
+          xTextCursor = xText.createTextCursor();
+
+
         }
         else {
 
         	//System.out.println("Pixe des Bildes = X:"+pixelWidth+" / Y:"+pixelHeight);
-        	//System.out.println("Seitenverh�ltnis = "+verhaeltnis);
+        	//System.out.println("Seitenverhältnis = "+verhaeltnis);
         	/*
             graphicInfo = new GraphicInfo(imagePath, new Float(fx).intValue(),
                     false, new Float(fy).intValue(), false, VertOrientation.TOP, HoriOrientation.LEFT,
@@ -148,13 +149,13 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
                     TextContentAnchorType.AS_CHARACTER);
         	Thread.sleep(100);
                 
-            /*
+            
             multiServiceFactory = (XMultiServiceFactory) UnoRuntime.queryInterface(XMultiServiceFactory.class,
                     textDocument.getXTextDocument());
             XText xText = textDocument.getXTextDocument().getText();
             
             xTextCursor = xText.createTextCursor();
-            */
+            
             
             //XComponentContext
             /*
@@ -184,10 +185,10 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
             Thread.sleep(100);
         }
         
-        //embedGraphic(graphicInfo,multiServiceFactory,xTextCursor);
+        embedGraphic(graphicInfo,multiServiceFactory,xTextCursor);
         
         
-        
+        /*
         ITextContentService textContentService = textDocument.getTextService()
             .getTextContentService();
 
@@ -200,7 +201,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
             .constructNewImage(graphicInfo);
         textContentService.insertTextContent(textCursor.getEnd(),
             textDocumentImage);
-		
+		*/
 
 		Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 		}catch(Exception ex){
@@ -213,7 +214,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 	
 	
 
-	@SuppressWarnings("unused")
+
 	private void embedGraphic(GraphicInfo grProps,
 	                XMultiServiceFactory xMSF, XTextCursor xCursor) {
 
@@ -233,10 +234,7 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 	                XPropertySet xProps = (XPropertySet) UnoRuntime.queryInterface(
 	                                XPropertySet.class, xImage);
 
-	                // helper-stuff to let OOo create an internal name of the graphic
-	                // that can be used later (internal name consists of various checksums)
-	                //url = "file:///RehaVerwaltung/ScreenShots/termin__temp.jpg";
-	                url = "C:/RehaVerwaltung/ScreenShots/termin__temp.jpg";
+	                url = "file:///"+Reha.proghome+"ScreenShots/termin__temp.jpg";
 
 	                xBitmapContainer.insertByName("someID",(Object) url);
 	                //xBitmapContainer.insertByName("someID", grProps.getUrl());
@@ -248,11 +246,9 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
 	                xProps.setPropertyValue("GraphicURL", internalURL);
 	                xProps.setPropertyValue("Width", (int) grProps.getWidth());
 	                xProps.setPropertyValue("Height", (int) grProps.getHeight());
-
-	                // inser the graphic at the cursor position
+	               
 	                xText.insertTextContent(xCursor, xImage, false);
-
-	                // remove the helper-entry
+	               
 	                xBitmapContainer.removeByName("someID");
 	        } catch (Exception e) {
 	        	e.printStackTrace();
