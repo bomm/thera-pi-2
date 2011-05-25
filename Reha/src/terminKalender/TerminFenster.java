@@ -4390,10 +4390,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				int doppelBehA = 0, doppelBehB = 0;
 				boolean springen = false; // unterdrückt die Anzeige des TeminBestätigenAuswahlFensters
 				Vector<BestaetigungsDaten> hMPos= new Vector<BestaetigungsDaten>();
-				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
-				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
-				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
-				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
 				Vector<String> vec = null;
 				String copyright = "\u00AE"  ;
 				int iposindex = -1;
@@ -4418,6 +4418,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							}else{
 								hMPos.get(i).hMPosNr = String.valueOf(vec.get(1+i));
 								hMPos.get(i).vOMenge = Integer.parseInt( (String) vec.get(i+11) );
+								hMPos.get(i).vorrangig = (Boolean)((ArrayList<?>)((Vector<?>)termine).get(2)).get(i);
 							}
 							//Hier wart noch ein Jenseits-Fehler drin z.B. bei 6xKG,6xKG,1xEis (= 12 x KG als Doppelbehandlung plus 1 x Eis)
 							//vermutlich aufgrund von der von mir zusammengemurksten Funktion -> holePosUndAnzahlAusTerminen(String string)
@@ -4473,7 +4474,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 									break;
 								}
 							}
-						}else if ((count == 2) && doppelBeh && (hMPos.get(doppelBehA).anzBBT < hMPos.get(doppelBehA).vOMenge)){
+						}else if ((count >= 2) && doppelBeh && (hMPos.get(doppelBehA).anzBBT < hMPos.get(doppelBehA).vOMenge)){
 								hMPos.get(doppelBehA).best = true;
 								hMPos.get(doppelBehB).best = true;
 								springen = true; // false: Auswalfenster bei Doppelbehandlungen trotzdem anzeigen
@@ -4482,6 +4483,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						count = 0; // Prüfen, ob alle HMPos bereits voll bestätigt sind
 						for (i=0; i<=3; i++){
 							if (hMPos.get(i).anzBBT == hMPos.get(i).vOMenge){
+								if(hMPos.get(i).vorrangig){
+									count=4;
+									break;
+								}
 								hMPos.get(i).best = false;
 								count++;
 							}
@@ -4490,7 +4495,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						if(doppelBeh){
 							
 							int max = welcheIstMaxInt( hMPos.get(doppelBehA).vOMenge, hMPos.get(doppelBehB).vOMenge);
-							if(max==1 && hMPos.get(doppelBehA).anzBBT == hMPos.get(doppelBehA).vOMenge){
+							if( max==1 && hMPos.get(doppelBehA).anzBBT == hMPos.get(doppelBehA).vOMenge ){
 								JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
 										"Die Doppelbehandlung wurde teilweise als Einzelbehandlung abgegeben (!!)\n"+
 										"Eine weitere Einzelbehandlung darf nicht abgegeben werden (Sie haben Geld verschenkt!!!).\n\n" +
@@ -4498,10 +4503,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								return null;								
 
 							}
-							if(max==2 && hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge){
+							if( max==2 && hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge ){
 								JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
 										"Die Doppelbehandlung wurde teilweise als Einzelbehandlung abgegeben (!!)\n"+
 										"Eine weitere Einzelbehandlung darf nicht abgegeben werden (Sie haben Geld verschenkt!!!).\n\n" +
+										"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
+								return null;									
+							}
+							if(max ==0 && hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge ){
+								JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
+										"Eine weitere Einzelbehandlung darf nicht abgegeben werden.\n\n" +
 										"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
 								return null;									
 							}
@@ -4552,6 +4563,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							 */		
 							for (i=0; i<=3; i++){
 								hMPos.get(i).best = (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge);
+								//hMPos.get(i).anzBBT += 1;
 							}
 						}
 
@@ -4574,19 +4586,33 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						 */
 						
 						count = 0; // Prüfe, ob der oder die letzten offene(n) Termin(e) bestätigt werden sollen: Hinweis, dass VO abgerechnet werden kann und in VolleTabelle schreiben
+						boolean bereitsvoll = false;
 						for (i=0; i<=3; i++){
 							if ((hMPos.get(i).anzBBT + (hMPos.get(i).best ? 1 : 0)) == hMPos.get(i).vOMenge){
+								hMPos.get(i).anzBBT += 1;
 								count++;
 							}	
 							if (count == 4){
 								JOptionPane.showMessageDialog(null, "Achtung das Rezept "+swreznum+" ist jetzt voll bestätigt!\n\nBitte die Daten prüfen und zur Abrechnung weiterleiten!");
 								try{
-									RezTools.fuelleVolleTabelle(swreznum, ParameterLaden.getKollegenUeberDBZeile(swbehandler+1));	
+									RezTools.fuelleVolleTabelle(swreznum, ParameterLaden.getKollegenUeberDBZeile(swbehandler+1));
+									bereitsvoll = true;
 								}catch(Exception ex){
 									JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
 								}						
 							}
-						}	
+						}
+						if(!bereitsvoll){
+							for (i=0; i<=3; i++){
+								if (hMPos.get(i).anzBBT == hMPos.get(i).vOMenge){
+									if(hMPos.get(i).vorrangig){
+										JOptionPane.showMessageDialog(null, "Achtung das Rezept "+swreznum+" ist jetzt voll bestätigt!\n\nBitte die Daten prüfen und zur Abrechnung weiterleiten!");
+										RezTools.fuelleVolleTabelle(swreznum, ParameterLaden.getKollegenUeberDBZeile(swbehandler+1));
+										break;
+									}
+								}
+							}						
+						}
 
 						termbuf.append(macheNeuTermin(DatFunk.sDatInDeutsch(swdatum), ParameterLaden.getKollegenUeberDBZeile(swbehandler+1),"",
 								(String) (hMPos.get(0).best ? vec.get(1) : ""),

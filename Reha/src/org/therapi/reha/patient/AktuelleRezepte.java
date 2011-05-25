@@ -1584,6 +1584,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						if((Integer)objTerm[1] == 0){
 							JOptionPane.showMessageDialog(null,"Das Rezept ist jetzt voll!");
 						}
+					}else if((Integer)objTerm[1] == 2){
+						JOptionPane.showMessageDialog(null,"Das Rezept ist bereits voll!\n"+
+								"Bitte Rezept kontrollieren und in die Abrechnung weiterreichen.");
 					}
 					tabaktterm.validate();
 					int tanzahl = tabaktterm.getRowCount();

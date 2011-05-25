@@ -25,6 +25,7 @@ import org.jdesktop.swingx.JXTitledPanel;
 import org.thera_pi.nebraska.gui.utils.ButtonTools;
 
 import systemEinstellungen.SysUtilKuerzel;
+import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -47,6 +48,7 @@ public class KuerzelNeu extends JXDialog implements  WindowListener, KeyListener
 	private JXPanel content = null;
 	private RehaTPEventClass rtp = null;
 	private JRtaTextField[] tfs = {null,null};
+	private JRtaCheckBox[] jbox = {null,null};
 	private JButton[] buts = {null,null};
 	boolean neu;
 	JLabel labKurz = null;
@@ -84,8 +86,11 @@ public class KuerzelNeu extends JXDialog implements  WindowListener, KeyListener
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				if(!neu){
-					tfs[0].setText(String.valueOf(eltern.getKuerzelDaten()[0]));
-					tfs[1].setText(String.valueOf(eltern.getKuerzelDaten()[1]));
+					Object[] kdaten = eltern.getKuerzelDaten();
+					tfs[0].setText(String.valueOf(kdaten[0]));
+					tfs[1].setText(String.valueOf(kdaten[1]));
+					jbox[0].setSelected((Boolean)kdaten[2]);
+					jbox[1].setSelected((Boolean)kdaten[3]);
 				}
 				setzeFocus((JComponent)tfs[0]);
 			}
@@ -118,8 +123,9 @@ public class KuerzelNeu extends JXDialog implements  WindowListener, KeyListener
 		};
 	}
 	private JXPanel getContent(){
-		String xwerte = "fill:0:grow(0.5),100dlu,5dlu,120dlu,fill:0:grow(0.5)";
-		String ywerte = "fill:0:grow(0.5),p,5dlu,p,fill:0:grow(0.5),p";
+		String xwerte = "fill:0:grow(0.5),125dlu,5dlu,120dlu,fill:0:grow(0.5)";
+		//                    1           2  3   4  5  6   7   8     9           10
+		String ywerte = "fill:0:grow(0.5),p,5dlu,p,5dlu,p,5dlu,p,fill:0:grow(0.5),p";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		content = new JXPanel();
@@ -141,6 +147,23 @@ public class KuerzelNeu extends JXDialog implements  WindowListener, KeyListener
 		tfs[1].addKeyListener(this);
 		content.add(tfs[1],cc.xy(4,4));
 
+		labLang = new JLabel("vorrangiges Heilmittel");
+		content.add(labLang,cc.xy(2,6,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		jbox[0] = new JRtaCheckBox();
+		jbox[0].setOpaque(false);
+		jbox[0].setName("vorrangig");
+		jbox[0].addKeyListener(this);
+		content.add(jbox[0],cc.xy(4,6));
+
+		labLang = new JLabel("kann allein verordnet werden (nur ergänz. HM)");
+		content.add(labLang,cc.xy(2,8,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		jbox[1] = new JRtaCheckBox();
+		jbox[1].setOpaque(false);
+		jbox[1].setName("separat");
+		jbox[1].addKeyListener(this);
+		content.add(jbox[1],cc.xy(4,8));
+
+
 		FormLayout lay2 = new FormLayout("fill:0:grow(0.50),60dlu,20dlu,60dlu,fill:0:grow(0.50)",
 				"10dlu,p,10dlu");
 		CellConstraints cc2 = new CellConstraints();
@@ -152,7 +175,7 @@ public class KuerzelNeu extends JXDialog implements  WindowListener, KeyListener
 		buts[1] = ButtonTools.macheBut("abbrechen", "abbrechen",al );
 		jpan.add(buts[1],cc2.xy(4, 2));
 		
-		content.add(jpan,cc.xyw(1,6,5));
+		content.add(jpan,cc.xyw(1,10,5));
 		
 		content.validate();
 		return content;
@@ -163,10 +186,10 @@ public class KuerzelNeu extends JXDialog implements  WindowListener, KeyListener
 			return;
 		}
 		if(!neu){
-			eltern.updateKuerzel(tfs[0].getText(),tfs[1].getText());
+			eltern.updateKuerzel(tfs[0].getText(),tfs[1].getText(),jbox[0].isSelected(),jbox[1].isSelected());
 			FensterSchliessen("dieses");
 		}else{
-			eltern.insertKuerzel(tfs[0].getText(),tfs[1].getText());
+			eltern.insertKuerzel(tfs[0].getText(),tfs[1].getText(),jbox[0].isSelected(),jbox[1].isSelected());
 			FensterSchliessen("dieses");
 		}
 	}

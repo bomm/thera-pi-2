@@ -51,7 +51,12 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 	String[] diszi = {"KG","MA","ER","LO","RH","PO"};
 	String aktuelleID = "-1";
 	int aktuelleRow = -1;
-
+	final int I_LEISTUNG = 0;
+	final int I_KUERZEL = 1;
+	final int I_DISZIPLIN = 2;
+	final int I_VORRANGIG = 3;
+	final int I_EXTRAOK = 4;
+	final int I_ID = 5;
 	SysUtilKuerzel(){
 		super(new BorderLayout());
 		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 5));
@@ -86,14 +91,16 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 		disziplin = new JRtaComboBox(new String[] {"Physio","Massage","Ergo","Logo","Reha","Podo"});
 		disziplin.setActionCommand("disziplin");
 		disziplin.addActionListener(this);
-		modkuerzel.setColumnIdentifiers(new String[] {"Kürzel","Langtext","Disziplin","id"});
+		modkuerzel.setColumnIdentifiers(new String[] {"Kürzel","Langtext","Disziplin","vorrangig","isoliert","id"});
 		tblkuerzel = new JXTable(modkuerzel);
 		MitteRenderer mr = new MitteRenderer();
 		tblkuerzel.getColumn(0).setMaxWidth(80);
 		tblkuerzel.getColumn(2).setMaxWidth(80);
 		tblkuerzel.getColumn(2).setCellRenderer(mr);
 		tblkuerzel.getColumn(3).setMaxWidth(60);
-		tblkuerzel.getColumn(3).setCellRenderer(mr);
+		tblkuerzel.getColumn(4).setMaxWidth(60);
+		tblkuerzel.getColumn(5).setMaxWidth(60);
+		tblkuerzel.getColumn(5).setCellRenderer(mr);
 		tblkuerzel.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent arg0) {
 				if(arg0.getClickCount()==2){
@@ -156,15 +163,17 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 		String cmd = "select * from kuerzel where disziplin ='"+diszi+"' order by kuerzel";
 		Vector<Vector<String>> vec = SqlInfo.holeFelder(cmd);
 		int lang = vec.size();
-		Vector<String> dummy = new Vector<String>();
+		Vector<Object> dummy = new Vector<Object>();
 		modkuerzel.setRowCount(0);
 		for(int i = 0; i < lang;i++){
 			dummy.clear();
-			dummy.add(vec.get(i).get(1));
-			dummy.add(vec.get(i).get(0));
-			dummy.add(vec.get(i).get(2));
-			dummy.add(vec.get(i).get(3));
-			modkuerzel.addRow((Vector<String>)dummy.clone());
+			dummy.add((String)vec.get(i).get(this.I_KUERZEL));
+			dummy.add((String)vec.get(i).get(this.I_LEISTUNG));
+			dummy.add((String)vec.get(i).get(this.I_DISZIPLIN));
+			dummy.add((Boolean)(vec.get(i).get(this.I_VORRANGIG).equals("T") ? true : false));
+			dummy.add((Boolean)(vec.get(i).get(this.I_EXTRAOK).equals("T") ? true : false));
+			dummy.add((String)vec.get(i).get(this.I_ID));
+			modkuerzel.addRow((Vector<Object>)dummy.clone());
 		}
 		tblkuerzel.validate();
 	}
@@ -176,7 +185,10 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 		private static final long serialVersionUID = 1L;
 
 		public Class<?> getColumnClass(int columnIndex) {
-			   return String.class;
+			if(columnIndex==3 ||columnIndex==4){
+				return Boolean.class;
+			}
+			return String.class;
 	    }
 
 		public boolean isCellEditable(int row, int col) {
@@ -210,35 +222,41 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 		Point pt = button[4].getLocationOnScreen();
 		String stitel = (neu ? "Neues Positionskürzel anlegen" : "bestehendes Positionskürzel ändern"); 
 		KuerzelNeu kNeuDlg = new KuerzelNeu(Reha.thisFrame,stitel,neu,this);
-		kNeuDlg.setPreferredSize(new Dimension(450,175));
+		kNeuDlg.setPreferredSize(new Dimension(475,200));
 		kNeuDlg.setLocation(pt.x-150,pt.y-230);
 		kNeuDlg.pack();
 		kNeuDlg.setVisible(true);
 
 	}
-	public String[] getKuerzelDaten(){
-		String[] ret = {null,null};
+	public Object[] getKuerzelDaten(){
+		Object[] ret = {null,null,null,null};
 		int row = tblkuerzel.getSelectedRow();
 		if(row < 0){
 			System.out.println("Keine Reihe ausgewählt");
 			return ret;
 		}
-		aktuelleID = tblkuerzel.getValueAt(tblkuerzel.convertRowIndexToModel(row), 3).toString();
+		aktuelleID = tblkuerzel.getValueAt(tblkuerzel.convertRowIndexToModel(row), this.I_ID).toString();
 		aktuelleRow = row;
 		ret[0] = tblkuerzel.getValueAt(tblkuerzel.convertRowIndexToModel(row), 0).toString();
 		ret[1] = tblkuerzel.getValueAt(tblkuerzel.convertRowIndexToModel(row), 1).toString();
+		ret[2] = ((Boolean) tblkuerzel.getValueAt(tblkuerzel.convertRowIndexToModel(row), 3));
+		ret[3] = ((Boolean) tblkuerzel.getValueAt(tblkuerzel.convertRowIndexToModel(row), 4));
 		return ret;
 	}
-	public void updateKuerzel(String kurz,String lang){
-		String cmd = "update kuerzel set kuerzel='"+kurz+"', leistung='"+lang+"' where id='"+aktuelleID+"' LIMIT 1";
+	public void updateKuerzel(String kurz,String lang,Boolean vorrang,Boolean separat){
+		String cmd = "update kuerzel set kuerzel='"+kurz+"', leistung='"+lang+"', "+
+		"vorrangig='"+(vorrang ? "T" : "F")+"', extraok='"+(separat ? "T" : "F")+"'"+
+		" where id='"+aktuelleID+"' LIMIT 1";
 		SqlInfo.sqlAusfuehren(cmd);
 		int row = tblkuerzel.getSelectedRow();
 		
 		modkuerzel.setValueAt((String) kurz, tblkuerzel.convertRowIndexToModel(row), 0);
 		modkuerzel.setValueAt((String) lang, tblkuerzel.convertRowIndexToModel(row), 1);
+		modkuerzel.setValueAt((Boolean) vorrang, tblkuerzel.convertRowIndexToModel(row), 3);
+		modkuerzel.setValueAt((Boolean) separat, tblkuerzel.convertRowIndexToModel(row), 4);
 		tblkuerzel.validate();
 	}
-	public void insertKuerzel(String kurz,String lang){
+	public void insertKuerzel(String kurz,String lang,Boolean vorrang,Boolean separat){
 		boolean gibtsschon = SqlInfo.gibtsSchon("select kuerzel from kuerzel where kuerzel='"+kurz+"' and disziplin='"+
 				diszi[disziplin.getSelectedIndex()]+"'");
 		if(gibtsschon){
@@ -246,7 +264,7 @@ public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 			return;
 		}
 		String cmd = "insert into kuerzel set kuerzel='"+kurz+"', leistung='"+lang+"', disziplin='"+
-		diszi[disziplin.getSelectedIndex()]+"'";
+		diszi[disziplin.getSelectedIndex()]+"', vorrangig='"+(vorrang ? "T" : "F")+"', extraok='"+(separat ? "T" : "F")+"'";
 		SqlInfo.sqlAusfuehren(cmd);
 		tabelleFuellen(diszi[disziplin.getSelectedIndex()],-1);
 		for(int i = 0;i < tblkuerzel.getRowCount();i++){

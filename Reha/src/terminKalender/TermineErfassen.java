@@ -592,10 +592,10 @@ public class TermineErfassen implements Runnable {
 		int doppelBehA = 0, doppelBehB = 0;
 		boolean springen = false; // unterdrückt die Anzeige des TeminBestätigenAuswahlFensters
 		Vector<BestaetigungsDaten> hMPos= new Vector<BestaetigungsDaten>();
-		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
-		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
-		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
-		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
 		Vector<String> vec = null;
 		String copyright = "\u00AE"  ;
 		StringBuffer termbuf = new StringBuffer();
@@ -618,16 +618,9 @@ public class TermineErfassen implements Runnable {
 				if(alletermine){
 					termbuf.append((String) vec.get(0));	
 				}
-				/*
-				if(termbuf.toString().contains(swdatum)){
-					JOptionPane.showMessageDialog(null, "Dieser Termin ist am "+DatFunk.sDatInDeutsch(swdatum)+" bereits erfasst");
-					
-					return null; 
-				}
-				*/
+				
 				Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
-				//System.out.println(termine.get(0));
-				//System.out.println(termine.get(1));
+
 				for (i=0;i<=3;i++){
 					if(vec.get(1+i).toString().trim().equals("")){
 						hMPos.get(i).hMPosNr = "./.";
@@ -635,9 +628,8 @@ public class TermineErfassen implements Runnable {
 					}else{
 						hMPos.get(i).hMPosNr = String.valueOf(vec.get(1+i));
 						hMPos.get(i).vOMenge = Integer.parseInt( (String) vec.get(i+11) );
+						hMPos.get(i).vorrangig = (Boolean)((ArrayList<?>)((Vector<?>)termine).get(2)).get(i);
 					}
-					//Hier wart noch ein Jenseits-Fehler drin z.B. bei 6xKG,6xKG,1xEis (= 12 x KG als Doppelbehandlung plus 1 x Eis)
-					//vermutlich aufgrund von der von mir zusammengemurksten Funktion -> holePosUndAnzahlAusTerminen(String string)
 					count = 0; // Anzahl bereits bestätigter Termine mit dieser HMPosNr
 					if (!hMPos.get(i).hMPosNr.equals("./.")){
 						//Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
@@ -661,19 +653,6 @@ public class TermineErfassen implements Runnable {
 					}
 					hMPos.get(i).anzBBT = count; //außerhalb der if-Abfrage i.O. -> dann anzBBT = count(==0)
 				}
-				/*
-				System.out.println("**********************");
-					System.out.println(" Doppelbehandlung = "+doppelBeh);
-					System.out.println("Position Doppel 1 = "+doppelBehA);
-					System.out.println("Position Doppel 2 = "+doppelBehB);
-				for(int ix = 0; ix < 4;ix++){
-					System.out.println("\n    Positions-Nr. = "+hMPos.get(ix).hMPosNr);
-					System.out.println(" verordnete Menge = "+hMPos.get(ix).vOMenge);
-					System.out.println("bereits geleistet = "+hMPos.get(ix).anzBBT);
-				}
-				System.out.println("**********************");
-				*/
-
 				
 				count = 0; //Prüfen, ob es nur eine HMPos gibt, bei der anzBBT < vOMenge; dann überspringe AuswahlFenster und bestätige diese HMPos
 				//alternativ: nur die beiden Doppelbehandlungspositionen sind noch offen
@@ -690,7 +669,7 @@ public class TermineErfassen implements Runnable {
 							break;
 						}
 					}
-				}else if ((count == 2) && doppelBeh && (hMPos.get(doppelBehA).anzBBT < hMPos.get(doppelBehA).vOMenge)){
+				}else if ((count >= 2) && doppelBeh && (hMPos.get(doppelBehA).anzBBT < hMPos.get(doppelBehA).vOMenge)){
 						hMPos.get(doppelBehA).best = true;
 						hMPos.get(doppelBehB).best = true;
 						springen = true; // false: Auswalfenster bei Doppelbehandlungen trotzdem anzeigen
@@ -699,6 +678,10 @@ public class TermineErfassen implements Runnable {
 				count = 0; // Prüfen, ob alle HMPos bereits voll bestätigt sind
 				for (i=0; i<=3; i++){
 					if (hMPos.get(i).anzBBT == hMPos.get(i).vOMenge){
+						if(hMPos.get(i).vorrangig){
+							count=4;
+							break;
+						}
 						hMPos.get(i).best = false;
 						count++;
 					}
@@ -709,20 +692,19 @@ public class TermineErfassen implements Runnable {
 				if(doppelBeh){
 					 
 					int max = welcheIstMaxInt(hMPos.get(doppelBehA).vOMenge, hMPos.get(doppelBehB).vOMenge);
-					if(max==1 && hMPos.get(doppelBehA).anzBBT == hMPos.get(doppelBehA).vOMenge){
+					if( max==1 && hMPos.get(doppelBehA).anzBBT == hMPos.get(doppelBehA).vOMenge ){
 						count = 4;
 					}
-					if(max==2 && hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge){
+					if( max==2 && hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge ){
+						count = 4;
+					}
+					if( max==0 && hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge){
 						count = 4;
 					}
 				}
 				
 				if (count == 4){
-					/*
-					JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
-							"Eine zusätzliche Behandlung wird nicht eingetragen.\n\n" +
-							"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
-					*/		
+					//Rezept ist bereit jetzt voll neuer Termin nicht möglich
 					retObj[0] = termbuf.toString();
 					retObj[1] = 2; //bereits voll normalfall
 					return 	retObj.clone();								
@@ -736,11 +718,6 @@ public class TermineErfassen implements Runnable {
 					}
 				}
 				if (count !=0){
-					/*
-					JOptionPane.showMessageDialog(null, "Achtung: die verordneten Mengen der Verordnung "+swreznum+ " wurden bereits überschritten!\n\n" +
-							"Eine zusätzliche Behandlung wird nicht eingetragen.\n\n" +
-							"Bitte prüfen Sie die Verordnungsmengen und die bestätigten Termindaten!");
-					*/		
 					retObj[0] = termbuf.toString();
 					retObj[1] = 3; //bereits übervoll
 					return 	retObj.clone();								
@@ -770,6 +747,7 @@ public class TermineErfassen implements Runnable {
 					 */		
 					for (i=0; i<=3; i++){
 						hMPos.get(i).best = (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge);
+						//hMPos.get(i).anzBBT += 1;
 					}
 				}
 
@@ -788,6 +766,7 @@ public class TermineErfassen implements Runnable {
 				count = 0; // Prüfe, ob der oder die letzten offene(n) Termin(e) bestätigt werden sollen: Hinweis, dass VO abgerechnet werden kann und in VolleTabelle schreiben
 				for (i=0; i<=3; i++){
 					if ((hMPos.get(i).anzBBT + (hMPos.get(i).best ? 1 : 0)) == hMPos.get(i).vOMenge){
+						hMPos.get(i).anzBBT += 1; //wird unten nochmals ausgewertet
 						count++;
 					}	
 					if (count == 4){
@@ -815,6 +794,16 @@ public class TermineErfassen implements Runnable {
 						(String) (hMPos.get(3).best ? vec.get(4) : "")));
 				//hier zunächst den neuen Termin basteln;
 				retObj[0] = termbuf.toString();
+				//dann nochmal testen ob ein vorrangiges Heilmittel die Mengengrenze erreicht hat.
+				for (i=0; i<=3; i++){
+					//System.out.println(hMPos.get(i).anzBBT+" / "+hMPos.get(i).vOMenge);
+					if (hMPos.get(i).anzBBT == hMPos.get(i).vOMenge){
+						if(hMPos.get(i).vorrangig){
+							retObj[1] = 0;
+							return retObj.clone();	
+						}
+					}
+				}						
 				retObj[1] = -1; //Behandlung(en) konnten eingetragen werden Rezept hat noch Luft nach oben
 				return 	retObj.clone();								
 

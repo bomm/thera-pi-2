@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -33,7 +34,7 @@ public class RezTools {
 		return ret;
 	}
 	
-	public static Vector<ArrayList<?>> holePosUndAnzahlAusRezept(String xreznr){
+	public static Vector<ArrayList<?>> Y_holePosUndAnzahlAusRezept(String xreznr){
 		Vector<ArrayList<?>> xvec = new Vector<ArrayList<?>>();
 		ArrayList<String> positionen = new ArrayList<String>();
 		ArrayList<String> doppeltest = new ArrayList<String>();
@@ -78,7 +79,7 @@ public class RezTools {
 		Vector<ArrayList<?>> xvec = new Vector<ArrayList<?>>();
 
 		Vector<String> rezvec = SqlInfo.holeSatz("verordn", "termine,pos1,pos2,pos3,"+
-				"pos4", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));
+				"pos4,kuerzel1,kuerzel2,kuerzel3,kuerzel4,preisgruppe", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));
 		Vector<String> termvec = holeEinzelZiffernAusRezept(null,rezvec.get(0));
 		
 		
@@ -93,7 +94,7 @@ public class RezTools {
 		String behandlungen = null;
 		String[] einzelbehandlung = null;
 		ArrayList<Integer>anzahl = new ArrayList<Integer>();
-		
+		ArrayList<Boolean>vorrangig = new ArrayList<Boolean>();
 		String aktpos = "";
 		for(int i = 1; i < 5; i++ ){
 
@@ -101,6 +102,7 @@ public class RezTools {
 				break;
 			}else if((i == 1)){
 				positionen.add(String.valueOf(rezvec.get(i)));
+				vorrangig.add(isVorrangig(rezvec.get(i+4),xreznr));
 				anzahl.add(0);
 				aktpos = String.valueOf(rezvec.get(i));
 				
@@ -114,54 +116,78 @@ public class RezTools {
 					}
 				}
 				positionen.add(String.valueOf(rezvec.get(i)));
+				vorrangig.add(isVorrangig(rezvec.get(i+4),xreznr));
 				anzahl.add(0);
 				aktpos = String.valueOf(rezvec.get(i));
 			}
 		}
 		int index = -1;
-		
+		int i2 = -1;
 		for(int i = 0; i < termvec.size();i++){
-			behandlungen = termvec.get(i);
-			if(! behandlungen.equals("")){
-				einzelbehandlung = behandlungen.split(",");
-				durchlaufen = false;
-				trigger = false;
-				for(int i2 = 0; i2 < einzelbehandlung.length;i2++){
-					if(doppelbeh){
-						index = positionen.indexOf(einzelbehandlung[i2]);
-						if( (doppelbehpos.contains(einzelbehandlung[i2])) && (!durchlaufen)){
-							trigger = true;
+			try{
+				behandlungen = termvec.get(i);
+				if(! behandlungen.equals("")){
+					einzelbehandlung = behandlungen.split(",");
+					durchlaufen = false;
+					trigger = false;
+					for(i2 = 0; i2 < einzelbehandlung.length;i2++){
+						if(doppelbeh){
+							index = positionen.indexOf(einzelbehandlung[i2]);
+							if( (doppelbehpos.contains(einzelbehandlung[i2])) && (!durchlaufen)){
+								trigger = true;
+								anzahl.set(index, anzahl.get(index)+1);
+							}else if(doppelbehpos.contains(einzelbehandlung[i2]) && (durchlaufen)){
+								anzahl.set(positionen.lastIndexOf(einzelbehandlung[i2]), anzahl.get(positionen.lastIndexOf(einzelbehandlung[i2]))+1);
+							}else{
+								anzahl.set(index, anzahl.get(index)+1);
+							}
+							if(trigger){
+								durchlaufen = true;
+								trigger = false;
+							}else{
+								durchlaufen = false;
+							}
+						}else{
+							index = positionen.indexOf(einzelbehandlung[i2]); 
 							anzahl.set(index, anzahl.get(index)+1);
-						}else if(doppelbehpos.contains(einzelbehandlung[i2]) && (durchlaufen)){
-							anzahl.set(positionen.lastIndexOf(einzelbehandlung[i2]), anzahl.get(positionen.lastIndexOf(einzelbehandlung[i2]))+1);
-						}else{
-							anzahl.set(index, anzahl.get(index)+1);
-						}
-						if(trigger){
-							durchlaufen = true;
-							trigger = false;
-						}else{
-							durchlaufen = false;
-						}
-					}else{
-						index = positionen.indexOf(einzelbehandlung[i2]); 
-						anzahl.set(index, anzahl.get(index)+1);
-					}
-				}
-			}else{
-				//Behandlungen wurden gelöscht oder nicht angegeben
-				//dann volle Packung eintragen
-				for(int i2 = 1; i2 < 5;i2++){
-					if(! rezvec.get(i2).trim().equals("")){
-						if(positionen.size() < i2){
-							positionen.add(String.valueOf(rezvec.get(i2).trim()));
-							anzahl.add(1);
-						}else{
-							anzahl.set(i2-1,anzahl.get(i2-1)+1 );
 						}
 					}
+				}else{
+					//Behandlungen wurden gelöscht oder nicht angegeben
+					//dann volle Packung eintragen
+					for(i2 = 1; i2 < 5;i2++){
+						if(! rezvec.get(i2).trim().equals("")){
+							if(positionen.size() < i2){
+								positionen.add(String.valueOf(rezvec.get(i2).trim()));
+								vorrangig.add(isVorrangig(rezvec.get(i2+4),xreznr));
+								anzahl.add(1);
+							}else{
+								anzahl.set(i2-1,anzahl.get(i2-1)+1 );
+							}
+						}
+					}
+					
 				}
-				
+			}catch(Exception ex){
+				try{
+					String disziplin = RezTools.putRezNrGetDisziplin(xreznr);
+					String kuerzel = RezTools.getKurzformFromPos(einzelbehandlung[i2], rezvec.get(9), SystemPreislisten.hmPreise.get(disziplin).get(Integer.parseInt(rezvec.get(9))-1));
+					JOptionPane.showMessageDialog(null,"<html><font color='#ff0000' size=+2>Fehler in der Ermittlung der Behandlungspositionen!</font><br><br>"+
+							"<b>Bitte kontrollieren sie die bereits gespeicherten Behandlungspositionen!!<br><br>"+
+							"Der problematische Termin ist der <font color='#ff0000'>"+(i+1)+".Termin</font>, bestätigte Behandlungsart ist <font color='#ff0000'>"+kuerzel+" ("+einzelbehandlung[i2]+")<br>"+
+							"Diese Behandlungsart ist im Rezeptblatt nicht (mehr) verzeichnet</font><br><br>"+
+							"Vermutlich wurden in den bisherigen Terminen Positionen bestätigt, die im Rezeptblatt<br>"+
+							"<u>nicht oder nicht mehr aufgeführt sind.</u><br><br>"+
+							"<b>Klicken Sie die Termintabelle an, drücken Sie dann die rechte Maustaste und wählen Sie eine Option aus.<b><br></html>");
+				}catch(Exception ex2){
+					JOptionPane.showMessageDialog(null,"<html><font color='#ff0000' size=+2>Fehler in der Ermittlung der Behandlungspositionen!</font><br><br>"+
+							"<b>Bitte kontrollieren sie die bereits gespeicherten Behandlungspositionen!!<br><br>"+
+							"Der Fehler kann nicht genau lokalisiert werden!<br><br>"+
+							"Vermutlich wurden in den bisherigen Terminen Positionen bestätigt, die im Rezeptblatt<br>"+
+							"<u>nicht oder nicht mehr aufgeführt sind.</u><br><br>"+
+							"<b>Klicken Sie die Termintabelle an, drücken Sie dann die rechte Maustaste und wählen Sie eine Option aus.<b><br></html>");
+					
+				}
 			}
 		}	
 		for(int i = (anzahl.size()-1); i >= 0; i--){
@@ -169,11 +195,15 @@ public class RezTools {
 				anzahl.remove(i);
 				positionen.remove(i);
 			}	
-		}	
+		}
+		/*
 		System.out.println(positionen);
 		System.out.println(anzahl);
+		System.out.println(vorrangig);
+		*/
 		xvec.add((ArrayList<?>)positionen.clone());
 		xvec.add((ArrayList<?>)anzahl.clone());
+		xvec.add((ArrayList<?>)vorrangig.clone());
 		return xvec;
 	}
 
@@ -207,6 +237,20 @@ public class RezTools {
 		xvec.add((ArrayList<?>)anzahl.clone());
 		return xvec;
 	}
+	public static int countOccurence(List<String> list, String comperator){
+		int ret = 0;
+		for(int i = 0; i < list.size();i++){
+			if(list.get(i).trim().equals(comperator.trim())){
+				ret++;
+			}
+		}
+		return ret;
+	}
+	public static boolean isVorrangig(String kuerzel,String xreznr){
+		return SqlInfo.holeEinzelFeld("select vorrangig from kuerzel where kuerzel='"+kuerzel+
+				"' and disziplin ='"+xreznr.substring(0,2)+"' LIMIT 1").equals("T");
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static Vector<String> holeEinzelZiffernAusRezept(String xreznr,String termine){
 		Vector<String> xvec = null;
@@ -487,6 +531,7 @@ public class RezTools {
 		return ret;
 	}
 	public static String getKurzformFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){
+		//Parameter preisgruppe wird nicht ausgewertet
 		int lang = vec.size(),i;
 		//int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
 		String ret = "";
@@ -1757,6 +1802,9 @@ public class RezTools {
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
+					if(SqlInfo.gibtsSchon("select rez_nr from volle where rez_nr ='"+reznr+"' LIMIT 1")){
+						return null;
+					}
 					Vector<Vector<String>> vec = SqlInfo.holeFelder("select pat_intern,rez_datum,id from verordn where rez_nr = '"+reznr+"' LIMIT 1" );
 					String cmd = "insert into volle set rez_nr='"+reznr+"', "+
 					"pat_intern='"+vec.get(0).get(0)+"', behandler='"+rezbehandler+"', "+

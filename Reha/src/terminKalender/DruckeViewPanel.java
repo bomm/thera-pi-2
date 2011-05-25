@@ -115,10 +115,14 @@ public class DruckeViewPanel extends SwingWorker<Void, Void>{
         XTextCursor xTextCursor = null;
         if(!useStream) {
           //with url
-        	
+            graphicInfo = new GraphicInfo(imagePath, new Float(fx).intValue(),
+                    false, new Float(fy).intValue(), false, VertOrientation.TOP, HoriOrientation.LEFT,
+                    TextContentAnchorType.AS_CHARACTER);
+            /*
           graphicInfo = new GraphicInfo(imagePath, Float.valueOf(pixelWidth).intValue(), true, Float.valueOf(pixelHeight).intValue(), true,
               VertOrientation.TOP, HoriOrientation.LEFT,
               TextContentAnchorType.AT_FRAME);
+            */  
           Thread.sleep(100);
 
 

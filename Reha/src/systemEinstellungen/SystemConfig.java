@@ -814,7 +814,7 @@ public class SystemConfig {
 			hmContainer.put(fenster[i], inif.getIntegerProperty("Container", "StarteIn"));
 			//immer auf maximale Größe
 			if(inif.getIntegerProperty("Container", "ImmerOptimieren")==null)
-				UpdateIni(inif,"Container","ImmerOptimieren",0,null);
+				UpdateIni(inif,"Container","ImmerOptimieren",(fenster[i].equals("Kalender") ? 1 : 0),null);
 			hmContainer.put(fenster[i]+"Opti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
 			//X-Position
 			if(inif.getIntegerProperty("Container", "ZeigeAnPositionX")==null)
