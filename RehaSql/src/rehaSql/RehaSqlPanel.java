@@ -496,6 +496,13 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 						ex.printStackTrace();
 					}
 				}
+				if(cmd.equals("loeschensatz")){
+					try{
+						doLoeschenSatz();
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+				}
 			}
 			
 		};
@@ -528,6 +535,24 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			}
 			
 		};
+	}
+	private void doLoeschenSatz(){
+		if(!isUpdateable || aktuelleTabelle.trim().equals("")){
+			return;
+		}
+		int row = tab.getSelectedRow();
+		if(row < 0){
+			return;
+		}
+		int frage = JOptionPane.showConfirmDialog(null,"Wollen Sie den Satz mit "+
+				colName.get(autoIncCol)+" "+tabmod.getValueAt(row, autoIncCol)+" wirklich löschen?", "Achtung!!!!", JOptionPane.YES_NO_OPTION);
+		if(frage != JOptionPane.YES_OPTION){
+			return;
+		}
+		row = tab.convertRowIndexToModel(row);
+		String cmd = "delete from "+aktuelleTabelle+" where "+colName.get(autoIncCol)+" = '"+tabmod.getValueAt(row, autoIncCol)+"' LIMIT 1";
+		SqlInfo.sqlAusfuehren(cmd);
+		tabmod.removeRow(row);
 	}
 	private void doMacheStatement(){
 		int ind = this.chbstatement.getSelectedIndex();
@@ -778,7 +803,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			stmt =  RehaSql.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
 			rs = stmt.executeQuery(sqlstatement.getText().trim());
-
+			
 			md = (ResultSetMetaData) rs.getMetaData();
 			
 			int cols = md.getColumnCount();
