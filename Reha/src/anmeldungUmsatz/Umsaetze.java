@@ -84,8 +84,8 @@ public class Umsaetze extends JXPanel{
 	IDocument document  = null;
 	XSheetCellCursor cellCursor = null;
 	String[] kopfzeile = {"Datum","Uhrzeit","Pos1","Pos2","Pos3","Pos4","HB","WG",
-			"Preis1","Preis2","Preis3","Preis4","HB-Preis","WG-Pr.","RezNum","Historie"};
-	String[] cols = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N"};
+			"Preis1","Preis2","Preis3","Preis4","HB-Preis","WG-Pr.","RezNum","Historie","FK"};
+	String[] cols = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O"};
 	
 	long timeused = 0;
 	public Umsaetze(JUmsaetzeInternal uint){

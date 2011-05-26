@@ -66,7 +66,7 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 	private JXButton okbut;
 	private JXButton abbruchbut;
 	public Vector<BestaetigungsDaten> hMPosLC = null;
-	
+	private int anzahlPos;
 
 
 	public TerminBestaetigenAuswahlFenster(JXFrame owner, String name,Vector<BestaetigungsDaten> hMPos,String reznum,int preisgruppe){
@@ -74,34 +74,36 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
 		hMPosLC= hMPos;
-
+		anzahlPos = hMPosLC.size();
 		
 		for (int i=0;i<4;i++){
 			btm[i] = new JRtaCheckBox("");
-			btm[i].setName(Integer.toString(i));
-			HMPosNr[i] = new JXLabel("HMPos");	
-			AnzTermine[i] = new JXLabel("geleistet_Menge");
-			AnzRezept[i] = new JXLabel("VO_Menge");
+			if(i<anzahlPos){
+				btm[i].setName(Integer.toString(i));
+				HMPosNr[i] = new JXLabel("HMPos");	
+				AnzTermine[i] = new JXLabel("geleistet_Menge");
+				AnzRezept[i] = new JXLabel("VO_Menge");
 
-			btm[i].setEnabled((hMPosLC.get(i).anzBBT < hMPosLC.get(i).vOMenge) ? true : false);
-			
-			HMPosNr[i].setText(RezTools.getKurzformFromPos(hMPosLC.get(i).hMPosNr, Integer.toString(preisgruppe-1),
-					SystemPreislisten.hmPreise.get(RezTools.putRezNrGetDisziplin(reznum)).get(preisgruppe-1)) );
-			//HMPosNr[i].setText(hMPosLC.get(i).hMPosNr);
-			AnzTermine[i].setText(Integer.toString(hMPosLC.get(i).anzBBT));
-			AnzRezept[i].setText(Integer.toString(hMPosLC.get(i).vOMenge));
+				btm[i].setEnabled((hMPosLC.get(i).anzBBT < hMPosLC.get(i).vOMenge) ? true : false);
+				
+				HMPosNr[i].setText(RezTools.getKurzformFromPos(hMPosLC.get(i).hMPosNr, Integer.toString(preisgruppe-1),
+						SystemPreislisten.hmPreise.get(RezTools.putRezNrGetDisziplin(reznum)).get(preisgruppe-1)) );
+				//HMPosNr[i].setText(hMPosLC.get(i).hMPosNr);
+				AnzTermine[i].setText(Integer.toString(hMPosLC.get(i).anzBBT));
+				AnzRezept[i].setText(Integer.toString(hMPosLC.get(i).vOMenge));
 
-			btm[i].addItemListener(this);
-			btm[i].setSelected(hMPosLC.get(i).best);  //TODO TerminFenster hat bereits eine Vorauswahl getroffen (z.B. Doppelbehandlungen)!
-			btm[i].addKeyListener(this);
-			btm[i].setSelected((hMPosLC.get(i).anzBBT < hMPosLC.get(i).vOMenge) ? true : false);
+				btm[i].addItemListener(this);
+				btm[i].setSelected(hMPosLC.get(i).best);  //TODO TerminFenster hat bereits eine Vorauswahl getroffen (z.B. Doppelbehandlungen)!
+				btm[i].addKeyListener(this);
+				btm[i].setSelected((hMPosLC.get(i).anzBBT < hMPosLC.get(i).vOMenge) ? true : false);
+			}
 		}
 		SpaltenUeberschrift[0]= new JXLabel("bestätigen>");
 		SpaltenUeberschrift[1]= new JXLabel("Heilmittel");
 		SpaltenUeberschrift[2]= new JXLabel("geleistet");
 		SpaltenUeberschrift[3]= new JXLabel("VO-Menge");
 
-		setPreferredSize(new Dimension(240,220));
+		setPreferredSize(new Dimension(240,250));
 
 		eigenName = "TermBest"+WinNum.NeueNummer(); 
 		this.setName(eigenName);
@@ -168,8 +170,8 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 	private JXPanel getTerminBest(JXPanel jp){
 		                              // 1    2       3   4        5   6      7    8      9   10   11 12 13 14
 		FormLayout lay = new FormLayout("6px,center:p,6px,right:p,6px,right:p,6px,right:p,6px,66px,6px,p,6px,p",
-				//1.    2.   3.  4.  5.  6. 7.  8. 9   10 11  12 13  14  15  16
-		"6px, p, 6dlu, p ,6dlu,p,6dlu,p,6dlu,p,6dlu,p,6dlu,p,6dlu,p");
+		//1.  2.   3.  4.  5.  6. 7.  8. 9   10 11  12 13  14  15  16
+		"6px, p, 6dlu:g, p ,6dlu,p,6dlu,p,6dlu,p,6dlu:g"); /*,6dlu,p,6dlu,p,6dlu,p*/
 		jp.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		jp.setBackground(Color.WHITE);
 		//jp.setOpaque(false); // mit weiß ist es passend zu den anderen Terminkalender Optionsfenster
@@ -180,11 +182,12 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 		 /***/
 		for (int k=0;k<4;k++){
 			jp.add(SpaltenUeberschrift[k], cc.xy(2+2*k, 2));
-			jp.add(btm[k], cc.xy(2, 4+2*k));
-			//jp.add(HMPosNr[k], cc.xy(4, 4+2*k));
-			jp.add(HMPosNr[k], cc.xy(4, 4+2*k));
-			jp.add(AnzTermine[k],cc.xy(6, 4+2*k));
-			jp.add(AnzRezept[k],cc.xy(8, 4+2*k));
+			if(k <anzahlPos ){
+				jp.add(btm[k], cc.xy(2, 4+2*k));
+				jp.add(HMPosNr[k], cc.xy(4, 4+2*k));
+				jp.add(AnzTermine[k],cc.xy(6, 4+2*k));
+				jp.add(AnzRezept[k],cc.xy(8, 4+2*k));
+			}
 		}
 		/*
 		okbut = new JXButton("ok");
@@ -243,9 +246,10 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 		if (counter != 0){
 			SwingUtilities.invokeLater(new Runnable(){
 				public void run(){
-					for (int i=0;i<4;i++){
+					for (int i=0;i<anzahlPos;i++){
 						hMPosLC.get(i).best = btm[i].isSelected();
 					}
+					RezTools.DIALOG_WERT = RezTools.DIALOG_OK;
 					setVisible(false);
 					dispose();
 				}
@@ -256,8 +260,11 @@ public class TerminBestaetigenAuswahlFenster extends RehaSmartDialog implements 
 	}
 	private void reset(){
 		for (int i=0; i <btm.length; i++){
-			hMPosLC.get(i).best = false;
+			if(i < anzahlPos){
+				hMPosLC.get(i).best = false;				
+			}
 		}
+		RezTools.DIALOG_WERT = RezTools.DIALOG_ABBRUCH;
 		setVisible(false);
 		this.dispose();
 	}

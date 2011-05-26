@@ -97,8 +97,8 @@ public class Beteiligung  extends JXPanel{
 	String sheetName;
 	
 	String[] kopfzeile = {"Patient","PG","Pos1","Pos2","Pos3","Pos4","HB","WG",
-			"Preis1","Preis2","Preis3","Preis4","HB-Pr.","WG-Pr.","Summe","A"};
-	String[] cols = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P"};
+			"Preis1","Preis2","Preis3","Preis4","HB-Pr.","WG-Pr.","Summe","A","FK"};
+	String[] cols = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q"};
 
 	
 	

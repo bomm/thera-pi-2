@@ -4389,11 +4389,13 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				boolean doppelBeh = false;
 				int doppelBehA = 0, doppelBehB = 0;
 				boolean springen = false; // unterdrückt die Anzeige des TeminBestätigenAuswahlFensters
+				/*
 				Vector<BestaetigungsDaten> hMPos= new Vector<BestaetigungsDaten>();
-				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
-				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
-				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
-				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
+				hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
+				*/
 				Vector<String> vec = null;
 				String copyright = "\u00AE"  ;
 				int iposindex = -1;
@@ -4410,215 +4412,36 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							gruppeAusschalten();
 							return null; 
 						}
-						Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
-						for (i=0;i<=3;i++){
-							if(vec.get(1+i).toString().trim().equals("")){
-								hMPos.get(i).hMPosNr = "./.";
-								hMPos.get(i).vOMenge = 0;
-							}else{
-								hMPos.get(i).hMPosNr = String.valueOf(vec.get(1+i));
-								hMPos.get(i).vOMenge = Integer.parseInt( (String) vec.get(i+11) );
-								hMPos.get(i).vorrangig = (Boolean)((ArrayList<?>)((Vector<?>)termine).get(2)).get(i);
-							}
-							//Hier wart noch ein Jenseits-Fehler drin z.B. bei 6xKG,6xKG,1xEis (= 12 x KG als Doppelbehandlung plus 1 x Eis)
-							//vermutlich aufgrund von der von mir zusammengemurksten Funktion -> holePosUndAnzahlAusTerminen(String string)
-							count = 0; // Anzahl bereits bestätigter Termine mit dieser HMPosNr
-							if (!hMPos.get(i).hMPosNr.equals("./.")){
-								//Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
-								if ( (iposindex=termine.get(0).indexOf(hMPos.get(i).hMPosNr)) >=0 &&
-									(termine.get(0).lastIndexOf(hMPos.get(i).hMPosNr) == iposindex)	){
-									//Einzeltermin
-									count = Integer.parseInt(termine.get(1).get(termine.get(0).indexOf(hMPos.get(i).hMPosNr)).toString());
-								}else if((iposindex=termine.get(0).indexOf(hMPos.get(i).hMPosNr)) >=0 &&
-										(termine.get(0).lastIndexOf(hMPos.get(i).hMPosNr) != iposindex)	){
-									//Doppeltermin
-									if(!erstedoppel){
-										doppelBehB = i;	
-										count = Integer.parseInt(termine.get(1).get(termine.get(0).lastIndexOf(hMPos.get(i).hMPosNr)).toString());
-									}else{
-										doppelBehA = i;
-										doppelBeh = true;
-										erstedoppel = false;
-										count = Integer.parseInt(termine.get(1).get(termine.get(0).indexOf(hMPos.get(i).hMPosNr)).toString());
-									}
-								}
-							}
-							hMPos.get(i).anzBBT = count; //außerhalb der if-Abfrage i.O. -> dann anzBBT = count(==0)
-						}
-						/*
-						System.out.println("**********************");
-							System.out.println(" Doppelbehandlung = "+doppelBeh);
-							System.out.println("Position Doppel 1 = "+doppelBehA);
-							System.out.println("Position Doppel 2 = "+doppelBehB);
-						for(int ix = 0; ix < 4;ix++){
-							System.out.println("\n    Positions-Nr. = "+hMPos.get(ix).hMPosNr);
-							System.out.println(" verordnete Menge = "+hMPos.get(ix).vOMenge);
-							System.out.println("bereits geleistet = "+hMPos.get(ix).anzBBT);
-						}
-						System.out.println("**********************");
-						*/
-
-					
-						count = 0; //Prüfen, ob es nur eine HMPos gibt, bei der anzBBT < vOMenge; dann überspringe AuswahlFenster und bestätige diese HMPos
-						//alternativ: nur die beiden Doppelbehandlungspositionen sind noch offen
-						for (i=0; i<=3; i++){
-							if (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge){
-								count++;
-							}
-						}
-						if (count == 1){
-							for (i=0; i<=3; i++){
-								if (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge){
-									hMPos.get(i).best = true;
-									springen = true;
-									break;
-								}
-							}
-						}else if ((count >= 2) && doppelBeh && (hMPos.get(doppelBehA).anzBBT < hMPos.get(doppelBehA).vOMenge)){
-								hMPos.get(doppelBehA).best = true;
-								hMPos.get(doppelBehB).best = true;
-								springen = true; // false: Auswalfenster bei Doppelbehandlungen trotzdem anzeigen
-						}
-
-						count = 0; // Prüfen, ob alle HMPos bereits voll bestätigt sind
-						for (i=0; i<=3; i++){
-							if (hMPos.get(i).anzBBT == hMPos.get(i).vOMenge){
-								if(hMPos.get(i).vorrangig){
-									count=4;
-									break;
-								}
-								hMPos.get(i).best = false;
-								count++;
-							}
-						}
-						//Testen ob beide oder auch nur eine der Doppelbehandlungen voll ist.
-						if(doppelBeh){
-							
-							int max = welcheIstMaxInt( hMPos.get(doppelBehA).vOMenge, hMPos.get(doppelBehB).vOMenge);
-							if( max==1 && hMPos.get(doppelBehA).anzBBT == hMPos.get(doppelBehA).vOMenge ){
-								JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
-										"Die Doppelbehandlung wurde teilweise als Einzelbehandlung abgegeben (!!)\n"+
-										"Eine weitere Einzelbehandlung darf nicht abgegeben werden (Sie haben Geld verschenkt!!!).\n\n" +
-										"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
-								return null;								
-
-							}
-							if( max==2 && hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge ){
-								JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
-										"Die Doppelbehandlung wurde teilweise als Einzelbehandlung abgegeben (!!)\n"+
-										"Eine weitere Einzelbehandlung darf nicht abgegeben werden (Sie haben Geld verschenkt!!!).\n\n" +
-										"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
-								return null;									
-							}
-							if(max ==0 && hMPos.get(doppelBehB).anzBBT == hMPos.get(doppelBehB).vOMenge ){
-								JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
-										"Eine weitere Einzelbehandlung darf nicht abgegeben werden.\n\n" +
-										"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
-								return null;									
-							}
-						}
-						/*
-						 * Hier muß noch eine Prüfung entwickelt werden ob die Hauptposition voll ist.
-						 * Bsp. Rez = 6xKG,6xEis, bestätigt wurden bislang 6xKG,5xEis,
-						 * Die "bereits voll Anzeige" für count==4 muß dann hier erscheinen.
-						 * Eis (etc.) darf mnicht isoliert als quasi 7-ter Termin verabreicht werden.
-						 * Das läßt sich zwar auch regeln indem im Rezept die Anzahl für Eis um 1 reduziert wird,
-						 * das macht aber vermutlich niemand....
-						 * 
-						 */
-						
-						if (count == 4){
-							JOptionPane.showMessageDialog(null, "Achtung: sämtliche Heilmittelpositionen der Verordnung "+swreznum+" wurden bereits voll geleistet und bestätigt!\n\n" +
-									"Eine zusätzliche Behandlung wird nicht eingetragen.\n\n" +
-									"Bitte prüfen Sie die Verordnungsmengen und die Termindaten!");
+						Object[] objTerm = RezTools.BehandlungenAnalysieren(swreznum, false,xforceDlg,false,
+								((Vector<String>)vec.clone()),
+								computeLocation(null,240,250,swbeginn,swende),ParameterLaden.getKollegenUeberDBZeile(swbehandler+1));
+						if(objTerm==null){return null;}
+						if( (Integer)objTerm[1] == RezTools.REZEPT_ABBRUCH ){
 							return null;
-						}
-
-						count = 0; // Prüfen, ob eine oder mehrere HMPos bereits übervoll bestätigt sind
-						for (i=0; i<=3; i++){
-							if (hMPos.get(i).anzBBT > hMPos.get(i).vOMenge){
-								hMPos.get(i).best = false;
-								count++;
-							}
-						}
-						if (count !=0){
-							JOptionPane.showMessageDialog(null, "Achtung: die verordneten Mengen der Verordnung "+swreznum+ " wurden bereits überschritten!\n\n" +
-									"Eine zusätzliche Behandlung wird nicht eingetragen.\n\n" +
-									"Bitte prüfen Sie die Verordnungsmengen und die bestätigten Termindaten!");
+						}else if((Integer)objTerm[1] == RezTools.REZEPT_IST_BEREITS_VOLL){
+							String anzahl = "??????"; //TodDo
+							String message = "<html><b><font size='5'>Auf dieses Rezept wurden bereits<font size='6' color='#ff0000'> "+anzahl+" </font>Behandlungen durchgeführt!"+
+							"<br>Verordnete Menge ist<font size='6' color='#ff0000'> "+vec.get(11)+
+							"</font><br>Das Rezept ist somit bereits voll und darf für aktuelle Behandlung nicht mehr<br>"+
+							"verwendet werden!!!!<br><br>"+
+							"Gescannte Rezeptnummer =<font size='6' color='#ff0000'> "+swreznum+"</font><br><br></html>";
+							JOptionPane.showMessageDialog(null, message);
 							return null;
-						}
-						// TerminBestätigenAuswahlFenster anzeigen oder überspringen
-						if ((!springen && (Boolean)SystemConfig.hmTerminBestaetigen.get("dlgzeigen") ) || xforceDlg){ 
-									TerminBestaetigenAuswahlFenster termBestAusw = new TerminBestaetigenAuswahlFenster(Reha.thisFrame,null,(Vector<BestaetigungsDaten>)hMPos,sworigreznum,Integer.parseInt((String)vec.get(15)));
-									termBestAusw.pack();
-									termBestAusw.setLocation(computeLocation(termBestAusw,swbeginn,swende));
-									termBestAusw.setzeFocus();
-									termBestAusw.setModal(true);
-									termBestAusw.setVisible(true);
 						}else{
-							/*
-							 * Der Nutzer wünscht kein Auswahlfenster:
-							 * bestätige alle noch offenen Heilmittel
-							 *   
-							 */		
-							for (i=0; i<=3; i++){
-								hMPos.get(i).best = (hMPos.get(i).anzBBT < hMPos.get(i).vOMenge);
-								//hMPos.get(i).anzBBT += 1;
-							}
-						}
-
-						count = 0; // Dialog abgebrochen
-
-						for (i=0; i < 4 ; i++){
-							count += (hMPos.get(i).best ? 1 : 0);
-						}
-						if (count == 0){
-							return null;
-						}
-						/*
-						 * Hier muß noch eine Prüfung entwickelt werden ob die Hauptposition voll ist.
-						 * Bsp. Rez = 6xKG,6xEis, bestätigt wurden bislang 5xKG,4xEis,
-						 * Dann muß jetzt gemeldet werden daß das Rezept voll ist.
-						 * Eis darf später nich isoliert als quasi 7-ter Termin verabreicht werden.
-						 * Das läßt sich zwar auch regeln indem im Rezept die Anzahl für Eis um 1 reduziert wird,
-						 * das macht aber vermutlich niemand....
-						 * 
-						 */
-						
-						count = 0; // Prüfe, ob der oder die letzten offene(n) Termin(e) bestätigt werden sollen: Hinweis, dass VO abgerechnet werden kann und in VolleTabelle schreiben
-						boolean bereitsvoll = false;
-						for (i=0; i<=3; i++){
-							if ((hMPos.get(i).anzBBT + (hMPos.get(i).best ? 1 : 0)) == hMPos.get(i).vOMenge){
-								hMPos.get(i).anzBBT += 1;
-								count++;
-							}	
-							if (count == 4){
-								JOptionPane.showMessageDialog(null, "Achtung das Rezept "+swreznum+" ist jetzt voll bestätigt!\n\nBitte die Daten prüfen und zur Abrechnung weiterleiten!");
+							termbuf.append( (String) objTerm[0]);
+							if((Integer)objTerm[1] == RezTools.REZEPT_IST_JETZ_VOLL){
+								String message = "<html><b><font size='5'>Das Rezept ist jetzt voll"+
+								"<br>Rezeptnummer = <font size='6' color='#ff0000'> "+swreznum+"</font><br>"+
+								"<br>Bitte das Rezept zur Abrechnung vorbereiten.</font></b></html>";
+								JOptionPane.showMessageDialog(null, message);
 								try{
-									RezTools.fuelleVolleTabelle(swreznum, ParameterLaden.getKollegenUeberDBZeile(swbehandler+1));
-									bereitsvoll = true;
+									RezTools.fuelleVolleTabelle( swreznum , ParameterLaden.getKollegenUeberDBZeile(swbehandler+1));					
 								}catch(Exception ex){
 									JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
-								}						
+								}
+
 							}
 						}
-						if(!bereitsvoll){
-							for (i=0; i<=3; i++){
-								if (hMPos.get(i).anzBBT == hMPos.get(i).vOMenge){
-									if(hMPos.get(i).vorrangig){
-										JOptionPane.showMessageDialog(null, "Achtung das Rezept "+swreznum+" ist jetzt voll bestätigt!\n\nBitte die Daten prüfen und zur Abrechnung weiterleiten!");
-										RezTools.fuelleVolleTabelle(swreznum, ParameterLaden.getKollegenUeberDBZeile(swbehandler+1));
-										break;
-									}
-								}
-							}						
-						}
-
-						termbuf.append(macheNeuTermin(DatFunk.sDatInDeutsch(swdatum), ParameterLaden.getKollegenUeberDBZeile(swbehandler+1),"",
-								(String) (hMPos.get(0).best ? vec.get(1) : ""),
-								(String) (hMPos.get(1).best ? vec.get(2) : ""),
-								(String) (hMPos.get(2).best ? vec.get(3) : ""),
-								(String) (hMPos.get(3).best ? vec.get(4) : "")));
 						/********************************/
 						boolean unter18 =  ( ((String)vec.get(6)).equals("T") ? true : false );
 						boolean vorjahrfrei = ( ((String)vec.get(7)).equals("") ? false : true );
@@ -4677,7 +4500,6 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					ex.printStackTrace();
 				}finally{
 					vec = null;
-					hMPos = null;					
 				}
 				/***********************************************************************/
 				return null;
@@ -4727,9 +4549,15 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 		return String.valueOf(ret);
 	}	
-	private Point computeLocation(Window win,String start,String ende){
-		int xwin = win.getWidth();
-		int ywin = win.getHeight();
+	private Point computeLocation(Window win,int x,int y,String start,String ende){
+		int xwin,ywin;
+		if(win==null){
+			xwin = x;
+			ywin = y;
+		}else{
+			xwin = win.getWidth();
+			ywin = win.getHeight();
+		}
 		
 		Point p = oSpalten[aktiveSpalte[2]].getLocationOnScreen();
 		try{

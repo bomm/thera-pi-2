@@ -32,7 +32,7 @@ public class TermineErfassen implements Runnable {
 	public boolean unter18 = false;
 	public boolean vorjahrfrei = false;
 	public static int errorint = 0;
-	public StringBuffer sbuftermine;
+	public StringBuffer sbuftermine = new StringBuffer();
 	static TermineErfassen thisClass = null;
 	public TermineErfassen(String reznr, Vector termvec){
 		scanrez = reznr.trim();
@@ -413,70 +413,52 @@ public class TermineErfassen implements Runnable {
 	
 	/********************/
 	private void scheibeTermin() throws Exception{
-		////System.out.println("Eintritt in schreibeTermin");
 		int ikoll = (kollege.substring(0,1).equals("0") ?
 					Integer.valueOf(kollege.substring(1,2)) :
 					Integer.valueOf(kollege.substring(0,2)) 	
 					);
+		try{
 		////System.out.println("Kollegen-Nummer = "+ikoll);
 		this.kollege = ParameterLaden.getKollegenUeberDBZeile(ikoll);
 		//String termkollege = 
-		sbuftermine = new StringBuffer();
+		sbuftermine.setLength(0);
+		sbuftermine.toString();
 		vec2 = null;
-
-		Object[] objTerm = BehandlungenAnalysieren(scanrez,false,false,false,((Vector<String>)vec.clone()),null);
 		if(! ((String)vec.get(0)).trim().equals("")){
-			
 			sbuftermine.append((String)vec.get(0));
-			
-			/*
-			private static Object[] BehandlungenAnalysieren(String swreznum,
-					boolean doppeltOk,boolean xforceDlg,boolean alletermine,
-					Vector<String> vecx,Point pt){
-			*/
-			 
-			if( (Integer)objTerm[1] > 0){
-				String message = "";
-				String anzahl = "??????"; //muß noch mit Max.Anzahl der Verordnung belegt werden 
-				if((Integer)objTerm[1] == 1 || (Integer)objTerm[1] == 2 ){
-
-					/*
-						JOptionPane.showMessageDialog(null, "<html><b><font size='5'>Dieses Rezept wurde am heutigen Tab bereits erfaßt!<br><br>"+
-								"Das gescannte Rezept -><font size='6' color='#ff0000'> "+scanrez+"<br></font></html>");
-					 
-					 */
-					message = "<html><b><font size='5'>Auf dieses Rezept wurden bereits<font size='6' color='#ff0000'> "+anzahl+" </font>Behandlungen durchgeführt!"+
-					"<br>Verordnete Menge ist<font size='6' color='#ff0000'> "+vec.get(11)+
-					"</font><br>Das Rezept ist somit bereits voll und darf für aktuelle Behandlung nicht mehr<br>"+
-					"verwendet werden!!!!<br><br>"+
-					"Gescannte Rezeptnummer =<font size='6' color='#ff0000'> "+scanrez+"</font><br><br></html>";
-
-				}else if((Integer)objTerm[1] == 3){
-					message = "<html><b><font size='5'>Auf dieses Rezept wurden bereits<font size='6' color='#ff0000'> "+anzahl+" </font>Behandlungen durchgeführt!"+
-					"<br>Verordnete Menge ist<font size='6' color='#ff0000'> "+vec.get(11)+"</font><br>"+
-					"<br>Das Rezept ist somit bereits <font size='7'> übervoll</font> und darf für aktuelle Behandlung nicht mehr<br>"+
-					"verwendet werden!!!!</font><br><br></html>";
-
-				}
+		}
+		
+		Object[] objTerm = RezTools.BehandlungenAnalysieren(scanrez, false,false,false, ((Vector<String>)vec.clone()),null,this.kollege);
+		if(objTerm==null){return;}
+		if( (Integer)objTerm[1] == RezTools.REZEPT_ABBRUCH ){
+			return;
+		}else if((Integer)objTerm[1] == RezTools.REZEPT_IST_BEREITS_VOLL){
+			String anzahl = "??????"; //TodDo
+			String message = "<html><b><font size='5'>Auf dieses Rezept wurden bereits<font size='6' color='#ff0000'> "+anzahl+" </font>Behandlungen durchgeführt!"+
+			"<br>Verordnete Menge ist<font size='6' color='#ff0000'> "+vec.get(11)+
+			"</font><br>Das Rezept ist somit bereits voll und darf für aktuelle Behandlung nicht mehr<br>"+
+			"verwendet werden!!!!<br><br>"+
+			"Gescannte Rezeptnummer =<font size='6' color='#ff0000'> "+scanrez+"</font><br><br></html>";
+			JOptionPane.showMessageDialog(null, message);
+			return;
+		}else{
+			sbuftermine.append( (String) objTerm[0]);
+			if((Integer)objTerm[1] == RezTools.REZEPT_IST_JETZ_VOLL){
+				String message = "<html><b><font size='5'>Das Rezept ist jetzt voll"+
+				"<br>Rezeptnummer = <font size='6' color='#ff0000'> "+scanrez+"</font><br>"+
+				"<br>Bitte das Rezept zur Abrechnung vorbereiten.</font></b></html>";
 				JOptionPane.showMessageDialog(null, message);
-				return;
-			}else{
-				////System.out.println("Es sind noch Termine Frei");
-				if((Integer)objTerm[1] == 0){
-					String message = "<html><b><font size='5'>Das Rezept ist jetzt voll"+
-					"<br>Rezeptnummer = <font size='6' color='#ff0000'> "+scanrez+"</font><br>"+
-					"<br>Bitte das Rezept zur Abrechnung vorbereiten.</font></b></html>";
-					JOptionPane.showMessageDialog(null, message);
-					sbuftermine.append((String)objTerm[0]);
-				}else{
-					sbuftermine.append((String)objTerm[0]);
+				try{
+					RezTools.fuelleVolleTabelle( scanrez , this.kollege);					
+				}catch(Exception ex){
+					JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
 				}
 			}
-				
-		}else{
-			////System.out.println("der Termin ist der erste Termin.");
-			sbuftermine.append((String)objTerm[0]);			
 		}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+			
 		
 
 /*******************************/
@@ -542,11 +524,11 @@ public class TermineErfassen implements Runnable {
 		return ret;
 			
 	}
-	public static String macheNeuTermin2(String pos1,String pos2,String pos3,String pos4){
+	public static String macheNeuTermin2(String pos1,String pos2,String pos3,String pos4,String xkollege){
 		String ret =
 			DatFunk.sHeute()+
 			"@"+
-			(thisClass==null ? "" : thisClass.kollege)+
+			(xkollege==null ? "" : xkollege)+
 			"@"+
 			""+
 			"@"+
@@ -592,10 +574,10 @@ public class TermineErfassen implements Runnable {
 		int doppelBehA = 0, doppelBehB = 0;
 		boolean springen = false; // unterdrückt die Anzeige des TeminBestätigenAuswahlFensters
 		Vector<BestaetigungsDaten> hMPos= new Vector<BestaetigungsDaten>();
-		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
-		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
-		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
-		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
 		Vector<String> vec = null;
 		String copyright = "\u00AE"  ;
 		StringBuffer termbuf = new StringBuffer();
@@ -622,16 +604,18 @@ public class TermineErfassen implements Runnable {
 				Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
 
 				for (i=0;i<=3;i++){
-					if(vec.get(1+i).toString().trim().equals("")){
+					if(vec.get(1+i).toString().trim().equals("") ){
 						hMPos.get(i).hMPosNr = "./.";
 						hMPos.get(i).vOMenge = 0;
 					}else{
 						hMPos.get(i).hMPosNr = String.valueOf(vec.get(1+i));
 						hMPos.get(i).vOMenge = Integer.parseInt( (String) vec.get(i+11) );
 						hMPos.get(i).vorrangig = (Boolean)((ArrayList<?>)((Vector<?>)termine).get(2)).get(i);
+						hMPos.get(i).invOBelegt = true;
 					}
 					count = 0; // Anzahl bereits bestätigter Termine mit dieser HMPosNr
-					if (!hMPos.get(i).hMPosNr.equals("./.")){
+					if(hMPos.get(i).invOBelegt){
+					//if (!hMPos.get(i).hMPosNr.equals("./.")){
 						//Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
 						if ( (iposindex=termine.get(0).indexOf(hMPos.get(i).hMPosNr)) >=0 &&
 							(termine.get(0).lastIndexOf(hMPos.get(i).hMPosNr) == iposindex)	){
@@ -780,7 +764,8 @@ public class TermineErfassen implements Runnable {
 								(String) (hMPos.get(0).best ? vec.get(1) : ""),
 								(String) (hMPos.get(1).best ? vec.get(2) : ""),
 								(String) (hMPos.get(2).best ? vec.get(3) : ""),
-								(String) (hMPos.get(3).best ? vec.get(4) : "")));
+								(String) (hMPos.get(3).best ? vec.get(4) : ""),
+								(thisClass == null ?  null : thisClass.kollege)));
 						//hier zunächst den neuen Termin basteln;
 						retObj[0] = termbuf.toString();
 						retObj[1] = 0; //normalfall mind. eine Bahndlung konnte noch eingetragen werden und jetz Rezept voll
@@ -791,7 +776,8 @@ public class TermineErfassen implements Runnable {
 						(String) (hMPos.get(0).best ? vec.get(1) : ""),
 						(String) (hMPos.get(1).best ? vec.get(2) : ""),
 						(String) (hMPos.get(2).best ? vec.get(3) : ""),
-						(String) (hMPos.get(3).best ? vec.get(4) : "")));
+						(String) (hMPos.get(3).best ? vec.get(4) : ""),
+						(thisClass == null ?  null : thisClass.kollege)));
 				//hier zunächst den neuen Termin basteln;
 				retObj[0] = termbuf.toString();
 				//dann nochmal testen ob ein vorrangiges Heilmittel die Mengengrenze erreicht hat.

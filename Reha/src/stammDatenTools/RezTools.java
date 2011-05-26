@@ -2,6 +2,7 @@ package stammDatenTools;
 
 import hauptFenster.Reha;
 
+import java.awt.Point;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -19,9 +20,21 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.StringTools;
+import terminKalender.BestaetigungsDaten;
 import terminKalender.DatFunk;
+import terminKalender.TerminBestaetigenAuswahlFenster;
+import terminKalender.TermineErfassen;
 
 public class RezTools {
+	public static final int REZEPT_IST_JETZ_VOLL = 0;
+	public static final int REZEPT_IST_BEREITS_VOLL = 1;
+	public static final int REZEPT_HAT_LUFT = 2;
+	public static final int REZEPT_FEHLER = 3;
+	public static final int REZEPT_ABBRUCH = 4;
+	public static final int DIALOG_ABBRUCH = -1;
+	public static final int DIALOG_OK = 0;
+	public static int DIALOG_WERT = 0;
+	
 	public static boolean mitJahresWechsel(String datum){
 		boolean ret = false;
 		try{
@@ -75,6 +88,22 @@ public class RezTools {
 		return xvec;
 		
 	}
+	private static Object[] sucheDoppel(int pos,List<String> list,String comperator){
+		//System.out.println("Position="+pos+" fistIndex="+list.indexOf(comperator)+" lastIndex="+list.lastIndexOf(comperator));
+		if(pos == list.indexOf(comperator)){
+			Object[] obj = {true,list.indexOf(comperator),list.lastIndexOf(comperator)};
+			return obj.clone();
+		}else{
+			Object[] obj = {true,list.lastIndexOf(comperator),list.indexOf(comperator)};
+			return obj.clone();
+		}
+	}
+	/**************
+	 * 
+	 * 
+	 * Mistding - elendes aber jetzt haben wir dich!
+	 * 
+	 */
 	public static Vector<ArrayList<?>> holePosUndAnzahlAusTerminen(String xreznr){
 		Vector<ArrayList<?>> xvec = new Vector<ArrayList<?>>();
 
@@ -82,128 +111,116 @@ public class RezTools {
 				"pos4,kuerzel1,kuerzel2,kuerzel3,kuerzel4,preisgruppe", "rez_nr='"+xreznr+"'", Arrays.asList(new String[] {}));
 		Vector<String> termvec = holeEinzelZiffernAusRezept(null,rezvec.get(0));
 		
-		
-		boolean doppelbeh = false;
-		boolean durchlaufen = false;
-		boolean trigger = false;
-		boolean testen = true;
-		int doppelbehindex = -1;
-		ArrayList<String> doppelbehpos = new ArrayList<String>();
+		List<String> list = Arrays.asList(rezvec.get(1),rezvec.get(2),rezvec.get(3),rezvec.get(4));
+
+
 		
 		ArrayList<String> positionen = new ArrayList<String>();
 		String behandlungen = null;
 		String[] einzelbehandlung = null;
 		ArrayList<Integer>anzahl = new ArrayList<Integer>();
 		ArrayList<Boolean>vorrangig = new ArrayList<Boolean>();
-		String aktpos = "";
+		ArrayList<Boolean>einzelerlaubt = new ArrayList<Boolean>();
+		ArrayList<Object[]>doppelpos = new ArrayList<Object[]>();
+		boolean[] bvorrangig = null;
+		//String aktpos = "";
 		for(int i = 1; i < 5; i++ ){
 
 			if(rezvec.get(i).trim().equals("")){
 				break;
-			}else if((i == 1)){
-				positionen.add(String.valueOf(rezvec.get(i)));
-				vorrangig.add(isVorrangig(rezvec.get(i+4),xreznr));
-				anzahl.add(0);
-				aktpos = String.valueOf(rezvec.get(i));
 				
-			}else{
-				if(rezvec.get(i).equals(rezvec.get(i-1)/*aktpos*/)){
-					doppelbeh = true;
-					if(testen){
-						doppelbehindex = Integer.valueOf(i)-1;
-						doppelbehpos.add(String.valueOf(rezvec.get(i)));
-						//testen = false;
-					}
-				}
-				positionen.add(String.valueOf(rezvec.get(i)));
-				vorrangig.add(isVorrangig(rezvec.get(i+4),xreznr));
-				anzahl.add(0);
-				aktpos = String.valueOf(rezvec.get(i));
 			}
+			positionen.add(String.valueOf(rezvec.get(i)));
+			bvorrangig = isVorrangigAndExtra(rezvec.get(i+4),xreznr);
+			vorrangig.add(Boolean.valueOf(bvorrangig[0]));
+			einzelerlaubt.add(Boolean.valueOf(bvorrangig[1]));
+			anzahl.add(0);
+			
+			if(countOccurence(list,rezvec.get(i)) > 1){
+				doppelpos.add(sucheDoppel(i-1,list,rezvec.get(i)));
+			}else{
+				Object[] obj = {false,i-1,i-1};
+				doppelpos.add(obj.clone());	
+			}
+			
+			
 		}
-		int index = -1;
-		int i2 = -1;
+
+		Vector<String> imtag = new Vector<String>();
+		Object[] tests = null;
 		for(int i = 0; i < termvec.size();i++){
+			//Über alle Tage hinweg
 			try{
 				behandlungen = termvec.get(i);
 				if(! behandlungen.equals("")){
 					einzelbehandlung = behandlungen.split(",");
-					durchlaufen = false;
-					trigger = false;
-					for(i2 = 0; i2 < einzelbehandlung.length;i2++){
-						if(doppelbeh){
-							index = positionen.indexOf(einzelbehandlung[i2]);
-							if( (doppelbehpos.contains(einzelbehandlung[i2])) && (!durchlaufen)){
-								trigger = true;
-								anzahl.set(index, anzahl.get(index)+1);
-							}else if(doppelbehpos.contains(einzelbehandlung[i2]) && (durchlaufen)){
-								anzahl.set(positionen.lastIndexOf(einzelbehandlung[i2]), anzahl.get(positionen.lastIndexOf(einzelbehandlung[i2]))+1);
+					imtag.clear();
+					int i2;
+					for(i2=0;i2<einzelbehandlung.length;i2++){
+						try{
+							//Jetzt testen ob Doppelbehandlung
+							tests = doppelpos.get(list.indexOf(einzelbehandlung[i2]));
+							if((Boolean) tests[0]){
+							//Ja Doppelbehandlung
+								imtag.add(String.valueOf(einzelbehandlung[i2]));
+								//Jetzt testen ob erste oder Zweite
+								if(imtag.indexOf(einzelbehandlung[i2]) == imtag.lastIndexOf(einzelbehandlung[i2]) ){
+									//Erstes mal
+									anzahl.set((Integer)tests[1], anzahl.get((Integer)tests[1])+1);
+								}else{
+									//Zweites mal
+									anzahl.set((Integer)tests[2], anzahl.get((Integer)tests[2])+1);
+								}
 							}else{
-								anzahl.set(index, anzahl.get(index)+1);
+							//Nein keine Doppelbehandlung
+								anzahl.set((Integer)tests[1], anzahl.get((Integer)tests[1])+1);
 							}
-							if(trigger){
-								durchlaufen = true;
-								trigger = false;
-							}else{
-								durchlaufen = false;
-							}
-						}else{
-							index = positionen.indexOf(einzelbehandlung[i2]); 
-							anzahl.set(index, anzahl.get(index)+1);
+						}catch(Exception ex){
+							try{
+								String disziplin = RezTools.putRezNrGetDisziplin(xreznr);
+								String kuerzel = RezTools.getKurzformFromPos(einzelbehandlung[i2], rezvec.get(9), SystemPreislisten.hmPreise.get(disziplin).get(Integer.parseInt(rezvec.get(9))-1));
+								JOptionPane.showMessageDialog(null,"<html><font color='#ff0000' size=+2>Fehler in der Ermittlung der Behandlungspositionen!</font><br><br>"+
+										"<b>Bitte kontrollieren sie die bereits gespeicherten Behandlungspositionen!!<br><br>"+
+										"Der problematische Termin ist der <font color='#ff0000'>"+(i+1)+".Termin</font>,<br>bestätigte Behandlungsart ist <font color='#ff0000'>"+kuerzel+" ("+einzelbehandlung[i2]+")<br>"+
+										"<br>Diese Behandlungsart ist im Rezeptblatt nicht, oder nicht mehr verzeichnet</font><br><br>"+
+										"<br>"+
+										"<b><font color='#ff0000'>Lösung:</font> Klicken Sie die Termintabelle an, drücken Sie dann die rechte Maustaste und wählen Sie dann die Option<br><br>"+
+										"<b><u>\"alle Behandlungsarten den Rezeptdaten angleichen\"</u></b><br>"+
+										"</b>oder<br><b><u>\"alle im Rezept gespeicherten Behandlungsarten löschen\"</u></b><br></html>");
+									return xvec;
+							}catch(Exception ex2){
+								JOptionPane.showMessageDialog(null,"<html><font color='#ff0000' size=+2>Fehler in der Ermittlung der Behandlungspositionen!</font><br><br>"+
+										"<b>Bitte kontrollieren sie die bereits gespeicherten Behandlungspositionen!!<br><br>"+
+										"Der Fehler kann nicht genau lokalisiert werden!<br><br>"+
+										"Vermutlich wurden in den bisherigen Terminen Positionen bestätigt, die im Rezeptblatt<br>"+
+										"<u>nicht oder nicht mehr aufgeführt sind.</u><br><br>"+
+										"<b>Klicken Sie die Termintabelle an, drücken Sie dann die rechte Maustaste und wählen Sie eine Option aus.<b><br></html>");
+									return xvec;
+							}				
 						}
+						
 					}
 				}else{
-					//Behandlungen wurden gelöscht oder nicht angegeben
-					//dann volle Packung eintragen
-					for(i2 = 1; i2 < 5;i2++){
-						if(! rezvec.get(i2).trim().equals("")){
-							if(positionen.size() < i2){
-								positionen.add(String.valueOf(rezvec.get(i2).trim()));
-								vorrangig.add(isVorrangig(rezvec.get(i2+4),xreznr));
-								anzahl.add(1);
-							}else{
-								anzahl.set(i2-1,anzahl.get(i2-1)+1 );
-							}
-						}
-					}
-					
+					for(int i3=0;i3<positionen.size();i3++)
+						anzahl.set(i3, anzahl.get(i3)+1);
 				}
 			}catch(Exception ex){
-				try{
-					String disziplin = RezTools.putRezNrGetDisziplin(xreznr);
-					String kuerzel = RezTools.getKurzformFromPos(einzelbehandlung[i2], rezvec.get(9), SystemPreislisten.hmPreise.get(disziplin).get(Integer.parseInt(rezvec.get(9))-1));
-					JOptionPane.showMessageDialog(null,"<html><font color='#ff0000' size=+2>Fehler in der Ermittlung der Behandlungspositionen!</font><br><br>"+
-							"<b>Bitte kontrollieren sie die bereits gespeicherten Behandlungspositionen!!<br><br>"+
-							"Der problematische Termin ist der <font color='#ff0000'>"+(i+1)+".Termin</font>, bestätigte Behandlungsart ist <font color='#ff0000'>"+kuerzel+" ("+einzelbehandlung[i2]+")<br>"+
-							"Diese Behandlungsart ist im Rezeptblatt nicht (mehr) verzeichnet</font><br><br>"+
-							"Vermutlich wurden in den bisherigen Terminen Positionen bestätigt, die im Rezeptblatt<br>"+
-							"<u>nicht oder nicht mehr aufgeführt sind.</u><br><br>"+
-							"<b>Klicken Sie die Termintabelle an, drücken Sie dann die rechte Maustaste und wählen Sie eine Option aus.<b><br></html>");
-				}catch(Exception ex2){
-					JOptionPane.showMessageDialog(null,"<html><font color='#ff0000' size=+2>Fehler in der Ermittlung der Behandlungspositionen!</font><br><br>"+
-							"<b>Bitte kontrollieren sie die bereits gespeicherten Behandlungspositionen!!<br><br>"+
-							"Der Fehler kann nicht genau lokalisiert werden!<br><br>"+
-							"Vermutlich wurden in den bisherigen Terminen Positionen bestätigt, die im Rezeptblatt<br>"+
-							"<u>nicht oder nicht mehr aufgeführt sind.</u><br><br>"+
-							"<b>Klicken Sie die Termintabelle an, drücken Sie dann die rechte Maustaste und wählen Sie eine Option aus.<b><br></html>");
-					
-				}
+				ex.printStackTrace();
 			}
-		}	
-		for(int i = (anzahl.size()-1); i >= 0; i--){
-			if(anzahl.get(i)==0){
-				anzahl.remove(i);
-				positionen.remove(i);
-			}	
 		}
 		/*
+		System.out.println("*************************************************");
 		System.out.println(positionen);
 		System.out.println(anzahl);
 		System.out.println(vorrangig);
+		System.out.println(einzelerlaubt);
+		System.out.println("*************************************************");
 		*/
 		xvec.add((ArrayList<?>)positionen.clone());
 		xvec.add((ArrayList<?>)anzahl.clone());
 		xvec.add((ArrayList<?>)vorrangig.clone());
+		xvec.add((ArrayList<?>)einzelerlaubt.clone());
+		xvec.add((ArrayList<?>)doppelpos.clone());
 		return xvec;
 	}
 
@@ -246,9 +263,14 @@ public class RezTools {
 		}
 		return ret;
 	}
-	public static boolean isVorrangig(String kuerzel,String xreznr){
-		return SqlInfo.holeEinzelFeld("select vorrangig from kuerzel where kuerzel='"+kuerzel+
-				"' and disziplin ='"+xreznr.substring(0,2)+"' LIMIT 1").equals("T");
+	
+	public static boolean[] isVorrangigAndExtra(String kuerzel,String xreznr){
+		boolean[] bret = {false,false};
+		Vector<Vector<String>> vec = SqlInfo.holeFelder("select vorrangig,extraok from kuerzel where kuerzel='"+kuerzel+
+				"' and disziplin ='"+xreznr.substring(0,2)+"' LIMIT 1");
+		bret[0] = vec.get(0).get(0).equals("T");
+		bret[1] = vec.get(0).get(1).equals("T");
+		return bret;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -1251,8 +1273,10 @@ public class RezTools {
 		@SuppressWarnings("unused")
 		String preispauschale = "";
 		int preisgruppe = Integer.parseInt(vec.get(0).get(41));
-		
+		String termine = vec.get(0).get(34);
+		boolean rezept = false;
 		Double wgkm;
+		/************************/
 		for(int i = 0;i<4;i++){
 			if(!vec.get(0).get(i+8).trim().equals("0")){
 				// hier kann man später noch untersuchen ob Positionen die mit Anzahl=1 aufgenommen wurden
@@ -1270,6 +1294,7 @@ public class RezTools {
 				retvec.set(i+6,"0.00");
 			}
 		}
+		/************************/
 		//mit Hausbesuch?
 		if(vec.get(0).get(43).equals("T")){
 			//Hausbesuch einzeln?
@@ -1818,6 +1843,219 @@ public class RezTools {
 			}
 		}.execute();
 	}
+
+	/***********************************************************************************/
+
+	public static Object[] BehandlungenAnalysieren(String swreznum,
+			boolean doppeltOk,boolean xforceDlg,boolean alletermine,
+			Vector<String> vecx,Point pt,String xkollege){
+		int i,j,count =0;
+		boolean doppelBeh = false;
+		int doppelBehA = 0, doppelBehB = 0;
+		boolean dlgZeigen = false; // unterdrückt die Anzeige des TeminBestätigenAuswahlFensters
+		boolean jetztVoll = false;
+		boolean anzahlRezeptGleich = true;
+		boolean nochOffenGleich = true;
+		Vector<BestaetigungsDaten> hMPos= new Vector<BestaetigungsDaten>();
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
+		hMPos.add(new BestaetigungsDaten(false, "./.", 0, 0,false,false));
+		Vector<String> vec = null;
+		String copyright = "\u00AE"  ;
+		StringBuffer termbuf = new StringBuffer();
+
+		int iposindex = -1;
+		boolean erstedoppel = true;
+		
+		Object[] retObj = {null,null,null};
+
+		try{
+			// die anzahlen 1-4 werden jetzt zusammenhängend ab index 11 abgerufen
+			if(vecx==null){
+				vec = SqlInfo.holeSatz("verordn", "termine,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl1,anzahl2,anzahl3,anzahl4,preisgruppe", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));	
+			}else{
+				vec = vecx;
+			}
+			
+			if (vec.size() > 0){
+				termbuf = new StringBuffer();
+				if(alletermine){
+					termbuf.append((String) vec.get(0));	
+				}
+				
+				Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
+				if(termine.size()==0){return null;}
+				//Arrays innerhalb dem Vector termine
+				//termine.get(0) = Positionen (String)
+				//termine.get(1) = Anzahlen   (Integer)
+				//termine.get(2) = Vorrangiges Heilmittel (Boolean)
+				//termine.get(3) = als Standalone ergänzendes Heilmittel erlaubt (Boolean)	
+				//termine.get(4) = Object[] {doppelbehandlung(Boolean),erstepos(Integer),letztepos(Integer)}	
+
+				for (i=0;i<=3;i++){
+					if(vec.get(1+i).toString().trim().equals("") ){
+						hMPos.get(i).hMPosNr = "./.";
+						hMPos.get(i).vOMenge = 0;
+						hMPos.get(i).anzBBT = 0;
+					}else{
+						hMPos.get(i).hMPosNr = String.valueOf(vec.get(1+i));
+						hMPos.get(i).vOMenge = Integer.parseInt( (String) vec.get(i+11) );
+						hMPos.get(i).vorrangig = (Boolean)((ArrayList<?>)((Vector<?>)termine).get(2)).get(i);
+						hMPos.get(i).invOBelegt = true;
+						hMPos.get(i).anzBBT = Integer.valueOf( (Integer)((ArrayList<?>)((Vector<?>)termine).get(1)).get(i));
+					}
+					hMPos.get(i).gehtNochEiner();
+				}
+				//Jetzt alle Objekte die unbelegt sind löschen
+				for(i=3;i>=0;i--){
+					if(!hMPos.get(i).invOBelegt){hMPos.remove(i);}
+				}
+				hMPos.trimToSize();
+				//Die Variable j erhält jetzt den Wert der Anzahl der verbliebenen Objekte
+				j= hMPos.size();
+				//1. erst Prüfen ob das Rezept bereits voll ist
+				
+				for(i=0;i<j;i++){
+					if(!hMPos.get(i).einerOk && hMPos.get(i).vorrangig){
+						//ein vorrangiges Heilmittel ist voll
+						//testen ob es sich um eine Doppelposition dreht
+						if(((Object[])((ArrayList<?>)((Vector<?>)termine).get(4)).get(i))[0]==Boolean.valueOf(true)){
+							//testen ob es die 1-te Pos der Doppelbehandlung ist
+							if(((Integer)((Object[])((ArrayList<?>)((Vector<?>)termine).get(4)).get(i))[1]) <
+									((Integer)((Object[])((ArrayList<?>)((Vector<?>)termine).get(4)).get(i))[2]) ){
+								//Es ist die 1-te Position die voll ist also Ende-Gelände
+								retObj[0] = String.valueOf(termbuf.toString());
+								retObj[1] = Integer.valueOf(RezTools.REZEPT_IST_BEREITS_VOLL);
+								return retObj;
+							}
+						}else{
+							//nein keine Doppelposition also Ende-Gelände
+							retObj[0] = String.valueOf(termbuf.toString());
+							retObj[1] = Integer.valueOf(RezTools.REZEPT_IST_BEREITS_VOLL);
+							return retObj;
+						}
+					}else if(!hMPos.get(i).einerOk && (!hMPos.get(i).vorrangig) && j==1){
+						//Falls eines der wenigen ergänzenden Heilmittel solo verordnet wurde
+						//z.B. Ultraschall oder Elektrotherapie
+						retObj[0] = String.valueOf(termbuf.toString());
+						retObj[1] = Integer.valueOf(RezTools.REZEPT_IST_BEREITS_VOLL);
+						return retObj;
+					}else if( (!hMPos.get(i).vorrangig) && (j==1) && 
+							(Boolean)((ArrayList<?>)((Vector<?>)termine).get(2)).get(i)){
+						//Ein ergänzendes Heilmittel wurde separat verordent das nicht zulässig ist
+						//könnte man auswerten, dann verbaut man sich aber die Möglichkeit
+						//bei PrivatPat. abzurechnen was geht....
+					}
+				}
+				//2. dann prüfen welche Behandlungsformen noch einen vertragen können
+				count = 0;
+				int ianzahl = hMPos.get(0).vOMenge;
+				int ioffen = hMPos.get(0).vORestMenge;
+				for(i=0;i<j;i++){
+					hMPos.get(i).danachVoll();
+					//wenn eine Behandlung noch frei ist //(ausgeschaltet)und die Position keine Doppelposition ist
+					if(hMPos.get(i).einerOk /*&& ((Object[])((ArrayList<?>)((Vector<?>)termine).get(4)).get(i))[0]==Boolean.valueOf(false)*/){
+						count++;
+					}
+					if(ianzahl != hMPos.get(i).vOMenge){anzahlRezeptGleich=false;}
+					if(ioffen != hMPos.get(i).vORestMenge){nochOffenGleich=false;}
+				}
+				//Nur Wenn mehrere Behandlungen im Rezept vermerkt
+				if(j > 1){
+					//Wenn mehrere noch offen sind aber ungleiche noch Offen
+					if( (count > 1) && (!(/*anzahlRezeptGleich &&*/ nochOffenGleich)) ){
+						dlgZeigen = true;						
+					}
+				}
+				//3. Dann Dialog zeigen
+				// TerminBestätigenAuswahlFenster anzeigen oder überspringen
+				// Evtl. noch Einbauen ob bei unterschiedlichen Anzahlen (System-Initialisierung) immer geöffnet wird.
+				if (xforceDlg || (dlgZeigen && (Boolean)SystemConfig.hmTerminBestaetigen.get("dlgzeigen") ) ){
+							
+							TerminBestaetigenAuswahlFenster termBestAusw = new TerminBestaetigenAuswahlFenster(Reha.thisFrame,null,(Vector<BestaetigungsDaten>)hMPos,swreznum,Integer.parseInt((String)vec.get(15)));
+							termBestAusw.pack();
+							if(pt==null){
+								termBestAusw.setLocationRelativeTo(null);
+							}else{
+								termBestAusw.setLocation(pt);
+							}
+							//
+							termBestAusw.setzeFocus();
+							termBestAusw.setModal(true);
+							termBestAusw.setVisible(true);
+							if(RezTools.DIALOG_WERT==RezTools.DIALOG_ABBRUCH){
+								retObj[0] = String.valueOf(termbuf.toString());
+								retObj[1] = Integer.valueOf(RezTools.REZEPT_ABBRUCH);
+								return retObj;
+							}
+							for (i=0; i<j; i++){
+								if(hMPos.get(i).best){
+									hMPos.get(i).anzBBT += 1;
+									//gleichzeitig prüfen ob voll
+									if(hMPos.get(i).jetztVoll() && hMPos.get(i).vorrangig){
+										jetztVoll = true;
+									}else if(hMPos.get(i).jetztVoll() && (!hMPos.get(i).vorrangig) && j==1){
+										jetztVoll = true;
+									}
+								}
+							}
+							
+				}else{
+					/*
+					 * Der Nutzer wünscht kein Auswahlfenster:
+					 * bestätige alle noch offenen Heilmittel
+					 *   
+					 */		
+					for (i=0; i<j; i++){
+						hMPos.get(i).best = Boolean.valueOf(hMPos.get(i).einerOk);
+						if(hMPos.get(i).einerOk){
+							hMPos.get(i).anzBBT += 1;
+							hMPos.get(i).best = true;
+							if(hMPos.get(i).jetztVoll() && hMPos.get(i).vorrangig){
+								jetztVoll = true;	
+							}else if(hMPos.get(i).jetztVoll() && (!hMPos.get(i).vorrangig) && j==1){
+								jetztVoll = true;
+							}
+						}
+					}
+				}
+				String[] params = {null,null,null,null};
+				for(i=0;i<j;i++){
+					if(hMPos.get(i).best){params[i]=vec.get(i+1);}
+				}
+				termbuf.append(TermineErfassen.macheNeuTermin2(
+						(params[0] != null ? params[0] : ""),
+						(params[1] != null ? params[1] : ""),
+						(params[2] != null ? params[2] : ""),
+						(params[3] != null ? params[3] : ""),
+						xkollege));
+
+				retObj[0] = String.valueOf(termbuf.toString());
+				retObj[1] = (jetztVoll ? Integer.valueOf(RezTools.REZEPT_IST_JETZ_VOLL) : Integer.valueOf(RezTools.REZEPT_HAT_LUFT ));
+									
+
+				return retObj;
+			}else{
+				System.out.println("*****************IN ELSE***************************");
+			}
+			return retObj;
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}finally{
+			//vec = null;
+			hMPos = null;
+		}
+		return retObj;
+	}
+	private static int welcheIstMaxInt(int i1,int i2){
+		if(i1 > i2){return 1;}
+		if(i1==i2){return 0;}
+		return 2;
+	}
+
+/************************************/
+
 	
 	/***************************************************/
 	/***************************************************/

@@ -96,7 +96,6 @@ import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
-import terminKalender.TermineErfassen;
 import abrechnung.AbrechnungPrivat;
 import abrechnung.AbrechnungRezept;
 import abrechnung.RezeptGebuehrRechnung;
@@ -1552,74 +1551,52 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			if(cmd.equals("terminplus")){
 				if(rezGeschlossen()){return;}
 				try{
-					//Nur zum Test der Funktion im Normalbetrieb nicht!!!! aktivieren
-					/*
-					System.out.println("****vorher*****");
-					System.out.println(RezTools.holePosUndAnzahlAusRezept((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
-					System.out.println(RezTools.holePosUndAnzahlAusTerminen((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
-					*/
-					//Diese Ergebnisse könnten in einer neuen Funktion eingesetzt werden so daß sie die Aufgaben von Drud's Funktion nachbilden
-
-					//Object[] objTerm = BehandlungenAnalysieren(Reha.thisClass.patpanel.vecaktrez.get(1),false,false,false,((Vector<String>)vec.clone()),null);
-					Object[] objTerm = TermineErfassen.BehandlungenAnalysieren(Reha.thisClass.patpanel.vecaktrez.get(1),false,false,false,null,null);
+					Object[] objTerm = RezTools.BehandlungenAnalysieren(Reha.thisClass.patpanel.vecaktrez.get(1),
+							false,false,false,null,null,null); //hier noch ein  Point Object übergeben
 					//System.out.println("objTerm[0]="+objTerm[0]);
 					//System.out.println("objTerm[1]="+objTerm[1]);
-					if( (Integer)objTerm[1] <= 0){
+					
+					if(objTerm==null){return;}
+					
+					if( (Integer)objTerm[1] == RezTools.REZEPT_IST_BEREITS_VOLL){
+						
+					}else if((Integer)objTerm[1] == RezTools.REZEPT_ABBRUCH){
+						return;
+					}else{
 						Vector<String> vec = new Vector<String>();
 						vec.add(DatFunk.sHeute());
 						vec.add("");
 						vec.add("");
 						vec.add( ((String)objTerm[0]).split("@")[3]);
-						/*
-						vec.add( (((String)Reha.thisClass.patpanel.vecaktrez.get(48)).trim().equals("") ? "" : (String)Reha.thisClass.patpanel.vecaktrez.get(48)) +
-								(((String)Reha.thisClass.patpanel.vecaktrez.get(49)).trim().equals("") ? "" : ","+(String)Reha.thisClass.patpanel.vecaktrez.get(49)) +
-								(((String)Reha.thisClass.patpanel.vecaktrez.get(50)).trim().equals("") ? "" : ","+(String)Reha.thisClass.patpanel.vecaktrez.get(50)) +
-								(((String)Reha.thisClass.patpanel.vecaktrez.get(51)).trim().equals("") ? "" : ","+(String)Reha.thisClass.patpanel.vecaktrez.get(51)) 
-								);
-						*/		
-						vec.add(DatFunk.sDatInSQL(DatFunk.sHeute()));
 						dtermm.addRow((Vector<String>)vec.clone());
 						termineSpeichern();
 						starteTests();
-						if((Integer)objTerm[1] == 0){
-							JOptionPane.showMessageDialog(null,"Das Rezept ist jetzt voll!");
+						if( (Integer)objTerm[1] == RezTools.REZEPT_IST_JETZ_VOLL){
+							try{
+								RezTools.fuelleVolleTabelle( ((String)Reha.thisClass.patpanel.vecaktrez.get(1)) , Reha.aktUser);					
+							}catch(Exception ex){
+								JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
+							}
 						}
-					}else if((Integer)objTerm[1] == 2){
-						JOptionPane.showMessageDialog(null,"Das Rezept ist bereits voll!\n"+
-								"Bitte Rezept kontrollieren und in die Abrechnung weiterreichen.");
 					}
 					tabaktterm.validate();
 					int tanzahl = tabaktterm.getRowCount();
 					anzahlTermine.setText("Anzahl Terimine: "+Integer.toString(tanzahl));
-
-					tabaktterm.setRowSelectionInterval(tanzahl-1, tanzahl-1);
-					try{
-						if(tanzahl== Integer.parseInt( Reha.thisClass.patpanel.vecaktrez.get(3))){
-							RezTools.fuelleVolleTabelle( ((String)Reha.thisClass.patpanel.vecaktrez.get(1)) , Reha.aktUser);					
-						}
-					}catch(Exception ex){
-						JOptionPane.showMessageDialog(null,"Fehler beim Aufruf von 'fuelleVolleTabelle'");
+					if(tanzahl > 0){
+						tabaktterm.setRowSelectionInterval(tanzahl-1, tanzahl-1);						
 					}
-				
 					SwingUtilities.invokeLater(new Runnable(){
 						public void run(){
 							tabaktterm.scrollRowToVisible(tabaktterm.getRowCount());
 						}
 						
 					});
-					
 					tabaktterm.validate();
 					tabaktterm.repaint();
-					/*
-					System.out.println("****nachher*****");
-					System.out.println(RezTools.holePosUndAnzahlAusRezept((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
-					System.out.println(RezTools.holePosUndAnzahlAusTerminen((String)Reha.thisClass.patpanel.vecaktrez.get(1)));
-					*/
-					//RezTools.holePosUndAnzahlAusTerminen((String)Reha.thisClass.patpanel.vecaktrez.get(1));
+				break;
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
-				break;
 				
 			}
 			if(cmd.equals("terminminus")){

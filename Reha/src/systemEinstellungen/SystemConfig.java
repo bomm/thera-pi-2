@@ -817,8 +817,12 @@ public class SystemConfig {
 				UpdateIni(inif,"Container","ImmerOptimieren",(fenster[i].equals("Kalender") ? 1 : 0),null);
 			hmContainer.put(fenster[i]+"Opti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
 			//X-Position
-			if(inif.getIntegerProperty("Container", "ZeigeAnPositionX")==null)
+			if(inif.getIntegerProperty("Container", "ZeigeAnPositionX")==null){
 				UpdateIni(inif,"Container","ZeigeAnPositionX",5,null);
+				if(fenster[i].equals("Kalender")){
+					hmContainer.put(fenster[i]+"Opti",1);		
+				}
+			}
 			hmContainer.put(fenster[i]+"LocationX", inif.getIntegerProperty("Container", "ZeigeAnPositionX"));
 			//Y-Position
 			if(inif.getIntegerProperty("Container", "ZeigeAnPositionY")==null)
