@@ -238,7 +238,17 @@ public class Beteiligung  extends JXPanel{
 									doKeineZuordnung("an diesem Tag bereits erfaßt: "+tag.get((i*5))+"-"+vec.get(0).get(1).toString(),false);
 									anzahlTagesBehandlungen++;
 								}else{
-									doAnteilBerechnen(vec,inhistory,DatFunk.sDatInDeutsch(tag.get(304)),tag.get((i*5)));
+									try {
+										doAnteilBerechnen(vec,inhistory,DatFunk.sDatInDeutsch(tag.get(304)),tag.get((i*5)));
+									} catch (UnknownPropertyException e) {
+										e.printStackTrace();
+									} catch (PropertyVetoException e) {
+										e.printStackTrace();
+									} catch (IllegalArgumentException e) {
+										e.printStackTrace();
+									} catch (WrappedTargetException e) {
+										e.printStackTrace();
+									}
 									rezvec.add(vec.get(0).get(1).toString());
 									anzahlTagesBehandlungen++;
 								}
@@ -476,8 +486,8 @@ public class Beteiligung  extends JXPanel{
 		OOTools.doColWidth(spreadsheetDocument,sheetName,8,14,1500);
 		OOTools.doColTextAlign(spreadsheetDocument,sheetName,8,14,3);
 
-		OOTools.doColWidth(spreadsheetDocument,sheetName,15,15,1200);
-		OOTools.doColTextAlign(spreadsheetDocument,sheetName,15,15,2);
+		OOTools.doColWidth(spreadsheetDocument,sheetName,15,16,1200);
+		OOTools.doColTextAlign(spreadsheetDocument,sheetName,15,16,2);
 		
 		OOTools.doColNumberFormat(spreadsheetDocument,sheetName,8,14,2);
 
@@ -517,8 +527,8 @@ public class Beteiligung  extends JXPanel{
 			e.printStackTrace();
 		}
 	}
-	private void doAnteilBerechnen(Vector<Vector<String>> rezvec,boolean history,String datum,String name){
-		Vector<String> calczeile = RezTools.macheUmsatzZeile(rezvec,datum);
+	private void doAnteilBerechnen(Vector<Vector<String>> rezvec,boolean history,String datum,String name) throws UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException{
+		Vector<String> calczeile = RezTools.macheUmsatzZeile(rezvec,datum,jcmb.getSelectedItem().toString());
 		//System.outprintln(calczeile);
 		try {
 			OOTools.doCellValue(cellCursor, 0, calcrow,name.replace(copyright, ""));
@@ -541,6 +551,11 @@ public class Beteiligung  extends JXPanel{
 			if(history){
 				OOTools.doCellValue(cellCursor, 15,calcrow, "X");
 			}
+			if(!calczeile.get(12).equals("0")){
+				OOTools.doCellColor(cellCursor,16,calcrow,0xff0000);
+				OOTools.doCellValue(cellCursor,16,calcrow,calczeile.get(12));
+			}
+			
 		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
@@ -579,6 +594,15 @@ public class Beteiligung  extends JXPanel{
 				formula = formula+"O"+Integer.toString(summenPos.get(i)[1]+1)+(i < (summenPos.size()-1) ? "+" : "");
 			}
 			OOTools.doCellFormula(cellCursor, 14, calcrow, formula);
+			
+			calcrow += 2;
+			OOTools.doCellColor(cellCursor,0,calcrow,0xff0000);
+			OOTools.doCellValue(cellCursor,0,calcrow,"FK 1 = Tag im Terminblatt nicht erfaßt");
+			OOTools.doCellColor(cellCursor,0,calcrow+1,0xff0000);
+			OOTools.doCellValue(cellCursor,0,calcrow+1,"FK 2 = Tag ist erfaßt aber keine Positionen zugeordnet");
+			OOTools.doCellColor(cellCursor,0,calcrow+2,0xff0000);
+			OOTools.doCellValue(cellCursor,0,calcrow+2,"FK 3 = Tag ist erfaßt aber Positionen einer anderen Tarifgruppe zugeordnet");
+
 				
 		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();

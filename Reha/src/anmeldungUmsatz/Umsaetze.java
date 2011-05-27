@@ -84,7 +84,7 @@ public class Umsaetze extends JXPanel{
 	IDocument document  = null;
 	XSheetCellCursor cellCursor = null;
 	String[] kopfzeile = {"Datum","Uhrzeit","Pos1","Pos2","Pos3","Pos4","HB","WG",
-			"Preis1","Preis2","Preis3","Preis4","HB-Preis","WG-Pr.","RezNum","Historie","FK"};
+			"Preis1","Preis2","Preis3","Preis4","HB-Preis","WG-Pr.","RezNum","Histor.","FK"};
 	String[] cols = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O"};
 	
 	long timeused = 0;
@@ -176,7 +176,7 @@ public class Umsaetze extends JXPanel{
 	 * @throws PropertyVetoException 
 	 * @throws UnknownPropertyException 
 	 * @throws NumberFormatException ********************/
-	private void doManageRezept(String reznum,String datum,String uhrzeit) throws IndexOutOfBoundsException, NumberFormatException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException{
+	private void doManageRezept(String reznum,String datum,String uhrzeit,String kalus) throws IndexOutOfBoundsException, NumberFormatException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException{
 		Vector<Vector<String>> vec = SqlInfo.holeFelder("select * from verordn where rez_nr='"+reznum+"' LIMIT 1");
 		boolean ishistory = false;
 		boolean emptyrow = false;
@@ -195,24 +195,29 @@ public class Umsaetze extends JXPanel{
 		}else{
 			// Zeile managen +
 			//if(ishistory) einen Marker setzen
-			Vector<String> calczeile = RezTools.macheUmsatzZeile(vec,datum);
+			Vector<String> calczeile = RezTools.macheUmsatzZeile(vec,datum,kalus);
 			doCellValue(0,calcrow,datum);
 			doCellValue(1,calcrow,uhrzeit);
 			for(int i = 0; i < calczeile.size();i++){
 				try{
-					if(i >=6 && i <=12){
+					if(i >=6 && i < 12){
+						//System.out.println("Fehler="+calczeile.get(i));
 						doCellValue(i+2,calcrow,Double.parseDouble(calczeile.get(i)));
 					}else{
 						doCellValue(i+2,calcrow,calczeile.get(i));
 					}
 				}catch(Exception ex){
 					JOptionPane.showMessageDialog(null,"Bei der Positionsberechnung ist ein Fehler aufgetregen");
-					//ex.printStackTrace();
+					ex.printStackTrace();
 				}
 			}
 			doCellValue(14,calcrow,reznum);
 			if(ishistory){
 				doCellValue(15,calcrow,"X");
+			}
+			if(!calczeile.get(12).equals("0")){
+				doCellColor(16,calcrow,0xff0000);
+				doCellValue(16,calcrow,calczeile.get(12));
 			}
 			calcrow++;
 		}
@@ -297,7 +302,7 @@ public class Umsaetze extends JXPanel{
 										behandlungenProTag++;
 									}else{
 										vecBehandlungen.get(i2).add(String.valueOf(endreznum));
-										doManageRezept(endreznum,DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304)),allDates.get(i1).get(i2).get((i3*5)+2));
+										doManageRezept(endreznum,DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304)),allDates.get(i1).get(i2).get((i3*5)+2),(String)kalUsers.get(i1).get(0));
 										behandlungenProTag++;
 									}
 								}
@@ -384,6 +389,14 @@ public class Umsaetze extends JXPanel{
 			doCellColor(4,calcrow,0xff0000);
 			doCellCharWeight(4,calcrow,com.sun.star.awt.FontWeight.BOLD);
 			doCellFormula(4,calcrow,formula);
+			calcrow += 2;
+			doCellColor(0,calcrow,0xff0000);
+			doCellValue(0,calcrow,"FK 1 = Tag im Terminblatt nicht erfaßt");
+			doCellColor(0,calcrow+1,0xff0000);
+			doCellValue(0,calcrow+1,"FK 2 = Tag ist erfaßt aber keine Positionen zugeordnet");
+			doCellColor(0,calcrow+2,0xff0000);
+			doCellValue(0,calcrow+2,"FK 3 = Tag ist erfaßt aber Positionen einer anderen Tarifgruppe zugeordnet");
+		
 			if(!Reha.vollbetrieb){
 				JOptionPane.showMessageDialog(null,"Benötigte Zeit für diesen Vorgang insgesamt "+(System.currentTimeMillis()-timeused)+" Millisekunden");
 			}
@@ -488,9 +501,10 @@ public class Umsaetze extends JXPanel{
 														doColTextAlign(spreadsheetDocument,8,14,3);
 														
 														doColWith(spreadsheetDocument,14,14,1900);
-														doColWith(spreadsheetDocument,15,15,1900);
-														doColTextAlign(spreadsheetDocument,15,153,2);
+														doColWith(spreadsheetDocument,15,16,1200);
+														doColTextAlign(spreadsheetDocument,15,16,2);
 														
+
 														doColNumberFormat(spreadsheetDocument,8,13,2);
 
 														XSpreadsheets spreadsheets = spreadsheetDocument.getSpreadsheetDocument().getSheets();

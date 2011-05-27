@@ -1260,9 +1260,9 @@ public class RezTools {
 
 		return retobj;
 	}
-	public static Vector<String> macheUmsatzZeile(Vector<Vector<String>> vec,String tag){
+	public static Vector<String> macheUmsatzZeile(Vector<Vector<String>> vec,String tag,String kaluser){
 		Vector<String> retvec = new Vector<String>();
-		for(int i = 0; i < 12;i++){
+		for(int i = 0; i < 13;i++){
 			retvec.add("");
 		}
 			
@@ -1276,23 +1276,71 @@ public class RezTools {
 		String termine = vec.get(0).get(34);
 		boolean rezept = false;
 		Double wgkm;
+		int fehlerstufe = 0;
+		int ipos = 0;
+		String kform = "";
+		String[] posbestaetigt = null;;
+		Object[][] preisobj = {{null,null,null,null},{null,null,null,null}};
 		/************************/
-		for(int i = 0;i<4;i++){
-			if(!vec.get(0).get(i+8).trim().equals("0")){
-				// hier kann man später noch untersuchen ob Positionen die mit Anzahl=1 aufgenommen wurden
-				// aufgeführt werden sollen (wg. evtl. Umsatzverfälschung)
-				// dafür kann der Parameter tag und das dbFeld termine verwendet werden
-				pos = RezTools.getKurzformFromID(vec.get(0).get(i+8).trim(),SystemPreislisten.hmPreise.get(disziplin).get( (preisgruppe==0 ? 0 : preisgruppe-1) ));
-				if(pos.trim().equals("")){
-					pos = RezTools.getKurzformFromPos(vec.get(0).get(i+48).trim(), Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get( (preisgruppe==0 ? 0 : preisgruppe-1) ));					
-				}
-				////System.out.println("Haupt-Position = "+pos);
-				retvec.set(i, pos);
-				retvec.set(i+6,vec.get(0).get(i+18).trim());
-			}else{
-				retvec.set(i, "-----");
-				retvec.set(i+6,"0.00");
+		//1. Termine aus Rezept holen
+		String bestaetigte = vec.get(0).get(34);
+		//2. Testen ob der Tag erfaßt wenn nicht weiter mit der vollen Packung + Fehlerstufe 1
+		if(!termine.contains(tag)){
+			fehlerstufe = 1;
+		}else{
+			//3. Sofern doch die Positionen ermitteln wenn keine Positionen vorhanden,
+			//   weiter mit voller Packung + Fehlerstufe 2
+			posbestaetigt = bestaetigte.substring(bestaetigte.indexOf(tag)).split("@")[3].split(",");
+			if(posbestaetigt[0].trim().equals("")){
+				fehlerstufe = 2;
 			}
+
+		}
+		//4. Überprüfen ob die Positionen in der Tarifgruppe existieren,
+		//   sofern nicht Preise und Positionen aus Rezept entnehmen volle Packung + Fehlerstufe 3 
+		if(fehlerstufe==0){
+			for(int j = 0; j < posbestaetigt.length;j++){
+				if(! posbestaetigt[j].trim().equals("")){
+					 if((kform=RezTools.getKurzformFromPos(posbestaetigt[j].trim(), Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get( (preisgruppe==0 ? 0 : preisgruppe-1) ))).equals("")){
+						fehlerstufe = 3;
+						break;
+					 }
+					 preisobj[0][j] = kform;
+					 preisobj[1][j] = RezTools.getPreisAktFromPos(posbestaetigt[j], Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get( (preisgruppe==0 ? 0 : preisgruppe-1) ));
+					 //System.out.println(preisobj[0][j]);
+					 //System.out.println(preisobj[1][j]);
+				}
+			}
+		}
+
+
+		//if(retvec.size()==0){return retvec;}
+		//5. Wenn hier angekommen die Preise und Positionen aus der Preisliste entnehmen 
+		if(fehlerstufe==0){
+			for(int j = 0; j < 4;j++){
+				retvec.set(j,String.valueOf((String) (preisobj[0][j] != null ? preisobj[0][j] : "-----")));
+				retvec.set(j+6,String.valueOf((String) (preisobj[1][j] != null ? preisobj[1][j] : "0.00")));
+			}
+			retvec.set(12,"0");
+		}else{
+			for(int i = 0;i<4;i++){
+				if(!vec.get(0).get(i+8).trim().equals("0")){
+					// hier kann man später noch untersuchen ob Positionen die mit Anzahl=1 aufgenommen wurden
+					// aufgeführt werden sollen (wg. evtl. Umsatzverfälschung)
+					// dafür kann der Parameter tag und das dbFeld termine verwendet werden
+					pos = RezTools.getKurzformFromID(vec.get(0).get(i+8).trim(),SystemPreislisten.hmPreise.get(disziplin).get( (preisgruppe==0 ? 0 : preisgruppe-1) ));
+					if(pos.trim().equals("")){
+						pos = RezTools.getKurzformFromPos(vec.get(0).get(i+48).trim(), Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get( (preisgruppe==0 ? 0 : preisgruppe-1) ));					
+					}
+					////System.out.println("Haupt-Position = "+pos);
+					retvec.set(i, pos);
+					retvec.set(i+6,vec.get(0).get(i+18).trim());
+				}else{
+					retvec.set(i, "-----");
+					retvec.set(i+6,"0.00");
+				}
+			}
+			retvec.set(12,Integer.toString(fehlerstufe));
 		}
 		/************************/
 		//mit Hausbesuch?
