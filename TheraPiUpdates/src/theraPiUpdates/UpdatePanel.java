@@ -543,7 +543,7 @@ public class UpdatePanel extends JXPanel{
 						System.out.println("Execute = "+vecstmt.get(x));
 						//System.out.println("Warnings = "+conn.getWarnings().getSQLState());
 					} catch (Exception e) {
-						JOptionPane.showMessageDialog(null,"Fehler beim anlegen der Tabelle"); 
+						JOptionPane.showMessageDialog(null,"Fehler beim anlegen der Tabelle\nDer Fehlertext lautet:\n"+e.getMessage()); 
 						//JOptionPane.showMessageDialog(null, "Fehler in der Ausführung des Sql-Statements\n"+vecstmt.get(x));
 						e.printStackTrace();
 					}
