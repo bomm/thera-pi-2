@@ -311,6 +311,10 @@ public class UpdatePanel extends JXPanel{
 				}else{
 					JOptionPane.showMessageDialog(null, "Ihre Thera-Pi-Installation ist auf dem aktuellen Stand.");
 				}
+				System.out.println("\n*********************************");
+				System.out.println("   Insgesamt getestete Files: "+ffile.length);
+				System.out.println("Davon muessen updated werden: "+tabmod.getRowCount());
+				System.out.println("*********************************\n");
 				/*
 				System.out.println("Insgesamt = "+ffile.length+" Dateien");
 				File file = new File("C:/RehaVerwaltung/Reha.jar");
@@ -421,7 +425,7 @@ public class UpdatePanel extends JXPanel{
 			reader.close();
 			if(updatefiles.size()>0){
 				//System.out.println(updatefiles);
-				System.out.println("Anzahl Update-Dateien = "+updatefiles.size());
+				//System.out.println("Anzahl Update-Dateien = "+updatefiles.size());
 				//kopiereUpdate();
 			}
 		} catch (IOException e) {

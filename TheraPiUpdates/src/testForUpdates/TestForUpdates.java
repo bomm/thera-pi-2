@@ -56,17 +56,41 @@ public class TestForUpdates {
 		ftpt = new FTPTools();
 		FTPFile[] ffile = ftpt.holeDatNamen();
 		for(int i = 0; i < ffile.length;i++){
+			try{
 			if( (!ffile[i].getName().toString().trim().equals(".")) &&
 					(!ffile[i].getName().toString().trim().equals("..")) &&
 					(!ffile[i].getName().toString().startsWith("update."))){
 				if(mussUpdaten(ffile[i].getName().toString().trim(),ffile[i].getTimestamp().getTime().getTime())){
+					connectTest();
 					ftpt = null;
 					return true;
 				}					
 			}
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Datei Nr. "+Integer.toString(i+1));
+				ex.printStackTrace();
+			}
 		}	
+		connectTest();
 		ftpt = null;
 		return false;
+	}
+	private void connectTest(){
+		if(ftpt.ftpClient != null){
+			if(ftpt.ftpClient.isConnected()){
+				try{
+					ftpt.ftpClient.logout();
+				}catch(Exception ex){
+					
+				}
+				try{
+					ftpt.ftpClient.disconnect();
+				}catch(Exception ex){
+					
+				}
+
+			}
+		}
 	}
 	private boolean mussUpdaten(String datei,Long datum){
 		try{
