@@ -107,6 +107,7 @@ public class FTPTools {
 	
 	/*****************************************************/
 	public boolean holeDatei(String datfern,String vznah,boolean doprogress,UpdatePanel eltern,long groesse){
+		try{
 		if(ftpClient == null){
 			return false;
 		}
@@ -181,10 +182,15 @@ public class FTPTools {
 			ftpClient.getReplyString();
 			ftpClient.disconnect();
 			*/
+		
 			
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			return false;
+		}
+		}catch(Exception ex){
+			ex.printStackTrace();
 			return false;
 		}
 	

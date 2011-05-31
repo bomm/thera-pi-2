@@ -276,14 +276,22 @@ public class UpdatePanel extends JXPanel{
 		return this;
 	}
 	private void doHoleUpdateConf(){
-		ftpt = new FTPTools();
-		ftpt.holeDatei("update.files", TheraPiUpdates.proghome, false, getInstance(),-1);
-		ftpt = null;
+		try{
+			ftpt = new FTPTools();
+			boolean geklappt = ftpt.holeDatei("update.files", TheraPiUpdates.proghome, false, getInstance(),-1);
+			if(!geklappt){
+				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Steuerdatei update.files");
+			}
+			ftpt = null;
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 	private void doFtpTest(){
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
+				try{
 				TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 				ftpt = new FTPTools();
 				
@@ -304,6 +312,8 @@ public class UpdatePanel extends JXPanel{
 						//System.out.println(ffile[i].getName());
 						//System.out.println(ffile[i].getTimestamp().getTime().getTime());
 						//System.out.println(ffile[i].getSize() + " Bytes");
+					}else{
+						
 					}
 				}
 				if(tabmod.getRowCount()> 0){
@@ -327,7 +337,10 @@ public class UpdatePanel extends JXPanel{
 				*/
 				ftpt = null;
 				TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-
+				}catch(Exception ex){
+					ex.printStackTrace();
+					ftpt = null;
+				}
 				return null;
 			}
 			
@@ -344,11 +357,15 @@ public class UpdatePanel extends JXPanel{
 				if(!f.exists()){
 					return true;
 				}
+				System.out.println("\nDatei: "+f.getName().toString()+"\n       Dateidatum lokal: "+f.lastModified()+"\nDateidatum Updateserver: "+datum);
 				if(f.lastModified() < datum){
+					System.out.println("lokale Datei ist aelter -> muss updated werden!!!!!"+"\n****************");
 					//System.out.println("Zeitunterschied  = "+(f.lastModified()-datum));
 					//System.out.println(datumsFormat.format(f.lastModified()));
 					//System.out.println(datumsFormat.format(datum));
 					return true;
+				}else{
+					System.out.println("lokale Datei ist juenger -> darf nicht updated werden"+"\n****************");					
 				}
 			}
 		}
