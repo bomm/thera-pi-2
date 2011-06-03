@@ -45,7 +45,7 @@ public class FTPTools {
 	public FTPFile[] holeDatNamen(){
 	    	try{
 	    		if(files != null){return files;}
-	    		ftpClient.connect(TheraPiUpdates.UpdateFTP,21);
+	    		ftpClient.connect(TheraPiUpdates.UpdateFTP);
 	    		//ftpClient.connect("www.thera-pi.org");
 				//ftpClient.getReplyString();
 				System.out.println(ftpClient.getReplyString());
@@ -382,7 +382,7 @@ public class FTPTools {
 	
 	private boolean nurConnect(){
 		try {
-			ftpClient.connect(TheraPiUpdates.UpdateFTP,21);
+			ftpClient.connect(TheraPiUpdates.UpdateFTP);
 			ftpClient.getReplyString();
 			//System.out.println(ftpClient.getReplyString());
 			ftpClient.login(TheraPiUpdates.UpdateUser, TheraPiUpdates.UpdatePasswd);
