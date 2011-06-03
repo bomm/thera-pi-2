@@ -35,7 +35,7 @@ public class FTPTools {
 	public FTPClient ftpClient = null;
     //public static int BUFFER_SIZE = 1024*1024;
     public static int BUFFER_SIZE = 1024*8;
-    org.apache.commons.net.ftp.FTPFile[] files;	
+    public org.apache.commons.net.ftp.FTPFile[] files;	
     
 	public FTPTools(){
 		ftpClient = new FTPClient();
@@ -44,7 +44,7 @@ public class FTPTools {
 	
 	public FTPFile[] holeDatNamen(){
 	    	try{
-	    		
+	    		if(files != null){return files;}
 	    		ftpClient.connect(TheraPiUpdates.UpdateFTP,21);
 	    		//ftpClient.connect("www.thera-pi.org");
 				//ftpClient.getReplyString();
@@ -207,7 +207,7 @@ public class FTPTools {
 				return "Fehler im Bezug der Log-Datei";				
 			}
 		}
-		ftpClient.enterLocalPassiveMode();
+		ftpClient.enterLocalActiveMode();
 		try {
 			InputStream uis = null;
 			uis = ftpClient.retrieveFileStream(datfern);
@@ -252,7 +252,7 @@ public class FTPTools {
 			e.printStackTrace();
 		}
 		
-		ftpClient.enterLocalPassiveMode();
+		ftpClient.enterLocalActiveMode();
 		try {
     			ftpClient.deleteFile(datfern);
 				InputStream ins = null;
@@ -261,7 +261,7 @@ public class FTPTools {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				ftpClient.enterLocalPassiveMode();
+				ftpClient.enterLocalActiveMode();
 			
 				/*********************************/
 			
@@ -417,7 +417,7 @@ public class FTPTools {
 			}
 
 		}
-		ftpClient.enterLocalPassiveMode();
+		ftpClient.enterLocalActiveMode();
 		try {
 
     		files = ftpClient.listFiles();
@@ -489,7 +489,7 @@ public class FTPTools {
 			e.printStackTrace();
 		}
 		
-		ftpClient.enterLocalPassiveMode();
+		ftpClient.enterLocalActiveMode();
 		try {
     		//files = ftpClient.listFiles();
 
@@ -503,7 +503,7 @@ public class FTPTools {
 			File src = new File(quelldat);
 			InputStream ins = new FileInputStream(src);
 
-			ftpClient.enterLocalPassiveMode();
+			ftpClient.enterLocalActiveMode();
 			
 			/*
 			ftpClient.storeFile(datfern, ins);
@@ -641,7 +641,7 @@ public class FTPTools {
 			e.printStackTrace();
 		}
 		
-		ftpClient.enterLocalPassiveMode();
+		ftpClient.enterLocalActiveMode();
 		try {
     		//files = ftpClient.listFiles();
 
@@ -655,7 +655,7 @@ public class FTPTools {
 			//File src = new File(quelldat);
 			InputStream ins = new ByteArrayInputStream( b);
 
-			ftpClient.enterLocalPassiveMode();
+			ftpClient.enterLocalActiveMode();
 			
 			/*
 			ftpClient.storeFile(datfern, ins);
