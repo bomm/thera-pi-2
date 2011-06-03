@@ -22,8 +22,13 @@ import java.io.LineNumberReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -79,6 +84,8 @@ public class UpdatePanel extends JXPanel{
 	public static Vector<String[]> mandvec = new Vector<String[]>();
 	
 	public UpdateListSelectionHandler updateListener = null;
+	
+	DateFormat dataformat =  DateFormat.getDateInstance(DateFormat.LONG); 
 	
 	FTPTools ftpt = null;
 	
@@ -357,7 +364,9 @@ public class UpdatePanel extends JXPanel{
 				if(!f.exists()){
 					return true;
 				}
-				System.out.println("\nDatei: "+f.getName().toString()+"\n       Dateidatum lokal: "+f.lastModified()+"\nDateidatum Updateserver: "+datum);
+				System.out.println("\nDatei: "+f.getName().toString()+"\n       Dateidatum lokal: "+
+						usingDateFormatter(f.lastModified())+"\nDateidatum Updateserver: "+
+						usingDateFormatter(datum));
 				if(f.lastModified() < datum){
 					System.out.println("lokale Datei ist aelter -> muss updated werden!!!!!"+"\n****************");
 					//System.out.println("Zeitunterschied  = "+(f.lastModified()-datum));
@@ -375,6 +384,24 @@ public class UpdatePanel extends JXPanel{
 		}
 		return false;
 	}
+	 private String usingDateFormatter(long input){  
+		         Date date = new Date(input);  
+		         Calendar cal = new GregorianCalendar();  
+		         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss z");  
+		         sdf.setCalendar(cal);  
+		         cal.setTime(date);  
+		         return sdf.format(date);  
+		   
+	}  
+	 private String usingDateFormatterWithTimeZone(long input){  
+		 Date date = new Date(input);  
+		 Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));  
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MMM/dd hh:mm:ss z");  
+		 sdf.setCalendar(cal);  
+		 cal.setTime(date);  
+		 return sdf.format(date);  
+		 
+	 }  	
 	/************************************************************************/
 	private static void updateCheck(String xupdatefile){
 		String updatedir = "";
