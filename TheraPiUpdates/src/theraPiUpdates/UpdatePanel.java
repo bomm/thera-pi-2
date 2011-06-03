@@ -364,9 +364,9 @@ public class UpdatePanel extends JXPanel{
 				if(!f.exists()){
 					return true;
 				}
-				System.out.println("\nDatei: "+f.getName().toString()+"\n       Dateidatum lokal: "+
-						usingDateFormatter(f.lastModified())+"\nDateidatum Updateserver: "+
-						usingDateFormatter(datum));
+				System.out.println("\nDatei: -----> "+f.getName().toString()+"\n       Dateidatum lokal: "+
+						usingDateFormatterWithTimeZone(f.lastModified())+"\nDateidatum Updateserver: "+
+						usingDateFormatterWithTimeZone(datum));
 				if(f.lastModified() < datum){
 					System.out.println("lokale Datei ist aelter -> muss updated werden!!!!!"+"\n****************");
 					//System.out.println("Zeitunterschied  = "+(f.lastModified()-datum));
@@ -396,7 +396,7 @@ public class UpdatePanel extends JXPanel{
 	 private String usingDateFormatterWithTimeZone(long input){  
 		 Date date = new Date(input);  
 		 Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));  
-		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MMM/dd hh:mm:ss z");  
+		 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss z");  
 		 sdf.setCalendar(cal);  
 		 cal.setTime(date);  
 		 return sdf.format(date);  
