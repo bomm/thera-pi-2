@@ -140,8 +140,8 @@ public class FTPTools {
     			return false;
     		}
     		
-    		ftpClient.setFileType(FTP.ASCII_FILE_TYPE);
-    		//ftpClient.setFileTransferMode(FTP.BINARY_FILE_TYPE);
+    		//ftpClient.setFileType(FTP.ASCII_FILE_TYPE);
+    		ftpClient.setFileTransferMode(FTP.BINARY_FILE_TYPE);
     		
     		System.out.println(ftpClient.getReplyString());
 			InputStream uis = null;
