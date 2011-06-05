@@ -1762,12 +1762,22 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         {
         	//System.out.println("**********Open-Office wird gestartet***************");
             String path = OPEN_OFFICE_ORG_PATH;
-            Map <String, String>config = new HashMap<String, String>();
+            Map <String, Object>config = new HashMap<String, Object>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
             config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
+            if(path.indexOf("LibreOffice 3.") >= 0){
+                config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
+                		new String[] {"--nologo",
+                		"--nofirststartwizard",
+                		"--nodefault",
+                		"--norestore",
+                		"--nolockcheck"
+                		});
+            }
             System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,SystemConfig.OpenOfficeNativePfad);
             officeapplication = OfficeApplicationRuntime.getApplication(config);
             officeapplication.activate();
+            
             officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
             	  public void queryTermination(ITerminateEvent terminateEvent) {
             	    super.queryTermination(terminateEvent);

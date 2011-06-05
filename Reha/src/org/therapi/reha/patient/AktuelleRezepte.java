@@ -591,6 +591,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		item.addActionListener(this);
 		jPopupMenu.add(item);
 		
+		jPopupMenu.addSeparator();
+		
+		item = new JMenuItem("Angewähltes Rezept aufteilen");  // new ImageIcon(Reha.proghome+"icons/Kreuz.png"));
+		item.setActionCommand("RezeptTeilen");
+		item.addActionListener(this);
+		jPopupMenu.add(item);
+		
 		
 		return jPopupMenu;
 	}
@@ -1887,8 +1894,13 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			if(cmd.equals("behandlerkopieren")){
 				doBehandlerKopieren();
 			}
-		}
+			if(cmd.equals("RezeptTeilen")){
+				JOptionPane.showMessageDialog(null, "<html>Diese Funktion ist noch nicht implementiert.<br><br>Bitte wenden Sie sich "+
+						"im Forum unter www.Thera-Pi.org an Teilnehmern <b>letzter3</b>!<br>Das wäre nämlich seine "+
+						"Lieblingsfunktion - so es sie gäbe....<br><br><html>");
+			}
 
+		}
 	}
 	public static String getActiveRezNr(){
 		int row = Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
