@@ -38,7 +38,7 @@ public class TheraPiUpdates implements WindowListener {
 	public static String UpdatePasswd = "";
 	public static boolean isDeveloper = false;
 
-	public static boolean testphase = false;
+	public static boolean testphase = true;
 	public static boolean starteTheraPi = false;
 	public static void main(String[] args) {
 		if(args.length > 0){
