@@ -87,6 +87,8 @@ public class UpdatePanel extends JXPanel{
 	
 	DateFormat dataformat =  DateFormat.getDateInstance(DateFormat.LONG); 
 	
+	public static Vector<String> inupdatelist = new Vector<String>();
+	
 	FTPTools ftpt = null;
 	
 	Image imgkeinupdate = new ImageIcon(TheraPiUpdates.proghome+"icons/clean.png").getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
@@ -263,6 +265,7 @@ public class UpdatePanel extends JXPanel{
 							ftpt.holeDatei(xupdate, nurvz, true, getInstance(),xgross);
 							ftpt = null;
 							pbar.setValue(0);
+							System.out.println("hole Datei -> "+updatefiles.get(ix).get(1)+" Schleifendurchlauf -> "+ix);
 							tabmod.setValueAt((ImageIcon) icokeinupdate,xrow, 3);
 							return null;
 						}
@@ -430,6 +433,7 @@ public class UpdatePanel extends JXPanel{
 			//String pfad = "";
 			String[] sourceAndTarget = {null,null};
 			Vector<Object> targetvec = new Vector<Object>(); 
+			inupdatelist.clear();
 			while ((zeile = in.readLine()) != null) {
 				if(!zeile.startsWith("#")){
 					if(zeile.length()>5){
@@ -451,6 +455,7 @@ public class UpdatePanel extends JXPanel{
 								}
 							}else if(sourceAndTarget[1].contains("%userdir%")){
 								String home = sourceAndTarget[1].trim().replace("%userdir%", TheraPiUpdates.proghome).replace("//", "/"); 
+								
 								for(int i = 0; i < mandvec.size();i++){
 									dummy.clear();
 									dummy.add(updatedir+sourceAndTarget[0].trim());
@@ -458,6 +463,7 @@ public class UpdatePanel extends JXPanel{
 									if(! targetvec.contains(dummy.get(1))){
 										updatefiles.add( (Vector<String>) ((Vector<String>)dummy.clone()) );									
 									}
+									targetvec.add(String.valueOf(home.replace("%mandantik%", mandvec.get(i)[0])));
 								}
 							}
 						// Ende nur dann Dateien eintragen	
