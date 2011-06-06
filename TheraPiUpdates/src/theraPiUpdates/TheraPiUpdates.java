@@ -37,7 +37,7 @@ public class TheraPiUpdates implements WindowListener {
 	public static String UpdateUser = "";
 	public static String UpdatePasswd = "";
 	public static boolean isDeveloper = false;
-
+	public static boolean setActiveMode = false;
 	public static boolean testphase = true;
 	public static boolean starteTheraPi = false;
 	public static void main(String[] args) {
@@ -48,7 +48,17 @@ public class TheraPiUpdates implements WindowListener {
 			proghome = "C:/RehaVerwaltung/";
 		}else{
 			proghome = java.lang.System.getProperty("user.dir").replace("\\","/")+"/";
-		}	
+		}
+		if(args.length >= 2){
+			if(args[1].equals("active")){
+				setActiveMode = true;
+				System.out.println("FTP-Modus = ActiveMode");
+			}else{
+				System.out.println("FTP-Modus = PassiveMode");
+			}
+		}else{
+			System.out.println("FTP-Modus = PassiveMode");
+		}
 		oeffneIniDatei();
 		System.out.println(proghome);
 		

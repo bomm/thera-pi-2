@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
 import java.util.Vector;
@@ -18,6 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.net.PrintCommandListener;
+import org.apache.commons.net.ProtocolCommandListener;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -39,6 +42,8 @@ public class FTPTools {
     
 	public FTPTools(){
 		ftpClient = new FTPClient();
+		ftpClient.addProtocolCommandListener((ProtocolCommandListener) new PrintCommandListener(
+                new PrintWriter(System.out)));
 		thisClass = this;
 	}
 	
@@ -46,23 +51,21 @@ public class FTPTools {
 	    	try{
 	    		if(files != null){return files;}
 	    		ftpClient.connect(TheraPiUpdates.UpdateFTP);
-				System.out.println(ftpClient.getReplyString());
-	    		
+    		
 				ftpClient.login(TheraPiUpdates.UpdateUser, TheraPiUpdates.UpdatePasswd);
-				System.out.println(ftpClient.getReplyString());
-
 
 				ftpClient.changeWorkingDirectory("."+TheraPiUpdates.UpdateVerzeichnis);
 
 				ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 				ftpClient.setFileTransferMode(FTP.STREAM_TRANSFER_MODE);
-
-				String rueck = ftpClient.getStatus();
-				System.out.println("Status = :"+rueck);
-				System.out.println("Statusausgabe beendet");
-
-				ftpClient.enterLocalActiveMode();
+				if(TheraPiUpdates.setActiveMode){
+					ftpClient.enterLocalActiveMode();					
+				}else{
+					ftpClient.enterLocalPassiveMode();	
+				}
+				
 				files = ftpClient.listFiles();
+				
 				
 
 	    	} catch (SocketException e1) {
@@ -91,8 +94,13 @@ public class FTPTools {
 
 		}
 		
-		ftpClient.enterLocalActiveMode();
-		System.out.println("Beziehe Daten über Port "+ftpClient.getLocalPort());
+		if(TheraPiUpdates.setActiveMode){
+			ftpClient.enterLocalActiveMode();					
+		}else{
+			ftpClient.enterLocalPassiveMode();	
+		}
+
+		//System.out.println("Beziehe Daten über Port "+ftpClient.getLocalPort());
 		try {
 			if(files==null){
 				files = ftpClient.listFiles();	
@@ -122,13 +130,13 @@ public class FTPTools {
     		//ftpClient.setFileType(FTP.ASCII_FILE_TYPE);
     		ftpClient.setFileTransferMode(FTP.STREAM_TRANSFER_MODE);
     		
-    		System.out.println(ftpClient.getReplyString());
+    		
 			InputStream uis = null;
 			uis = ftpClient.retrieveFileStream(datfern);
 			
 			
 			//System.out.println("**********************available**********************  "+max+" Bytes");
-			System.out.println(ftpClient.getReplyString());
+			
 			FileOutputStream fos = null;;
 			fos = new FileOutputStream(vznah+datfern);
 
@@ -156,11 +164,6 @@ public class FTPTools {
 			uis.close();
 			fos = null;
 			uis = null;
-			/*
-			ftpClient.logout();
-			ftpClient.getReplyString();
-			ftpClient.disconnect();
-			*/
 		
 			
 		} catch (IOException e1) {
@@ -186,18 +189,21 @@ public class FTPTools {
 				return "Fehler im Bezug der Log-Datei";				
 			}
 		}
-		ftpClient.enterLocalActiveMode();
+		if(TheraPiUpdates.setActiveMode){
+			ftpClient.enterLocalActiveMode();					
+		}else{
+			ftpClient.enterLocalPassiveMode();	
+		}
+
 		try {
 			InputStream uis = null;
 			uis = ftpClient.retrieveFileStream(datfern);
-			ftpClient.getReplyString();
+
 			String ret = convertStreamToString(uis);
 			uis.close();
 			uis = null;
-			ftpClient.getReplyString();
 			//System.out.println("Nach Logout = "+reply);
 			ftpClient.logout();
-			ftpClient.getReplyString();
 			//System.out.println("Nach Disconnect = "+reply);
 			ftpClient.disconnect();
 			return String.valueOf(ret);
@@ -231,7 +237,12 @@ public class FTPTools {
 			e.printStackTrace();
 		}
 		
-		ftpClient.enterLocalActiveMode();
+		if(TheraPiUpdates.setActiveMode){
+			ftpClient.enterLocalActiveMode();					
+		}else{
+			ftpClient.enterLocalPassiveMode();	
+		}
+
 		try {
     			ftpClient.deleteFile(datfern);
 				InputStream ins = null;
@@ -240,12 +251,16 @@ public class FTPTools {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				ftpClient.enterLocalActiveMode();
+				if(TheraPiUpdates.setActiveMode){
+					ftpClient.enterLocalActiveMode();					
+				}else{
+					ftpClient.enterLocalPassiveMode();	
+				}
 			
 				/*********************************/
 			
 				ftpClient.setSendBufferSize(1024*8);
-				System.out.println(ftpClient.getReplyString());
+				//System.out.println(ftpClient.getReplyString());
 				
 				OutputStream fos = ftpClient.storeFileStream(datfern);
 				if(!FTPReply.isPositiveIntermediate(ftpClient.getReplyCode())) {
@@ -326,11 +341,9 @@ public class FTPTools {
 				}
 
 			/*********************************/
-				String [] replies = ftpClient.getReplyStrings();
-				//ftpClient.appendFile(remote, local)
-				ftpClient.logout();
-				System.out.println(ftpClient.getReplyString());
-				ftpClient.disconnect();
+				//ftpClient.logout();
+
+				//ftpClient.disconnect();
 
 
 			} catch (IOException e1) {
@@ -362,14 +375,13 @@ public class FTPTools {
 	private boolean nurConnect(){
 		try {
 			ftpClient.connect(TheraPiUpdates.UpdateFTP);
-			ftpClient.getReplyString();
 
 			ftpClient.login(TheraPiUpdates.UpdateUser, TheraPiUpdates.UpdatePasswd);
-			ftpClient.getReplyString();
 
 			ftpClient.changeWorkingDirectory("."+TheraPiUpdates.UpdateVerzeichnis);
+
 			ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-			ftpClient.getReplyString();
+
 
 		} catch (SocketException e) {
 			e.printStackTrace();
@@ -392,7 +404,12 @@ public class FTPTools {
 			}
 
 		}
-		ftpClient.enterLocalActiveMode();
+		if(TheraPiUpdates.setActiveMode){
+			ftpClient.enterLocalActiveMode();					
+		}else{
+			ftpClient.enterLocalPassiveMode();	
+		}
+
 		try {
 
     		files = ftpClient.listFiles();
@@ -464,7 +481,12 @@ public class FTPTools {
 			e.printStackTrace();
 		}
 		
-		ftpClient.enterLocalActiveMode();
+		if(TheraPiUpdates.setActiveMode){
+			ftpClient.enterLocalActiveMode();					
+		}else{
+			ftpClient.enterLocalPassiveMode();	
+		}
+
 		try {
     		//files = ftpClient.listFiles();
 
@@ -478,7 +500,12 @@ public class FTPTools {
 			File src = new File(quelldat);
 			InputStream ins = new FileInputStream(src);
 
-			ftpClient.enterLocalActiveMode();
+			if(TheraPiUpdates.setActiveMode){
+				ftpClient.enterLocalActiveMode();					
+			}else{
+				ftpClient.enterLocalPassiveMode();	
+			}
+
 			
 			/*
 			ftpClient.storeFile(datfern, ins);
@@ -616,7 +643,12 @@ public class FTPTools {
 			e.printStackTrace();
 		}
 		
-		ftpClient.enterLocalActiveMode();
+		if(TheraPiUpdates.setActiveMode){
+			ftpClient.enterLocalActiveMode();					
+		}else{
+			ftpClient.enterLocalPassiveMode();	
+		}
+
 		try {
     		//files = ftpClient.listFiles();
     		
@@ -624,7 +656,12 @@ public class FTPTools {
 
 			InputStream ins = new ByteArrayInputStream( b);
 
-			ftpClient.enterLocalActiveMode();
+			if(TheraPiUpdates.setActiveMode){
+				ftpClient.enterLocalActiveMode();					
+			}else{
+				ftpClient.enterLocalPassiveMode();	
+			}
+
 			
 			/*********************************/
 			
@@ -694,7 +731,7 @@ public class FTPTools {
 				JOptionPane.showMessageDialog(null, "Die Puffer des belämmerten FTP's konnten nicht vollständig geschrieben werden!!!!(Ich krieg die Krise)");
 				System.err.println("Die Puffer des belämmerten FTP's konnten nicht vollständig geschrieben werden!!!!(Ich krieg die Krise)");
 			 }
-			System.out.println(ftpClient.getReplyString());			
+						
 			ins = null;
 			fos = null;
 			if(progresszeigen){
@@ -709,10 +746,8 @@ public class FTPTools {
 
 			/*********************************/
 			
-			String [] replies = ftpClient.getReplyStrings();
-			//ftpClient.appendFile(remote, local)
 			ftpClient.logout();
-			System.out.println(ftpClient.getReplyString());
+			
 			ftpClient.disconnect();
 
 
