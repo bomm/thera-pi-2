@@ -319,15 +319,12 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		}
 		if(direktdruck.isSelected()){
 			try {
-				Thread.sleep(100);
 				textDocument.print();
-				Thread.sleep(100);
+				Thread.sleep(50);
 				textDocument.close();
 			} catch (DocumentException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}else{
@@ -339,7 +336,6 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				}
 			});
 		}
-
 		//document.getFrame().getXFrame().getContainerWindow().setVisible(true);
 	}
 	
