@@ -2,21 +2,36 @@ package rehaMail;
 
 
 
+
+
+
+
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.LinearGradientPaint;
+import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,6 +41,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
@@ -40,30 +56,46 @@ import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.MattePainter;
+
+
 
 
 import Tools.ButtonTools;
+import Tools.DatFunk;
 import Tools.DateTableCellRenderer;
 import Tools.DblCellEditor;
 import Tools.DoubleTableCellRenderer;
 import Tools.JCompTools;
 import Tools.JRtaTextField;
+import Tools.MitteRenderer;
+import Tools.SqlInfo;
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.filter.RTFFilter;
+import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.ITextRange;
+import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.frame.ILayoutManager;
 import ag.ion.noa.internal.frame.LayoutManager;
+
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.sun.star.beans.PropertyVetoException;
 import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.beans.XPropertySet;
+import com.sun.star.datatransfer.XTransferable;
+import com.sun.star.datatransfer.XTransferableSupplier;
+import com.sun.star.frame.XController;
 import com.sun.star.frame.XLayoutManager;
 import com.sun.star.lang.IllegalArgumentException;
 import com.sun.star.lang.WrappedTargetException;
@@ -109,26 +141,27 @@ public class MailPanel extends JXPanel implements TableModelListener{
 	public	ITextDocument      document          = null;
 	private JPanel             noaPanel          = null;
 	private JXPanel			noaDummy = null;
-	NativeView nativeView = null; 
+	NativeView nativeView = null;
+	DocumentDescriptor xdescript = null;
 	
+	boolean gelesen = false;
+	String aktId = "";
+	String aktAbsender = "";
+	String aktBetreff = "";
 	JButton[] buts = {null,null,null,null,null};
 	/**************************/
 	public MailPanel(){
-		/*
-		super(new GridLayout(0,1));
-		add(getContent());
-		getnoaDummy();
-		add(noaDummy);
-		noaDummy.setVisible(true);
-		*/
 		super();
+
+		setOpaque(false);
+		
 		activateListener();
 		String xwert = "fill:0:grow(1.0)";
-		String ywert = "fill:0:grow(0.33),2px,p,2px,fill:0:grow(0.66)";
+		String ywert = "fill:0:grow(0.25),2px,p,2px,fill:0:grow(0.75)";
 		FormLayout lay = new FormLayout(xwert,ywert);
 		CellConstraints cc = new CellConstraints();
 		setLayout(lay);
-		validate();
+		//validate();
 		add(getContent(),cc.xy(1, 1));
 		add(getToolbar(),cc.xy(1, 3));
 		getnoaDummy();
@@ -161,9 +194,44 @@ public class MailPanel extends JXPanel implements TableModelListener{
 				if(cmd.equals("newMail")){
 					SwingUtilities.invokeLater(new Runnable(){
 						public void run(){
-							new NewMail("neue Nachricht erstellen",true,buts[0].getLocationOnScreen());
+							Point pt = RehaMail.thisFrame.getLocationOnScreen();
+							new NewMail("neue Nachricht erstellen",true,new Point(pt.x+50,pt.y+50),null,"","");
 						}
 					});
+					return;
+				}
+				if(cmd.equals("replyMail")){
+					if(!gelesen){
+						JOptionPane.showMessageDialog(null,"Sie haben die Mail ja noch nicht einmal gelesen!\n"+
+								"Wie bitteschön wollen Sie dann darauf antworten?");
+						return;
+					}
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							ByteArrayOutputStream out = new ByteArrayOutputStream();
+							//OutputStream out = null;
+							try {
+								try {
+									document.getPersistenceService().export(out,RTFFilter.FILTER);
+								} catch (NOAException e) {
+									e.printStackTrace();
+								}
+								out.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							Point pt = RehaMail.thisFrame.getLocationOnScreen();
+							new NewMail("Anwort auf Mail von: "+aktAbsender,false,new Point(pt.x+50,pt.y+50),
+									out,aktAbsender,aktBetreff);
+						}
+					});
+					return;
+				}
+				if(cmd.equals("loeschen")){
+					return;
+				}
+				if(cmd.equals("print")){
+					return;
 				}
 			}
 			
@@ -174,15 +242,33 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		jtb.setOpaque(false);
 		jtb.setRollover(true);
 		jtb.setBorder(null);
-		jtb.setOpaque(false);
-		jtb.add( (buts[0]=ButtonTools.macheButton("neu", "newMail", al)));
+		jtb.addSeparator(new Dimension(30,30));
+		jtb.add( (buts[0]=ButtonTools.macheButton("", "newMail", al)));
 		Image ico = new ImageIcon(RehaMail.progHome+"icons/package-install.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		buts[0].setIcon(new ImageIcon(ico));
 		buts[0].setToolTipText("eine neue Nachricht erstellen");
+		jtb.addSeparator(new Dimension(15,30));
+		jtb.add( (buts[1]=ButtonTools.macheButton("", "replyMail", al)));
+		ico = new ImageIcon(RehaMail.progHome+"icons/edit-undo.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		buts[1].setIcon(new ImageIcon(ico));
+		buts[1].setToolTipText("auf die gewählte Nachricht antworten");
+		jtb.addSeparator(new Dimension(15,30));
+		jtb.add( (buts[3]=ButtonTools.macheButton("", "loeschen", al)));
+		ico = new ImageIcon(RehaMail.progHome+"icons/package-remove-red.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		buts[3].setIcon(new ImageIcon(ico));
+		buts[3].setToolTipText("die gewählte Nachricht loeschen");
+		jtb.addSeparator(new Dimension(75,30));
+
+		ico = new ImageIcon(RehaMail.progHome+"icons/document-print.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		jtb.add( (buts[2]=ButtonTools.macheButton("", "print", al)));
+		buts[2].setIcon(new ImageIcon(ico));
+		buts[2].setToolTipText("die gewählte Nachricht drucken");
+		
 		return jtb;
 	}
 	private JXPanel getContent(){
 		JXPanel pan = new JXPanel();
+		setOpaque(false);
 		String xwerte = "0dlu,fill:0:grow(1.0),0dlu";
 		String ywerte = "0dlu,fill:0:grow(1.0),0dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
@@ -201,7 +287,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 						Thread.sleep(20);
 					}
 					doStatementAuswerten("select absender,"+
-					"gelesen,versanddatum,empfangsdatum,betreff,id from pimail where empfaenger_person='"+
+					"gelesen,versanddatum,gelesendatum,betreff,id from pimail where empfaenger_person='"+
 					RehaMail.mailUser+"' or empfaenger_gruppe like'%"+
 					RehaMail.mailUser+"%' order by gelesen,versanddatum");
 				}catch(Exception ex){
@@ -216,32 +302,42 @@ public class MailPanel extends JXPanel implements TableModelListener{
 	}
 	private JPanel getOOorgPanel(){
 		noaPanel = new JPanel(new GridLayout());
+		noaPanel.setOpaque(false);
 		noaPanel.setPreferredSize(new Dimension(1024,800));
 		noaPanel.validate();
 		return noaPanel;
 	}
 	private JXPanel getnoaDummy(){
 		noaDummy = new JXPanel(new GridLayout(1,1));
+		noaDummy.setOpaque(false);
 		return noaDummy;
 	}
 	private JXTable getTable(){
 		einmod = new EinTableModel();
 		einmod.setColumnIdentifiers(new String[] {"Absender","gelesen","Abs.Datum","Empf.Datum","Betreff","id"});
 		eintab = new JXTable(einmod);
+		
 		eintab.addMouseListener(new MouseAdapter(){
-			
+			public void mouseClicked(MouseEvent arg0) {
+				if(arg0.getClickCount()==2 && arg0.getButton()==1){
+					if(!gelesen){
+						holeNeueMail();
+						setzeGelesen();
+					}
+				}
+			}	
 		});
 		eintab.getColumn(0).setMinWidth(120);
 		eintab.getColumn(0).setMaxWidth(120);
 		eintab.getColumn(1).setMaxWidth(50);
-		eintab.getColumn(2).setMaxWidth(120);
-		eintab.getColumn(2).setMinWidth(120);
+		eintab.getColumn(2).setMaxWidth(100);
+		eintab.getColumn(2).setMinWidth(100);
 		eintab.getColumn(2).setCellEditor(tabDateEditor);
 		eintab.getColumn(2).setCellRenderer(tabDateRenderer);
 		eintab.getColumn(3).setCellEditor(tabDateEditor);
-		eintab.getColumn(3).setCellRenderer(tabDateRenderer);
-		eintab.getColumn(3).setMinWidth(120);
-		eintab.getColumn(3).setMaxWidth(120);
+		eintab.getColumn(3).setCellRenderer(new MitteRenderer());
+		eintab.getColumn(3).setMinWidth(155);
+		eintab.getColumn(3).setMaxWidth(155);
 		eintab.getColumn(5).setMinWidth(0);
 		eintab.getColumn(5).setMaxWidth(0);
 
@@ -250,24 +346,80 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		
 		return eintab;
 	}
+	/********************************************/
+	private void setzeGelesen(){
+		SqlInfo.sqlAusfuehren("update pimail set gelesen='T', gelesendatum='"+
+				new Timestamp(new Date().getTime())+"' where id = '"+aktId+"' LIMIT 1");
+		einmod.setValueAt(Boolean.TRUE,eintab.convertRowIndexToModel(eintab.getSelectedRow()),1 );
+		gelesen = true;
+	}
+	/********************************************/	
 	public void panelRegeln(){
 		if(einmod.getRowCount()<=0){tabelleLeeren();return;}
+		
 		int row = eintab.getSelectedRow();
-		while(document==null);
+		while(document==null || !RehaMail.DbOk);
 		if(row < 0){tabelleLeeren();return;}
-		if(einmod.getValueAt(eintab.convertRowIndexToModel(row),1 )==Boolean.FALSE){
-			System.out.println("Text wird gesetzt");
-			document.getTextService().getText().setText(
-					"Damit Sie die Nachricht lesen können:\n\n" +
-					"-> bitte Doppelklick in der Tabellenzeile");
+		gelesen = (Boolean)einmod.getValueAt(eintab.convertRowIndexToModel(row),1 );
+		aktId = einmod.getValueAt(eintab.convertRowIndexToModel(row),5 ).toString();
+		/****************************************************/
+		ByteArrayInputStream ins = null;
+
+		if(gelesen==Boolean.FALSE){
+			try {
+				ins = new ByteArrayInputStream(RehaMail.notread.getBytes());
+				
+				document.getTextService().getText().setText("");
+				ITextCursor textCursor = document.getTextService().getCursorService().getTextCursor();
+				textCursor.insertDocument(ins,RTFFilter.FILTER);
+				textCursor.gotoStart(false);
+				IViewCursor viewCursor = document.getViewCursorService().getViewCursor();
+				viewCursor.getPageCursor().jumpToFirstPage();
+				viewCursor.getPageCursor().jumpToStartOfPage();
+				ins.close();
+				return;
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 		}else{
-			
+			try{
+				holeMail();
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 		}
+		refreshSize();
 	}
+	
+	/****************************************************/
 	public void tabelleLeeren(){
 		einmod.setRowCount(0);
 		eintab.validate();
 		eintab.repaint();
+	}
+	public void holeNeueMail(){
+		holeMail();
+	}
+	public void holeMail(){
+		int row = eintab.getSelectedRow();
+		if(row < 0){tabelleLeeren();return;}
+		
+		ByteArrayInputStream ins = null;
+		try{
+			ins = (ByteArrayInputStream)SqlInfo.holeStream("pimail", "emailtext", "id='"+aktId+"' LIMIT 1");
+			
+			document.getTextService().getText().setText("");
+			ITextCursor textCursor = document.getTextService().getCursorService().getTextCursor();
+			textCursor.insertDocument(ins,RTFFilter.FILTER);
+			textCursor.gotoStart(false);
+			IViewCursor viewCursor = document.getViewCursorService().getViewCursor();
+			viewCursor.getPageCursor().jumpToFirstPage();
+			viewCursor.getPageCursor().jumpToStartOfPage();
+			ins.close();
+		}catch(Exception ex){
+			
+		}
+		
 	}
 	
 	class EinTableModel extends DefaultTableModel{
@@ -280,27 +432,10 @@ public class MailPanel extends JXPanel implements TableModelListener{
 			if(columnIndex==0){return String.class;}
 			if(columnIndex==1){return Boolean.class;}
 			if(columnIndex==2){return Date.class;}
-			if(columnIndex==3){return Date.class;}
+			if(columnIndex==3){return Timestamp.class;}
 			if(columnIndex==4){return String.class;}
-			/*
-			if(colTypeName.size() <= 0){return String.class;}
-			System.out.println(colTypeName.get(columnIndex));
-			if(colTypeName.get(columnIndex).contains("VARCHAR")){
-				return String.class;
-			}else if(colTypeName.get(columnIndex).equals("BOOLEAN")){
-				return Boolean.class;
-			}else if(colTypeName.get(columnIndex).contains("DECIMAL")){
-				return Double.class;
-			}else if(colTypeName.get(columnIndex).contains("tinyint(")){
-				return Integer.class;
-			}else if(colTypeName.get(columnIndex).contains("INT")){
-				return Integer.class;
-			}else if(colTypeName.get(columnIndex).contains("DATE")){
-				return Date.class;
-			}else if(colTypeName.get(columnIndex).contains("longtext")){
-				return String.class;
-			}
-			*/
+			if(columnIndex==5){return String.class;}
+			
 		   return String.class;
 	    }
 
@@ -308,6 +443,14 @@ public class MailPanel extends JXPanel implements TableModelListener{
 			return false;
 		}
 		   
+	}
+	private String getTimestampString(String ts){
+		try{
+			return DatFunk.sDatInDeutsch(ts.split(" ")[0].trim())+"-"+ts.split(" ")[1].trim().substring(0,8);
+		}catch(Exception ex){
+			
+		}
+		return "";
 	}
 	private void doStatementAuswerten(final String stat){
 		
@@ -352,14 +495,23 @@ public class MailPanel extends JXPanel implements TableModelListener{
 					vec.add((String) (rs.getString(1)==null ? "" : rs.getString(1)));
 					vec.add((Boolean) (rs.getString(2)==null ?  Boolean.FALSE : (rs.getString(2).equals("T") ? Boolean.TRUE : Boolean.FALSE)) );
 					vec.add(rs.getDate(3));
-					vec.add(rs.getDate(4));
+					vec.add((String) (rs.getString(4)==null ? "" : getTimestampString(rs.getString(4)) ));
 					vec.add((String) (rs.getString(5)==null ? "" : rs.getString(5)));
+					vec.add((String) (rs.getString(6)==null ? "" : rs.getString(6)));
 				
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
-				
 				einmod.addRow( (Vector<?>) vec.clone());
+				if(einmod.getRowCount()==1){
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							eintab.setRowSelectionInterval(0, 0);		
+						}
+					});
+					
+				}
+
 				if(durchlauf>200){
 					try {
 						eintab.validate();
@@ -375,9 +527,6 @@ public class MailPanel extends JXPanel implements TableModelListener{
 			
 			eintab.validate();
 			eintab.repaint();
-			if(eintab.getRowCount() > 0){
-				eintab.setRowSelectionInterval(0, 0);
-			}
 			jscr.validate();
 			//doSetAbfrageErgebnis();
 			
@@ -422,6 +571,10 @@ class EinListSelectionHandler implements ListSelectionListener {
 	            int maxIndex = lsm.getMaxSelectionIndex();
 	            for (int i = minIndex; i <= maxIndex; i++) {
 	                if (lsm.isSelectedIndex(i)) {
+	            		gelesen = (Boolean)einmod.getValueAt(eintab.convertRowIndexToModel(i),1 );
+	            		aktId = einmod.getValueAt(eintab.convertRowIndexToModel(i),5 ).toString();
+	            		aktAbsender = einmod.getValueAt(eintab.convertRowIndexToModel(i),0 ).toString();
+	            		aktBetreff = einmod.getValueAt(eintab.convertRowIndexToModel(i),4 ).toString();
 	                	panelRegeln();
 	                    break;
 	                }
@@ -441,6 +594,7 @@ private void fillNOAPanel() {
 	        officeFrame = constructOOOFrame(RehaMail.officeapplication, noaPanel);
 	        DocumentDescriptor docdescript = new DocumentDescriptor();
 	        docdescript.setReadOnly(true);
+	        docdescript.setFilterDefinition(RTFFilter.FILTER.toString());
 	        document = (ITextDocument) RehaMail.officeapplication.getDocumentService().constructNewDocument(officeFrame,
 	            IDocument.WRITER,
 	            docdescript);
@@ -514,6 +668,22 @@ public final void refreshSize() {
 	noaPanel.getLayout().layoutContainer(noaPanel);
 
 }
+
+static void copy(ITextDocument sourceDoc, ITextDocument targetDoc) throws Exception {
+    // the controllers 
+    XController xController_sourceDoc = sourceDoc.getXTextDocument().getCurrentController();
+    XController xController_targetDoc = targetDoc.getXTextDocument().getCurrentController();
+    // getting the data supplier of our source doc 
+    XTransferableSupplier xTransferableSupplier_sourceDoc = (XTransferableSupplier) UnoRuntime.queryInterface(XTransferableSupplier.class,
+        xController_sourceDoc);
+    // saving the selected contents 
+    XTransferable xTransferable = xTransferableSupplier_sourceDoc.getTransferable();
+    // getting the data supplier of our target doc 
+    XTransferableSupplier xTransferableSupplier_targetDoc = (XTransferableSupplier) UnoRuntime.queryInterface(XTransferableSupplier.class,
+        xController_targetDoc);
+    // inserting the source document there 
+    xTransferableSupplier_targetDoc.insertTransferable(xTransferable);
+  }
 
 
 }

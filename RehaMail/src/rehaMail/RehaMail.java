@@ -8,6 +8,8 @@ import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -33,6 +35,7 @@ import RehaIO.RehaIOMessages;
 import RehaIO.RehaReverseServer;
 import RehaIO.SocketClient;
 import Tools.INIFile;
+import Tools.SqlInfo;
 import Tools.Verschluesseln;
 
 public class RehaMail implements WindowListener {
@@ -99,13 +102,15 @@ public class RehaMail implements WindowListener {
 	public static String mailUser = "Admin";
 	
 	public MailTab mtab = null;
-	public MailPanel mpanel = null;
+	//public MailPanel mpanel = null;
 	
 	public static void main(String[] args) {
 		RehaMail application = new RehaMail();
 		application.getInstance();
 		try {
 			UIManager.setLookAndFeel("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
+			UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
+	        UIManager.put("TabbedPane.tabsOpaque", Boolean.FALSE);
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (InstantiationException e1) {
@@ -159,8 +164,34 @@ public class RehaMail implements WindowListener {
 							e.printStackTrace();
 						}
 					}
+					/*********************************/
+					new Thread(){
+						public void run(){
+							Verschluesseln man = Verschluesseln.getInstance();
+							man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+							einzelMail = SqlInfo.holeFelder("select user,rights,id from rehalogin");
+							for(int i = 0; i < einzelMail.size();i++){
+								einzelMail.get(i).set(0,man.decrypt(einzelMail.get(i).get(0)));
+								einzelMail.get(i).set(1,man.decrypt(einzelMail.get(i).get(1)));
+							}
+							Comparator<Vector<String>> comparator = new Comparator<Vector<String>>() {
+								@Override
+								public int compare(Vector<String> o1, Vector<String> o2) {
+									String s1 = (String)o1.get(0);
+									String s2 = (String)o2.get(0);
+									return s1.compareTo(s2);
+								}
+							};
+							Collections.sort(einzelMail,comparator);
+							gruppenMail = SqlInfo.holeFelder("select groupname,groupmembers,id from pimailgroup");
+							Collections.sort(gruppenMail,comparator);
+							System.out.println(einzelMail);
+							System.out.println(gruppenMail);
+						}
+					}.start();
+					/*********************************/
 					if(!DbOk){
-						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Sql kann nicht gestartet werden");				
+						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\\nReha-Sql kann nicht gestartet werden");				
 					}
 					try{
 						RehaMail.starteOfficeApplication();
@@ -173,35 +204,9 @@ public class RehaMail implements WindowListener {
 			}.execute();
 			application.getJFrame();
 		}else{
-			/*
-			final RehaMail xapplication = application;
-			new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws java.lang.Exception {
-					xapplication.starteDB();
-					long zeit = System.currentTimeMillis();
-					while(! DbOk){
-						try {
-							Thread.sleep(20);
-							if(System.currentTimeMillis()-zeit > 5000){
-								System.exit(0);
-							}
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					if(!DbOk){
-						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Sql kann nicht gestartet werden");				
-					}
-					RehaMail.starteOfficeApplication();
-					return null;
-				}
-				
-			}.execute();
-			application.getJFrame();
-			*/
+		
 			
-			JOptionPane.showMessageDialog(null, "Keine Datenbankparameter übergeben!\nReha-Sql kann nicht gestartet werden");
+			JOptionPane.showMessageDialog(null, "Keine Datenbankparameter übergeben!\\nReha-Sql kann nicht gestartet werden");
 			System.exit(0);
 			
 		}
@@ -270,12 +275,14 @@ public class RehaMail implements WindowListener {
 			rehaReverseServer = null;
 		}
 		jFrame.addWindowListener(this);
-		jFrame.setSize(750,400);
+		jFrame.setSize(800,650);
 		jFrame.setTitle("Thera-Pi Nachrichten  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
 		/****************/
-		jFrame.getContentPane().add (mpanel=new MailPanel());
+		//jFrame.getContentPane().add (mpanel=new MailPanel());
+		
+		jFrame.getContentPane().add (mtab=new MailTab());
 		jFrame.setVisible(true);
 		thisFrame = jFrame;
 		try{
@@ -460,9 +467,10 @@ public class RehaMail implements WindowListener {
 				e.printStackTrace();
 			}
 		}
-		if(RehaMail.thisClass.mpanel.document != null){
-			RehaMail.thisClass.mpanel.document.close();
-			RehaMail.thisClass.mpanel.document = null;
+		if(RehaMail.thisClass.mtab.getMailPanel().document != null){
+			RehaMail.thisClass.mtab.getMailPanel().document.close();
+			RehaMail.thisClass.mtab.getMailPanel().document = null;
+			System.out.println("Dokument wurde geschlossen");
 		}
 		if(RehaMail.thisClass.rehaReverseServer != null){
 			try{
@@ -541,6 +549,29 @@ public class RehaMail implements WindowListener {
             e.printStackTrace();
         }
     }
+    
+    public final static String notread =
+    "{\\rtf1\\ansi\\deff0\\adeflang1025"
+    		+"{\\fonttbl{\\f0\\froman\\fprq2\\fcharset0 Times New Roman;}{\\f1\\froman\\fprq2\\fcharset2 Symbol;}{\\f2\\fswiss\\fprq2\\fcharset0 Arial;}{\\f3\\fswiss\\fprq2\\fcharset128 Arial;}{\\f4\\fnil\\fprq2\\fcharset0 Microsoft YaHei;}{\\f5\\fnil\\fprq2\\fcharset0 Mangal;}{\\f6\\fnil\\fprq0\\fcharset0 Mangal;}}"
+    		+"{\\colortbl;\\red0\\green0\\blue0;\\red0\\green0\\blue255;\\red128\\green128\\blue0;\\red128\\green128\\blue128;}"
+    		+"{\\stylesheet{\\s0\\snext0\\nowidctlpar{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\cf0\\kerning1\\hich\\af7\\langfe2052\\dbch\\af5\\afs24\\lang1081\\loch\\f0\\fs24\\lang1031 Standard;}"
+    		+"{\\s15\\sbasedon0\\snext16\\sb240\\sa120\\keepn\\hich\\af4\\dbch\\af5\\afs28\\loch\\f2\\fs28 Überschrift;}"
+    		+"{\\s16\\sbasedon0\\snext16\\sb0\\sa120 Textkörper;}"
+    		+"{\\s17\\sbasedon16\\snext17\\sb0\\sa120\\dbch\\af6 Liste;}"
+    		+"{\\s18\\sbasedon0\\snext18\\sb120\\sa120\\noline\\i\\dbch\\af6\\afs24\\ai\\fs24 Beschriftung;}"
+    		+"{\\s19\\sbasedon0\\snext19\\noline\\dbch\\af6 Verzeichnis;}"
+    		+"}{\\info{\\author J\\'fcrgen Steinhilber}{\\creatim\\yr2011\\mo6\\dy7\\hr11\\min49}{\\revtim\\yr0\\mo0\\dy0\\hr0\\min0}{\\printim\\yr0\\mo0\\dy0\\hr0\\min0}{\\comment LibreOffice}{\\vern3300}}\\deftab709"
+    		+"{\\*\\pgdsctbl"
+    		+"{\\pgdsc0\\pgdscuse195\\pgwsxn11906\\pghsxn16838\\marglsxn1134\\margrsxn1134\\pgdscnxt0 Standard;}}"
+    		+"\\formshade\\paperh16838\\paperw11906\\margl1134\\margr1134\\margt1134\\margb1134\\sectd\\sbknone\\sectunlocked1\\pgndec\\pgwsxn11906\\pghsxn16838\\marglsxn1134\\margrsxn1134\\ftnbj\\ftnstart1\\ftnrstcont\\ftnnar\\aenddoc\\aftnrstcont\\aftnstart1\\aftnnrlc"
+    		+"\\pgndec\\pard\\plain \\s0\\nowidctlpar{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\cf0\\kerning1\\hich\\af7\\langfe2052\\dbch\\af5\\afs24\\lang1081\\loch\\f0\\fs24\\lang1031{\\cf2\\afs28\\rtlch \\ltrch\\loch\\fs28\\loch\\f3"
+    		+"Damit Sie die Nachricht lesen k\\u246\\'f6nnen:}"
+    		+"\\par \\pard\\plain \\s0\\nowidctlpar{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\cf0\\kerning1\\hich\\af7\\langfe2052\\dbch\\af5\\afs24\\lang1081\\loch\\f0\\fs24\\lang1031{\\afs28\\rtlch \\ltrch\\loch\\fs28\\loch\\f3"
+    		+"}"
+    		+"\\par \\pard\\plain \\s0\\nowidctlpar{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\cf0\\kerning1\\hich\\af7\\langfe2052\\dbch\\af5\\afs24\\lang1081\\loch\\f0\\fs24\\lang1031{\\cf3\\afs28\\rtlch \\ltrch\\fs28\\loch\\f3"
+    		+"\\u8594\\'92 }{\\cf3\\afs28\\rtlch \\ltrch\\loch\\fs28\\loch\\f3"
+    		+"Doppelklick auf die Tabellenzeile}"
+    		+"\\par }";
 	
 
 }
