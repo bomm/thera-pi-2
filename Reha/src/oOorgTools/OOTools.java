@@ -159,21 +159,32 @@ public class OOTools{
 		ITextField[] placeholders = null;
 		try {
 			placeholders = textFieldService.getPlaceholderFields();
+			//Thread.sleep(100);
 		} catch (TextException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		/*
+		for (int i = 0; i < placeholders.length; i++) {
+			try{
+				System.out.println(placeholders[i].getDisplayText());
+			}catch(com.sun.star.uno.RuntimeException ex){
+				System.out.println("Fehler bei placeholder "+i);
+			}
+		}
+		*/
 		String placeholderDisplayText = "";
 		try{
 		for (int i = 0; i < placeholders.length; i++) {
 			//boolean loeschen = false;
+			
 			boolean schonersetzt = false;
 			try{
 				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-				//System.out.println(placeholderDisplayText);
 			}catch(com.sun.star.uno.RuntimeException ex){
 				//System.out.println("************catch()*******************");
 				ex.printStackTrace();
+				System.out.println("Fehler bei Placehoder "+i);
+				System.out.println("Insgesamt Placeholderanzahl = "+placeholders.length);
 			}
 
 		    /*****************/			

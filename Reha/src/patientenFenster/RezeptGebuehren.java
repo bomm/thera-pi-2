@@ -303,7 +303,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 			e.printStackTrace();
 		}
 		
-
+		try{
 		for (int i = 0; i < placeholders.length; i++) {
 			String placeholderDisplayText = placeholders[i].getDisplayText();
 			if(placeholderDisplayText.startsWith("<R")){
@@ -314,11 +314,19 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				placeholders[i].getTextRange().setText("\b");
 			}
 		}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 		if(direktdruck.isSelected()){
 			try {
+				Thread.sleep(100);
 				textDocument.print();
+				Thread.sleep(100);
 				textDocument.close();
 			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
