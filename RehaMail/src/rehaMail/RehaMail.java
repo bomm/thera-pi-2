@@ -3,6 +3,8 @@ package rehaMail;
 
 
 import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.Connection;
@@ -15,6 +17,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -23,6 +26,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
 
+
+
+import ag.ion.bion.officelayer.application.IApplicationAssistant;
+import ag.ion.bion.officelayer.application.ILazyApplicationInfo;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
@@ -30,6 +37,8 @@ import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.event.ITerminateEvent;
 import ag.ion.bion.officelayer.event.VetoTerminateListener;
+import ag.ion.bion.officelayer.internal.application.ApplicationAssistant;
+
 
 import RehaIO.RehaIOMessages;
 import RehaIO.RehaReverseServer;
@@ -69,6 +78,7 @@ public class RehaMail implements WindowListener {
 	public static String dbUser = "rtauser";
 	public static String dbPassword = "rtacurie";
 	public static String officeProgrammPfad = "C:/Program Files (x86)/LibreOffice 3";
+	//public static String officeProgrammPfad = "C:/Program Files (x86)/OpenOffice.org 3";
 	public static String officeNativePfad = "C:/RehaVerwaltung/Libraries/lib/openofficeorg/";
 	public static String progHome = "C:/RehaVerwaltung/";
 	public static String aktIK = "510841109";
@@ -101,12 +111,26 @@ public class RehaMail implements WindowListener {
 	
 	public static String mailUser = "Admin";
 	
+	public static Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
+	public static Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
+	public final Cursor cmove = new Cursor(Cursor.MOVE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cnsize = new Cursor(Cursor.N_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cnwsize = new Cursor(Cursor.NW_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cnesize = new Cursor(Cursor.NE_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cswsize = new Cursor(Cursor.SW_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cwsize = new Cursor(Cursor.W_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor csesize = new Cursor(Cursor.SE_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cssize = new Cursor(Cursor.S_RESIZE_CURSOR);  //  @jve:decl-index=0:
+	public final Cursor cesize = new Cursor(Cursor.E_RESIZE_CURSOR);  //  @jve:decl-index=0:	
+	public final Cursor cdefault = new Cursor(Cursor.DEFAULT_CURSOR);  //  @jve:decl-index=0:	
+	
+	public static ImageIcon[] attachmentIco = {null,null,null,null,null};
+	public static int toolsDlgRueckgabe;
 	public MailTab mtab = null;
 	//public MailPanel mpanel = null;
-	
+	public static ImageIcon[] icoPinPanel = {null,null,null};
+	                        
 	public static void main(String[] args) {
-		RehaMail application = new RehaMail();
-		application.getInstance();
 		try {
 			UIManager.setLookAndFeel("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
 			UIManager.put("TabbedPane.contentOpaque", Boolean.FALSE);
@@ -147,11 +171,24 @@ public class RehaMail implements WindowListener {
 					rehaReversePort = Integer.parseInt(args[2]);
 				}
 			}
+			
+			try {
+				RehaMail.starteOfficeApplication();
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+			RehaMail application = new RehaMail();
+			application.getInstance();
 
 			final RehaMail xapplication = application;
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws java.lang.Exception {
+					try{
+						
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
 					xapplication.starteDB();
 					long zeit = System.currentTimeMillis();
 					while(! DbOk){
@@ -165,8 +202,7 @@ public class RehaMail implements WindowListener {
 						}
 					}
 					/*********************************/
-					new Thread(){
-						public void run(){
+							
 							Verschluesseln man = Verschluesseln.getInstance();
 							man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 							einzelMail = SqlInfo.holeFelder("select user,rights,id from rehalogin");
@@ -185,24 +221,20 @@ public class RehaMail implements WindowListener {
 							Collections.sort(einzelMail,comparator);
 							gruppenMail = SqlInfo.holeFelder("select groupname,groupmembers,id from pimailgroup");
 							Collections.sort(gruppenMail,comparator);
-							System.out.println(einzelMail);
-							System.out.println(gruppenMail);
-						}
-					}.start();
+							//System.out.println(einzelMail);
+							//System.out.println(gruppenMail);
 					/*********************************/
 					if(!DbOk){
 						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\\nReha-Sql kann nicht gestartet werden");				
 					}
-					try{
-						RehaMail.starteOfficeApplication();
-					}catch(Exception ex){
-						
-					}
+					xapplication.getJFrame();
 					return null;
 				}
 				
 			}.execute();
-			application.getJFrame();
+			
+
+			
 		}else{
 		
 			
@@ -211,6 +243,9 @@ public class RehaMail implements WindowListener {
 			
 		}
 		
+	}
+	public MailTab getMTab(){
+		return mtab;
 	}
 	/********************/
 	
@@ -227,6 +262,7 @@ public class RehaMail implements WindowListener {
 			e.printStackTrace();
 		}
 		thisClass = this;
+		createIcons();
 		jFrame = new JFrame(){
 			
 			/**
@@ -274,17 +310,20 @@ public class RehaMail implements WindowListener {
 		}catch(Exception ex){
 			rehaReverseServer = null;
 		}
+		thisFrame = jFrame;
 		jFrame.addWindowListener(this);
 		jFrame.setSize(800,650);
+		jFrame.setPreferredSize(new Dimension(800,650));
 		jFrame.setTitle("Thera-Pi Nachrichten  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
 		/****************/
 		//jFrame.getContentPane().add (mpanel=new MailPanel());
 		
-		jFrame.getContentPane().add (mtab=new MailTab());
+		jFrame.getContentPane().add (mtab=new MailTab(this));
+		//jFrame.pack();
 		jFrame.setVisible(true);
-		thisFrame = jFrame;
+		
 		try{
 			new SocketClient().setzeRehaNachricht(RehaMail.rehaReversePort,"AppName#RehaMail#"+Integer.toString(RehaMail.xport));
 			new SocketClient().setzeRehaNachricht(RehaMail.rehaReversePort,"RehaMail#"+RehaIOMessages.IS_STARTET);
@@ -294,6 +333,23 @@ public class RehaMail implements WindowListener {
 
 		return jFrame;
 	}
+	private void createIcons(){
+		Image ico = new ImageIcon(RehaMail.progHome+"icons/pdf.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		attachmentIco[0] = new ImageIcon(ico);
+		ico = new ImageIcon(RehaMail.progHome+"icons/ooo-writer.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		attachmentIco[1] = new ImageIcon(ico);
+		ico = new ImageIcon(RehaMail.progHome+"icons/ooo-calc.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		attachmentIco[2] = new ImageIcon(ico);
+		ico = new ImageIcon(RehaMail.progHome+"icons/document-save-as.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		attachmentIco[3] = new ImageIcon(ico);
+		ico = new ImageIcon(RehaMail.progHome+"icons/application-exit.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		attachmentIco[4] = new ImageIcon(ico);
+		icoPinPanel[0] = new ImageIcon(RehaMail.progHome+"icons/red.png");
+		icoPinPanel[1] = new ImageIcon(RehaMail.progHome+"icons/buttongreen.png");
+		icoPinPanel[2] = new ImageIcon(RehaMail.progHome+"icons/inaktiv.png");
+
+	}
+
 	
 	
 	/********************/
@@ -501,54 +557,48 @@ public class RehaMail implements WindowListener {
 	public void windowOpened(WindowEvent arg0) {
 	}
 	
-	/***************************/
+	/**
+	 * @throws Throwable *************************/
 	
-    public static void starteOfficeApplication(){ 
+    public static void starteOfficeApplication() throws OfficeApplicationException{ 
 
-    	final String OPEN_OFFICE_ORG_PATH = RehaMail.officeProgrammPfad;
+ 
 
-        try
-        {
-        	//System.out.println("**********Open-Office wird gestartet***************");
-            String path = OPEN_OFFICE_ORG_PATH;
-            Map <String, Object>config = new HashMap<String, Object>();
-            config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
-            config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-            if(path.indexOf("LibreOffice 3.") >= 0){
-            	config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
-            		new String[] {"--nologo",
-            		"--nofirststartwizard",
-            		"--nodefault",
-            		"--norestore",
-            		"--nolockcheck"
-            		});
+        	final String OPEN_OFFICE_ORG_PATH = RehaMail.officeProgrammPfad;
+
+            try
+            {
+            	//System.out.println("**********Open-Office wird gestartet***************");
+                String path = OPEN_OFFICE_ORG_PATH;
+                Map <String, String>config = new HashMap<String, String>();
+                config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
+                config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
+                System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,RehaMail.officeNativePfad);
+                officeapplication = OfficeApplicationRuntime.getApplication(config);
+                officeapplication.activate();
+                officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
+                	  public void queryTermination(ITerminateEvent terminateEvent) {
+                	    super.queryTermination(terminateEvent);
+                	    try {
+                	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
+                	      if (docs.length == 1) { 
+                	        docs[0].close();
+                	        //System.out.println("Letztes Dokument wurde geschlossen");
+                	      }
+                	    }
+                	    catch (DocumentException e) {
+                	    	e.printStackTrace();
+                	    } catch (OfficeApplicationException e) {
+    						e.printStackTrace();
+    					}
+                	  }
+                	});
             }
-            System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,RehaMail.officeNativePfad);
-            
-            officeapplication = OfficeApplicationRuntime.getApplication(config);
-            officeapplication.activate();
-            officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
-            	  public void queryTermination(ITerminateEvent terminateEvent) {
-            	    super.queryTermination(terminateEvent);
-            	    try {
-            	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
-            	      if (docs.length == 1) { 
-            	        docs[0].close();
-            	        //System.out.println("Letztes Dokument wurde geschlossen");
-            	      }
-            	    }
-            	    catch (DocumentException e) {
-            	    	e.printStackTrace();
-            	    } catch (OfficeApplicationException e) {
-						e.printStackTrace();
-					}
-            	  }
-            	});
+            catch (OfficeApplicationException e) {
+                e.printStackTrace();
+            }
+            System.out.println("OpenOffice ist gestartet und Active ="+officeapplication.isActive());
         }
-        catch (OfficeApplicationException e) {
-            e.printStackTrace();
-        }
-    }
     
     public final static String notread =
     "{\\rtf1\\ansi\\deff0\\adeflang1025"

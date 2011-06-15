@@ -4,6 +4,10 @@ package rehaMail;
 
 
 
+
+
+
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -18,28 +22,39 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
@@ -51,6 +66,26 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+
+import Tools.ButtonTools;
+import Tools.DatFunk;
+import Tools.JRtaComboBox;
+import Tools.JRtaTextField;
+import ag.ion.bion.officelayer.NativeView;
+import ag.ion.bion.officelayer.application.IOfficeApplication;
+import ag.ion.bion.officelayer.desktop.IFrame;
+import ag.ion.bion.officelayer.document.DocumentDescriptor;
+import ag.ion.bion.officelayer.document.DocumentException;
+import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.filter.ODTFilter;
+import ag.ion.bion.officelayer.filter.RTFFilter;
+import ag.ion.bion.officelayer.text.ITextCursor;
+import ag.ion.bion.officelayer.text.ITextDocument;
+import ag.ion.bion.officelayer.text.IViewCursor;
+import ag.ion.noa.NOAException;
+import ag.ion.noa.filter.OpenDocumentFilter;
+import ag.ion.noa.filter.OpenOfficeFilter;
+import ag.ion.noa.frame.ILayoutManager;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -65,30 +100,13 @@ import com.sun.star.ui.XUIElement;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.view.DocumentZoomType;
 
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
-import Tools.SqlInfo;
-import ag.ion.bion.officelayer.NativeView;
-import ag.ion.bion.officelayer.application.IOfficeApplication;
-import ag.ion.bion.officelayer.desktop.IFrame;
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.filter.PDFFilter;
-import ag.ion.bion.officelayer.filter.RTFFilter;
-import ag.ion.bion.officelayer.text.IParagraph;
-import ag.ion.bion.officelayer.text.ITextCursor;
-import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.ITextRange;
-import ag.ion.bion.officelayer.text.IViewCursor;
-import ag.ion.noa.NOAException;
-import ag.ion.noa.frame.ILayoutManager;
-import ag.ion.noa.internal.frame.LayoutManager;
-
 public class NewMail extends JFrame  implements WindowListener  {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 218981219028959375L;
+
 	boolean neu;
 	
 	private IFrame             officeFrame       = null;
@@ -99,6 +117,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 	DocumentDescriptor xdescript = null;
 	
 	ActionListener al = null;
+	MouseListener ml = null;
 	
 	JButton[] buts = {null,null,null,null,null};
 	JRadioButton[] rads = {null,null,null};
@@ -106,7 +125,10 @@ public class NewMail extends JFrame  implements WindowListener  {
 	JRtaComboBox box = null;
 	JRtaTextField betreff = null;
 	JRtaTextField empfaenger = null;
+	JRtaTextField attachments = null;
 	String aktAbsender = "";
+	
+	Vector<Vector<String>> vecAttachments = new Vector<Vector<String>>(); 
 	ByteArrayOutputStream out;
 	public NewMail(String title,boolean neu,Point pt,ByteArrayOutputStream out,String absender,String sbetreff){
 		super();
@@ -167,28 +189,106 @@ public class NewMail extends JFrame  implements WindowListener  {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String cmd = arg0.getActionCommand();
-				if(cmd.equals("senden")){
-					try {
-						doSenden();
-					} catch (NOAException e) {
-						e.printStackTrace();
+				try{
+					if(cmd.equals("senden")){
+						try {
+							doSenden();
+						} catch (NOAException e) {
+							e.printStackTrace();
+						}
+						return;
+					}else if(cmd.equals("einzel")){
+						doRecipient(true);
+						return;
+					}else if(cmd.equals("gruppe")){
+						doRecipient(false);
+						return;
+					}else if(cmd.equals("selektor")){
+						return;
+					}else if(cmd.equals("attachments")){
+						doAttachments();
+						return;
+					}else if(Integer.parseInt(cmd) >= 1 && Integer.parseInt(cmd) <= 3){
+						loescheAttachments(Integer.parseInt(cmd)-1);
+						regleAttachments();
+						
+						return;
 					}
-					return;
-				}else if(cmd.equals("einzel")){
-					doRecipient(true);
-					return;
-				}else if(cmd.equals("gruppe")){
-					doRecipient(false);
-					return;
-				}else if(cmd.equals("selektor")){
-					return;
-				}
+				}catch(Exception ex){
+					ex.printStackTrace();
 
-			}
-			
+				}
+			}	
+		};
+		ml = new MouseAdapter(){
+			public void mouseClicked(MouseEvent arg0) {
+				if(arg0.getClickCount()==1 && arg0.getButton()==3){
+					if(vecAttachments.size()==0){attachments.setText("");return;}
+						ZeigePopupMenu(arg0);
+				}
+			}	
 		};
 	}
-	private void doSenden() throws NOAException{
+	private void ZeigePopupMenu(java.awt.event.MouseEvent me){
+		JPopupMenu jPop = getAttachmentPopupMenu();
+		
+		final java.awt.event.MouseEvent mex = me;
+		final JPopupMenu jxPop = jPop;
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				attachments.requestFocus();
+				jxPop.show(mex.getComponent(), mex.getX(), mex.getY()-jxPop.getHeight());
+				jxPop.setLocation( mex.getLocationOnScreen().x, mex.getLocationOnScreen().y-jxPop.getHeight());
+			}
+		});
+		 
+	}
+	private JPopupMenu getAttachmentPopupMenu(){
+		JPopupMenu jPopupMenu = new JPopupMenu();
+		// Lemmi 20101231: Icon zugefügt
+		JMenuItem item = null;
+		for(int i = 0; i < vecAttachments.size();i++){
+			if( i > 0 ){jPopupMenu.addSeparator();}
+			item = new JMenuItem("Anhang -> "+vecAttachments.get(i).get(0)+" entfernen...");
+			item.setActionCommand(Integer.toString(i+1));
+			item.addActionListener(al);
+			jPopupMenu.add(item);
+		}
+		return jPopupMenu;
+	}
+	
+	private void doAttachments(){
+		if(vecAttachments.size()==3){
+			JOptionPane.showMessageDialog(null,"Es sind bereits 3 Attachments angegeben.\nMehr geht in Thera-Pi-Nachrichten nicht!");
+			return;
+		}
+		
+		String[] ret = dateiDialog(RehaMail.progHome);
+		if(ret[0]==null){return;}
+		Vector<String> vec = new Vector<String>();
+		vec.add(String.valueOf(ret[0]));
+		vec.add(String.valueOf(ret[1].replace("\\", "/")) );
+		vecAttachments.add( (Vector<String>)vec.clone()  );
+		regleAttachments();
+		System.out.println(vecAttachments);
+
+	}
+	private void regleAttachments(){
+		if(vecAttachments.size()==0){attachments.setText("");return;}
+		String att = "";
+		for(int i = 0; i < vecAttachments.size();i++){
+			att = att + (i==0 ? vecAttachments.get(i).get(0) : "; "+vecAttachments.get(i).get(0) );
+		}
+		attachments.setText(att);
+	}
+	private void loescheAttachments(int element){
+		for(int i = vecAttachments.size(); i >=0 ;i--){
+			if(i==element){
+				vecAttachments.remove(i);
+			}
+		}
+	}
+	private void doSenden() throws NOAException, DocumentException{
 		if(betreff.getText().trim().equals("")){
 			JOptionPane.showMessageDialog(null,"Es wurde kein -> Betreff <- eingegeben!\nNachricht wird nicht versendet.");
 			return;
@@ -216,18 +316,33 @@ public class NewMail extends JFrame  implements WindowListener  {
 			JOptionPane.showMessageDialog(null,"Es wurden keinerlei gültige Empfänger eingegeben!\nNachricht wird nicht versendet.");
 			return;
 		}
-		System.out.println(versand);
+		//System.out.println(versand);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		document.getPersistenceService().export(out, RTFFilter.FILTER);
+		//document.getPersistenceService().export(out, RTFFilter.FILTER);
+		//document.getPersistenceService().storeAs(out);
+		document.getPersistenceService().export(out,OpenDocumentFilter.FILTER);
 		try {
+			ByteArrayInputStream ins = null;
 			out.flush();
 			for(int i = 0; i < versand.size();i++){
-				
+				try {
+					doSpeichernMail(
+							versand.get(i),
+							betreff.getText(),
+							ins = new ByteArrayInputStream(out.toByteArray()),
+							vecAttachments);
+					ins.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			out.close();
+			MailTab.eltern.getMTab().updateReceivedMail();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		document.close();
+		document = null;
 		this.setVisible(false);
 		this.dispose();
 		
@@ -280,12 +395,10 @@ public class NewMail extends JFrame  implements WindowListener  {
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				while(RehaMail.officeapplication==null){
-				}
-
-				while(!RehaMail.officeapplication.isActive()){
-					Thread.sleep(75);
-				}
+				if(!RehaMail.officeapplication.isActive()){
+					//System.out.println("Aktiviere Office...");
+					RehaMail.starteOfficeApplication();
+				}				
 				fillNOAPanel();
 				validate();
 				nativeView.requestFocus();
@@ -303,7 +416,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 		JXPanel pan = new JXPanel();
 		pan.setOpaque(false);
 		String xwert = "p,5dlu,80dlu,5dlu,100dlu:g,5dlu";
-		String ywert = "p,2dlu,p";
+		String ywert = "p,2dlu,p,2dlu,p";
 		FormLayout lay = new FormLayout(xwert,ywert);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
@@ -349,6 +462,17 @@ public class NewMail extends JFrame  implements WindowListener  {
 		pan.add(betreff,cc.xyw(3,3,3));
 		pan.validate();
 		
+		
+		
+		pan.add(buts[1] = ButtonTools.macheButton("", "attachments", al),cc.xy(1, 5,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		buts[1].setIcon(RehaMail.attachmentIco[3]);
+		buts[1].setToolTipText("Datei(en) dieser Nachricht anhängen");
+		attachments = new JRtaTextField("nix",true);
+		attachments.setFont(new Font("Courier New",12,12));
+		attachments.setEditable(false);
+		attachments.addMouseListener(ml);
+		pan.add(attachments,cc.xyw(3,5,3));
+		pan.validate();
 		return pan;
 	}
 	private JPanel getOOorgPanel(){
@@ -368,7 +492,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 		      try {
 		        officeFrame = constructOOOFrame(RehaMail.officeapplication, noaPanel);
 		        DocumentDescriptor desc = new DocumentDescriptor();
-		        desc.setFilterDefinition(RTFFilter.FILTER.toString());
+		        desc.setFilterDefinition(OpenDocumentFilter.FILTER.toString());
 
 		        
 		        document = (ITextDocument) RehaMail.officeapplication.getDocumentService().constructNewDocument(officeFrame,
@@ -389,7 +513,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 					document.getTextService().getText().setText("\n\n********************bisherige Nachricht************************\n\n");
 					ITextCursor textCursor = document.getTextService().getCursorService().getTextCursor();
 					textCursor.gotoEnd(false);
-					textCursor.insertDocument(ins,RTFFilter.FILTER);
+					textCursor.insertDocument(ins,OpenDocumentFilter.FILTER);
 					textCursor.gotoStart(false);
 					IViewCursor viewCursor = document.getViewCursorService().getViewCursor();
 					viewCursor.getPageCursor().jumpToFirstPage();
@@ -490,6 +614,11 @@ public class NewMail extends JFrame  implements WindowListener  {
 	}
 	@Override
 	public void windowClosed(WindowEvent arg0) {
+		if(document != null){
+			document.close();
+			System.out.println("Dokument wurde geschlossen");
+			document = null;
+		}
 	}
 	@Override
 	public void windowClosing(WindowEvent arg0) {
@@ -515,30 +644,57 @@ public class NewMail extends JFrame  implements WindowListener  {
 		InputStream is=new ByteArrayInputStream(out.toByteArray());
 		return is;
 	}
-	public static void doSpeichernMail(int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu) throws Exception{
+	public static void doSpeichernMail(
+			String empfaenger,
+			String betreff,
+			InputStream insemailtext,
+			Vector<Vector<String>> attaches
+			) throws Exception{
 		Statement stmt = null;;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
+		FileInputStream[] ins = {null,null,null}; 
 		try {
 			stmt = (Statement) RehaMail.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE );
 			
-			String select = "insert into pimail set dokuid = ? , datum = ?, dokutitel = ?,"+
-			"benutzer = ?, pat_intern = ?, format = ?,"+
-			"dokutext = ?, dokublob = ? , groesse = ? ";
+			String select = "insert into pimail set "+
+			"absender = ? ,"+
+			"empfaenger_person = ?,"+
+			"versanddatum = ?,"+
+			"gelesen = ?, "+
+			"betreff = ?,"+
+			"emailtext = ?,"+
+			"attach1 = ?,"+
+			"attach2= ?,"+
+			"attach3= ?,"+
+			"file1 = ?,"+
+			"file2 = ?,"+
+			"file3 = ?";
 			ps = (PreparedStatement) RehaMail.thisClass.conn.prepareStatement(select);
-			ps.setInt(1, dokuid);
-			ps.setString(2, str[0]);			  
-			ps.setString(3, str[1]);
-			ps.setString(4, str[2]);			  
-			ps.setInt(5, pat_intern);
-			ps.setInt(6, format);			  
-			ps.setString(7, str[3]);
-			File f = new File(dateiname);
-			byte[] b = "Scheiss".getBytes();
-			ps.setBytes(8,b);
-			ps.setInt(9, (int)b.length);
+			ps.setString(1, RehaMail.mailUser);
+			ps.setString(2, empfaenger);			  
+			ps.setString(3, DatFunk.sDatInSQL(DatFunk.sHeute()));
+			ps.setString(4, "F");			  
+			ps.setString(5, betreff);
+			ps.setBinaryStream(6,insemailtext);
+			for(int i = 0; i < 3; i++){
+				if(i <= (attaches.size()-1) ){
+					ps.setBinaryStream(7+i, (ins[i]=new FileInputStream(attaches.get(i).get(1))));
+					ps.setString(10+i,attaches.get(i).get(0));
+				}else{
+					ps.setBinaryStream(7+i,null);
+					ps.setString(10+i,null);
+				}
+			}
+			RehaMail.thisFrame.setCursor(RehaMail.WAIT_CURSOR);
 			ps.execute();
+			for(int i = 0; i < 3; i++){
+				if(ins[i] != null){
+					ins[i].close();
+				}
+			}
+			RehaMail.thisFrame.setCursor(RehaMail.DEFAULT_CURSOR);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -563,6 +719,49 @@ public class NewMail extends JFrame  implements WindowListener  {
 			}
 		}
 		
+	}
+	
+	private String[] dateiDialog(String pfad){
+		//String sret = "";
+		String[] sret ={null,null};
+		final JFileChooser chooser = new JFileChooser("Dateianhang auswählen");
+        chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        final File file = new File(pfad);
+
+        chooser.setCurrentDirectory(file);
+
+        chooser.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
+                if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
+                        || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
+                    final File f = (File) e.getNewValue();
+                }
+            }
+
+        });
+        chooser.setVisible(true);
+        setCursor(RehaMail.thisClass.normalCursor);
+        final int result = chooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File inputVerzFile = chooser.getSelectedFile();
+            String inputVerzStr = inputVerzFile.getPath();
+            
+
+            if(inputVerzFile.getName().trim().equals("")){
+            	
+            	//sret = "";
+            }else{
+            	sret[0] = inputVerzFile.getName().trim();
+            	sret[1] = inputVerzStr;
+            }
+        }else{
+        	//sret = ""; //vorlagenname.setText(SystemConfig.oTerminListe.NameTemplate);
+        }
+        chooser.setVisible(false); 
+
+        return sret;
 	}
 	
 

@@ -8,6 +8,7 @@ import java.awt.geom.Point2D;
 import javax.swing.BorderFactory;
 import javax.swing.JTabbedPane;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
@@ -21,9 +22,11 @@ public class MailTab extends JXPanel {
 	private static final long serialVersionUID = 4803270370485221090L;
 	JTabbedPane mailTab = null;
 	MailPanel mailPanel = null;
-	ReceivePanel receivePanel = null;
-	public MailTab(){
+	SendMailPanel sendPanel = null;
+	public static RehaMail eltern;
+	public MailTab(RehaMail xeltern){
 		super(new BorderLayout());
+		eltern = xeltern;
 		CompoundPainter<Object> cp = null;
 		MattePainter mp = null;
 		LinearGradientPaint p = null;
@@ -45,17 +48,29 @@ public class MailTab extends JXPanel {
 		mailTab = new JTabbedPane();
 		mailTab.setUI(new WindowsTabbedPaneUI());
 		mailTab.setOpaque(false);
-		
-		mailPanel = new MailPanel();
-		mailPanel.setOpaque(false);
-		mailTab.add(mailPanel,"eingegangene Nachrichten");
-		JXPanel pan = new JXPanel();
-		pan.setOpaque(false);
-		mailTab.add(pan,"gesendete Nachrichten");
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				mailPanel = new MailPanel();
+				mailPanel.setOpaque(false);
+				mailTab.setPreferredSize(RehaMail.thisFrame.getPreferredSize());
+				mailTab.add(mailPanel,"eingegangene Nachrichten");
+				
+				sendPanel = new SendMailPanel();
+				mailTab.add(sendPanel,"gesendete Nachrichten");
+				mailTab.revalidate();
+				return null;
+			}
+			
+		}.execute();
+			
 		add(mailTab,BorderLayout.CENTER);
 	}
 	public MailPanel getMailPanel(){
 		return mailPanel;
+	}
+	public void updateReceivedMail(){
+		
 	}
 
 }
