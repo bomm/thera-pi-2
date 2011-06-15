@@ -170,6 +170,10 @@ public class RehaMail implements WindowListener {
 				if(args.length >= 3){
 					rehaReversePort = Integer.parseInt(args[2]);
 				}
+				if(args.length >= 3){
+					mailUser = args[2];
+				}
+				
 			}
 			
 			try {
