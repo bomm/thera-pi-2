@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 
 import krankenKasse.KassenPanel;
 
+import org.therapi.reha.patient.LadeProg;
 import org.therapi.reha.patient.PatientHauptPanel;
 
 import rechteTools.Rechte;
@@ -956,6 +957,13 @@ public static void PasswortDialog(int setPos) {
 	if(Reha.progRechte.equals("")){
 		System.exit(0);
 	}
+	SwingUtilities.invokeLater(new Runnable(){
+		
+		public void run(){
+			Reha.nachrichtenRegeln();
+		}
+	});
+	
 }
 
 /**************System-Initialisierung*********************/

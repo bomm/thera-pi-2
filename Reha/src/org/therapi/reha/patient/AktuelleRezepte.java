@@ -1860,6 +1860,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[2],currow,1);
 					tabaktrez.validate();
 					doVectorAktualisieren(new int[]{12,13,14,39},new String[] {"F","0.00","F","2"});
+					SqlInfo.sqlAusfuehren("delete from kasse where rez_nr='"+xreznr+"' LIMIT 1");
 				}
 				
 			}

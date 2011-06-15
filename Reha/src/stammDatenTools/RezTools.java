@@ -636,6 +636,7 @@ public class RezTools {
 		Vector<String> vAktTermine = null;
 		boolean bTermine = false;
 		//int iTermine = -1;
+		boolean u18Test = false;
 		boolean bMitJahresWechsel = false;
 		ZuzahlModell zm = new ZuzahlModell();
 		//Vector<String> patvec = SqlInfo.holeSatz("pat5", "geboren,jahrfrei", "pat_intern='"+xvec.get(1)+"'", Arrays.asList(new String[] {}));
@@ -652,6 +653,12 @@ public class RezTools {
 			if( ((String)vAktTermine.get(0)).substring(6).equals(SystemConfig.vorJahr)){
 				bMitJahresWechsel = true;
 			}
+			if(DatFunk.Unter18(vAktTermine.get(0), 
+					DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)))){
+				//System.out.println(vAktTermine);
+				u18Test = true;
+			}
+			
 		}
 
 		//System.out.println(vAktTermine);
@@ -673,20 +680,24 @@ public class RezTools {
 			}
 
 			/************************ Jetzt der Ober-Scheißdreck für den Achtzehner-Test***********************/
-			if((boolean) ((String)Reha.thisClass.patpanel.vecaktrez.get(60)).equals("T")){
+			if( ((Boolean) ((String)Reha.thisClass.patpanel.vecaktrez.get(60)).equals("T")) || (u18Test)){
 				// Es ist ein unter 18 Jahre Test notwendig
 				//System.out.println("Es ist ein unter 18 Jahre Test notwendig");
 				if(bTermine){
-					
+
 					int [] test = ZuzahlTools.terminNachAchtzehn(vAktTermine,DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.patDaten.get(4))); 
 					if( test[0] > 0 ){
-						//mu� zuzahlen
+						//muß zuzahlen
+						//System.out.println("Parameter 1 = "+test[0]);
+						//System.out.println("Parameter 2 = "+test[1]);
+
 						zm.allefrei = false;
 						if(test[1] > 0){
 							zm.allefrei = false;
 							zm.allezuzahl = false;
 							zm.anfangfrei = true;
 							zm.teil1 = test[1];
+							zm.teil2 = maxAnzahl()-test[1];
 							//System.out.println("Splitten frei für "+test[1]+" Tage, bezahlen für "+(maxAnzahl()-test[1]));
 							iret = 1;
 						}else{
@@ -827,7 +838,7 @@ public class RezTools {
 		zm.preisgruppe = Integer.parseInt(((String)Reha.thisClass.patpanel.vecaktrez.get(41)));
 		zm.gesamtZahl = Integer.parseInt(((String)Reha.thisClass.patpanel.vecaktrez.get(64)));
 		//Hausbesuch als logischen wert
-		
+		System.out.println("Rückgabewert iret = "+iret);
 		if(iret==0){
 			if(testefuerbarcode){
 				constructGanzFreiRezHMap(zm);
@@ -981,13 +992,17 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
 	}
 	public static void constructAnfangFreiRezHMap(ZuzahlModell zm,boolean anfang){
-		//System.out.println("*****In Anfang-frei*********");
-		if(anfang){
-			zm.gesamtZahl = Integer.valueOf(zm.teil2);
-			//System.out.println("Restliche Behandlungen berechnen = "+zm.gesamtZahl);
-		}else{
-			zm.gesamtZahl = Integer.valueOf(zm.teil1);
-			//System.out.println("Beginn der Behandlung berechnen = "+zm.gesamtZahl);
+		try{
+			//System.out.println("*****In Anfang-frei*********");
+			if(anfang){
+				zm.gesamtZahl = Integer.valueOf(zm.teil2);
+				//System.out.println("Restliche Behandlungen berechnen = "+zm.gesamtZahl);
+			}else{
+				zm.gesamtZahl = Integer.valueOf(zm.teil1);
+				//System.out.println("Beginn der Behandlung berechnen = "+zm.gesamtZahl);
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 
 		Double rezgeb = new Double(0.000);

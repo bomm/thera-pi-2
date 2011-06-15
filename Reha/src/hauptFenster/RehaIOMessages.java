@@ -10,4 +10,8 @@ public class RehaIOMessages {
 	public static String MUST_DOKUFIND = "DOKUSUCHEN";
 	public static String MUST_OPFIND = "OPSUCHEN";
 	public static String MUST_GOTOFRONT = "TOFRONT";
+	public static String MUST_RESET = "RESET";
+	public static String MUST_SEARCHFORMAIL = "SEARCHMAIL";
+	public static String MUST_CHANGEUSER = "CHANGEUSER";
+	
 }

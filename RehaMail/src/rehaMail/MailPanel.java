@@ -156,6 +156,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 	ActionListener al = null;
 	JScrollPane jscr = null;
 	JXPanel grundpanel;
+	EinListSelectionHandler listhandler = null;
 	
 	private IFrame             officeFrame       = null;
 	public	ITextDocument      document          = null;
@@ -178,11 +179,26 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		super();
 		//setSize(1024,800);
 		//setPreferredSize(new Dimension(1024,800));
-		setLayout(new GridLayout());
-
+		//setLayout(new GridLayout());
+		setLayout(new BorderLayout());
 		setOpaque(false);
 		try{
 			activateListener();
+			/******************/
+			JXPanel pan = new JXPanel();
+			pan.setOpaque(false);
+			String xwert = "fill:0:grow(1.0),p";
+			String ywert = "5px,p,5px";
+			FormLayout lay = new FormLayout(xwert,ywert);
+			CellConstraints cc = new CellConstraints();
+			pan.setLayout(lay);
+
+			pan.add(getToolbar(),cc.xy(1, 2,CellConstraints.FILL,CellConstraints.FILL));
+			pan.add(getAttachmentButton(),cc.xy(2,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+			pan.validate();
+			add(pan,BorderLayout.NORTH);
+			/*******************/
+			
 			add(constructSplitPaneOU(),BorderLayout.CENTER);
 			//noaDummy.add(getOOorgPanel());
 			//noaPanel.setVisible(true);
@@ -203,6 +219,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
+		validate();
 
 	}
 	private JXPanel getToolsPanel(){
@@ -214,8 +231,10 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		pan.setLayout(lay);
 		CellConstraints cc = new CellConstraints();
 		pan.add(getContent(),cc.xyw(1, 1,2));
+		/*
 		pan.add(getToolbar(),cc.xy(1, 3));
 		pan.add(getAttachmentButton(),cc.xy(2,3,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		*/
 		pan.validate();
 		return pan;
 	}
@@ -314,7 +333,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		jtb.setOpaque(false);
 		jtb.setRollover(true);
 		jtb.setBorder(null);
-		jtb.addSeparator(new Dimension(30,30));
+		jtb.addSeparator(new Dimension(0,30));
 		jtb.add( (buts[0]=ButtonTools.macheButton("", "newMail", al)));
 		Image ico = new ImageIcon(RehaMail.progHome+"icons/package-install.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		buts[0].setIcon(new ImageIcon(ico));
@@ -374,10 +393,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 					while(!RehaMail.DbOk){
 						Thread.sleep(20);
 					}
-					doStatementAuswerten("select absender,"+
-					"gelesen,versanddatum,gelesendatum,betreff,id from pimail where empfaenger_person='"+
-					RehaMail.mailUser+"' or empfaenger_gruppe like'%"+
-					RehaMail.mailUser+"%' order by gelesen DESC,versanddatum DESC");
+					checkForNewMail();					
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
@@ -387,6 +403,17 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		}.execute();
 		pan.validate();
 		return pan;
+	}
+	public void checkForNewMail(){
+		doStatementAuswerten("select absender,"+
+				"gelesen,versanddatum,gelesendatum,betreff,id from pimail where empfaenger_person='"+
+				RehaMail.mailUser+"' or empfaenger_gruppe like'%"+
+				RehaMail.mailUser+"%' order by gelesen DESC,versanddatum DESC");
+		for(int i = 0; i < 4; i++){
+			if(buts[i] != null){
+				buts[i].setEnabled(true);	
+			}
+		}
 	}
 	private JXPanel getOOorgPanel(){
 
@@ -424,7 +451,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		eintab.getColumn(5).setMaxWidth(0);
 
 		eintab.setFont(new Font("Courier New",12,12));
-		eintab.getSelectionModel().addListSelectionListener( new EinListSelectionHandler());
+		eintab.getSelectionModel().addListSelectionListener( (listhandler=new EinListSelectionHandler()));
 		
 		return eintab;
 	}
@@ -438,9 +465,24 @@ public class MailPanel extends JXPanel implements TableModelListener{
 			JOptionPane.showMessageDialog(null,"Zeitstempel für gelesen gesetzt!");
 		}
 	}
+	public void allesAufNull(){
+		document.getTextService().getText().setText("");
+		loescheBilder();
+		loescheParagraphen();
+		eintab.getSelectionModel().removeListSelectionListener(listhandler);
+		einmod.setRowCount(0);
+		eintab.validate();
+		eintab.repaint();
+		eintab.getSelectionModel().addListSelectionListener(listhandler);
+		RehaMail.updateTitle("unbekannt");
+		for(int i = 0; i < 5; i++){
+			buts[i].setEnabled(false);
+		}
+
+	}
 	/********************************************/	
 	public void panelRegeln(){
-		System.out.println("in PanelRegeln");
+		//System.out.println("in PanelRegeln");
 		if(einmod.getRowCount()<=0){tabelleLeeren();return;}
 		
 		int row = eintab.getSelectedRow();
@@ -453,6 +495,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 
 		if(gelesen==Boolean.FALSE){
 			try {
+				buts[4].setEnabled(false);
 				ins = new ByteArrayInputStream(RehaMail.notread.getBytes());
 				document.getTextService().getText().setText("");
 				loescheBilder();
@@ -516,7 +559,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 	}
 	protected void loescheBilder(){
 		ITextDocument textDocument = (ITextDocument)document;
-		resolveControls(textDocument.getXTextDocument().getText());
+		//resolveControls(textDocument.getXTextDocument().getText());
 		/************************/
 		XTextGraphicObjectsSupplier graphicObjSupplier = (XTextGraphicObjectsSupplier) UnoRuntime.queryInterface(XTextGraphicObjectsSupplier.class,
         	      textDocument.getXTextDocument());
@@ -575,7 +618,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		        if (xParagraphCursor.isStartOfParagraph() &
 		        xParagraphCursor.isEndOfParagraph()
 		        ) {
-		          System.out.println("empty para");
+
 		        }
 		        else {
 		          xParagraphCursor.gotoEndOfParagraph(true); //select the current paragraph.
@@ -684,7 +727,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		ResultSet rs = null;
 		//ResultSet md = null;
 		
-		
+		einmod.setRowCount(0);
 		Vector<Object> vec = new Vector<Object>();
 		int durchlauf = 0;
 
@@ -695,7 +738,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		//CHAR kann sowohl ein einzelnes Zeichen als auch enum('T','F') also boolean sein...
 		//eigentlich ein Riesenmist!
 
-			
+		eintab.getSelectionModel().removeListSelectionListener(listhandler);	
 		try {
 
 			stmt =  RehaMail.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -720,6 +763,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 				if(einmod.getRowCount()==1){
 					SwingUtilities.invokeLater(new Runnable(){
 						public void run(){
+							eintab.getSelectionModel().addListSelectionListener(listhandler);
 							eintab.setRowSelectionInterval(0, 0);		
 						}
 					});

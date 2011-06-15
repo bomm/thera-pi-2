@@ -21,7 +21,7 @@ public class MailTab extends JXPanel {
 	 */
 	private static final long serialVersionUID = 4803270370485221090L;
 	JTabbedPane mailTab = null;
-	MailPanel mailPanel = null;
+	public MailPanel mailPanel = null;
 	SendMailPanel sendPanel = null;
 	public static RehaMail eltern;
 	public MailTab(RehaMail xeltern){

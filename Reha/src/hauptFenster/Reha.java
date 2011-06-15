@@ -60,6 +60,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TimerTask;
 import java.util.TooManyListenersException;
 import java.util.Vector;
 
@@ -107,6 +108,7 @@ import org.therapi.reha.patient.PatientHauptPanel;
 import rechteTools.Rechte;
 import rehaInternalFrame.JRehaInternal;
 import rehaInternalFrame.OOODesktopManager;
+
 import roogle.RoogleFenster;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -199,6 +201,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean dividerOk = false;
 	public JLabel messageLabel = null;
 	public JLabel dbLabel = null;
+	public JXPanel versionbar = null;
 	public JLabel mousePositionLabel = null;
 	public JXPanel jxPinContainer = null;
 	public JXPanel jxCopyContainer = null;
@@ -307,6 +310,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean timerLaeuft = false;
 	public static boolean timerInBearbeitung = false;
 	
+	public static java.util.Timer nachrichtenTimer = null;
+	public static boolean nachrichtenLaeuft = false;
+	public static boolean nachrichtenInBearbeitung = false;
+	//final public JProgressBar rehaNachrichtenprogress = new JProgressBar();
+
 	public static boolean updatesBereit = false;
 	public static boolean updatesChecken = true;
 	public static int toolsDlgRueckgabe = -1;
@@ -523,6 +531,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				//
 				Reha.thisClass.doCompoundPainter();
 				Reha.thisClass.starteTimer();
+				if(SystemConfig.timerdelay > 0){
+					Reha.thisClass.starteNachrichtenTimer();
+				}
 				
 			    SwingUtilities.invokeLater(new Runnable(){
 			    	public void run(){
@@ -582,6 +593,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		if(Reha.timerLaeuft){
 			Reha.fangoTimer.stop();
 			Reha.timerLaeuft = false;
+		}
+		if(Reha.nachrichtenTimer != null){
+			Reha.nachrichtenTimer.cancel();
+			Reha.nachrichtenLaeuft = false;
+			Reha.nachrichtenTimer = null;
 		}
 		if(rehaIOServer != null){
 			try {
@@ -867,7 +883,47 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 		
 	}
-
+	/***************************************/	
+	private void starteNachrichtenTimer(){
+			Reha.nachrichtenTimer = new java.util.Timer();
+			TimerTask task = new TimerTask() {
+				public void run() {
+					if(!nachrichtenInBearbeitung){
+						//nur wenn das Nachrichtentool nich läuft
+						if(!RehaIOServer.rehaMailIsActive){
+							nachrichtenInBearbeitung = true;
+							/**************/
+								if( (!Reha.aktUser.equals("")) && (checkForMails()) ){
+									nachrichtenRegeln();
+								}
+							/*************/	
+						}	
+						nachrichtenInBearbeitung = false;
+					}
+				}
+			};
+			//start des Timers:
+			Reha.nachrichtenTimer.scheduleAtFixedRate(task, SystemConfig.timerdelay, SystemConfig.timerdelay);
+	}
+	public static void nachrichtenRegeln(){
+		//System.out.println(Reha.aktUser);
+		if((!Reha.aktUser.trim().startsWith("Therapeut")) && RehaIOServer.rehaMailIsActive){
+			new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaMailreversePort, "Reha#"+RehaIOMessages.MUST_CHANGEUSER+"#"+Reha.aktUser);
+			new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaMailreversePort,"Reha#"+RehaIOMessages.MUST_GOTOFRONT);
+		}else{
+			if((!Reha.aktUser.trim().startsWith("Therapeut")) && Reha.checkForMails()){
+				new LadeProg(Reha.proghome+"RehaMail.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport+" "+Reha.aktUser);
+			}
+		}
+	}
+	public static boolean checkForMails(){
+		if(!SqlInfo.holeEinzelFeld("select gelesen from pimail where empfaenger_person ='"+
+				Reha.aktUser+"' and gelesen='F' LIMIT 1").trim().equals("") ) {
+			return true;
+		}
+		return false;
+	}
+	/***************************************/
 	public void aktiviereNaechsten(int welchen){
 		JInternalFrame[] frame = desktops[welchen].getAllFrames();
 		if(frame.length > 0){
@@ -1258,15 +1314,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			JXPanel bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
 			bar.setBorder(BorderFactory.createLoweredBevelBorder());
-			JXPanel bar2 = new JXPanel(new BorderLayout());
-			bar2.setOpaque(false);
-			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+			JXPanel versionbar = new JXPanel(new BorderLayout());
+			versionbar.setOpaque(false);
+			versionbar.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
 			dbLabel = new JLabel(" ");
 			//JLabel lab = new JLabel("Benutzer: Admin");
 			dbLabel.setVerticalAlignment(JLabel.CENTER);
 			dbLabel.setHorizontalAlignment(JLabel.LEFT);
-			bar2.add(dbLabel);
-			bar.add(bar2);
+			versionbar.add(dbLabel);
+			bar.add(versionbar);
 			sbkomplett.add(bar,sbcc.xy(2, 2));
 
 			/*************2 Container*****************************/
@@ -1279,7 +1335,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			bar = new JXPanel(new BorderLayout());
 			bar.setOpaque(false);
 			bar.setBorder(BorderFactory.createLoweredBevelBorder());
-			bar2 = new JXPanel(new BorderLayout());
+			JXPanel bar2 = new JXPanel(new BorderLayout());
 			bar2.setOpaque(false);
 			bar2.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
 			messageLabel = new JLabel("starte OpenOffice.org");
@@ -1700,6 +1756,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 							Reha.fangoTimer.stop();
 							Reha.timerLaeuft = false;
 						}
+						if(Reha.nachrichtenTimer != null){
+							Reha.nachrichtenTimer.cancel();
+							Reha.nachrichtenLaeuft = false;
+							Reha.nachrichtenTimer = null;
+							
+						}						
 						if(rehaIOServer != null){
 							try {
 								rehaIOServer.serv.close();
@@ -1854,7 +1916,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                     }
                     if(keyEvent.isAltDown() &&
                             keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode()==88) {  // Ctrl-P
-                             ProgLoader.PasswortDialog(0);
+                    		Reha.aktUser = "";
+                    		SwingUtilities.invokeLater(new Runnable(){
+                    			public void run(){
+                    				if(RehaIOServer.rehaMailIsActive){
+                    					new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaMailreversePort, "Reha#"+RehaIOMessages.MUST_RESET);
+                    				}
+                    			}
+                    		});
+                            ProgLoader.PasswortDialog(0);
                     }
 
                     if(keyEvent.isControlDown() &&
@@ -2256,6 +2326,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					e.printStackTrace();
 				}
 			}
+			if(Reha.nachrichtenTimer != null){
+				Reha.nachrichtenTimer.cancel();
+				Reha.nachrichtenLaeuft = false;
+				Reha.nachrichtenTimer = null;
+			}
+			
 			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 			SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
 			SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
@@ -2351,6 +2427,7 @@ public void starteTimer(){
 	Reha.fangoTimer.start();
 	Reha.timerLaeuft = true;
 }
+
 public static void testeNummernKreis(){
 	String cmd = "select mandant from nummern LIMIT 1";
 	Vector<Vector<String>> vecnummern = SqlInfo.holeFelder(cmd);

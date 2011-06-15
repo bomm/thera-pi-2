@@ -228,10 +228,15 @@ public class ZuzahlTools {
 		String stichtag = "";
 		//int ret = -1;
 		for(int i = 0;i < tage.size();i++){
+			if(!DatFunk.Unter18(tage.get(i), geburtstag)){
+				return new int[]{1,i};
+			}
+			/*
 			stichtag = ((String)tage.get(i)).substring(0,6)+Integer.valueOf(Integer.valueOf(SystemConfig.aktJahr)-18).toString();
 			if(DatFunk.TageDifferenz(geburtstag ,stichtag) >= 0 ){
 				return new int[]{1,i};
 			}
+			*/
 			
 		}
 		return new int[] {0,-1};

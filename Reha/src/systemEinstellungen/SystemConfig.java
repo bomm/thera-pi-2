@@ -15,6 +15,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+
+
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemTools.Verschluesseln;
@@ -189,6 +191,12 @@ public class SystemConfig {
 
 	public static String dta301InBox = null;
 	public static String dta301OutBox = null;
+	
+	public static long timerdelay = 600000;
+	public static boolean timerpopup = true;
+	public static boolean timerprogressbar = true;
+	
+
 	                     
 	public SystemConfig(){
 	
@@ -302,6 +310,7 @@ public class SystemConfig {
 	}
 
 	private void HauptFenster(){
+		try{
 			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 			//ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
 
@@ -332,13 +341,21 @@ public class SystemConfig {
 				JOptionPane.showMessageDialog(null, meldung);
 			}
 			OpenOfficeNativePfad = ini.getStringProperty("OpenOffice.org","OfficeNativePfad");
+			
+			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/nachrichten.ini");
+			timerdelay = ini.getLongProperty("RehaNachrichten", "NachrichtenTimer");
+			timerpopup = (ini.getIntegerProperty("RehaNachrichten", "NachrichtenPopUp") <= 0 ? false : true);
+			timerprogressbar = (ini.getIntegerProperty("RehaNachrichten", "NachrichtenProgressbar") <= 0 ? false : true);
+
 			wissenURL = ini.getStringProperty("WWW-Services","RTA-Wissen");
 			homePageURL = ini.getStringProperty("WWW-Services","HomePage");		
 			homeDir = Reha.proghome;
-			 
-			//homeDir = ini.getStringProperty("Application","HeimatVerzeichnis");
-			////System.out.println("HomeDir = "+homeDir);
-			return;
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		//homeDir = ini.getStringProperty("Application","HeimatVerzeichnis");
+		////System.out.println("HomeDir = "+homeDir);
+		return;
 	}
 	private static boolean pfadOk(String pfad){
 		File f = new File(pfad);

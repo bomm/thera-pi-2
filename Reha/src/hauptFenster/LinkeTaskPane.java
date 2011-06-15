@@ -418,6 +418,13 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		tp5.setTitle("Nützliches...");
 		//tp3.setIcon(new ImageIcon("icons/pdf.gif"));				
 		JXHyperlink jxLink = new JXHyperlink();
+		jxLink.setText("Thera-PI - Nachrichten");
+		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
+		img = new ImageIcon(Reha.proghome+"icons/emblem-mail.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));		
+		jxLink.addActionListener(this);
+		tp5.add(jxLink);
+		jxLink = new JXHyperlink();
 		jxLink.setText("Thera-PI - Browser");
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		img = new ImageIcon(Reha.proghome+"icons/home.gif").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
@@ -724,6 +731,20 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 
 				
 				break;
+			}
+			if (cmd.equals("Thera-PI - Nachrichten")){
+				Reha.nachrichtenRegeln();
+				/*
+				if(! RehaIOServer.rehaMailIsActive){
+					if(Reha.aktUser.startsWith("Therapeut")){return;}
+					new LadeProg(Reha.proghome+"RehaMail.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport+" "+Reha.aktUser);
+				}else{
+					if(Reha.aktUser.startsWith("Therapeut")){return;}
+					new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaMailreversePort,"Reha#"+RehaIOMessages.MUST_GOTOFRONT);
+				}
+				*/
+				
+					
 			}
 			if (cmd.equals("Neuer Wissensbeitrag anlegen")){
 				JOptionPane.showMessageDialog (null, "Achtung!!!!! \n\nDer Wissens-Generator ist auf diesem System\n\n" +
