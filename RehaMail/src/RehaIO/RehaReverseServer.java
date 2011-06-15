@@ -42,8 +42,13 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 			RehaMail.thisFrame.setVisible(true);
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_REZFIND)){
 			
+		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_RESET)){
+			
+		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_SEARCHFORMAIL)){
+			
+		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_CHANGEUSER)){
+			
 		}
-
 	}
 	@Override
 	protected Void doInBackground() throws Exception {
@@ -95,7 +100,7 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					System.out.println("In Exception w√§hren der while input.read()-Schleife");
+					System.out.println("In Exception w‰hrend der while input.read()-Schleife");
 				}
 				/***************************/
 				
