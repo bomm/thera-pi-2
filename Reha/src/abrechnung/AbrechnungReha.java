@@ -953,7 +953,7 @@ public class AbrechnungReha extends JXPanel{
 	}
 	
 	/******************Nachfolgend die OO.writer - Funktionen**************************/
-	public void starteDokument(String url,String drucker) {
+	public synchronized void starteDokument(String url,String drucker) {
 		//System.out.println("URL="+url);
 		//System.out.println("Drucker="+drucker);
 		IDocumentService documentService = null;
@@ -1026,7 +1026,7 @@ public class AbrechnungReha extends JXPanel{
 		}
 		textEndbetrag.getCell(1,0).getTextService().getText().setText(dcf.format(gesamt.doubleValue())+" EUR");
 	}
-	private void starteDrucken(int exemplare){
+	private synchronized void starteDrucken(int exemplare){
 		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
 			SwingUtilities.invokeLater(new Runnable(){
 				public void run(){

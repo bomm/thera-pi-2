@@ -57,7 +57,7 @@ public class AbrechnungDrucken {
 		this.eltern = eltern;
 		starteDokument(url);
 	}
-	public void setIKundRnr(String papierIk,String rnr,HashMap<String,String> hmap){
+	public synchronized void setIKundRnr(String papierIk,String rnr,HashMap<String,String> hmap){
 		this.papierIK = papierIk;
 		this.rechnungNummer = rnr;
 		this.hmAdresse = hmap;

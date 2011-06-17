@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import systemEinstellungen.SystemConfig;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
@@ -55,7 +56,7 @@ SuchenSeite eltern;
 		start();
 	}
 	
-	public void run() {
+	public synchronized void run() {
 			String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.oTerminListe.NameTemplate;
 			//String url = Reha.proghome+"vorlagen/"+SystemConfig.oTerminListe.NameTemplate; 
 			////System.out.println("***************URL = "+url+"****************");
@@ -74,7 +75,17 @@ SuchenSeite eltern;
 			String patname = (patient.indexOf("?")>=0 ? patient.substring(1).trim() : patient.trim());
 			String rez = (rezept.trim().equals("") ? "" : " - "+rezept.trim());
 	        patname = patname+rez;
-			IDocumentService documentService = null;;
+	        
+	        /**********/
+	        eltern.getFortschritt().setStringPainted(false);
+	        eltern.getFortschritt().setIndeterminate(true);
+	        eltern.setFortschrittZeigen(true);
+	        //eltern.setFortschrittRang(0, Long.valueOf(Integer.toString(termindat.size()))+(termindat.size()/10));
+	        //eltern.setFortschrittSetzen(0);
+	        //eltern.setFortschrittZeigen(true);
+	        /**********/
+	        
+	        IDocumentService documentService = null;;
 			if(!Reha.officeapplication.isActive()){
 				Reha.starteOfficeApplication();
 			}
@@ -176,10 +187,12 @@ SuchenSeite eltern;
 			} catch (TextException e) {
 				e.printStackTrace();
 			}
+			int zaehler = 0;
 			while(true){
+
 				aktTerminInTabelle = aktTerminInTabelle+1;
 				aktTermin = aktTermin+1;
-				
+				//eltern.setFortschrittSetzen(aktTermin);				
 				if(aktTermin >= anzahl){
 					break;
 				}
@@ -280,6 +293,16 @@ SuchenSeite eltern;
 				}
 				
 				/********************/
+				try {
+					zaehler+=1;
+					if(zaehler >= 50){
+						Thread.sleep(25);
+						zaehler=0;
+					}
+					
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 			// Jetzt das fertige Dokument drucken, bzw. als PDF aufbereiten;
 			
@@ -288,14 +311,37 @@ SuchenSeite eltern;
 				
 				try {
 						if(SystemConfig.oTerminListe.DirektDruck){
+
+							//eltern.setFortschrittSetzen(termindat.size()+(termindat.size()/20));
 							textDocument.print();
+							try {
+								while(textDocument.getPrintService().isActivePrinterBusy()){
+									Thread.sleep(50);
+								}
+								Thread.sleep(150);
+							} catch (NOAException e) {
+								e.printStackTrace();
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							} catch(NullPointerException ex){
+								ex.printStackTrace();
+							}
+							//System.out.println("vor close()");
 							textDocument.close();
+							//eltern.setFortschrittSetzen(termindat.size()+(termindat.size()/10));
+							//eltern.setFortschrittZeigen(false);
+							eltern.getFortschritt().setIndeterminate(false);
+							eltern.setFortschrittZeigen(false);
+					        eltern.getFortschritt().setStringPainted(true);
 							this.termindat = null;
-							
 							eltern.cursorWait(false);
 						}else{
 							eltern.cursorWait(false);
-							document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+							//document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+							//eltern.setFortschrittSetzen(termindat.size()+(termindat.size()/10));
+							eltern.getFortschritt().setIndeterminate(false);
+							eltern.setFortschrittZeigen(false);
+					        eltern.getFortschritt().setStringPainted(true);
 							this.termindat = null;
 						}
 						
@@ -306,16 +352,27 @@ SuchenSeite eltern;
 			}else{
 				exporturl = Reha.proghome+"temp/"+Reha.aktIK+"/Terminplan.pdf";
 				try {
+					Thread.sleep(50);
 					textDocument.getPersistenceService().export(exporturl, new PDFFilter());
 				} catch (DocumentException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}			
 			}
 			// Anschließend die Vorlagendatei schließen
 			//textDocument.close();
 			if(!ldrucken){
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				textDocument.close();
 				sendeEmail();
+				eltern.getFortschritt().setIndeterminate(false);
+				eltern.setFortschrittZeigen(false);
+		        eltern.getFortschritt().setStringPainted(true);
 				this.termindat = null;
 			}
 	

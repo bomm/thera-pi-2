@@ -32,7 +32,7 @@ public class PatientMultiFunctionPanel extends JXPanel{
 		patientHauptPanel = null;
 	}
 	
-	private JXPanel getTabs(){
+	private synchronized JXPanel getTabs(){
 		JXPanel rechts = new JXPanel(new BorderLayout());
 		rechts.setOpaque(false);
 		rechts.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));

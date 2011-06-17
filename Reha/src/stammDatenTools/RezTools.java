@@ -838,7 +838,7 @@ public class RezTools {
 		zm.preisgruppe = Integer.parseInt(((String)Reha.thisClass.patpanel.vecaktrez.get(41)));
 		zm.gesamtZahl = Integer.parseInt(((String)Reha.thisClass.patpanel.vecaktrez.get(64)));
 		//Hausbesuch als logischen wert
-		System.out.println("Rückgabewert iret = "+iret);
+		//System.out.println("Rückgabewert iret = "+iret);
 		if(iret==0){
 			if(testefuerbarcode){
 				constructGanzFreiRezHMap(zm);

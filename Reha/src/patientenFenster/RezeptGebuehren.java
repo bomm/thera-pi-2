@@ -27,6 +27,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import oOorgTools.OOTools;
+
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
@@ -77,6 +79,8 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 	MattePainter mp = null;
 	LinearGradientPaint p = null;
 	private AktuelleRezepte aktuelleRezepte;
+	ITextDocument textDocument = null;
+	
 	public RezeptGebuehren(AktuelleRezepte aktrez,boolean kopie,boolean historie,Point pt){
 		super(null,"RezeptGebuehr");
 		if(aktrez!=null){
@@ -233,7 +237,17 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		return pb.getPanel();
 	}
 /****************************************************/	
-	public void rezGebDrucken(){
+	public synchronized void rezGebDrucken(){
+		if(!Reha.officeapplication.isActive()){
+			Reha.starteOfficeApplication();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		try{
 		String url = "";
 		if( ((String)Reha.thisClass.patpanel.vecaktrez.get(43)).equals("T") ){
 			url = SystemConfig.rezGebVorlageHB;
@@ -242,13 +256,14 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		}
 	
 		// Wenn Hausbesuch andere Vorlage.....
-		IDocumentService documentService = null;;
+		IDocumentService documentService = null;
 		
 		try {
 			documentService = Reha.officeapplication.getDocumentService();
 		} catch (OfficeApplicationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
         IDocumentDescriptor docdescript = new DocumentDescriptor();
         //docdescript.setHidden(true);
@@ -257,42 +272,19 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		}else{
 	        docdescript.setHidden(true);			
 		}
-
         docdescript.setAsTemplate(true);
+        
 		IDocument document = null;
 		try {
 			document = documentService.loadDocument(url,docdescript);
+			textDocument = (ITextDocument)document;
 
-		} catch (NOAException e) {
-			// TODO Auto-generated catch block
+		}catch (NOAException e) {
 			e.printStackTrace();
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
-		/**********************/
-		ITextDocument textDocument = (ITextDocument)document;
-		String druckerName = null;
-		try {
-			druckerName = textDocument.getPrintService().getActivePrinter().getName();
-		} catch (NOAException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//Wenn nicht gleich wie in der INI angegeben -> Drucker wechseln
-		IPrinter iprint = null;
-		if(! druckerName.equals(SystemConfig.rezGebDrucker)){
-			try {
-				iprint = (IPrinter) textDocument.getPrintService().createPrinter(SystemConfig.rezGebDrucker);
-			} catch (NOAException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				textDocument.getPrintService().setActivePrinter(iprint);
-			} catch (NOAException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
+		OOTools.druckerSetzen(textDocument, SystemConfig.rezGebDrucker);
 		/**********************/
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
 		ITextField[] placeholders = null;
@@ -320,13 +312,19 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		if(direktdruck.isSelected()){
 			try {
 				textDocument.print();
-				Thread.sleep(50);
+				while(textDocument.getPrintService().isActivePrinterBusy()){
+					Thread.sleep(50);
+				}
+				Thread.sleep(100);
 				textDocument.close();
 			} catch (DocumentException e) {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			}catch (NOAException e) {
+				e.printStackTrace();
 			}
+			
 		}else{
 			final ITextDocument xtextDocument = textDocument;
 			SwingUtilities.invokeLater(new Runnable() {
@@ -337,6 +335,9 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 			});
 		}
 		//document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 	
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
@@ -377,6 +378,25 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				@Override
 				protected Void doInBackground() throws Exception {
 					try{
+						setVisible(false);
+						if(!nurkopie){
+							doBuchen();
+						}
+						rezGebDrucken();
+						doSchliessen();
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+
+					return null;
+				}
+			}.execute();
+
+			/*
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try{
 						if(!nurkopie){
 							doBuchen();
 						}
@@ -389,6 +409,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				}
 				
 			}.execute();
+			*/
 		}
 	}
 	public void doSchliessen(){

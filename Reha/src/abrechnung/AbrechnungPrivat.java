@@ -988,7 +988,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 
 	}
 	
-	private void starteDrucken() throws DocumentException, InterruptedException{
+	private synchronized void starteDrucken() throws DocumentException, InterruptedException{
 		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
 			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 		}else{

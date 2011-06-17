@@ -2436,6 +2436,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
 		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
 		/*int art = */RezTools.testeRezGebArt(false,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
+		
 		new RezeptGebuehren(this,bereitsbezahlt,false,pt);
 	}
 	public void setZuzahlImage(int imageno){
@@ -2900,7 +2901,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}else if(Reha.toolsDlgRueckgabe==1){
 					tDlg = null;
 					if(!Rechte.hatRecht(Rechte.Rezept_gebuehren, true)){return;}
-					doBarcode();
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							doBarcode();
+							return null;
+						}
+					}.execute();
+
 					return;
 				}else if(Reha.toolsDlgRueckgabe==2){
 					tDlg = null;

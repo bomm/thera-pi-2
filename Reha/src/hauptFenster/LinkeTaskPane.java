@@ -733,8 +733,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				break;
 			}
 			if (cmd.equals("Thera-PI - Nachrichten")){
-				Reha.nachrichtenRegeln();
-				/*
+				//Reha.nachrichtenRegeln();
 				if(! RehaIOServer.rehaMailIsActive){
 					if(Reha.aktUser.startsWith("Therapeut")){return;}
 					new LadeProg(Reha.proghome+"RehaMail.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport+" "+Reha.aktUser);
@@ -742,7 +741,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 					if(Reha.aktUser.startsWith("Therapeut")){return;}
 					new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaMailreversePort,"Reha#"+RehaIOMessages.MUST_GOTOFRONT);
 				}
-				*/
+				
 				
 					
 			}

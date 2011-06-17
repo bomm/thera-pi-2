@@ -77,10 +77,10 @@ public class OOTools{
 	public OOTools(){
 		
 	}
-	public static void sucheLeerenPlatzhalter(ITextDocument textDocument, ITextField placeholders){
+	public static synchronized void sucheLeerenPlatzhalter(ITextDocument textDocument, ITextField placeholders){
 		
 	}
-	public static void loescheLeerenPlatzhalter(ITextDocument textDocument, ITextField placeholders){
+	public static synchronized void loescheLeerenPlatzhalter(ITextDocument textDocument, ITextField placeholders){
 		try{
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.goToRange(placeholders.getTextRange(), false);
@@ -100,7 +100,7 @@ public class OOTools{
 		}
 	}
 	/**************************************************************************************/
-	public static void starteStandardFormular(String url,String drucker) {
+	public static synchronized void starteStandardFormular(String url,String drucker) {
 		IDocumentService documentService = null;
 		ITextDocument textDocument = null;
 		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
@@ -296,7 +296,7 @@ public class OOTools{
 
 	}
 	/**************************************************************************************/
-	public static void starteRGKopie(String url,String drucker) {
+	public static synchronized void starteRGKopie(String url,String drucker) {
 		IDocumentService documentService = null;
 		ITextDocument textDocument = null;
 		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
@@ -437,7 +437,7 @@ public class OOTools{
 	}
 
 	/*******************************************************************************************/
-	public static void starteBacrodeFormular(String url,String drucker){
+	public static synchronized void starteBacrodeFormular(String url,String drucker){
 		IDocumentService documentService = null;;
 		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		//System.out.println("Starte Datei -> "+url);
@@ -464,11 +464,12 @@ public class OOTools{
 		try {
 			document = documentService.loadDocument(url,docdescript);
 		} catch (NOAException e) {
-
 			e.printStackTrace();
 		}
 		ITextDocument textDocument = (ITextDocument)document;
 		/**********************/
+		OOTools.druckerSetzen(textDocument, SystemConfig.rezGebDrucker);
+		/*
 		if(drucker != null){
 			String druckerName = null;
 			try {
@@ -494,6 +495,7 @@ public class OOTools{
 				}
 			}
 		}
+		*/
 		/**********************/
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
 		ITextField[] placeholders = null;
@@ -596,6 +598,28 @@ public class OOTools{
 		Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.getPageCursor().jumpToFirstPage();
+		if(!SystemConfig.oTerminListe.DirektDruck){
+			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+			textDocument.getFrame().setFocus();
+		}else{
+			try {
+				textDocument.print();
+				while(textDocument.getPrintService().isActivePrinterBusy()){
+					Thread.sleep(50);
+				}
+				Thread.sleep(100);
+				textDocument.close();
+			} catch (DocumentException e) {
+				e.printStackTrace();
+			} catch (NOAException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		/*
 		final ITextDocument xtextDocument = textDocument;
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
@@ -612,6 +636,7 @@ public class OOTools{
 				}
 			}
 		});
+		*/
 	}
 	/*******************************************************************************************/
 
@@ -672,7 +697,7 @@ public class OOTools{
 	
 	/*******************************************************************************************/
 
-	public static void starteTaxierung(String url,HashMap<String,String> taxWerte) throws Exception, OfficeApplicationException, NOAException, TextException, DocumentException{
+	public static synchronized void starteTaxierung(String url,HashMap<String,String> taxWerte) throws Exception, OfficeApplicationException, NOAException, TextException, DocumentException{
 		//String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA5.ott";
 		//String drucker = "";
 		IDocumentService documentService = null;
@@ -718,25 +743,29 @@ public class OOTools{
 			      }
 			    }
 		}
-		textDocument.print();
-		textDocument.close();
+		//textDocument.print();
+		//textDocument.close();
 		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
 			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 		}else{
 			try{
-				Thread.sleep(100);
 				textDocument.print();
+				while(textDocument.getPrintService().isActivePrinterBusy()){
+					Thread.sleep(50);
+				}
 				Thread.sleep(100);
+				textDocument.close();
+
 			}catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			textDocument.close();
+			
 		}	
 	}
 	/*******************************************************************************************/
 	/*******************************************************************************************/
 
-	public static void starteTherapieBericht(String url){
+	public static synchronized void starteTherapieBericht(String url){
 		IDocumentService documentService = null;;
 		////System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
@@ -830,7 +859,7 @@ public class OOTools{
 		textDocument.getFrame().setFocus();
 	}
 
-	public static ITextDocument starteLeerenWriter(){
+	public static synchronized ITextDocument starteLeerenWriter(){
 		ITextDocument textDocument = null;
 		try {
 			if(!Reha.officeapplication.isActive()){
@@ -853,7 +882,7 @@ public class OOTools{
 		return textDocument;
 	}
 		
-	public ITextDocument starteWriterMitDatei(String url){
+	public synchronized ITextDocument starteWriterMitDatei(String url){
 		try {
 			if(!Reha.officeapplication.isActive()){
 				Reha.starteOfficeApplication();
@@ -883,7 +912,7 @@ public class OOTools{
 		return null;
 		
 	}
-	public static ITextDocument starteWriterMitStream(InputStream is, String titel){
+	public static synchronized ITextDocument starteWriterMitStream(InputStream is, String titel){
 		try {
 			if(!Reha.officeapplication.isActive()){
 				Reha.starteOfficeApplication();
@@ -966,7 +995,7 @@ public class OOTools{
 		
 		
 	}
-	public static void setzePapierFormat(ITextDocument textDocument,int hoch,int breit) throws NoSuchElementException, WrappedTargetException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
+	public static synchronized void setzePapierFormat(ITextDocument textDocument,int hoch,int breit) throws NoSuchElementException, WrappedTargetException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
 		XTextDocument xTextDocument = textDocument.getXTextDocument();
 		XStyleFamiliesSupplier xSupplier = (XStyleFamiliesSupplier) UnoRuntime.queryInterface(XStyleFamiliesSupplier.class,
 		xTextDocument);
@@ -1030,7 +1059,7 @@ public class OOTools{
     	xStyleProps.setPropertyValue("RightMargin",rechts);
 	}
 	/*************************************************************************/
-	public static ITextDocument  starteGKVBericht(String url,String drucker){
+	public static synchronized ITextDocument  starteGKVBericht(String url,String drucker){
 		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		IDocumentService documentService = null;;
 		//System.out.println("Starte Datei -> "+url);
@@ -1198,7 +1227,7 @@ public class OOTools{
 
 		
 	}
-	public static void ooOrgAnmelden(){
+	public static synchronized void ooOrgAnmelden(){
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws java.lang.Exception {
@@ -1244,6 +1273,8 @@ public class OOTools{
 				druckerName = textDocument.getPrintService().getActivePrinter().getName();
 			} catch (NOAException e) {
 				e.printStackTrace();
+			} catch (NullPointerException ex){
+				ex.printStackTrace();
 			}
 			//Wenn nicht gleich wie im Übergebenen Parameter angegeben -> Drucker wechseln
 			IPrinter iprint = null;

@@ -369,7 +369,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 	}
 	
 	
-	private void officeStarten(String url) throws OfficeApplicationException, NOAException, TextException, DocumentException{
+	private synchronized void officeStarten(String url) throws OfficeApplicationException, NOAException, TextException, DocumentException{
 		IDocumentService documentService = null;
 		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		////System.out.println("Starte Datei -> "+url);

@@ -695,6 +695,7 @@ public class SystemConfig {
 		}else if(wert instanceof java.lang.Integer){
 			inidatei.setIntegerProperty(gruppe, element, (Integer)wert, hinweis);
 		}
+		//System.out.println(inidatei.getFileName()+" - Gruppe="+gruppe+" / Element="+element+" / Wert="+wert );
 		inidatei.save();
 	}
 

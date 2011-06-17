@@ -74,7 +74,7 @@ public class PatientHauptLogic {
 			}
 		}.execute();	
 		SwingUtilities.invokeLater(new Runnable(){
-			public  void run(){
+			public synchronized void run(){
 				KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.ALT_MASK);
 				patientHauptPanel.getInstance().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "doSuchen");
 				patientHauptPanel.getActionMap().put("doSuchen", new PatientAction());

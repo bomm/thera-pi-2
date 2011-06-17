@@ -256,6 +256,10 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 	public void setFortschrittSetzen(int wert){
 		fortschritt.setValue(wert);
 	}
+	public JProgressBar getFortschritt(){
+		return fortschritt;
+	}
+	
 	public void setFortschrittZeigen(boolean zeigen){
 		fortschritt.setVisible(zeigen);		
 	}

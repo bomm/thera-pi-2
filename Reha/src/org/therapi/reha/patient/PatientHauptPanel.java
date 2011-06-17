@@ -217,13 +217,13 @@ public class PatientHauptPanel extends JXPanel{
 		jscr.validate();
 		return jscr;
 	}
-	private JScrollPane getMultiFunctionTab(){
+	private synchronized JScrollPane getMultiFunctionTab(){
 		patMultiFunctionPanel = new PatientMultiFunctionPanel(this);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(patMultiFunctionPanel);
 		jscr.validate();
 		return jscr;		
 	}
-	private JXPanel getToolBarPatient(){
+	private synchronized  JXPanel getToolBarPatient(){
 		patToolBarPanel = new PatientToolBarPanel(this);
 		return patToolBarPanel;
 

@@ -303,7 +303,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-05-26/01-DB=";
+	public static String aktuelleVersion = "V=2011-06-17/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -907,9 +907,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 	public static void nachrichtenRegeln(){
 		//System.out.println(Reha.aktUser);
-		if((!Reha.aktUser.trim().startsWith("Therapeut")) && RehaIOServer.rehaMailIsActive){
+		boolean newmail = checkForMails();
+		if((!Reha.aktUser.trim().startsWith("Therapeut")) && RehaIOServer.rehaMailIsActive && newmail){
 			new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaMailreversePort, "Reha#"+RehaIOMessages.MUST_CHANGEUSER+"#"+Reha.aktUser);
 			new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaMailreversePort,"Reha#"+RehaIOMessages.MUST_GOTOFRONT);
+		}else if((!Reha.aktUser.trim().startsWith("Therapeut")) && RehaIOServer.rehaMailIsActive && (!newmail)){
+			new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaMailreversePort, "Reha#"+RehaIOMessages.MUST_CHANGEUSER+"#"+Reha.aktUser);			
 		}else{
 			if((!Reha.aktUser.trim().startsWith("Therapeut")) && Reha.checkForMails()){
 				new LadeProg(Reha.proghome+"RehaMail.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport+" "+Reha.aktUser);
@@ -1822,12 +1825,17 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
         try
         {
+        	if(Reha.isStarted){
+        		JOptionPane.showMessageDialog(null,"Zur Info die UNO-Runtime wird neu gestartet!");
+        	}
         	//System.out.println("**********Open-Office wird gestartet***************");
             String path = OPEN_OFFICE_ORG_PATH;
             Map <String, Object>config = new HashMap<String, Object>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
             config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
+            
             if(path.indexOf("LibreOffice 3.") >= 0){
+            	System.out.println("Nehme die neue Variante");
                 config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
                 		new String[] {"--nologo",
                 		"--nofirststartwizard",
@@ -1836,6 +1844,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                 		"--nolockcheck"
                 		});
             }
+            
             System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,SystemConfig.OpenOfficeNativePfad);
             officeapplication = OfficeApplicationRuntime.getApplication(config);
             officeapplication.activate();
