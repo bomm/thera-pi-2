@@ -3380,6 +3380,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			edibuf.append(ediDatumFromDeutsch(node.abr.datum));
 			if(node.abr.rezgeb > 0){
 				rez += node.abr.rezgeb;
+				//Einstieg1 für Kilometer
+				//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
+				//edibuf.append(plus+dfx.format(node.abr.rezgeb/node.abr.anzahl)+EOL);
+				
 				edibuf.append(plus+dfx.format(node.abr.rezgeb)+EOL);
 			}else{
 				edibuf.append(EOL);
@@ -3527,8 +3531,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				vecdummy.add((String) RezTools.getKurzformFromID(id, preisvec) );
 				vecdummy.add((Double) Double.valueOf(pos[3].replace(",", ".")));
 				vecdummy.add((Double) Double.valueOf(pos[4].replace(",", ".")));
+				//Hier ganz wichtig die Multiplikation mit der Anzahl
 				if(pos.length==7){
 					vecdummy.add((boolean) Boolean.valueOf(true));
+					//Herr Lehmann: nächste 2 Zeilen müssen freigeschaltet werden für Einzelkilometer
+					//vecdummy.add((Double) Double.valueOf(pos[6].replace(",", ".").replace("'", "")) *
+					//		Double.valueOf(pos[3].replace(",", ".")) );
 					vecdummy.add((Double) Double.valueOf(pos[6].replace(",", ".").replace("'", "")));
 				}else{
 					vecdummy.add((boolean) Boolean.valueOf(false));

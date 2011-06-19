@@ -1517,8 +1517,13 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 					preis.add(BigDecimal.valueOf(Double.valueOf(woerter[4].replace(",", "."))).multiply(
 							bdAnzahl ));
 					if(woerter.length==7){
+						//Einstieg2 für Kilometer
 						dummy = woerter[6].replace("'", "").replace(",", ".");
+						//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
+						//rezgeb.add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl));
 						rezgeb.add(BigDecimal.valueOf(Double.valueOf(dummy)));
+						//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
+						//einzelzuzahlung.add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl));
 						einzelzuzahlung.add(BigDecimal.valueOf(Double.valueOf(dummy)));
 					}else{
 						rezgeb.add(BigDecimal.valueOf(Double.valueOf("0.00")));
@@ -1539,12 +1544,14 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 							bdAnzahl)));
 					abrtage.set(pos,abrtage.get(pos).add(BigDecimal.valueOf(Double.valueOf("1.00"))));
 					if(woerter.length==7){
+						//Einstieg3 für Kilometer
 						dummy = woerter[6].replace("'", "").replace(",", ".");
+						//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
+						//rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(anzahl.get(pos))));
 						rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf(dummy))));
+						//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
+						//if(! BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl).equals(einzelzuzahlung.get(pos))){
 						if(! BigDecimal.valueOf(Double.valueOf(dummy)).equals(einzelzuzahlung.get(pos))){
-							////System.out.println("Einzelzuzahlung = "+einzelzuzahlung.get(pos));
-							////System.out.println("Vergleichswert = "+BigDecimal.valueOf(Double.valueOf(dummy)));
-
 							zuzahlUmstellung = true;
 						}
 					}else{
