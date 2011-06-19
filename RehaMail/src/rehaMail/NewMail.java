@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -37,11 +36,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
@@ -77,27 +74,15 @@ import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.filter.ODTFilter;
-import ag.ion.bion.officelayer.filter.RTFFilter;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.filter.OpenDocumentFilter;
-import ag.ion.noa.filter.OpenOfficeFilter;
-import ag.ion.noa.frame.ILayoutManager;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.mysql.jdbc.PreparedStatement;
-import com.sun.star.beans.PropertyVetoException;
-import com.sun.star.beans.UnknownPropertyException;
-import com.sun.star.beans.XPropertySet;
-import com.sun.star.frame.XLayoutManager;
-import com.sun.star.lang.IllegalArgumentException;
-import com.sun.star.lang.WrappedTargetException;
-import com.sun.star.ui.XUIElement;
-import com.sun.star.uno.UnoRuntime;
 import com.sun.star.view.DocumentZoomType;
 
 public class NewMail extends JFrame  implements WindowListener  {
@@ -257,6 +242,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 		return jPopupMenu;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void doAttachments(){
 		if(vecAttachments.size()==3){
 			JOptionPane.showMessageDialog(null,"Es sind bereits 3 Attachments angegeben.\nMehr geht in Thera-Pi-Nachrichten nicht!");
@@ -498,8 +484,8 @@ public class NewMail extends JFrame  implements WindowListener  {
 		        document = (ITextDocument) RehaMail.officeapplication.getDocumentService().constructNewDocument(officeFrame,
 		            IDocument.WRITER,
 		            desc);
-		        Tools.OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
-	        	Tools.OOTools.setzeRaender(document, new Integer(10), new Integer(10),new Integer(10),new Integer(10));
+		        //Tools.OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
+	        	Tools.OOTools.setzeRaender(document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 		        //hideElements(LayoutManager.URL_MENUBAR);
 		        //hideElements(LayoutManager.URL_STATUSBAR);
 	        	
@@ -580,6 +566,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 	    officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
 	    return officeFrame;
 	}
+	/*
 	private void hideElements(String url ) throws UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException, NOAException{
 	    ILayoutManager layoutManager = officeFrame.getLayoutManager();
 	    XLayoutManager xLayoutManager = layoutManager.getXLayoutManager();
@@ -590,6 +577,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 	        xLayoutManager.hideElement(url);
 	    }
 	}
+	*/
 
 	public final void refreshSize() {
 		noaPanel.setPreferredSize(new Dimension(noaPanel.getWidth() , noaPanel.getHeight()- 5));
@@ -694,6 +682,12 @@ public class NewMail extends JFrame  implements WindowListener  {
 					ins[i].close();
 				}
 			}
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					RehaMail.thisClass.getMTab().getSendPanel().checkForNewMail();		
+				}
+			});
+			
 			RehaMail.thisFrame.setCursor(RehaMail.DEFAULT_CURSOR);
 
 		} catch (SQLException e) {
@@ -735,7 +729,7 @@ public class NewMail extends JFrame  implements WindowListener  {
             public void propertyChange(PropertyChangeEvent e) {
                 if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
                         || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
-                    final File f = (File) e.getNewValue();
+                    //final File f = (File) e.getNewValue();
                 }
             }
 

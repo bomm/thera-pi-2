@@ -1,5 +1,7 @@
 package Tools;
 
+
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.io.IOException;
@@ -172,7 +174,7 @@ public class OOTools{
 	/*******************************************************************************************/
 	/*******************************************************************************************/
 		
-	public ITextDocument starteWriterMitDatei(String url){
+	public static ITextDocument starteWriterMitDatei(String url){
 		try {
 			if(!RehaMail.officeapplication.isActive()){
 				RehaMail.starteOfficeApplication();
@@ -241,7 +243,7 @@ public class OOTools{
 		
 	}
 
-	public ISpreadsheetDocument starteCalcMitDatei(String url){
+	public static ISpreadsheetDocument starteCalcMitDatei(String url){
 		try {
 			if(!RehaMail.officeapplication.isActive()){
 				RehaMail.starteOfficeApplication();
@@ -289,6 +291,7 @@ public class OOTools{
 		
 		
 	}
+	
 	public static void setzePapierFormat(ITextDocument textDocument,int hoch,int breit) throws NoSuchElementException, WrappedTargetException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException{
 		XTextDocument xTextDocument = textDocument.getXTextDocument();
 		XStyleFamiliesSupplier xSupplier = (XStyleFamiliesSupplier) UnoRuntime.queryInterface(XStyleFamiliesSupplier.class,
@@ -298,15 +301,17 @@ public class OOTools{
 		XStyle xStyle = (XStyle) UnoRuntime.queryInterface(XStyle.class, family.getByName("Standard"));
 		XPropertySet xStyleProps = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class,
 		xStyle);
+		
 		/*
 		com.sun.star.beans.Property[] props = xStyleProps.getPropertySetInfo().getProperties();
 		for (int i = 0; i < props.length; i++) {
-		//System.out.println(props[i] .Name + " = "
+		System.out.println(props[i] .Name + " = "
 		+ xStyleProps.getPropertyValue(props[i].Name));
 		}
-		//z.B. fï¿½r A5
-		 * 
-		 */
+		*/
+		//z.B. für A5
+		 
+		
 		xStyleProps.setPropertyValue("Height", hoch);
 		xStyleProps.setPropertyValue("Width", breit);
 	}

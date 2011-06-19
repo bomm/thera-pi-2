@@ -8,9 +8,6 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-
 
 import org.jdesktop.swingworker.SwingWorker;
 
@@ -44,11 +41,14 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 			
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_RESET)){
 			RehaMail.thisClass.getMTab().mailPanel.allesAufNull();
+			RehaMail.thisClass.getMTab().getSendPanel().allesAufNull();
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_SEARCHFORMAIL)){
 			
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_CHANGEUSER)){
 			RehaMail.mailUser = op.split("#")[2]; 
 			RehaMail.thisClass.getMTab().mailPanel.checkForNewMail();
+			RehaMail.thisClass.getMTab().getSendPanel().checkForNewMail();
+			RehaMail.updateTitle(RehaMail.mailUser);
 		}
 	}
 	@Override
@@ -113,7 +113,7 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 //			return null;
 
 		}
-	private RehaReverseServer getInstance(){
+	public RehaReverseServer getInstance(){
 		return this;
 	}
 	

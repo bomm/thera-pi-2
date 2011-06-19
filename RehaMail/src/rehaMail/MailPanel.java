@@ -13,7 +13,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Window;
@@ -23,9 +22,17 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -40,10 +47,10 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
@@ -69,21 +76,20 @@ import Tools.JCompTools;
 import Tools.JRtaTextField;
 import Tools.MitteRenderer;
 import Tools.OOTools;
+import Tools.ReaderStart;
 import Tools.SqlInfo;
 import Tools.ToolsDialog;
 import Tools.UIFSplitPane;
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
+import ag.ion.bion.officelayer.desktop.GlobalCommands;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.filter.RTFFilter;
-import ag.ion.bion.officelayer.internal.text.TextRange;
 import ag.ion.bion.officelayer.text.IParagraph;
 import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.ITextRange;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
@@ -91,10 +97,8 @@ import ag.ion.noa.filter.OpenDocumentFilter;
 import ag.ion.noa.frame.ILayoutManager;
 import ag.ion.noa.internal.frame.LayoutManager;
 
-
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
 import com.sun.star.beans.PropertyVetoException;
 import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.beans.XPropertySet;
@@ -102,14 +106,12 @@ import com.sun.star.container.XContentEnumerationAccess;
 import com.sun.star.container.XEnumeration;
 import com.sun.star.container.XEnumerationAccess;
 import com.sun.star.container.XNameAccess;
-import com.sun.star.container.XNameContainer;
 import com.sun.star.datatransfer.XTransferable;
 import com.sun.star.datatransfer.XTransferableSupplier;
 import com.sun.star.frame.XController;
 import com.sun.star.frame.XLayoutManager;
 import com.sun.star.lang.IllegalArgumentException;
 import com.sun.star.lang.WrappedTargetException;
-import com.sun.star.lang.XMultiServiceFactory;
 import com.sun.star.text.XParagraphCursor;
 import com.sun.star.text.XText;
 import com.sun.star.text.XTextContent;
@@ -161,7 +163,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 	private IFrame             officeFrame       = null;
 	public	ITextDocument      document          = null;
 	private JXPanel             noaPanel          = null;
-	private JPanel				noaDummy = null;
+	//private JPanel				noaDummy = null;
 	NativeView nativeView = null;
 	DocumentDescriptor xdescript = null;
 	
@@ -299,9 +301,23 @@ public class MailPanel extends JXPanel implements TableModelListener{
 					return;
 				}
 				if(cmd.equals("loeschen")){
+					JOptionPane.showMessageDialog(null, "Funktion noch nicht implementiert");
 					return;
 				}
 				if(cmd.equals("print")){
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground() throws Exception {
+							try {
+								document.getFrame().getDispatch(GlobalCommands.PRINT_DOCUMENT).dispatch(); 
+							} catch (NOAException e) {
+								e.printStackTrace();
+							}	
+							Thread.sleep(150);
+							return null;
+						}
+						
+					}.execute();
 					return;
 				}
 				if(cmd.equals("attachments")){
@@ -431,6 +447,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 				if(arg0.getClickCount()==2 && arg0.getButton()==1){
 					if(!gelesen){
 						holeNeueMail();
+						holeAttachments();
 						setzeGelesen();
 					}
 				}
@@ -507,6 +524,8 @@ public class MailPanel extends JXPanel implements TableModelListener{
 				IViewCursor viewCursor = document.getViewCursorService().getViewCursor();
 				viewCursor.getPageCursor().jumpToFirstPage();
 				viewCursor.getPageCursor().jumpToStartOfPage();
+		        //Tools.OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
+	        	Tools.OOTools.setzeRaender(document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 				ins.close();
 				return;
 			}catch(Exception ex){
@@ -551,6 +570,8 @@ public class MailPanel extends JXPanel implements TableModelListener{
 			IViewCursor viewCursor = document.getViewCursorService().getViewCursor();
 			viewCursor.getPageCursor().jumpToFirstPage();
 			viewCursor.getPageCursor().jumpToStartOfPage();
+	        //Tools.OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
+        	Tools.OOTools.setzeRaender(document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 			ins.close();
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -870,13 +891,13 @@ private void fillNOAPanel() {
 	        hideElements(LayoutManager.URL_TOOLBAR);
 
 
-        	Tools.OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
-        	Tools.OOTools.setzeRaender(document, new Integer(10), new Integer(10),new Integer(10),new Integer(10));
+	        //Tools.OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
+        	Tools.OOTools.setzeRaender(document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 	        
 
         	//nativeView.validate();
 	        try {
-				document.zoom(DocumentZoomType.BY_VALUE, (short)90);
+				document.zoom(DocumentZoomType.BY_VALUE, (short)80);
 			} catch (DocumentException e) {
 				e.printStackTrace();
 			}
@@ -929,18 +950,18 @@ public final void refreshSize() {
 }
 
 static void copy(ITextDocument sourceDoc, ITextDocument targetDoc) throws Exception {
-    // the controllers 
+    
     XController xController_sourceDoc = sourceDoc.getXTextDocument().getCurrentController();
     XController xController_targetDoc = targetDoc.getXTextDocument().getCurrentController();
-    // getting the data supplier of our source doc 
+    
     XTransferableSupplier xTransferableSupplier_sourceDoc = (XTransferableSupplier) UnoRuntime.queryInterface(XTransferableSupplier.class,
         xController_sourceDoc);
-    // saving the selected contents 
+    
     XTransferable xTransferable = xTransferableSupplier_sourceDoc.getTransferable();
-    // getting the data supplier of our target doc 
+    
     XTransferableSupplier xTransferableSupplier_targetDoc = (XTransferableSupplier) UnoRuntime.queryInterface(XTransferableSupplier.class,
         xController_targetDoc);
-    // inserting the source document there 
+    
     xTransferableSupplier_targetDoc.insertTransferable(xTransferable);
   }
 /************************************************/
@@ -962,7 +983,38 @@ class ToolsDlgAktuelleRezepte{
 		tDlg.pack();
 		tDlg.setModal(true);
 		tDlg.activateListener();
-		tDlg.setVisible(true);		
+		tDlg.setVisible(true);	
+
+		String komplett = RehaMail.progHome+"temp/"+RehaMail.aktIK+"/"+attachmentFileName.get(RehaMail.toolsDlgRueckgabe);
+
+		if(RehaMail.toolsDlgRueckgabe < 0){return;}
+		 if(komplett.toUpperCase().endsWith(".PDF") || komplett.toUpperCase().endsWith(".ODT")
+				 || komplett.toUpperCase().endsWith(".OTT") || komplett.toUpperCase().endsWith(".ODS")){
+				if(!speichereDatei(new String[] {null,RehaMail.progHome+"temp/"+RehaMail.aktIK},
+						attachmentFileName.get(RehaMail.toolsDlgRueckgabe),
+						Integer.toString(RehaMail.toolsDlgRueckgabe+1))){
+					return;
+				}
+			 
+			 if(komplett.toUpperCase().endsWith(".PDF")){
+				 new ReaderStart(komplett);
+			 }else if(komplett.toUpperCase().endsWith(".ODT") ||komplett.toUpperCase().endsWith(".ODT")  ){
+				OOTools.starteWriterMitDatei(komplett.replace("//", "/")); 
+			 }else if(komplett.toUpperCase().endsWith(".ODS")){
+				 OOTools.starteCalcMitDatei(komplett); 
+			 }
+		 }else{
+				String[] indatei = dateiDialog(attachmentFileName.get(RehaMail.toolsDlgRueckgabe));
+				if(indatei[0]==null){return;}
+				if(speichereDatei(indatei,
+						attachmentFileName.get(RehaMail.toolsDlgRueckgabe),
+						Integer.toString(RehaMail.toolsDlgRueckgabe+1))){
+					JOptionPane.showMessageDialog(null, "Datei "+attachmentFileName.get(RehaMail.toolsDlgRueckgabe)+" erfolgreich gespeichert!\n\n"+
+							"Verzeichnis: --> "+indatei[1].replace("\\", "/"));
+
+				}
+			 
+		 }
 		
 	}
 	private ImageIcon testDatei(String filename){
@@ -975,7 +1027,81 @@ class ToolsDlgAktuelleRezepte{
 		}
 		return RehaMail.attachmentIco[4];
 	}
+}
+private boolean speichereDatei(String[] pfade,String datei,String attachnumber){
+	boolean success = true;
+	//System.out.println(pfade[0]);
+	//System.out.println(pfade[1]);
+	String komplett = pfade[1].replace("\\", "/")+"/"+datei;
+	  try{
+		  RehaMail.thisFrame.setCursor(RehaMail.WAIT_CURSOR);
+		  File f=new File(komplett);
+		  InputStream inputStream= SqlInfo.holeStream("pimail", "attach"+attachnumber, "id='"+aktId+"'");
+		  OutputStream out=new FileOutputStream(f);
+		  byte buf[]=new byte[1024];
+		  int len;
+		  while((len=inputStream.read(buf))>0){
+			  out.write(buf,0,len);  
+		  }
+		  out.close();
+		  inputStream.close();
+		  RehaMail.thisFrame.setCursor(RehaMail.DEFAULT_CURSOR);
+	  }catch (IOException e){
+		  RehaMail.thisFrame.setCursor(RehaMail.DEFAULT_CURSOR);
+			JOptionPane.showMessageDialog(null, "Speichern der Datei "+datei+" fehlgeschlagen" );
+
+		  return false;
+	  }
+	return success;
+		
 }	
+
+
+private String[] dateiDialog(String pfad){
+	//String sret = "";
+	String[] sret ={null,null};
+	System.out.println("Speichern in "+pfad);
+	final JFileChooser chooser = new JFileChooser("Verzeichnis auswählen");
+    chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+    final File file = new File(pfad);
+
+    chooser.setCurrentDirectory(new File(RehaMail.progHome));
+    chooser.setSelectedFile(file);
+    chooser.addPropertyChangeListener(new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent e) {
+            if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
+                    || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
+                //final File f = (File) e.getNewValue();
+            }
+        }
+
+    });
+    chooser.setVisible(true);
+    setCursor(RehaMail.thisClass.normalCursor);
+    final int result = chooser.showSaveDialog(null);
+
+    if (result == JFileChooser.APPROVE_OPTION) {
+        File inputVerzFile = chooser.getSelectedFile();
+        String inputVerzStr = inputVerzFile.getPath();
+        
+
+        if(inputVerzFile.getName().trim().equals("")){
+        	
+        	//sret = "";
+        }else{
+        	sret[0] = inputVerzFile.getName().trim();
+        	sret[1] = inputVerzStr;
+        }
+    }else{
+    	//sret = ""; //vorlagenname.setText(SystemConfig.oTerminListe.NameTemplate);
+    }
+    chooser.setVisible(false); 
+
+    return sret;
+}
+
 
 
 }

@@ -6,11 +6,14 @@ package rehaMail;
 
 
 
+
+
+
+
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.Connection;
@@ -29,26 +32,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-
-
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
-
-
-
-import ag.ion.bion.officelayer.application.IApplicationAssistant;
-import ag.ion.bion.officelayer.application.ILazyApplicationInfo;
-import ag.ion.bion.officelayer.application.IOfficeApplication;
-import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.event.ITerminateEvent;
-import ag.ion.bion.officelayer.event.VetoTerminateListener;
-import ag.ion.bion.officelayer.internal.application.ApplicationAssistant;
-
 
 import RehaIO.RehaIOMessages;
 import RehaIO.RehaReverseServer;
@@ -56,6 +43,13 @@ import RehaIO.SocketClient;
 import Tools.INIFile;
 import Tools.SqlInfo;
 import Tools.Verschluesseln;
+import ag.ion.bion.officelayer.application.IOfficeApplication;
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
+import ag.ion.bion.officelayer.document.DocumentException;
+import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.event.ITerminateEvent;
+import ag.ion.bion.officelayer.event.VetoTerminateListener;
 
 public class RehaMail implements WindowListener {
 
@@ -139,6 +133,7 @@ public class RehaMail implements WindowListener {
 	//public MailPanel mpanel = null;
 	public static ImageIcon[] icoPinPanel = {null,null,null};
 
+	public static String pdfReader = null;
 	
 	public static String sTitle;
 	public static int testint = 1;
@@ -200,6 +195,10 @@ public class RehaMail implements WindowListener {
 				timerdelay = inif.getLongProperty("RehaNachrichten", "NachrichtenTimer");
 				timerpopup = (inif.getIntegerProperty("RehaNachrichten", "NachrichtenPopUp") <= 0 ? false : true);
 				timerprogressbar = (inif.getIntegerProperty("RehaNachrichten", "NachrichtenProgressbar") <= 0 ? false : true);
+				
+				inif = new INIFile(RehaMail.progHome+"ini/"+RehaMail.aktIK+"/fremdprog.ini");
+				pdfReader = inif.getStringProperty("FestProg", "FestProgPfad1");
+				
 			}
 			
 			try {
@@ -388,7 +387,10 @@ public class RehaMail implements WindowListener {
 		
 		jFrame.getContentPane().add (mtab=new MailTab(this));
 		//jFrame.pack();
+		
+		jFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( RehaMail.progHome+"icons/emblem-mail.png" ) );
 		jFrame.setVisible(true);
+
 		
 		try{
 			new SocketClient().setzeRehaNachricht(RehaMail.rehaReversePort,"AppName#RehaMail#"+Integer.toString(RehaMail.xport));
@@ -595,8 +597,14 @@ public class RehaMail implements WindowListener {
 		if(RehaMail.thisClass.mtab.getMailPanel().document != null){
 			RehaMail.thisClass.mtab.getMailPanel().document.close();
 			RehaMail.thisClass.mtab.getMailPanel().document = null;
-			System.out.println("Dokument wurde geschlossen");
+			System.out.println("Dokument empfangene Mail wurde geschlossen");
 		}
+		if(RehaMail.thisClass.mtab.getSendPanel().document != null){
+			RehaMail.thisClass.mtab.getSendPanel().document.close();
+			RehaMail.thisClass.mtab.getSendPanel().document = null;
+			System.out.println("Dokument gesendete Mail wurde geschlossen");
+		}
+		
 		if(RehaMail.thisClass.rehaReverseServer != null){
 			try{
 				new SocketClient().setzeRehaNachricht(RehaMail.rehaReversePort,"RehaMail#"+RehaIOMessages.IS_FINISHED);
