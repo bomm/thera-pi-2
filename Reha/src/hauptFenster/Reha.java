@@ -1850,6 +1850,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,SystemConfig.OpenOfficeNativePfad);
             officeapplication = OfficeApplicationRuntime.getApplication(config);
             officeapplication.activate();
+            //Nachfolgende try/catch nur dann einschalten
+            //wenn Sie über die neueste ag.ion.noa_2.2.3.jar vom 20.06.2011
+            //verfügen!!!!! sonst läuft nix mehr /st.
             /*
             try {
 				if(officeapplication.getOfficeConnection() != null){
