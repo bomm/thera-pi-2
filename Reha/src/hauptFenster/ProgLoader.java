@@ -15,7 +15,6 @@ import javax.swing.SwingUtilities;
 
 import krankenKasse.KassenPanel;
 
-import org.therapi.reha.patient.LadeProg;
 import org.therapi.reha.patient.PatientHauptPanel;
 
 import rechteTools.Rechte;

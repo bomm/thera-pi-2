@@ -468,7 +468,7 @@ public class OOTools{
 		}
 		ITextDocument textDocument = (ITextDocument)document;
 		/**********************/
-		OOTools.druckerSetzen(textDocument, SystemConfig.rezGebDrucker);
+		OOTools.druckerSetzen(textDocument, SystemConfig.rezBarcodeDrucker);
 		/*
 		if(drucker != null){
 			String druckerName = null;

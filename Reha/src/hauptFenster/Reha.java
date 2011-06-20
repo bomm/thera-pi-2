@@ -136,6 +136,8 @@ import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
+import ag.ion.bion.officelayer.event.IEvent;
+import ag.ion.bion.officelayer.event.IEventListener;
 import ag.ion.bion.officelayer.event.ITerminateEvent;
 import ag.ion.bion.officelayer.event.VetoTerminateListener;
 import anmeldungUmsatz.Anmeldungen;
@@ -303,7 +305,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-06-17/01-DB=";
+	public static String aktuelleVersion = "V=2011-06-20/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1848,6 +1850,22 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,SystemConfig.OpenOfficeNativePfad);
             officeapplication = OfficeApplicationRuntime.getApplication(config);
             officeapplication.activate();
+            /*
+            try {
+				if(officeapplication.getOfficeConnection() != null){
+					System.out.println("OfficeConnection o.k.");
+					officeapplication.getOfficeConnection().addBridgeEventListener(new IEventListener(){
+						@Override
+						public void disposing(IEvent arg0) {
+							JOptionPane.showMessageDialog(null,"Bridge zu OpenOffice unterbrochen");
+						}
+						
+					});
+				}
+			} catch (java.lang.Exception e1) {
+				e1.printStackTrace();
+			}
+			*/
             
             officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
             	  public void queryTermination(ITerminateEvent terminateEvent) {
