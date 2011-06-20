@@ -1923,6 +1923,7 @@ public class RezTools {
 
 		int iposindex = -1;
 		boolean erstedoppel = true;
+		boolean debug = true;
 		
 		Object[] retObj = {null,null,null};
 
@@ -1941,6 +1942,7 @@ public class RezTools {
 				}
 				
 				Vector<ArrayList<?>> termine = RezTools.holePosUndAnzahlAusTerminen(swreznum);
+				System.out.println(termine);
 				if(termine.size()==0){return null;}
 				//Arrays innerhalb dem Vector termine
 				//termine.get(0) = Positionen (String)
@@ -1976,6 +1978,10 @@ public class RezTools {
 					if(!hMPos.get(i).einerOk && hMPos.get(i).vorrangig){
 						//ein vorrangiges Heilmittel ist voll
 						//testen ob es sich um eine Doppelposition dreht
+						if(debug){
+							Object[] testobj = (Object[])((ArrayList<?>)((Vector<?>)termine).get(4)).get(i);
+							System.out.println(testobj[0]+"-"+testobj[1]+"-"+testobj[2]);
+						}
 						if(((Object[])((ArrayList<?>)((Vector<?>)termine).get(4)).get(i))[0]==Boolean.valueOf(true)){
 							//testen ob es die 1-te Pos der Doppelbehandlung ist
 							if(((Integer)((Object[])((ArrayList<?>)((Vector<?>)termine).get(4)).get(i))[1]) <
@@ -1983,12 +1989,16 @@ public class RezTools {
 								//Es ist die 1-te Position die voll ist also Ende-Gelände
 								retObj[0] = String.valueOf(termbuf.toString());
 								retObj[1] = Integer.valueOf(RezTools.REZEPT_IST_BEREITS_VOLL);
+								if(debug){System.out.println("erste Position = voll + Doppelbehandlung");}
+								if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
 								return retObj;
 							}
 						}else{
 							//nein keine Doppelposition also Ende-Gelände
 							retObj[0] = String.valueOf(termbuf.toString());
 							retObj[1] = Integer.valueOf(RezTools.REZEPT_IST_BEREITS_VOLL);
+							if(debug){System.out.println("erste Position = voll und keine Doppelbehandlung");}
+							if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
 							return retObj;
 						}
 					}else if(!hMPos.get(i).einerOk && (!hMPos.get(i).vorrangig) && j==1){
@@ -1996,13 +2006,19 @@ public class RezTools {
 						//z.B. Ultraschall oder Elektrotherapie
 						retObj[0] = String.valueOf(termbuf.toString());
 						retObj[1] = Integer.valueOf(RezTools.REZEPT_IST_BEREITS_VOLL);
+						if(debug){System.out.println("es geht kein zusätzlicher");}
+						if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
 						return retObj;
 					}else if( (!hMPos.get(i).vorrangig) && (j==1) && 
 							(Boolean)((ArrayList<?>)((Vector<?>)termine).get(2)).get(i)){
 						//Ein ergänzendes Heilmittel wurde separat verordent das nicht zulässig ist
 						//könnte man auswerten, dann verbaut man sich aber die Möglichkeit
 						//bei PrivatPat. abzurechnen was geht....
+						if(debug){System.out.println("unerlaubtes Ergänzendes Heilmittel solo verordnet");}
+						if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
 					}
+					if(debug){System.out.println("Position kann bestätigt werden");}
+					if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
 				}
 				//2. dann prüfen welche Behandlungsformen noch einen vertragen können
 				count = 0;
