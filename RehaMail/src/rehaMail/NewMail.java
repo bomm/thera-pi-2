@@ -36,6 +36,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -57,6 +59,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.text.BadLocationException;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXLabel;
@@ -113,6 +116,9 @@ public class NewMail extends JFrame  implements WindowListener  {
 	JRtaTextField attachments = null;
 	String aktAbsender = "";
 	
+	RTFEditorPanel rtfEditor= null;
+	ObjectInputStream ois = null;
+	ByteArrayInputStream in = null;
 	Vector<Vector<String>> vecAttachments = new Vector<Vector<String>>(); 
 	ByteArrayOutputStream out;
 	public NewMail(String title,boolean neu,Point pt,ByteArrayOutputStream out,String absender,String sbetreff){
@@ -165,9 +171,35 @@ public class NewMail extends JFrame  implements WindowListener  {
 				}
 			}
 		});
+		if(out != null){
+			System.out.println("es ist eine Reply");
+			bisherigeNachricht(absender);
+		}
 		pack();
 		setVisible(true);
 
+	}
+	private void bisherigeNachricht(String letzter){
+		String text = null;
+		try {
+			//ByteArrayOutputStream out = new ByteArray
+			in = new ByteArrayInputStream(out.toByteArray());
+			rtfEditor.editorArea.getEditorKit().read(in, rtfEditor.editorArea.getDocument(), 0);
+			this.rtfEditor.editorArea.getDocument().insertString(0, "\n\n*******Letzte Nachricht von: "+letzter+"*********\n", null);
+			this.rtfEditor.editorArea.setCaretPosition(0);
+			this.rtfEditor.doSchriftArt();
+			this.rtfEditor.doSchriftGroesse();
+			this.rtfEditor.editorArea.setCaretPosition(0);
+			//text = this.rtfEditor.editorArea.getDocument().getText(0, rtfEditor.editorArea.getDocument().getLength());
+			//System.out.println(text);
+			in.close();
+		} catch (BadLocationException e) {
+			
+			e.printStackTrace();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
 	}
 	private void activateListener(){
 		al = new ActionListener(){
@@ -176,11 +208,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 				String cmd = arg0.getActionCommand();
 				try{
 					if(cmd.equals("senden")){
-						try {
-							doSenden();
-						} catch (NOAException e) {
-							e.printStackTrace();
-						}
+						doSenden();
 						return;
 					}else if(cmd.equals("einzel")){
 						doRecipient(true);
@@ -189,6 +217,9 @@ public class NewMail extends JFrame  implements WindowListener  {
 						doRecipient(false);
 						return;
 					}else if(cmd.equals("selektor")){
+						if(rads[1].isSelected()){
+							empfaenger.setText(box.getSecValue().toString());	
+						}
 						return;
 					}else if(cmd.equals("attachments")){
 						doAttachments();
@@ -274,7 +305,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 			}
 		}
 	}
-	private void doSenden() throws NOAException, DocumentException{
+	private void doSenden(){
 		if(betreff.getText().trim().equals("")){
 			JOptionPane.showMessageDialog(null,"Es wurde kein -> Betreff <- eingegeben!\nNachricht wird nicht versendet.");
 			return;
@@ -304,12 +335,21 @@ public class NewMail extends JFrame  implements WindowListener  {
 		}
 		//System.out.println(versand);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		//document.getPersistenceService().export(out, RTFFilter.FILTER);
-		//document.getPersistenceService().storeAs(out);
-		document.getPersistenceService().export(out,OpenDocumentFilter.FILTER);
+		try {
+			rtfEditor.editorArea.getEditorKit().write(out,
+					rtfEditor.editorArea.getDocument(),
+					0,rtfEditor.editorArea.getDocument().getLength());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} catch (BadLocationException e1) {
+			e1.printStackTrace();
+		}
+		//document.getPersistenceService().export(out,OpenDocumentFilter.FILTER);
 		try {
 			ByteArrayInputStream ins = null;
 			out.flush();
+			RehaMail.thisClass.getMTab().sendPanel.listenerAusschalten();
+			RehaMail.nachrichtenInBearbeitung = true;
 			for(int i = 0; i < versand.size();i++){
 				try {
 					doSpeichernMail(
@@ -323,12 +363,20 @@ public class NewMail extends JFrame  implements WindowListener  {
 				}
 			}
 			out.close();
-			MailTab.eltern.getMTab().updateReceivedMail();
-		} catch (IOException e) {
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					RehaMail.thisClass.getMTab().getSendPanel().checkForNewMail();
+					RehaMail.thisClass.getMTab().getMailPanel().checkForNewMail(true);
+				}
+			});
+			
+			RehaMail.thisFrame.setCursor(RehaMail.DEFAULT_CURSOR);
+		}catch(Exception e){
 			e.printStackTrace();
 		}
-		document.close();
-		document = null;
+		//document.close();
+		//document = null;
+		RehaMail.nachrichtenInBearbeitung = false;
 		this.setVisible(false);
 		this.dispose();
 		
@@ -343,8 +391,10 @@ public class NewMail extends JFrame  implements WindowListener  {
 	}
 	private void doRecipient(boolean einzel){
 		if(einzel){box.setDataVectorVector(RehaMail.einzelMail, 0, 2);empfaenger.setText("");return;}
+		box.removeActionListener(al);
 		box.setDataVectorVector(RehaMail.gruppenMail, 0, 1);
 		empfaenger.setText(box.getSecValue().toString());
+		box.addActionListener(al);
 	}
 	private JXPanel getContent(){
 		JXPanel pan = new JXPanel();
@@ -374,7 +424,10 @@ public class NewMail extends JFrame  implements WindowListener  {
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
 		pan.add(getToolbar(),cc.xy(1,1));
+		pan.add(rtfEditor = new RTFEditorPanel(true,true),cc.xy(1, 3));
+		/*
 		pan.add(getnoaDummy(),cc.xy(1, 3));
+		
 		noaDummy.setVisible(true);
 		noaDummy.add(getOOorgPanel(),BorderLayout.CENTER);
 
@@ -394,6 +447,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 			}
 			
 		}.execute();
+		*/
 
 		pan.validate();
 		return pan;
@@ -461,6 +515,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 		pan.validate();
 		return pan;
 	}
+	/*
 	private JPanel getOOorgPanel(){
 		noaPanel = new JPanel(new GridLayout());
 		noaPanel.setPreferredSize(new Dimension(1024,800));
@@ -471,8 +526,8 @@ public class NewMail extends JFrame  implements WindowListener  {
 		noaDummy = new JXPanel(new GridLayout(1,1));
 		return noaDummy;
 	}
- 
-
+ 	*/
+	/*
 	private void fillNOAPanel() {
 	    if (noaPanel != null) {
 		      try {
@@ -534,7 +589,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 			          bufferedString.append(allTexts2BePlaced[i][j] + "\n");
 			        }
 			        */
-
+	/*
 			        //paragraph.setParagraphText("\n\n********************bisherige Nachricht, beantwortet am: "+DatFunk.sHeute()+"************************\n");
 					
 					//ITextContent tcontent =
@@ -549,7 +604,8 @@ public class NewMail extends JFrame  implements WindowListener  {
 		      }
 		    }
 		  }
-
+		  */
+	/*
 	private IFrame constructOOOFrame(IOfficeApplication officeApplication, final Container parent) throws Throwable {
 	    nativeView = new NativeView(RehaMail.officeNativePfad);
 	    parent.add(nativeView);
@@ -566,6 +622,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 	    officeFrame = officeApplication.getDesktopService().constructNewOfficeFrame(nativeView);
 	    return officeFrame;
 	}
+	*/
 	/*
 	private void hideElements(String url ) throws UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException, NOAException{
 	    ILayoutManager layoutManager = officeFrame.getLayoutManager();
@@ -578,7 +635,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 	    }
 	}
 	*/
-
+	/*
 	public final void refreshSize() {
 		noaPanel.setPreferredSize(new Dimension(noaPanel.getWidth() , noaPanel.getHeight()- 5));
 		final Container parent = noaPanel.getParent();
@@ -592,7 +649,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 		noaPanel.getLayout().layoutContainer(noaPanel);
 
 	}
-
+*/
 
 
 
@@ -682,13 +739,6 @@ public class NewMail extends JFrame  implements WindowListener  {
 					ins[i].close();
 				}
 			}
-			SwingUtilities.invokeLater(new Runnable(){
-				public void run(){
-					RehaMail.thisClass.getMTab().getSendPanel().checkForNewMail();		
-				}
-			});
-			
-			RehaMail.thisFrame.setCursor(RehaMail.DEFAULT_CURSOR);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

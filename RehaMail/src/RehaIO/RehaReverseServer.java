@@ -41,14 +41,16 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 			
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_RESET)){
 			RehaMail.thisClass.getMTab().mailPanel.allesAufNull();
+			RehaMail.progRechte = "";
 			RehaMail.thisClass.getMTab().getSendPanel().allesAufNull();
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_SEARCHFORMAIL)){
 			
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_CHANGEUSER)){
 			RehaMail.mailUser = op.split("#")[2]; 
-			RehaMail.thisClass.getMTab().mailPanel.checkForNewMail();
+			RehaMail.thisClass.getMTab().mailPanel.checkForNewMail(true);
 			RehaMail.thisClass.getMTab().getSendPanel().checkForNewMail();
 			RehaMail.updateTitle(RehaMail.mailUser);
+			RehaMail.setRechte();
 		}
 	}
 	@Override

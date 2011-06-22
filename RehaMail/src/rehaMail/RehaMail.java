@@ -127,7 +127,11 @@ public class RehaMail implements WindowListener {
 	public final Cursor cesize = new Cursor(Cursor.E_RESIZE_CURSOR);  //  @jve:decl-index=0:	
 	public final Cursor cdefault = new Cursor(Cursor.DEFAULT_CURSOR);  //  @jve:decl-index=0:	
 	
-	public static ImageIcon[] attachmentIco = {null,null,null,null,null};
+	public static int BenutzerSuper_user 	= 2;
+	public static int Sonstiges_NachrichtenLoeschen		= 102;
+	public static String progRechte = "";
+	
+	public static ImageIcon[] attachmentIco = {null,null,null,null,null,null,null};
 	public static int toolsDlgRueckgabe;
 	public MailTab mtab = null;
 	//public MailPanel mpanel = null;
@@ -201,11 +205,7 @@ public class RehaMail implements WindowListener {
 				
 			}
 			
-			try {
-				RehaMail.starteOfficeApplication();
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
+				
 			RehaMail application = new RehaMail();
 			application.getInstance();
 
@@ -250,6 +250,7 @@ public class RehaMail implements WindowListener {
 							Collections.sort(einzelMail,comparator);
 							gruppenMail = SqlInfo.holeFelder("select groupname,groupmembers,id from pimailgroup");
 							Collections.sort(gruppenMail,comparator);
+							setRechte();
 							//System.out.println(einzelMail);
 							//System.out.println(gruppenMail);
 					/*********************************/
@@ -265,6 +266,16 @@ public class RehaMail implements WindowListener {
 				}
 				
 			}.execute();
+			new Thread(){
+				public void run(){
+					try {
+						RehaMail.starteOfficeApplication();
+					} catch (OfficeApplicationException e) {
+						e.printStackTrace();
+					}		
+				}
+			}.start();
+
 			
 
 			
@@ -276,6 +287,14 @@ public class RehaMail implements WindowListener {
 			
 		}
 		
+	}
+	public static void setRechte(){
+		for(int i = 0; i < einzelMail.size();i++){
+			if(einzelMail.get(i).get(0).trim().equals(RehaMail.mailUser)){
+				RehaMail.progRechte = String.valueOf(einzelMail.get(i).get(1));
+				break;
+			}
+		}
 	}
 	public MailTab getMTab(){
 		return mtab;
@@ -291,7 +310,7 @@ public class RehaMail implements WindowListener {
 					if( (!RehaMail.mailUser.equals("")) && 
 							(!SqlInfo.holeEinzelFeld("select gelesen from pimail where empfaenger_person ='"+
 									RehaMail.mailUser+"' and gelesen='F' LIMIT 1").trim().equals("")) ){
-							getMTab().mailPanel.checkForNewMail();
+							getMTab().mailPanel.checkForNewMail(true);
 							//getMTab().mailPanel.allesAufNull();							
 						SwingUtilities.invokeAndWait(new Runnable(){
 							public void run(){
@@ -386,7 +405,7 @@ public class RehaMail implements WindowListener {
 		//jFrame.getContentPane().add (mpanel=new MailPanel());
 		
 		jFrame.getContentPane().add (mtab=new MailTab(this));
-		//jFrame.pack();
+		jFrame.pack();
 		
 		jFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( RehaMail.progHome+"icons/emblem-mail.png" ) );
 		jFrame.setVisible(true);
@@ -412,6 +431,11 @@ public class RehaMail implements WindowListener {
 		attachmentIco[3] = new ImageIcon(ico);
 		ico = new ImageIcon(RehaMail.progHome+"icons/application-exit.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		attachmentIco[4] = new ImageIcon(ico);
+		ico = new ImageIcon(RehaMail.progHome+"icons/stock_inbox.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		attachmentIco[5] = new ImageIcon(ico);
+		ico = new ImageIcon(RehaMail.progHome+"icons/stock_outbox.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		attachmentIco[6] = new ImageIcon(ico);
+		
 		icoPinPanel[0] = new ImageIcon(RehaMail.progHome+"icons/red.png");
 		icoPinPanel[1] = new ImageIcon(RehaMail.progHome+"icons/buttongreen.png");
 		icoPinPanel[2] = new ImageIcon(RehaMail.progHome+"icons/inaktiv.png");
@@ -594,15 +618,10 @@ public class RehaMail implements WindowListener {
 				e.printStackTrace();
 			}
 		}
-		if(RehaMail.thisClass.mtab.getMailPanel().document != null){
-			RehaMail.thisClass.mtab.getMailPanel().document.close();
-			RehaMail.thisClass.mtab.getMailPanel().document = null;
-			System.out.println("Dokument empfangene Mail wurde geschlossen");
+		if(RehaMail.thisClass.mtab.getMailPanel() != null){
 		}
-		if(RehaMail.thisClass.mtab.getSendPanel().document != null){
-			RehaMail.thisClass.mtab.getSendPanel().document.close();
-			RehaMail.thisClass.mtab.getSendPanel().document = null;
-			System.out.println("Dokument gesendete Mail wurde geschlossen");
+
+		if(RehaMail.thisClass.mtab.getSendPanel() != null){
 		}
 		
 		if(RehaMail.thisClass.rehaReverseServer != null){

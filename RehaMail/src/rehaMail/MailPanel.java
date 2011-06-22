@@ -10,16 +10,12 @@ package rehaMail;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -27,11 +23,10 @@ import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,9 +41,7 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -61,6 +54,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
@@ -77,51 +71,15 @@ import Tools.JRtaTextField;
 import Tools.MitteRenderer;
 import Tools.OOTools;
 import Tools.ReaderStart;
+import Tools.Rechte;
 import Tools.SqlInfo;
 import Tools.ToolsDialog;
 import Tools.UIFSplitPane;
-import ag.ion.bion.officelayer.NativeView;
-import ag.ion.bion.officelayer.application.IOfficeApplication;
-import ag.ion.bion.officelayer.desktop.GlobalCommands;
-import ag.ion.bion.officelayer.desktop.IFrame;
-import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.text.IParagraph;
-import ag.ion.bion.officelayer.text.ITextCursor;
+
 import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.IViewCursor;
-import ag.ion.bion.officelayer.text.TextException;
-import ag.ion.noa.NOAException;
-import ag.ion.noa.filter.OpenDocumentFilter;
-import ag.ion.noa.frame.ILayoutManager;
-import ag.ion.noa.internal.frame.LayoutManager;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.sun.star.beans.PropertyVetoException;
-import com.sun.star.beans.UnknownPropertyException;
-import com.sun.star.beans.XPropertySet;
-import com.sun.star.container.XContentEnumerationAccess;
-import com.sun.star.container.XEnumeration;
-import com.sun.star.container.XEnumerationAccess;
-import com.sun.star.container.XNameAccess;
-import com.sun.star.datatransfer.XTransferable;
-import com.sun.star.datatransfer.XTransferableSupplier;
-import com.sun.star.frame.XController;
-import com.sun.star.frame.XLayoutManager;
-import com.sun.star.lang.IllegalArgumentException;
-import com.sun.star.lang.WrappedTargetException;
-import com.sun.star.text.XParagraphCursor;
-import com.sun.star.text.XText;
-import com.sun.star.text.XTextContent;
-import com.sun.star.text.XTextCursor;
-import com.sun.star.text.XTextGraphicObjectsSupplier;
-import com.sun.star.text.XTextRange;
-import com.sun.star.ui.XUIElement;
-import com.sun.star.uno.Any;
-import com.sun.star.uno.UnoRuntime;
-import com.sun.star.view.DocumentZoomType;
 
 
 
@@ -159,14 +117,11 @@ public class MailPanel extends JXPanel implements TableModelListener{
 	JScrollPane jscr = null;
 	JXPanel grundpanel;
 	EinListSelectionHandler listhandler = null;
+	RTFEditorPanel rtfEditor= null;
+	ObjectInputStream ois = null;
+	InputStream ins = null;
 	
-	private IFrame             officeFrame       = null;
-	public	ITextDocument      document          = null;
-	private JXPanel             noaPanel          = null;
-	//private JPanel				noaDummy = null;
-	NativeView nativeView = null;
-	DocumentDescriptor xdescript = null;
-	
+	ByteArrayInputStream bins;	
 	boolean gelesen = false;
 	String aktId = "";
 	String aktAbsender = "";
@@ -199,30 +154,36 @@ public class MailPanel extends JXPanel implements TableModelListener{
 			pan.add(getAttachmentButton(),cc.xy(2,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 			pan.validate();
 			add(pan,BorderLayout.NORTH);
-			/*******************/
 			
 			add(constructSplitPaneOU(),BorderLayout.CENTER);
-			//noaDummy.add(getOOorgPanel());
-			//noaPanel.setVisible(true);
-			//setVisible(true);
-			new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws Exception {
-					if(!RehaMail.officeapplication.isActive()){
-						//System.out.println("Aktiviere Office...");
-						RehaMail.starteOfficeApplication();
-					}
-					fillNOAPanel();
-					return null;
-				}
-			}.execute();
-					
+			
+			/*******************/
+				
 
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				checkForNewMail(true);	
+			}
+		});
 		validate();
-
+	}
+	private void doNochNichtGelesen(){
+		bins = new ByteArrayInputStream(RehaMail.notread.getBytes());
+		if(rtfEditor.editorArea == null){System.out.println("der RTF-Editor ist noch null");return;}
+		if(bins == null){System.out.println("Der Stream ist noch null");return;}
+		try {
+			rtfEditor.editorArea.getDocument().remove(0, rtfEditor.editorArea.getDocument().getLength());
+			rtfEditor.editorArea.getEditorKit().createDefaultDocument();
+			rtfEditor.editorArea.getEditorKit().read(bins, rtfEditor.editorArea.getDocument(), 0);
+			bins.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 	}
 	private JXPanel getToolsPanel(){
 		JXPanel pan = new JXPanel();
@@ -244,7 +205,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 	private Tools.UIFSplitPane constructSplitPaneOU(){
 		UIFSplitPane jSplitRechtsOU =  UIFSplitPane.createStrippedSplitPane(JSplitPane.VERTICAL_SPLIT,
         		getToolsPanel(),
-        		getOOorgPanel());
+        		rtfEditor=new RTFEditorPanel(false,false)/*getOOorgPanel()*/);
 		jSplitRechtsOU.setOpaque(false);
 		jSplitRechtsOU.setDividerSize(7);
 		jSplitRechtsOU.setDividerBorderVisible(true);
@@ -283,11 +244,13 @@ public class MailPanel extends JXPanel implements TableModelListener{
 							//OutputStream out = null;
 							try {
 								try {
-									document.getPersistenceService().export(out,OpenDocumentFilter.FILTER);
-									//document.getPersistenceService().export(out,RTFFilter.FILTER);
-								} catch (NOAException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
+									rtfEditor.editorArea.getEditorKit().write(out,
+											rtfEditor.editorArea.getDocument(),
+											0,rtfEditor.editorArea.getDocument().getLength());
+								} catch (IOException e1) {
+									e1.printStackTrace();
+								} catch (BadLocationException e1) {
+									e1.printStackTrace();
 								}
 								out.close();
 							} catch (IOException e) {
@@ -301,19 +264,38 @@ public class MailPanel extends JXPanel implements TableModelListener{
 					return;
 				}
 				if(cmd.equals("loeschen")){
-					JOptionPane.showMessageDialog(null, "Funktion noch nicht implementiert");
+					if(! Rechte.hatRecht(RehaMail.Sonstiges_NachrichtenLoeschen, false)){
+						JOptionPane.showMessageDialog(null, "Keine Berechtigung zum Löschen der Nachricht");
+						return;
+					}
+					if(! Rechte.hatRecht(RehaMail.Sonstiges_NachrichtenLoeschen, false)){
+						JOptionPane.showMessageDialog(null, "Funktion noch nicht implementiert");
+						return;
+					}
+					doLoeschen();
+
 					return;
 				}
 				if(cmd.equals("print")){
+					if(!gelesen){return;}
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {
+							ByteArrayOutputStream out = new ByteArrayOutputStream();
 							try {
-								document.getFrame().getDispatch(GlobalCommands.PRINT_DOCUMENT).dispatch(); 
-							} catch (NOAException e) {
-								e.printStackTrace();
-							}	
-							Thread.sleep(150);
+								rtfEditor.editorArea.getEditorKit().write(out,
+										rtfEditor.editorArea.getDocument(),
+										0,rtfEditor.editorArea.getDocument().getLength());
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							} catch (BadLocationException e1) {
+								e1.printStackTrace();
+							}
+							out.flush();
+							out.close();
+							ByteArrayInputStream ins = new ByteArrayInputStream(out.toByteArray());
+							OOTools.starteWriterMitStream(ins, "mailprint");
+							ins.close();
 							return null;
 						}
 						
@@ -409,7 +391,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 					while(!RehaMail.DbOk){
 						Thread.sleep(20);
 					}
-					checkForNewMail();					
+					//checkForNewMail(true);					
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
@@ -420,22 +402,59 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		pan.validate();
 		return pan;
 	}
-	public void checkForNewMail(){
-		doStatementAuswerten("select absender,"+
-				"gelesen,versanddatum,gelesendatum,betreff,id from pimail where empfaenger_person='"+
-				RehaMail.mailUser+"' or empfaenger_gruppe like'%"+
-				RehaMail.mailUser+"%' order by gelesen DESC,versanddatum DESC");
+	public void listenerAusschalten(){
+		eintab.getSelectionModel().removeListSelectionListener(listhandler);
+	}
+
+	private void doLoeschen(){
+		if(einmod.getRowCount()<=0){tabelleLeeren();return;}
+		listenerAusschalten();
+		System.out.println("einlesen text");
+		int[] rows = eintab.getSelectedRows();
+		int frage = JOptionPane.showConfirmDialog(null,"Die ausgewählten Emails wirklich löschen",
+				"Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+		if(frage != JOptionPane.YES_OPTION){return;}
+		for(int i = 0; i < rows.length;i++){
+			aktId = einmod.getValueAt(eintab.convertRowIndexToModel(rows[i]),5 ).toString();
+			SqlInfo.sqlAusfuehren("delete from pimail where id='"+aktId+"' LIMIT 1");
+		}
+		checkForNewMail(true);
+		textLoeschen();
+		
+	}
+	private void textLoeschen(){
+		if(eintab.getRowCount()<=0 || eintab.getSelectedRow()<0){
+			try {
+				rtfEditor.editorArea.getDocument().remove(0, rtfEditor.editorArea.getDocument().getLength());
+				gelesen = false;
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null,"Fehler beim Einlesen der Nachricht");
+				e.printStackTrace();
+			} 
+		}
+	}
+
+	
+	public void checkForNewMail(boolean all){
+		listenerAusschalten();
+		String stmt = null; 
+		if(all){
+			stmt = "select absender,"+
+			"gelesen,versanddatum,gelesendatum,betreff,id from pimail where empfaenger_person='"+
+			RehaMail.mailUser+"' or empfaenger_gruppe like'%"+
+			RehaMail.mailUser+"%' order by gelesen DESC,versanddatum DESC";
+		}else{
+			stmt = "select absender,"+
+			"gelesen,versanddatum,gelesendatum,betreff,id from pimail where empfaenger_person='"+
+			RehaMail.mailUser+"' or empfaenger_gruppe like'%"+
+			RehaMail.mailUser+"%' and gelesen = 'F' order by gelesen DESC,versanddatum DESC";
+		}
+		doStatementAuswerten(stmt,all);
 		for(int i = 0; i < 4; i++){
 			if(buts[i] != null){
 				buts[i].setEnabled(true);	
 			}
 		}
-	}
-	private JXPanel getOOorgPanel(){
-
-		noaPanel = new JXPanel(new BorderLayout());
-		noaPanel.setDoubleBuffered(true);
-		return noaPanel;
 	}
 	private JXTable getTable(){
 		einmod = new EinTableModel();
@@ -483,9 +502,15 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		}
 	}
 	public void allesAufNull(){
-		document.getTextService().getText().setText("");
-		loescheBilder();
-		loescheParagraphen();
+		//document.getTextService().getText().setText("");
+		//loescheBilder();
+		//loescheParagraphen();
+		try {
+			rtfEditor.editorArea.getDocument().remove(0, rtfEditor.editorArea.getDocument().getLength());
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+
 		eintab.getSelectionModel().removeListSelectionListener(listhandler);
 		einmod.setRowCount(0);
 		eintab.validate();
@@ -503,30 +528,17 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		if(einmod.getRowCount()<=0){tabelleLeeren();return;}
 		
 		int row = eintab.getSelectedRow();
-		while(document==null || !RehaMail.DbOk);
+		while(!RehaMail.DbOk);
 		if(row < 0){tabelleLeeren();return;}
 		gelesen = (Boolean)einmod.getValueAt(eintab.convertRowIndexToModel(row),1 );
 		aktId = einmod.getValueAt(eintab.convertRowIndexToModel(row),5 ).toString();
 		/****************************************************/
-		ByteArrayInputStream ins = null;
+		bins = null;
 
 		if(gelesen==Boolean.FALSE){
 			try {
 				buts[4].setEnabled(false);
-				ins = new ByteArrayInputStream(RehaMail.notread.getBytes());
-				document.getTextService().getText().setText("");
-				loescheBilder();
-				loescheParagraphen();
-				/************************/
-				ITextCursor textCursor = document.getTextService().getCursorService().getTextCursor();				
-				textCursor.gotoStart(true);
-				textCursor.insertDocument(ins,OpenDocumentFilter.FILTER);
-				IViewCursor viewCursor = document.getViewCursorService().getViewCursor();
-				viewCursor.getPageCursor().jumpToFirstPage();
-				viewCursor.getPageCursor().jumpToStartOfPage();
-		        //Tools.OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
-	        	Tools.OOTools.setzeRaender(document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
-				ins.close();
+				doNochNichtGelesen();
 				return;
 			}catch(Exception ex){
 				ex.printStackTrace();
@@ -539,7 +551,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 				ex.printStackTrace();
 			}
 		}
-		refreshSize();
+		//refreshSize();
 	}
 	
 	/****************************************************/
@@ -551,37 +563,31 @@ public class MailPanel extends JXPanel implements TableModelListener{
 	public void holeNeueMail(){
 		holeMail();
 	}
+	
 	public void holeMail(){
 		
 		int row = eintab.getSelectedRow();
 		if(row < 0){tabelleLeeren();return;}
-
-		ByteArrayInputStream ins = null;
 		
-		try{
-			ins = (ByteArrayInputStream)SqlInfo.holeStream("pimail", "emailtext", "id='"+aktId+"' LIMIT 1");
-			document.getTextService().getText().setText("");
-			loescheBilder();
-			loescheParagraphen();
-			/************************/
-			ITextCursor textCursor = document.getTextService().getCursorService().getTextCursor();
-			textCursor.gotoStart(true);
-			textCursor.insertDocument(ins,OpenDocumentFilter.FILTER);
-			IViewCursor viewCursor = document.getViewCursorService().getViewCursor();
-			viewCursor.getPageCursor().jumpToFirstPage();
-			viewCursor.getPageCursor().jumpToStartOfPage();
-	        //Tools.OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
-        	Tools.OOTools.setzeRaender(document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
+		bins = null;
+		ins = (ByteArrayInputStream)SqlInfo.holeStream("pimail", "emailtext", "id='"+aktId+"' LIMIT 1");
+		try {
+			rtfEditor.editorArea.getDocument().remove(0, rtfEditor.editorArea.getDocument().getLength());
+			rtfEditor.editorArea.getEditorKit().read(ins, rtfEditor.editorArea.getDocument(),0);
 			ins.close();
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
+			rtfEditor.editorArea.setCaretPosition(0);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null,"Fehler beim Einlesen der Nachricht");
+			e.printStackTrace();
+		} 
+		
 		
 	}
+	/*
 	protected void loescheBilder(){
 		ITextDocument textDocument = (ITextDocument)document;
-		//resolveControls(textDocument.getXTextDocument().getText());
-		/************************/
+		
+		
 		XTextGraphicObjectsSupplier graphicObjSupplier = (XTextGraphicObjectsSupplier) UnoRuntime.queryInterface(XTextGraphicObjectsSupplier.class,
         	      textDocument.getXTextDocument());
 		XNameAccess nameAccess = graphicObjSupplier.getGraphicObjects();
@@ -599,6 +605,8 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		}
 
 	}
+*/
+	/*
 	protected void loescheParagraphen(){
 		ITextDocument textDocument = (ITextDocument)document;
 		IParagraph paragraphs[];
@@ -615,20 +623,21 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		}
 		
 	}
+	*/
+	/*
 	  protected void resolveControls(XText xDocText) {
 		    try {
 
-		      // Get an enumeration of paragraphs.
+		      
 		      XEnumerationAccess xParaAccess = (XEnumerationAccess) UnoRuntime.queryInterface(
 		      XEnumerationAccess.class, xDocText );
 		      XEnumeration xParaEnum = xParaAccess.createEnumeration();
 
-		      // Creat a text cursor and go the beginning.
+		      
 		      XTextCursor xTextCursor = xDocText.createTextCursor();
 		      xTextCursor.gotoStart(false);
 
-		      // Set up a paragraph cursor and point it to the first paragarph.
-		      // when the enumeration gets a new element, select that paragraph using the cursor.
+		      
 		      XParagraphCursor xParagraphCursor = (XParagraphCursor) UnoRuntime.queryInterface(
 		      XParagraphCursor.class, xTextCursor );
 		     
@@ -679,7 +688,8 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		    catch ( Exception e ) {
 		      e.printStackTrace( System.out );
 		    }
-	} 	
+	} 
+	 */ 
 	public void holeAttachments(){
 		this.attachmentFileName.clear();
 		this.attachmentFileName.trimToSize();
@@ -730,12 +740,15 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		}
 		return "";
 	}
-	private void doStatementAuswerten(final String stat){
+	private void doStatementAuswerten(final String stat,boolean all){
 		
 		
 		autoIncCol = -1;
 		einmod.removeTableModelListener(this);
-		einmod.setRowCount(0);
+		if(all){
+			einmod.setRowCount(0);	
+		}
+		
 		colName.clear();
 		colType.clear();
 		colAutoinc.clear();
@@ -748,7 +761,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		ResultSet rs = null;
 		//ResultSet md = null;
 		
-		einmod.setRowCount(0);
+		
 		Vector<Object> vec = new Vector<Object>();
 		int durchlauf = 0;
 
@@ -780,7 +793,12 @@ public class MailPanel extends JXPanel implements TableModelListener{
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
-				einmod.addRow( (Vector<?>) vec.clone());
+				if(all){
+					einmod.addRow( (Vector<?>) vec.clone());	
+				}else{
+					einmod.insertRow(0, (Vector<?>) vec.clone());
+				}
+				
 				if(einmod.getRowCount()==1){
 					SwingUtilities.invokeLater(new Runnable(){
 						public void run(){
@@ -876,6 +894,7 @@ public void tableChanged(TableModelEvent arg0) {
 	// TODO Auto-generated method stub
 	
 }
+/*
 private void fillNOAPanel() {
     if (noaPanel != null) {
 	      try {
@@ -901,13 +920,14 @@ private void fillNOAPanel() {
 			} catch (DocumentException e) {
 				e.printStackTrace();
 			}
-	        /*noaPanel.setVisible(true);*/		      }
+	       
 	      catch (Throwable throwable) {
 	        noaPanel.add(new JLabel("<html>Ein Fehler ist aufgetreten:<br>" + throwable.getMessage()+"</html>"));
 	      }
 	    }
 	  }
-
+*/	  
+/*
 private IFrame constructOOOFrame(IOfficeApplication officeApplication, final Container parent) throws Throwable {
     nativeView = new NativeView(RehaMail.officeNativePfad);
     parent.add(nativeView);
@@ -964,6 +984,7 @@ static void copy(ITextDocument sourceDoc, ITextDocument targetDoc) throws Except
     
     xTransferableSupplier_targetDoc.insertTransferable(xTransferable);
   }
+*/  
 /************************************************/
 class ToolsDlgAktuelleRezepte{
 	public ToolsDlgAktuelleRezepte(String command,Point pt){

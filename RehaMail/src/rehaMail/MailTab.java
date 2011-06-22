@@ -24,6 +24,7 @@ public class MailTab extends JXPanel {
 	JTabbedPane mailTab = null;
 	public MailPanel mailPanel = null;
 	public SendMailPanel sendPanel = null;
+	public RTFEditorPanel editorPanel = null;
 	public static RehaMail eltern;
 	public MailTab(RehaMail xeltern){
 		super(new BorderLayout());
@@ -53,13 +54,17 @@ public class MailTab extends JXPanel {
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
+					
 					mailPanel = new MailPanel();
 					mailPanel.setOpaque(false);
 					mailTab.setPreferredSize(RehaMail.thisFrame.getPreferredSize());
-					mailTab.add(mailPanel,"eingegangene Nachrichten");
-					mailTab.add((sendPanel = new SendMailPanel()),"gesendete Nachrichten");
+					//mailTab.addTab("RTF-Editor",RehaMail.attachmentIco[5],editorPanel=new RTFEditorPanel()); 
+
+					mailTab.addTab("eingegangene Nachrichten", RehaMail.attachmentIco[5],mailPanel );
+					mailTab.addTab("gesendete Nachrichten",RehaMail.attachmentIco[6],(sendPanel = new SendMailPanel()));
 						
-					//mailTab.revalidate();
+					mailTab.revalidate();
+					
 					mailTab.setSelectedIndex(0);
 					
 				}catch(Exception ex){
@@ -78,8 +83,5 @@ public class MailTab extends JXPanel {
 		return sendPanel;
 	}
 
-	public void updateReceivedMail(){
-		
-	}
-
+	
 }
