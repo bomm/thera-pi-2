@@ -428,7 +428,7 @@ public class TermineErfassen implements Runnable {
 			sbuftermine.append((String)vec.get(0));
 		}
 		
-		Object[] objTerm = RezTools.BehandlungenAnalysieren(scanrez, false,false,false, ((Vector<String>)vec.clone()),null,this.kollege);
+		Object[] objTerm = RezTools.BehandlungenAnalysieren(scanrez, false,false,false, ((Vector<String>)vec.clone()),null,this.kollege,DatFunk.sHeute());
 		if(objTerm==null){return;}
 		if( (Integer)objTerm[1] == RezTools.REZEPT_ABBRUCH ){
 			return;
@@ -524,9 +524,9 @@ public class TermineErfassen implements Runnable {
 		return ret;
 			
 	}
-	public static String macheNeuTermin2(String pos1,String pos2,String pos3,String pos4,String xkollege){
+	public static String macheNeuTermin2(String pos1,String pos2,String pos3,String pos4,String xkollege,String datum){
 		String ret =
-			DatFunk.sHeute()+
+			datum+
 			"@"+
 			(xkollege==null ? "" : xkollege)+
 			"@"+
@@ -540,7 +540,7 @@ public class TermineErfassen implements Runnable {
 			*/
 			machePositionsString(Arrays.asList(pos1,pos2,pos3,pos4))+
 			"@"+
-			DatFunk.sDatInSQL(DatFunk.sHeute())+"\n";
+			DatFunk.sDatInSQL(datum)+"\n";
 		return ret;
 	}
 	private static String machePositionsString(List<String> list){
@@ -567,7 +567,7 @@ public class TermineErfassen implements Runnable {
 
 		public static Object[] BehandlungenAnalysieren(String swreznum,
 				boolean doppeltOk,boolean xforceDlg,boolean alletermine,
-				Vector<String> vecx,Point pt){
+				Vector<String> vecx,Point pt,String datum){
 		
 		int i,j,count =0;
 		boolean doppelBeh = false;
@@ -765,7 +765,8 @@ public class TermineErfassen implements Runnable {
 								(String) (hMPos.get(1).best ? vec.get(2) : ""),
 								(String) (hMPos.get(2).best ? vec.get(3) : ""),
 								(String) (hMPos.get(3).best ? vec.get(4) : ""),
-								(thisClass == null ?  null : thisClass.kollege)));
+								(thisClass == null ?  null : thisClass.kollege),
+								datum));
 						//hier zunächst den neuen Termin basteln;
 						retObj[0] = termbuf.toString();
 						retObj[1] = 0; //normalfall mind. eine Bahndlung konnte noch eingetragen werden und jetz Rezept voll
@@ -777,7 +778,8 @@ public class TermineErfassen implements Runnable {
 						(String) (hMPos.get(1).best ? vec.get(2) : ""),
 						(String) (hMPos.get(2).best ? vec.get(3) : ""),
 						(String) (hMPos.get(3).best ? vec.get(4) : ""),
-						(thisClass == null ?  null : thisClass.kollege)));
+						(thisClass == null ?  null : thisClass.kollege),
+						datum));
 				//hier zunächst den neuen Termin basteln;
 				retObj[0] = termbuf.toString();
 				//dann nochmal testen ob ein vorrangiges Heilmittel die Mengengrenze erreicht hat.

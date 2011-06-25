@@ -736,7 +736,8 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				//Reha.nachrichtenRegeln();
 				if(! RehaIOServer.rehaMailIsActive){
 					if(Reha.aktUser.startsWith("Therapeut")){return;}
-					new LadeProg(Reha.proghome+"RehaMail.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport+" "+Reha.aktUser);
+					Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+					new LadeProg(Reha.proghome+"RehaMail.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport+" "+Reha.aktUser.replace(" ", "#"));
 				}else{
 					if(Reha.aktUser.startsWith("Therapeut")){return;}
 					new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaMailreversePort,"Reha#"+RehaIOMessages.MUST_GOTOFRONT);

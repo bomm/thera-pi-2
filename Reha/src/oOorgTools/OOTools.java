@@ -35,6 +35,7 @@ import ag.ion.bion.officelayer.text.ITextRange;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
+import ag.ion.noa.internal.printing.PrintProperties;
 import ag.ion.noa.printing.IPrinter;
 import ag.ion.noa.search.ISearchResult;
 import ag.ion.noa.search.SearchDescriptor;
@@ -99,6 +100,63 @@ public class OOTools{
 			
 		}
 	}
+	public static synchronized void printAndClose(final ITextDocument textDocument, final int exemplare){
+		
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws java.lang.Exception {
+					try {
+						Thread.sleep(100);
+						PrintProperties printprop = new PrintProperties ((short)exemplare,null);
+						textDocument.getPrintService().print(printprop);
+						while(textDocument.getPrintService().isActivePrinterBusy()){
+							Thread.sleep(50);
+						}
+						Thread.sleep(150);
+						textDocument.close();
+						Thread.sleep(150);
+					} catch (InterruptedException e) {
+						JOptionPane.showMessageDialog(null,"Fehler im Rechnungsdruck, Fehler = InterruptedException" );
+						e.printStackTrace();
+					} catch (DocumentException e) {
+						JOptionPane.showMessageDialog(null,"Fehler im Rechnungsdruck, Fehler = DocumentException" );
+						e.printStackTrace();
+					} catch (NOAException e) {
+						JOptionPane.showMessageDialog(null,"Fehler in der Abfrage isActivePrinterBusy()" );
+						e.printStackTrace();
+					}
+					return null;
+				}
+				
+			}.execute();
+	}
+	public static synchronized ITextField[] holePlatzhalter(ITextDocument textDocument){
+		ITextField[] placeholders = null;
+		ITextFieldService textFieldService = null;
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			textFieldService = textDocument.getTextFieldService();
+
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		try {
+			Thread.sleep(50);
+			placeholders = textFieldService.getPlaceholderFields();
+			Thread.sleep(75);
+		} catch (TextException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return placeholders.clone();
+	}
+	/**************************************************************************************/
 	/**************************************************************************************/
 	public static synchronized void starteStandardFormular(String url,String drucker) {
 		IDocumentService documentService = null;

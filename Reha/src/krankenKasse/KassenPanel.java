@@ -692,6 +692,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 					@Override
 					protected Void doInBackground() throws Exception {
 						try{
+							//OOTools.testePlatzhalter(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
 							OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
 							//ladeSchreiben(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular));
 							// TODO Auto-generated method stub

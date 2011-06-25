@@ -58,6 +58,7 @@ import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.TextException;
+import ag.ion.noa.NOAException;
 import ag.ion.noa.internal.printing.PrintProperties;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -998,10 +999,23 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			}else{
 				exemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("hmbgeexemplare"));
 			}
+			OOTools.printAndClose(textDocument, exemplare);
+			/*
+			Thread.sleep(100);
 			PrintProperties printprop = new PrintProperties ((short)exemplare,null);
 			textDocument.getPrintService().print(printprop);
-			Thread.sleep(500);
-			textDocument.close();
+			try {
+				while(textDocument.getPrintService().isActivePrinterBusy()){
+					Thread.sleep(50);
+				}
+				Thread.sleep(150);
+				textDocument.close();
+				Thread.sleep(150);
+			}catch (NOAException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+			}
+			*/
 		}
 	}
 	@Override

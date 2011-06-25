@@ -287,6 +287,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					@Override
 					protected Void doInBackground() throws Exception {
 						RezTools.constructFormularHMap();
+						//OOTools.testePlatzhalter(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
 						OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
 						return null;
 					}
@@ -1559,7 +1560,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(rezGeschlossen()){return;}
 				try{
 					Object[] objTerm = RezTools.BehandlungenAnalysieren(Reha.thisClass.patpanel.vecaktrez.get(1),
-							false,false,false,null,null,null); //hier noch ein  Point Object übergeben
+							false,false,false,null,null,null,DatFunk.sHeute()); //hier noch ein  Point Object übergeben
 					//System.out.println("objTerm[0]="+objTerm[0]);
 					//System.out.println("objTerm[1]="+objTerm[1]);
 					

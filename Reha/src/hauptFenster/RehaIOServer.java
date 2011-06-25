@@ -184,6 +184,7 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 		if(op.split("#")[1].equals(RehaIOMessages.IS_STARTET)){
 			Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
 			rehaMailIsActive = true;
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 			return;
 		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
 			rehaMailIsActive = false;

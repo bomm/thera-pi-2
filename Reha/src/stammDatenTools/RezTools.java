@@ -1904,7 +1904,7 @@ public class RezTools {
 
 	public static Object[] BehandlungenAnalysieren(String swreznum,
 			boolean doppeltOk,boolean xforceDlg,boolean alletermine,
-			Vector<String> vecx,Point pt,String xkollege){
+			Vector<String> vecx,Point pt,String xkollege,String datum){
 		int i,j,count =0;
 		boolean doppelBeh = false;
 		int doppelBehA = 0, doppelBehB = 0;
@@ -2119,7 +2119,7 @@ public class RezTools {
 						(params[1] != null ? params[1] : ""),
 						(params[2] != null ? params[2] : ""),
 						(params[3] != null ? params[3] : ""),
-						xkollege));
+						xkollege,datum));
 
 				retObj[0] = String.valueOf(termbuf.toString());
 				retObj[1] = (jetztVoll ? Integer.valueOf(RezTools.REZEPT_IST_JETZ_VOLL) : Integer.valueOf(RezTools.REZEPT_HAT_LUFT ));

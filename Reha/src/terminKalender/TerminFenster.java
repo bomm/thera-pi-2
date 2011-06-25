@@ -4414,7 +4414,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						}
 						Object[] objTerm = RezTools.BehandlungenAnalysieren(swreznum, false,xforceDlg,false,
 								((Vector<String>)vec.clone()),
-								computeLocation(null,240,250,swbeginn,swende),ParameterLaden.getKollegenUeberDBZeile(swbehandler+1));
+								computeLocation(null,240,250,swbeginn,swende),
+								ParameterLaden.getKollegenUeberDBZeile(swbehandler+1),DatFunk.sDatInDeutsch(swdatum));
 						if(objTerm==null){return null;}
 						if( (Integer)objTerm[1] == RezTools.REZEPT_ABBRUCH ){
 							return null;

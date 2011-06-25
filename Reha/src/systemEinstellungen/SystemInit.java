@@ -273,6 +273,10 @@ private JScrollPane getParameterListe(){
 	node.add(treeitem);
 	//root.add(node);
 	/***/
+	treeitem = new DefaultMutableTreeNode( "Gruppendefinition Thera-Pi-Nachrichten");
+	node.add(treeitem);
+	//root.add(node);
+	/***/
 	treeitem = new DefaultMutableTreeNode( "Fremdprogramme");
 	node.add(treeitem);
 	//root.add(node);
@@ -750,6 +754,20 @@ private void auswertenSysUtil(String util){
 			cursorWait(false);
 			break;
 		}
+		if(util.equals("Gruppendefinition Thera-Pi-Nachrichten")){
+			if(!Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilNachrichtenGruppen();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			break;
+		}
+
+		
 
 		
 		if(SystemConfig.hmSysIcons.get("werkzeuge") == null){
