@@ -23,6 +23,9 @@ import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
+import ag.ion.bion.officelayer.event.IDocumentEvent;
+import ag.ion.bion.officelayer.event.IDocumentListener;
+import ag.ion.bion.officelayer.event.IEvent;
 import ag.ion.bion.officelayer.filter.RTFFilter;
 import ag.ion.bion.officelayer.presentation.IPresentationDocument;
 import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
@@ -158,10 +161,14 @@ public class OOTools{
 	}
 	/**************************************************************************************/
 	/**************************************************************************************/
-	public static synchronized void starteStandardFormular(String url,String drucker) {
+	public static void starteStandardFormular(String url,String drucker) {
+		
+				
 		IDocumentService documentService = null;
 		ITextDocument textDocument = null;
 		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+		
+		//TheraPiDocListener docListener = null;
 		//System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();
@@ -173,6 +180,7 @@ public class OOTools{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		IDocumentDescriptor docdescript = new DocumentDescriptor();
 		docdescript.setHidden(true);
 		docdescript.setAsTemplate(true);
@@ -181,6 +189,19 @@ public class OOTools{
 		
 		try {
 			document = documentService.loadDocument(url,docdescript);
+			final IDocument xdocument = document;
+			new Thread(){
+				public void run(){
+					xdocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+					xdocument.getFrame().getXFrame().getContainerWindow().setVisible(false);
+				}
+			}.start();
+			//docListener = new TheraPiDocListener((IDocument)document);
+			//document.addDocumentListener(docListener);
+			//System.out.println("Dokument wurde geöffnet "+document.isOpen());
+			//document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+			//document.getFrame().getXFrame().getContainerWindow().setVisible(false);
+			
 		} catch (NOAException e) {
 
 			e.printStackTrace();
@@ -343,7 +364,8 @@ public class OOTools{
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.getPageCursor().jumpToFirstPage();
 
-
+		//document.removeDocumentListener(docListener);
+		//docListener = null;
 		final ITextDocument xtextDocument = textDocument;
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
@@ -351,6 +373,7 @@ public class OOTools{
 				xtextDocument.getFrame().setFocus();
 			}
 		});
+
 
 	}
 	/**************************************************************************************/
@@ -785,6 +808,7 @@ public class OOTools{
 
 		for (int i = 0; i < placeholders.length; i++) {
 			placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
+			//System.out.println(i+" - "+placeholderDisplayText);
 			Set<?> entries = taxWerte.entrySet();
 		    Iterator<?> it = entries.iterator();
 			    while (it.hasNext()) {
@@ -793,6 +817,7 @@ public class OOTools{
 			    	  try{
 			    		  
 			    	  }catch(com.sun.star.uno.RuntimeException ex){
+			    		  ex.printStackTrace();
 			    		  //System.out.println("Fehler bei "+placeholderDisplayText);
 			    	  }
 			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
@@ -1537,5 +1562,125 @@ public class OOTools{
 		}
 
 	}
+	/**************************************/
+}
+class TheraPiDocListener implements IDocumentListener{
+	Object document = null;
+	public TheraPiDocListener(IDocument document){
+		this.document = document;
+	}
+	@Override
+	public void disposing(IEvent arg0) {
+		System.out.println("disposing");
+		
+	}
+
+	@Override
+	public void onAlphaCharInput(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onFocus(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onInsertDone(IDocumentEvent arg0) {
+		System.out.println("onInsertDone");
+		
+	}
+
+	@Override
+	public void onInsertStart(IDocumentEvent arg0) {
+		System.out.println("onInsertStart");
+		
+	}
+
+	@Override
+	public void onLoad(IDocumentEvent arg0) {
+		System.out.println("onLoad");
+		
+	}
+
+	@Override
+	public void onLoadDone(IDocumentEvent arg0) {
+		System.out.println("onLoadDone");
+		
+	}
+
+	@Override
+	public void onLoadFinished(IDocumentEvent arg0) {
+		System.out.println("onLoadFinished");
+		
+	}
+
+	@Override
+	public void onModifyChanged(IDocumentEvent arg0) {
+		System.out.println("onModifyChanged");
+	}
+
+	@Override
+	public void onMouseOut(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMouseOver(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onNew(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onNonAlphaCharInput(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSave(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSaveAs(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSaveAsDone(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSaveDone(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSaveFinished(IDocumentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUnload(IDocumentEvent arg0) {
+		System.out.println("onUnload");
+		
+	}
 	
 }
+/**************************************/

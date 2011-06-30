@@ -105,6 +105,7 @@ public class FileTools {
 		  // Datei schreiben
 		  FileOutputStream fileOut = new FileOutputStream(f);
 		  fileOut.write(data);
+		  fileOut.flush();
 		  fileOut.close();
 		}
 		catch (IOException e)

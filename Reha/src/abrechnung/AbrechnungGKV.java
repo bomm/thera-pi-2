@@ -1266,9 +1266,15 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		unbBuf.append("GES"+plus+"11"+plus+dfx.format(preis11[0])+plus+dfx.format(preis11[1])+plus+dfx.format(preis11[2])+EOL);
 		unbBuf.append("GES"+plus+"31"+plus+dfx.format(preis31[0])+plus+dfx.format(preis31[1])+plus+dfx.format(preis31[2])+EOL);
 		unbBuf.append("GES"+plus+"51"+plus+dfx.format(preis51[0])+plus+dfx.format(preis51[1])+plus+dfx.format(preis51[2])+EOL);
-		unbBuf.append("NAM"+plus+SystemConfig.hmFirmenDaten.get("Ikbezeichnung")+plus+
+		unbBuf.append("NAM"+plus+
+				(SystemConfig.hmFirmenDaten.get("Ikbezeichnung").length() > 30 ?
+						SystemConfig.hmFirmenDaten.get("Ikbezeichnung").substring(0,30) :
+						SystemConfig.hmFirmenDaten.get("Ikbezeichnung")	)+plus+
 				SystemConfig.hmFirmenDaten.get("Anrede").trim()+" "+
-				SystemConfig.hmFirmenDaten.get("Nachname").trim()+plus+SystemConfig.hmFirmenDaten.get("Telefon")+EOL);
+				(SystemConfig.hmFirmenDaten.get("Nachname").trim().length() > 25 ?
+				SystemConfig.hmFirmenDaten.get("Nachname").trim().substring(0,25) :
+				SystemConfig.hmFirmenDaten.get("Nachname").trim()	)+
+				plus+SystemConfig.hmFirmenDaten.get("Telefon")+EOL);
 		unbBuf.append("UNT+000010+00001"+EOL);
 		unbBuf.append("UNH+00002+SLLA:06:0:0"+EOL);
 		unbBuf.append("FKT+01"+plus+plus+Reha.aktIK+plus+ik_kostent+plus+ik_kasse+EOL);

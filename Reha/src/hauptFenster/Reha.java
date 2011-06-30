@@ -305,7 +305,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-06-24/01-DB=";
+	public static String aktuelleVersion = "V=2011-06-30/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1840,12 +1840,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             if(path.indexOf("LibreOffice 3.") >= 0){
             	System.out.println("Nehme die neue Variante");
                 config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
-                		new String[] {"--",
+                		new String[] {"--nologo",
                 		"--nofirststartwizard",
-                		"--nodefault",
+                		"--quickstart",
                 		"--norestore",
-                		"--nolockcheck",
-                		"--invisible"
+                		"--nolockcheck"
+                		
                 		});
                 System.out.println("Nehme LibreOffice Configuration ");
             }
