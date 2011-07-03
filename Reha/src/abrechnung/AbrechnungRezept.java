@@ -1134,7 +1134,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			if(behandlungen.length > 0 && (!splitvec.trim().equals(""))){
 				//Es stehen Behandlungsdaten im Terminblatt;
 				//Positionen = length+hbposanzahl;
-				System.out.println("Länge des Feldes = "+behandlungen.length);
+				//System.out.println("Länge des Feldes = "+behandlungen.length);
 				//anzahlbehandlungen = behandlungen.length;
 				
 				if((i+1) <= Integer.parseInt(vec_rez.get(0).get(3))){

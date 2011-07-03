@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import systemEinstellungen.SystemConfig;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;

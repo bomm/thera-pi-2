@@ -189,6 +189,8 @@ public class OOTools{
 		
 		try {
 			document = documentService.loadDocument(url,docdescript);
+
+			/*
 			final IDocument xdocument = document;
 			new Thread(){
 				public void run(){
@@ -196,6 +198,7 @@ public class OOTools{
 					xdocument.getFrame().getXFrame().getContainerWindow().setVisible(false);
 				}
 			}.start();
+			*/
 			//docListener = new TheraPiDocListener((IDocument)document);
 			//document.addDocumentListener(docListener);
 			//System.out.println("Dokument wurde geöffnet "+document.isOpen());
@@ -778,7 +781,7 @@ public class OOTools{
 	
 	/*******************************************************************************************/
 
-	public static synchronized void starteTaxierung(String url,HashMap<String,String> taxWerte) throws Exception, OfficeApplicationException, NOAException, TextException, DocumentException{
+	public static void starteTaxierung(String url,HashMap<String,String> taxWerte) throws Exception, OfficeApplicationException, NOAException, TextException, DocumentException{
 		//String url = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA5.ott";
 		//String drucker = "";
 		IDocumentService documentService = null;
@@ -805,7 +808,7 @@ public class OOTools{
 
 		placeholders = textFieldService.getPlaceholderFields();
 		String placeholderDisplayText = "";
-
+		//System.out.println("Platzhalteranzahl = "+placeholders.length);
 		for (int i = 0; i < placeholders.length; i++) {
 			placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
 			//System.out.println(i+" - "+placeholderDisplayText);

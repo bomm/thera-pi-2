@@ -2,7 +2,6 @@ package rehaInternalFrame;
 
 import hauptFenster.AktiveFenster;
 import hauptFenster.FrameSave;
-import hauptFenster.ProgLoader;
 import hauptFenster.Reha;
 
 import java.awt.Dimension;

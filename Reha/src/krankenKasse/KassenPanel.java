@@ -991,12 +991,12 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
             }
         }
         //IK der Stelle mit Entschlüsselungsbefugnis
-        if(testvec.get(0).get(3).equals("")){
+        if(testvec.get(0).get(4).equals("")){
             buf1.append("<tr><td class='spalte2' align='right'>IK der Stelle mit Entschlüsselungsbefugnis</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/nichtok.gif"+"'></td></tr>");
             klappt = false;
         }else{
         	//testen om im Kassenstamm vohanden
-            buf1.append("<tr><td class='spalte2' align='right'>IK der Datenannahmestelle</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+            buf1.append("<tr><td class='spalte2' align='right'>IK der Stelle mit Entschlüsselungsbefugnis</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             testHm.put("decode_ik", String.valueOf(testvec.get(0).get(4).trim()));
             if(!SqlInfo.holeEinzelFeld("select id from kass_adr where ik_kasse='"+testvec.get(0).get(4)+"' LIMIT 1").equals("")){
             	buf1.append("<tr><td class='spalte2' align='right'>Stelle mit Entschlüsselungsbefugnis im Kassenstamm vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");	
@@ -1110,7 +1110,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
     	buf.append("IK des Nutzer mit Entschlüsselungsbefugnis = "+hmap.get("decode_ik")+"\n");
     	buf.append("IK der Papierannahmestelle = "+hmap.get("papier_ik")+"\n");
     	buf.append("Emailadresse = "+hmap.get("email")+"\n");
-    	System.out.println(buf.toString());
+    	//System.out.println(buf.toString());
     	return buf.toString();
     }
 	private int[] doVerschluesseln(String datei,HashMap<String,String> hmap){
