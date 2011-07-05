@@ -3,6 +3,7 @@ package org.thera_pi.updates;
 import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -31,14 +32,14 @@ public class UpdateTab  extends JXPanel implements ChangeListener{
 	JXPanel tab4 = null;
 
 	
-	UpdateTab(TheraPiUpdates xeltern){
+	UpdateTab(TheraPiUpdates xeltern,JFrame jFrame){
 		super();
 		eltern = xeltern;
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createRaisedBevelBorder());
 		updateTab = new JTabbedPane();
 		updateTab.setUI(new WindowsTabbedPaneUI());
-		tab1 = new UpdatePanel(eltern,null, this);
+		tab1 = new UpdatePanel(eltern,jFrame, this);
 		tab2 = new EntwicklerPanel(eltern,this);
 		updateTab.add("<html>Anwenderseite</html>",tab1);
 		updateTab.add("<html>Entwicklerseite</html>",tab2);
