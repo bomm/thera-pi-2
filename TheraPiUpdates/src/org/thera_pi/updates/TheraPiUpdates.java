@@ -57,7 +57,7 @@ public class TheraPiUpdates implements WindowListener {
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
 		if(UpdateConfig.getInstance().isDeveloperMode()){
-			jFrame.getContentPane().add (new UpdateTab(this));	
+			jFrame.getContentPane().add (new UpdateTab(this,jFrame));	
 		}else{
 			jFrame.getContentPane().add (new UpdatePanel(this,jFrame, null));	
 		}
