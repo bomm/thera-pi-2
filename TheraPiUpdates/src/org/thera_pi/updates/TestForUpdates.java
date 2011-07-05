@@ -140,7 +140,7 @@ public class TestForUpdates {
 								dummy.add(sourceAndTarget[1].trim().replace("%proghome%", UpdateConfig.getProghome()).replace("//", "/"));
 								if(! targetvec.contains(dummy.get(1))){
 									targetvec.add(new String(dummy.get(1)));
-									updatefiles.add((Vector<String>)dummy.clone());									
+									updatefiles.add(new Vector<String>(dummy));
 								}
 							}else if(sourceAndTarget[1].contains("%userdir%")){
 								String home = sourceAndTarget[1].trim().replace("%userdir%", UpdateConfig.getProghome()).replace("//", "/"); 
@@ -149,7 +149,7 @@ public class TestForUpdates {
 									dummy.add(updatedir+sourceAndTarget[0].trim());
 									dummy.add(home.replace("%mandantik%", mandvec.get(i)[0]));
 									if(! targetvec.contains(dummy.get(1))){
-										updatefiles.add((Vector<String>)dummy.clone());									
+										updatefiles.add(new Vector<String>(dummy));									
 									}
 								}
 							}

@@ -42,8 +42,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import org.apache.commons.net.ftp.FTPFile;
@@ -51,9 +49,6 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-
-
-
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -103,12 +98,15 @@ public class UpdatePanel extends JXPanel{
 	
 	public static boolean DbOk;
 	public Connection conn;
+	private JFrame jFrame;
 	
-	UpdatePanel(TheraPiUpdates xeltern,UpdateTab xupdateTab){
+	UpdatePanel(TheraPiUpdates xeltern,JFrame jFrame, UpdateTab xupdateTab){
 	
 		
 		super();
 		eltern = xeltern;
+		this.jFrame = jFrame;
+		
 		if(xupdateTab != null){
 			updateTab = xupdateTab;
 		}
@@ -302,7 +300,7 @@ public class UpdatePanel extends JXPanel{
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-				TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+				jFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 				ftpt = new FTPTools();
 				
 				ffile = ftpt.holeDatNamen();
@@ -346,7 +344,7 @@ public class UpdatePanel extends JXPanel{
 				ftpt.holeDatei("Reha.jar", "C:/ftptests/", true, getInstance(),-1);
 				*/
 				ftpt = null;
-				TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				jFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				}catch(Exception ex){
 					ex.printStackTrace();
 					ftpt = null;
@@ -387,6 +385,7 @@ public class UpdatePanel extends JXPanel{
 		}
 		return false;
 	}
+	/*
 	private String usingDateFormatter(long input){  
 		         Date date = new Date(input);  
 		         Calendar cal = new GregorianCalendar();  
@@ -395,7 +394,8 @@ public class UpdatePanel extends JXPanel{
 		         cal.setTime(date);  
 		         return sdf.format(date);  
 		   
-	}  
+	} 
+	*/ 
 	 private String usingDateFormatterWithTimeZone(long input){  
 		 Date date = new Date(input);  
 		 Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));  
@@ -451,7 +451,7 @@ public class UpdatePanel extends JXPanel{
 								dummy.add(sourceAndTarget[1].trim().replace("%proghome%", UpdateConfig.getProghome()).replace("//", "/"));
 								if(! targetvec.contains(dummy.get(1))){
 									targetvec.add(new String((String)dummy.get(1)));
-									updatefiles.add((Vector<String>)dummy.clone());									
+									updatefiles.add(new Vector<String>(dummy));									
 								}
 							}else if(sourceAndTarget[1].contains("%userdir%")){
 								String home = sourceAndTarget[1].trim().replace("%userdir%", UpdateConfig.getProghome()).replace("//", "/"); 
@@ -461,7 +461,7 @@ public class UpdatePanel extends JXPanel{
 									dummy.add(updatedir+sourceAndTarget[0].trim());
 									dummy.add(home.replace("%mandantik%", mandvec.get(i)[0]));
 									if(! targetvec.contains(dummy.get(1))){
-										updatefiles.add((Vector<String>)dummy.clone());									
+										updatefiles.add(new Vector<String>(dummy));									
 									}
 									targetvec.add(String.valueOf(home.replace("%mandantik%", mandvec.get(i)[0])));
 								}
@@ -581,7 +581,7 @@ public class UpdatePanel extends JXPanel{
 	    if(vecstmt.size() > 0){
 	    	SwingUtilities.invokeLater(new Runnable(){
 	    		public void run(){
-	    	    	TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));	    			
+	    	    	jFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));	    			
 	    		}
 	    	});
 
@@ -606,7 +606,7 @@ public class UpdatePanel extends JXPanel{
 			}
 	    	SwingUtilities.invokeLater(new Runnable(){
 	    		public void run(){
-	    	    	TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));	    			
+	    	    	jFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));	    			
 	    		}
 	    	});
 
@@ -739,7 +739,7 @@ public class UpdatePanel extends JXPanel{
 								try{
 									int modi = tab.convertRowIndexToModel(ix);
 									if(testeObLogVorhanden(tabmod.getValueAt(modi,0).toString())){
-										TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+										jFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 										try{
 											ta.setForeground(Color.BLUE);	
 											ta.setText(holeLogText( tabmod.getValueAt(modi,0).toString()+".log" ));
@@ -747,7 +747,7 @@ public class UpdatePanel extends JXPanel{
 											ex.printStackTrace();
 											ta.setText("Fehler beim Bezug der Log-Datei");
 										}
-										TheraPiUpdates.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+										jFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 									}else{
 										ta.setForeground(Color.RED);
 										ta.setText("Für diese Update-Datei ist kein ChangeLog verfügbar");

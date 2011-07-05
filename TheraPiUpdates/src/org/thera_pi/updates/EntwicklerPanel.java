@@ -31,7 +31,6 @@ public class EntwicklerPanel extends JXPanel implements ActionListener{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private TheraPiUpdates eltern = null;
 	private UpdateTab updateTab = null;
 	private JPasswordField pw = null;
 	private JTextArea talog = null;
@@ -48,7 +47,6 @@ public class EntwicklerPanel extends JXPanel implements ActionListener{
 	
 	EntwicklerPanel(TheraPiUpdates xeltern,UpdateTab xupdatetab){
 		super();
-		eltern = xeltern;
 		updateTab = xupdatetab;
 		setLayout(new BorderLayout());
 		add(doContent(),BorderLayout.CENTER);
@@ -233,7 +231,8 @@ public class EntwicklerPanel extends JXPanel implements ActionListener{
             public void propertyChange(PropertyChangeEvent e) {
                 if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
                         || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
-                    final File f = (File) e.getNewValue();
+                	// FIXME File f is a local variable and cannot be used anywhere else
+                    // final File f = (File) e.getNewValue();
                 }
             }
 

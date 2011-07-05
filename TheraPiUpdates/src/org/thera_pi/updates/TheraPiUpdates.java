@@ -4,44 +4,21 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.sql.Connection;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-
-
-
-
-
-
 public class TheraPiUpdates implements WindowListener {
-	public static Connection conn_root;
-	public static Connection conn_db;
-	public JFrame jFrame = null;
-	public static JFrame thisFrame = null;
-	TheraPiUpdates thisClass = null;
-	public static boolean  seite1Ok = false,seite2Ok = false,seite3Ok = false,seite4Ok = false;
-	/*
-	public static String UpdateVerzeichnis = "/updates";
-	public static String UpdateFTP = "www.thera-pi.org";
-	public static String UpdateUser = "u37262724-howto";
-	public static String UpdatePasswd = "therapihowto";
-	*/
-	public static boolean isDeveloper = false;
+	private JFrame jFrame = null;
 	public static boolean starteTheraPi = false;
 	
-	private static UpdateConfig updateConfig;
-
 	public static void main(String[] args) {
 		if(args.length > 0){
 			starteTheraPi = true;
 		}
 
-		updateConfig = UpdateConfig.getInstance();
-		
-		if(updateConfig.isUseActiveMode())
+		if(UpdateConfig.getInstance().isUseActiveMode())
 		{
 			System.out.println("FTP-Modus = ActiveMode");
 		}else{
@@ -51,15 +28,10 @@ public class TheraPiUpdates implements WindowListener {
 		System.out.println("program home: " + UpdateConfig.getProghome());
 		
 		TheraPiUpdates application = new TheraPiUpdates();
-		application.getInstance();
-		application.getJFrame();
+		application.createJFrame();
 	}	
 	
-	public TheraPiUpdates getInstance(){
-		thisClass = this;
-		return this;
-	}
-	public JFrame getJFrame(){
+	public JFrame createJFrame(){
 		try {
 			
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -73,7 +45,6 @@ public class TheraPiUpdates implements WindowListener {
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}		
-		thisClass = this;
 		jFrame = new JFrame();
 		jFrame.setUndecorated(true);
 		jFrame.addWindowListener(this);
@@ -85,15 +56,14 @@ public class TheraPiUpdates implements WindowListener {
 		//jFrame.setTitle("Thera-Pi  MySql-Konfigurationsassistent");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
-		if(TheraPiUpdates.isDeveloper){
-			jFrame.getContentPane().add (new UpdateTab(thisClass));	
+		if(UpdateConfig.getInstance().isDeveloperMode()){
+			jFrame.getContentPane().add (new UpdateTab(this));	
 		}else{
-			jFrame.getContentPane().add (new UpdatePanel(thisClass,null));	
+			jFrame.getContentPane().add (new UpdatePanel(this,jFrame, null));	
 		}
 		jFrame.pack();
 		jFrame.setVisible(true);
 
-		thisFrame = jFrame;
 		return jFrame;
 		
 	}

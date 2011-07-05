@@ -38,7 +38,7 @@ public class UpdateTab  extends JXPanel implements ChangeListener{
 		setBorder(BorderFactory.createRaisedBevelBorder());
 		updateTab = new JTabbedPane();
 		updateTab.setUI(new WindowsTabbedPaneUI());
-		tab1 = new UpdatePanel(eltern,this);
+		tab1 = new UpdatePanel(eltern,null, this);
 		tab2 = new EntwicklerPanel(eltern,this);
 		updateTab.add("<html>Anwenderseite</html>",tab1);
 		updateTab.add("<html>Entwicklerseite</html>",tab2);
