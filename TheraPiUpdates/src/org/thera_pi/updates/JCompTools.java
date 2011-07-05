@@ -1,4 +1,4 @@
-package theraPiUpdates;
+package org.thera_pi.updates;
 
 import java.awt.Component;
 import java.awt.LayoutManager;

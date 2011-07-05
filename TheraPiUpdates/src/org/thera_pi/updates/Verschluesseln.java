@@ -1,4 +1,4 @@
-package theraPiUpdates;
+package org.thera_pi.updates;
 
 import javax.crypto.*;
 import javax.crypto.spec.*;

@@ -1,4 +1,4 @@
-package theraPiUpdates;
+package org.thera_pi.updates;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,12 +18,9 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-
-import theraPiUpdates.UpdatePanel.UpdateTableModel;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -34,20 +31,20 @@ public class EntwicklerPanel extends JXPanel implements ActionListener{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	TheraPiUpdates eltern = null;
-	UpdateTab updateTab = null;
-	JPasswordField pw = null;
-	public JTextArea talog = null;
-	public JTextArea tafiles = null;
-	JLabel uploadfile = null;
-	JButton hochladen = null;
-	JButton dateiwahl = null;
-	JButton beenden = null;
+	private TheraPiUpdates eltern = null;
+	private UpdateTab updateTab = null;
+	private JPasswordField pw = null;
+	private JTextArea talog = null;
+	private JTextArea tafiles = null;
+	private JLabel uploadfile = null;
+	private JButton hochladen = null;
+	private JButton dateiwahl = null;
+	private JButton beenden = null;
 	
-	String updatepfad = null;
-	String updatedatei = null;
-	JProgressBar pbar = null;
-	String entwicklerpw = "therapi1updates2";
+	private String updatepfad = null;
+	private String updatedatei = null;
+	private JProgressBar pbar = null;
+	private String entwicklerpw = "therapi1updates2";
 	
 	EntwicklerPanel(TheraPiUpdates xeltern,UpdateTab xupdatetab){
 		super();
@@ -57,6 +54,7 @@ public class EntwicklerPanel extends JXPanel implements ActionListener{
 		add(doContent(),BorderLayout.CENTER);
 		validate();
 	}
+	
 	private JXPanel doContent(){
 		JXPanel jpan = new JXPanel();
 		//                1    2     3    4   5    6     7
@@ -122,6 +120,7 @@ public class EntwicklerPanel extends JXPanel implements ActionListener{
 		jpan.validate();
 		return jpan;
 	}
+	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String cmd = arg0.getActionCommand();
@@ -151,9 +150,11 @@ public class EntwicklerPanel extends JXPanel implements ActionListener{
 		}
 		
 	}
+	
 	public void doBeenden(){
 		System.exit(0);
 	}
+	
 	public void doDateiwahl(){
 		String passw = new String(pw.getPassword());
 		if(! passw.equals(entwicklerpw)){
@@ -161,7 +162,7 @@ public class EntwicklerPanel extends JXPanel implements ActionListener{
 			hochladen.setEnabled(false);
 			return;
 		}
-		dateiDialog(TheraPiUpdates.proghome);
+		dateiDialog(UpdateConfig.getProghome());
 		if(updatedatei==null){
 			updatepfad = "";
 			updatedatei = "";
@@ -213,6 +214,7 @@ public class EntwicklerPanel extends JXPanel implements ActionListener{
 		ftpClient.ftpTransferString("update.files",tafiles.getText(),pbar);
 
 	}
+	
 	private String holeLogText(String logDatei){
 		FTPTools ftp = new FTPTools();
 		return ftp.holeLogDateiSilent(logDatei);

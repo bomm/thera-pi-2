@@ -25,11 +25,11 @@ import javax.swing.JScrollPane;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.thera_pi.nebraska.gui.utils.ButtonTools;
+import org.thera_pi.updates.JCompTools;
 
 import sqlTools.SqlInfo;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
-import theraPiUpdates.JCompTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

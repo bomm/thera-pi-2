@@ -1,4 +1,4 @@
-package theraPiUpdates;
+package org.thera_pi.updates;
 
 
 
@@ -91,8 +91,8 @@ public class UpdatePanel extends JXPanel{
 	
 	FTPTools ftpt = null;
 	
-	Image imgkeinupdate = new ImageIcon(TheraPiUpdates.proghome+"icons/clean.png").getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
-	Image imgupdate = new ImageIcon(TheraPiUpdates.proghome+"icons/application-exit.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);	
+	Image imgkeinupdate = new ImageIcon(UpdateConfig.getProghome() + "icons/clean.png").getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
+	Image imgupdate = new ImageIcon(UpdateConfig.getProghome() + "icons/application-exit.png").getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);	
 	ImageIcon icokeinupdate;
 	ImageIcon icoupdate;
 	public FTPFile[] ffile = null;
@@ -124,7 +124,7 @@ public class UpdatePanel extends JXPanel{
 				icokeinupdate = new ImageIcon(imgkeinupdate);
 				icoupdate = new ImageIcon(imgupdate);
 				doHoleUpdateConf();
-				updateCheck(TheraPiUpdates.proghome+"update.files");
+				updateCheck(UpdateConfig.getProghome() + "update.files");
 				doFtpTest();
 				return null;
 			}
@@ -135,13 +135,13 @@ public class UpdatePanel extends JXPanel{
 		String titel = "<html><font size='5'><font color='e77817'>Thera-Pi</font>&nbsp;&nbsp; Update-Explorer</font></html>";
         head.setTitle(titel);
         String description = "<html>Ein rotes "+
-        "<img src='file:///"+TheraPiUpdates.proghome+"icons/application-exit.png' width='16' height='16' align=\"bottom\">"+ 
+        "<img src='file:///"+UpdateConfig.getProghome()+"icons/application-exit.png' width='16' height='16' align=\"bottom\">"+ 
         "signalisiert, daß die angezeigte Datei <b>neuer</b> ist als die Datei die sich auf Ihrem Rechner befindet.<br>"+
         "Wenn Sie in der Tabelle einen Doppelklick auf einer dieser Dateien ausführen, kopieren Sie diese Datei in Ihre Thera-Pi-Installation."+
         "<b><font color='aa0000'><br>Achtung:</font></b><br>Wenn INI-Dateien zum Update angeboten werden überschreiben Sie evtl. bestehende individuelle INI-Dateien. Bitte "+
         "machen Sie in diesem Fall vor dem Update eine <b>Sicherungskopie Ihres 'INI-Verzeichnisses'</b></html>";
         head.setDescription(description);
-        head.setIcon(new ImageIcon(TheraPiUpdates.proghome+"icons/TPorg.png"));   
+        head.setIcon(new ImageIcon(UpdateConfig.getProghome()+"icons/TPorg.png"));   
 		return head;
 	}
 	
@@ -193,7 +193,7 @@ public class UpdatePanel extends JXPanel{
 					int anfrage = JOptionPane.showConfirmDialog(null, "Wollen Sie Thera-Pi 1.0 jetzt starten?","Thera-Pi starten?",JOptionPane.YES_NO_OPTION);
 					if(anfrage == JOptionPane.YES_OPTION){
 						try {
-							Runtime.getRuntime().exec("java -jar "+TheraPiUpdates.proghome+"TheraPi.jar");
+							Runtime.getRuntime().exec("java -jar "+UpdateConfig.getProghome()+"TheraPi.jar");
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -288,7 +288,7 @@ public class UpdatePanel extends JXPanel{
 	private void doHoleUpdateConf(){
 		try{
 			ftpt = new FTPTools();
-			boolean geklappt = ftpt.holeDatei("update.files", TheraPiUpdates.proghome, false, getInstance(),-1);
+			boolean geklappt = ftpt.holeDatei("update.files", UpdateConfig.getProghome(), false, getInstance(),-1);
 			if(!geklappt){
 				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Steuerdatei update.files");
 			}
@@ -387,7 +387,7 @@ public class UpdatePanel extends JXPanel{
 		}
 		return false;
 	}
-	 private String usingDateFormatter(long input){  
+	private String usingDateFormatter(long input){  
 		         Date date = new Date(input);  
 		         Calendar cal = new GregorianCalendar();  
 		         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss z");  
@@ -413,7 +413,7 @@ public class UpdatePanel extends JXPanel{
 		BufferedReader in = null;
 		
 		/************************/
-		INIFile inif = new INIFile(TheraPiUpdates.proghome+"ini/mandanten.ini");
+		INIFile inif = new INIFile(UpdateConfig.getProghome()+"ini/mandanten.ini");
 		int AnzahlMandanten = inif.getIntegerProperty("TheraPiMandanten", "AnzahlMandanten");
 		for(int i = 0; i < AnzahlMandanten;i++){
 			String[] mand = {null,null};
@@ -448,20 +448,20 @@ public class UpdatePanel extends JXPanel{
 							if(sourceAndTarget[1].contains("%proghome%")){
 								dummy.clear();
 								dummy.add(updatedir+sourceAndTarget[0].trim());
-								dummy.add(sourceAndTarget[1].trim().replace("%proghome%", TheraPiUpdates.proghome).replace("//", "/"));
+								dummy.add(sourceAndTarget[1].trim().replace("%proghome%", UpdateConfig.getProghome()).replace("//", "/"));
 								if(! targetvec.contains(dummy.get(1))){
 									targetvec.add(new String((String)dummy.get(1)));
-									updatefiles.add( ((Vector<String>)dummy.clone()));									
+									updatefiles.add((Vector<String>)dummy.clone());									
 								}
 							}else if(sourceAndTarget[1].contains("%userdir%")){
-								String home = sourceAndTarget[1].trim().replace("%userdir%", TheraPiUpdates.proghome).replace("//", "/"); 
+								String home = sourceAndTarget[1].trim().replace("%userdir%", UpdateConfig.getProghome()).replace("//", "/"); 
 								
 								for(int i = 0; i < mandvec.size();i++){
 									dummy.clear();
 									dummy.add(updatedir+sourceAndTarget[0].trim());
 									dummy.add(home.replace("%mandantik%", mandvec.get(i)[0]));
 									if(! targetvec.contains(dummy.get(1))){
-										updatefiles.add( (Vector<String>) ((Vector<String>)dummy.clone()) );									
+										updatefiles.add((Vector<String>)dummy.clone());									
 									}
 									targetvec.add(String.valueOf(home.replace("%mandantik%", mandvec.get(i)[0])));
 								}
@@ -487,7 +487,7 @@ public class UpdatePanel extends JXPanel{
 	private void doProgExecute(){
 		ftpt = new FTPTools();
 		Long xgross = Long.parseLong(tab.getValueAt(tab.getSelectedRow(), 2).toString());
-		ftpt.holeDatei("ProgrammAusfuehren.sql", TheraPiUpdates.proghome, true, getInstance(),xgross);
+		ftpt.holeDatei("ProgrammAusfuehren.sql", UpdateConfig.getProghome(), true, getInstance(),xgross);
 		ftpt = null;
 		pbar.setValue(0);
 	    File file = null;
@@ -495,7 +495,7 @@ public class UpdatePanel extends JXPanel{
 	    LineNumberReader lnreader = null;
 	    Vector<String> vecstmt = new Vector<String>();
 	    try{
-		      file = new File(TheraPiUpdates.proghome+"ProgrammAusfuehren.sql");
+		      file = new File(UpdateConfig.getProghome()+"ProgrammAusfuehren.sql");
 		      freader = new FileReader(file);
 		      lnreader = new LineNumberReader(freader);
 		      String line = "";
@@ -520,7 +520,7 @@ public class UpdatePanel extends JXPanel{
 	    }
 	    if(vecstmt.size() > 0){
 	    	String cmd = vecstmt.get(0);
-	    	cmd = cmd.replace("@proghome/", TheraPiUpdates.proghome);
+	    	cmd = cmd.replace("@proghome/", UpdateConfig.getProghome());
 	    	final String command = String.valueOf(cmd);
 	    	new SwingWorker<Void,Void>(){
 				@Override
@@ -546,7 +546,7 @@ public class UpdatePanel extends JXPanel{
 		String ik = "";
 		ftpt = new FTPTools();
 		Long xgross = Long.parseLong(tab.getValueAt(tab.getSelectedRow(), 2).toString());
-		ftpt.holeDatei("TabellenUpdate.sql", TheraPiUpdates.proghome, true, getInstance(),xgross);
+		ftpt.holeDatei("TabellenUpdate.sql", UpdateConfig.getProghome(), true, getInstance(),xgross);
 		ftpt = null;
 		pbar.setValue(0);
 	    File file = null;
@@ -554,7 +554,7 @@ public class UpdatePanel extends JXPanel{
 	    LineNumberReader lnreader = null;
 	    Vector<String> vecstmt = new Vector<String>();
 	    try{
-		      file = new File(TheraPiUpdates.proghome+"TabellenUpdate.sql");
+		      file = new File(UpdateConfig.getProghome()+"TabellenUpdate.sql");
 		      freader = new FileReader(file);
 		      lnreader = new LineNumberReader(freader);
 		      String line = "";
@@ -588,8 +588,8 @@ public class UpdatePanel extends JXPanel{
 			for(int i = 0; i < mandvec.size();i++){
 				
 				ik = mandvec.get(i)[0];
-				holeDBZugang(TheraPiUpdates.proghome+"ini/"+ik+"/rehajava.ini");
-				System.out.println("Mandant "+TheraPiUpdates.proghome+"ini/"+ik+"/rehajava.ini");
+				holeDBZugang(UpdateConfig.getProghome()+"ini/"+ik+"/rehajava.ini");
+				System.out.println("Mandant "+UpdateConfig.getProghome()+"ini/"+ik+"/rehajava.ini");
 				StarteDB();
 				for(int x = 0; x < vecstmt.size();x++){
 					try {

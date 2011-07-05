@@ -1,4 +1,4 @@
-package testForUpdates;
+package org.thera_pi.updates;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,33 +10,21 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.net.ftp.FTPFile;
 
-import theraPiUpdates.FTPTools;
-import theraPiUpdates.INIFile;
-import theraPiUpdates.TheraPiUpdates;
 
 
 
 
 
 public class TestForUpdates {
-	public static String proghome = null; //java.lang.System.getProperty("user.dir").replace("\\","/")+"/";
 	
-	public static Vector<Vector<String>> updatefiles = new Vector<Vector<String>>();
-	public static Vector<String[]> mandvec = new Vector<String[]>();
+	private static Vector<Vector<String>> updatefiles = new Vector<Vector<String>>();
+	private static Vector<String[]> mandvec = new Vector<String[]>();
 
 	
-	theraPiUpdates.FTPTools ftpt = null;
+	private org.thera_pi.updates.FTPTools ftpt = null;
 	
 	public TestForUpdates(){
-		if(TheraPiUpdates.testphase){
-			proghome = "C:/RehaVerwaltung/";
-		}else{
-			proghome = java.lang.System.getProperty("user.dir").replace("\\","/")+"/";	
-		}
-		TheraPiUpdates.proghome = proghome;
-		TheraPiUpdates.oeffneIniDatei();
 		doHoleUpdateConfSilent();
-		
 	}
 	
 	
@@ -46,9 +34,9 @@ public class TestForUpdates {
 	/*******************/
 	private void doHoleUpdateConfSilent(){
 		ftpt = new FTPTools();
-		ftpt.holeDateiSilent("update.files", proghome, false);
+		ftpt.holeDateiSilent("update.files", UpdateConfig.getProghome(), false);
 		ftpt = null;
-		updateCheck(proghome+"update.files");
+		updateCheck(UpdateConfig.getProghome() + "update.files");
 	}
 	
 	
@@ -75,23 +63,11 @@ public class TestForUpdates {
 		ftpt = null;
 		return false;
 	}
-	private void connectTest(){
-		if(ftpt.ftpClient != null){
-			if(ftpt.ftpClient.isConnected()){
-				try{
-					ftpt.ftpClient.logout();
-				}catch(Exception ex){
-					
-				}
-				try{
-					ftpt.ftpClient.disconnect();
-				}catch(Exception ex){
-					
-				}
 
-			}
-		}
+	private void connectTest(){
+		ftpt.connectTest();
 	}
+
 	private boolean mussUpdaten(String datei,Long datum){
 		try{
 		File f = null;
@@ -128,7 +104,7 @@ public class TestForUpdates {
 		BufferedReader in = null;
 		
 		/************************/
-		INIFile inif = new INIFile(proghome+"ini/mandanten.ini");
+		INIFile inif = new INIFile(UpdateConfig.getProghome() + "ini/mandanten.ini");
 		int AnzahlMandanten = inif.getIntegerProperty("TheraPiMandanten", "AnzahlMandanten");
 		for(int i = 0; i < AnzahlMandanten;i++){
 			String[] mand = {null,null};
@@ -140,7 +116,7 @@ public class TestForUpdates {
 		
 		/************************/
 		try {
-			Vector<Object> dummy = new Vector<Object>();
+			Vector<String> dummy = new Vector<String>();
 			zeile = "";
 			reader = new FileReader(xupdatefile);
 			in = new BufferedReader(reader);
@@ -161,19 +137,19 @@ public class TestForUpdates {
 							if(sourceAndTarget[1].contains("%proghome%")){
 								dummy.clear();
 								dummy.add(updatedir+sourceAndTarget[0].trim());
-								dummy.add(sourceAndTarget[1].trim().replace("%proghome%", proghome).replace("//", "/"));
+								dummy.add(sourceAndTarget[1].trim().replace("%proghome%", UpdateConfig.getProghome()).replace("//", "/"));
 								if(! targetvec.contains(dummy.get(1))){
-									targetvec.add(new String((String)dummy.get(1)));
-									updatefiles.add( ((Vector<String>)dummy.clone()));									
+									targetvec.add(new String(dummy.get(1)));
+									updatefiles.add((Vector<String>)dummy.clone());									
 								}
 							}else if(sourceAndTarget[1].contains("%userdir%")){
-								String home = sourceAndTarget[1].trim().replace("%userdir%", proghome).replace("//", "/"); 
+								String home = sourceAndTarget[1].trim().replace("%userdir%", UpdateConfig.getProghome()).replace("//", "/"); 
 								for(int i = 0; i < mandvec.size();i++){
 									dummy.clear();
 									dummy.add(updatedir+sourceAndTarget[0].trim());
 									dummy.add(home.replace("%mandantik%", mandvec.get(i)[0]));
 									if(! targetvec.contains(dummy.get(1))){
-										updatefiles.add( ((Vector<String>)dummy.clone()));									
+										updatefiles.add((Vector<String>)dummy.clone());									
 									}
 								}
 							}
