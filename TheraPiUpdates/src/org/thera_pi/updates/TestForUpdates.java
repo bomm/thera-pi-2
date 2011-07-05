@@ -20,9 +20,6 @@ public class TestForUpdates {
 	private static Vector<Vector<String>> updatefiles = new Vector<Vector<String>>();
 	private static Vector<String[]> mandvec = new Vector<String[]>();
 
-	
-	private org.thera_pi.updates.FTPTools ftpt = null;
-	
 	public TestForUpdates(){
 		doHoleUpdateConfSilent();
 	}
@@ -33,24 +30,25 @@ public class TestForUpdates {
 	
 	/*******************/
 	private void doHoleUpdateConfSilent(){
-		ftpt = new FTPTools();
+		FTPTools ftpt = new FTPTools();
 		ftpt.holeDateiSilent("update.files", UpdateConfig.getProghome(), false);
-		ftpt = null;
 		updateCheck(UpdateConfig.getProghome() + "update.files");
 	}
 	
 	
 	public boolean doFtpTest(){
-		ftpt = new FTPTools();
+		//System.out.println("doFtpTest");
+
+		FTPTools ftpt = new FTPTools();
 		FTPFile[] ffile = ftpt.holeDatNamen();
 		for(int i = 0; i < ffile.length;i++){
 			try{
-			if( (!ffile[i].getName().toString().trim().equals(".")) &&
-					(!ffile[i].getName().toString().trim().equals("..")) &&
-					(!ffile[i].getName().toString().startsWith("update."))){
-				if(mussUpdaten(ffile[i].getName().toString().trim(),ffile[i].getTimestamp().getTime().getTime())){
-					connectTest();
-					ftpt = null;
+				String name = ffile[i].getName().toString().trim();
+			if( (!name.equals(".")) &&
+					(!name.equals("..")) &&
+					(!name.startsWith("update."))){
+				if(mussUpdaten(name, ffile[i].getTimestamp().getTime().getTime())){
+					ftpt.connectTest();
 					return true;
 				}					
 			}
@@ -59,36 +57,32 @@ public class TestForUpdates {
 				ex.printStackTrace();
 			}
 		}	
-		connectTest();
-		ftpt = null;
-		return false;
-	}
-
-	private void connectTest(){
 		ftpt.connectTest();
+		return false;
 	}
 
 	private boolean mussUpdaten(String datei,Long datum){
 		try{
-		File f = null;
-		//JOptionPane.showMessageDialog(null, "Vector-Size = "+updatefiles.size());
-		for(int i = 0; i < updatefiles.size();i++){
-			if(updatefiles.get(i).get(0).equals(datei)){
-				f = new File(updatefiles.get(i).get(1));
-				if(!f.exists()){
-					//JOptionPane.showMessageDialog(null, "Es muß updated werden-1");
-					return true;
-				}
-				if(f.lastModified() < datum){
-					//System.out.println("Zeitunterschied  = "+(f.lastModified()-datum));
-					//System.out.println(datumsFormat.format(f.lastModified()));
-					//System.out.println(datumsFormat.format(datum));
-					//JOptionPane.showMessageDialog(null, "Es muß updated werden-2");
-					return true;
+			File f = null;
+			//JOptionPane.showMessageDialog(null, "Vector-Size = "+updatefiles.size());
+			for(int i = 0; i < updatefiles.size();i++){
+				if(updatefiles.get(i).get(0).equals(datei)){
+					f = new File(updatefiles.get(i).get(1));
+					if(!f.exists()){
+						//System.out.println("Datei existiert nicht: " + datei);
+						//JOptionPane.showMessageDialog(null, "Es muß updated werden-1");
+						return true;
+					}
+					if(f.lastModified() < datum){
+						//System.out.println("Zeitunterschied  = "+(f.lastModified()-datum));
+						//System.out.println(datumsFormat.format(f.lastModified()));
+						//System.out.println(datumsFormat.format(datum));
+						//JOptionPane.showMessageDialog(null, "Es muß updated werden-2");
+						return true;
+					}
 				}
 			}
-		}
-		//System.out.println("Zeitunterschied  = "+(f.lastModified()-datum));
+			//System.out.println("Zeitunterschied  = "+(f.lastModified()-datum));
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}

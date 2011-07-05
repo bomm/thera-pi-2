@@ -7,6 +7,7 @@ public class UpdateConfig {
 	private String updatePasswd = "";
 	private boolean useActiveMode = false;
 	private boolean developerMode = false;
+	private boolean checkUpdates = false;
 	
 	private static UpdateConfig instance = null;
 
@@ -59,6 +60,7 @@ public class UpdateConfig {
 		}
 		developerMode = ("1".equals(ini.getStringProperty("TheraPiUpdates", "UpdateEntwickler")) ? true : false);
 		useActiveMode = ("1".equals(ini.getStringProperty("TheraPiUpdates", "UseFtpActiveMode")) ? true : false);
+		checkUpdates = ("0".equals(ini.getStringProperty("TheraPiUpdates", "UpdateChecken")) ? false : true);
 	}
 
 
@@ -88,6 +90,10 @@ public class UpdateConfig {
 
 	public boolean isDeveloperMode() {
 		return developerMode;
+	}
+
+	public boolean isCheckUpdates() {
+		return checkUpdates;
 	}
 
 }

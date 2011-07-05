@@ -103,6 +103,7 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.thera_pi.updates.TestForUpdates;
+import org.thera_pi.updates.UpdateConfig;
 import org.therapi.reha.patient.LadeProg;
 import org.therapi.reha.patient.PatientHauptPanel;
 
@@ -1230,13 +1231,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				@Override
 				protected Void doInBackground() throws java.lang.Exception {
 					try{
-						INIFile updateini = new INIFile(Reha.proghome+"ini/tpupdate.ini");
-						try{
-							Reha.updatesChecken = (updateini.getIntegerProperty("TheraPiUpdates", "UpdateChecken") > 0 ? true : false);
-						}catch(NullPointerException ex){
-							Reha.updatesChecken = true;
-						}
-						if(!Reha.updatesChecken){
+						if(!UpdateConfig.getInstance().isCheckUpdates()){
+							System.out.println("update check disabled");
 							return null;
 						}
 						TestForUpdates tfupd = null;
