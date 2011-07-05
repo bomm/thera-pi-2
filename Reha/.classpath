@@ -32,10 +32,11 @@
 	<classpathentry kind="lib" path="/Libraries/lib/jna_junit/jna_WindowUtils.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/net/smtp.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/net/mail.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/Nebraska.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/jna_junit/jna-3.2.4.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/sql/jpmdbc.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/TheraPiUpdates.jar"/>
-	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/jna_junit/jna-3.2.4.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/sql/jpmdbc.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Nebraska"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TheraPiUpdates"/>
+	<classpathentry kind="lib" path="/Libraries/lib/serial/comm.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
