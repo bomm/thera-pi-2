@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="common" default="default">
+    <target name="default">
+    	<echo level="error" message="This buildfile should not be called directly."/>
+    </target>
+
+	<target name="buildnumber" unless="build.number">
+		<buildnumber file="../Build/build-number.properties"/>
+	</target>
+	
+	<target name="jar" depends="build,buildnumber,jar-prepare,jar-main,jar-nomain" description="create jar file from compiled classes">
+		<echo message="${file.output.jar}: Implementation-Version: ${version.number}-b${build.number}"/>
+	</target>
+
+	<target name="jar-prepare">
+		<path id="path.classpath.build.thirdparty" refid="${ant.project.name}.classpath"/>
+
+		<pathconvert property="dir.libraries.basedir">
+			<path>
+				<pathelement location="${Libraries.location}"/>
+			</path>
+		</pathconvert>
+
+		<pathconvert property="path.classpath.jar" pathsep=" ">
+			<!-- <path refid="path.classpath.build.project"/> -->
+			<filelist files="${jar.classpath.jars}"/> 
+			<path refid="path.classpath.build.thirdparty"/>
+			<!-- The mapper removes absolute paths and filters out
+			     references to source files -->
+			<mapper>
+				<!-- this should catch all JARs build by other projects
+				     (path.classpath.build.project) -->
+				<globmapper from="${basedir}/*.jar" to="*.jar"/>
+				<!-- this should catch all thirdparty JARs -->
+				<globmapper from="${dir.libraries.basedir}/*" to="Libraries/lib/*"/>
+			</mapper>
+		</pathconvert>
+					
+        <mkdir dir="${dir.dist.jar}"/>
+	</target>
+		
+	<target name="jar-main" if="jar.main.class">
+        <jar destfile="${dir.dist.jar}/${file.output.jar}" basedir="${classdir}">
+        	<manifest>
+        		<attribute name="Main-Class" value="${jar.main.class}"/>
+        		<attribute name="Class-Path" value="${path.classpath.jar}"/>
+        		<attribute name="Sealed" value="true"/>
+                <attribute name="Implementation-Version" 
+                             value="${version.number}-b${build.number}"/> 
+        	</manifest>
+        </jar>
+	</target>
+		
+	<target name="jar-nomain" unless="jar.main.class">
+        <jar destfile="${dir.dist.jar}/${file.output.jar}" basedir="${classdir}">
+        	<manifest>
+        		<attribute name="Class-Path" value="${path.classpath.jar}"/>
+        		<attribute name="Sealed" value="true"/>
+                <attribute name="Implementation-Version" 
+                             value="${version.number}-b${build.number}"/> 
+        	</manifest>
+        </jar>
+	</target>
+		
+	<target name="build">
+		<echo level="error" message="This target should be overridden by generated buildfile"/>
+	</target>
+	
+</project>
