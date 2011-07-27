@@ -26,6 +26,7 @@ public class SystemPreislisten {
 	public static HashMap<String,Vector<String>> hmPreisBereich = new HashMap<String,Vector<String>>();
 
 	public static HashMap<String,Vector<Integer>> hmZuzahlRegeln = new HashMap<String,Vector<Integer>>();	
+	public static HashMap<String,Vector<Integer>> hmZuzahlModus = new HashMap<String,Vector<Integer>>();
 
 	public static HashMap<String,Vector<Integer>> hmHMRAbrechnung = new HashMap<String,Vector<Integer>>();
 
@@ -38,17 +39,21 @@ public class SystemPreislisten {
 	
 	public static HashMap<String,Vector<String>> hmBerichtRegeln = new HashMap<String,Vector<String>>();
 	
-	
 	private static Vector<String> dummy = new Vector<String>();
 	private static Vector<Integer> intdummy = new Vector<Integer>();
 	private static Vector<Vector<String>> hbdummy = new Vector<Vector<String>>();
 	private static Vector<String> hbdummy_1 = new Vector<String>();
 	private static Vector<Vector<String>> preisliste = new Vector<Vector<String>>();
-	
+	private static Vector<Integer> modusdummy = new Vector<Integer>();
+	public static HashMap<String,Vector<Object>> hmFristen = new HashMap<String,Vector<Object>>();
+	private static Vector<Object> odummy = new Vector<Object>(); 
+
+	static INIFile fristenini = null;
+	static INIFile inif = null;
 	@SuppressWarnings("unchecked")
 	public static void ladePreise(String disziplin){
 		String[] diszis = {"Physio","Massage","Ergo","Logo","Reha","Common","Podo"};
-
+		
 		List<String> list = Arrays.asList(diszis);
 		int treffer = list.indexOf(disziplin);
 		
@@ -57,8 +62,11 @@ public class SystemPreislisten {
 			return;
 		}
 
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
+		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
 		int tarife = inif.getIntegerProperty("PreisGruppen_"+diszis[treffer], "AnzahlPreisGruppen");
+		fristenini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/fristen.ini");
+		
+		
 
 	 	Comparator<Vector> comparator = new Comparator<Vector>() {
 			@Override
@@ -96,7 +104,9 @@ public class SystemPreislisten {
 			intdummy.clear();
 			getZuzahlRegeln(inif,"Physio",tarife);
 			hmZuzahlRegeln.put("Physio", (Vector<Integer>)intdummy.clone());
+			hmZuzahlModus.put("Physio", (Vector<Integer>)modusdummy.clone());
 			intdummy.clear();
+			modusdummy.clear();
 			getHMRAbrechnung(inif,"Physio",tarife);
 			hmHMRAbrechnung.put("Physio", (Vector<Integer>)intdummy.clone());
 			intdummy.clear();
@@ -108,6 +118,7 @@ public class SystemPreislisten {
 			getBerichtRegeln(inif,"Physio",tarife);
 			hmBerichtRegeln.put("Physio", (Vector<String>)dummy.clone() );
 			dummy.clear();
+			doFristen("Physio",tarife);
 			return;
 		}
 		
@@ -139,7 +150,9 @@ public class SystemPreislisten {
 			intdummy.clear();
 			getZuzahlRegeln(inif,"Massage",tarife);
 			hmZuzahlRegeln.put("Massage", (Vector<Integer>)intdummy.clone());
+			hmZuzahlModus.put("Massage", (Vector<Integer>)modusdummy.clone());
 			intdummy.clear();
+			modusdummy.clear();
 			getHMRAbrechnung(inif,"Massage",tarife);
 			hmHMRAbrechnung.put("Massage", (Vector<Integer>)intdummy.clone());
 			intdummy.clear();
@@ -151,6 +164,7 @@ public class SystemPreislisten {
 			getBerichtRegeln(inif,"Massage",tarife);
 			hmBerichtRegeln.put("Massage", (Vector<String>)dummy.clone() );
 			dummy.clear();
+			doFristen("Massage",tarife);
 			return;
 		}
 		/***************************************************/		
@@ -181,7 +195,9 @@ public class SystemPreislisten {
 			intdummy.clear();
 			getZuzahlRegeln(inif,"Ergo",tarife);
 			hmZuzahlRegeln.put("Ergo", (Vector<Integer>)intdummy.clone());
+			hmZuzahlModus.put("Ergo", (Vector<Integer>)modusdummy.clone());
 			intdummy.clear();
+			modusdummy.clear();
 			getHMRAbrechnung(inif,"Ergo",tarife);
 			hmHMRAbrechnung.put("Ergo", (Vector<Integer>)intdummy.clone());
 			intdummy.clear();
@@ -193,6 +209,7 @@ public class SystemPreislisten {
 			getBerichtRegeln(inif,"Ergo",tarife);
 			hmBerichtRegeln.put("Ergo", (Vector<String>)dummy.clone() );
 			dummy.clear();
+			doFristen("Ergo",tarife);
 			return;
 		}
 		/***************************************************/		
@@ -223,7 +240,9 @@ public class SystemPreislisten {
 			intdummy.clear();
 			getZuzahlRegeln(inif,"Logo",tarife);
 			hmZuzahlRegeln.put("Logo", (Vector<Integer>)intdummy.clone());
+			hmZuzahlModus.put("Logo", (Vector<Integer>)modusdummy.clone());
 			intdummy.clear();
+			modusdummy.clear();
 			getHMRAbrechnung(inif,"Logo",tarife);
 			hmHMRAbrechnung.put("Logo", (Vector<Integer>)intdummy.clone());
 			intdummy.clear();
@@ -235,6 +254,7 @@ public class SystemPreislisten {
 			getBerichtRegeln(inif,"Logo",tarife);
 			hmBerichtRegeln.put("Logo", (Vector<String>)dummy.clone() );
 			dummy.clear();
+			doFristen("Logo",tarife);
 			return;
 		}
 		/***************************************************/		
@@ -265,7 +285,9 @@ public class SystemPreislisten {
 			intdummy.clear();
 			getZuzahlRegeln(inif,"Reha",tarife);
 			hmZuzahlRegeln.put("Reha", (Vector<Integer>)intdummy.clone());
+			hmZuzahlModus.put("Reha", (Vector<Integer>)modusdummy.clone());
 			intdummy.clear();
+			modusdummy.clear();
 			getHMRAbrechnung(inif,"Reha",tarife);
 			hmHMRAbrechnung.put("Reha", (Vector<Integer>)intdummy.clone());
 			intdummy.clear();
@@ -277,6 +299,7 @@ public class SystemPreislisten {
 			getBerichtRegeln(inif,"Reha",tarife);
 			hmBerichtRegeln.put("Reha", (Vector<String>)dummy.clone() );
 			dummy.clear();
+			doFristen("Reha",tarife);
 			return;
 		}
 		
@@ -307,7 +330,9 @@ public class SystemPreislisten {
 			intdummy.clear();
 			getZuzahlRegeln(inif,"Podo",tarife);
 			hmZuzahlRegeln.put("Podo", (Vector<Integer>)intdummy.clone());
+			hmZuzahlModus.put("Podo", (Vector<Integer>)modusdummy.clone());
 			intdummy.clear();
+			modusdummy.clear();
 			getHMRAbrechnung(inif,"Podo",tarife);
 			hmHMRAbrechnung.put("Podo", (Vector<Integer>)intdummy.clone());
 			intdummy.clear();
@@ -319,6 +344,7 @@ public class SystemPreislisten {
 			getBerichtRegeln(inif,"Podo",tarife);
 			hmBerichtRegeln.put("Podo", (Vector<String>)dummy.clone() );
 			dummy.clear();
+			doFristen("Podo",tarife);
 			return;
 		}
 
@@ -328,6 +354,8 @@ public class SystemPreislisten {
 			hmPreisGruppen.put("Common", (Vector<String>)dummy.clone() );
 			dummy.clear();	
 		}
+		inif = null;
+		fristenini = null;
 
 	}
 
@@ -352,8 +380,19 @@ public class SystemPreislisten {
 		}
 	}
 	public static void getZuzahlRegeln(INIFile f,String disziplin,int tarife){
+		boolean mustsave = false;
+		String sdummy;
 		for(int i = 0; i < tarife;i++){
 			intdummy.add(f.getIntegerProperty("ZuzahlRegeln_"+disziplin, "ZuzahlRegel"+Integer.toString(i+1)));
+			if( (sdummy=f.getStringProperty("ZuzahlRegeln_"+disziplin, "ZuzahlModus"+Integer.toString(i+1)))==null){
+				f.setStringProperty("ZuzahlRegeln_"+disziplin, "ZuzahlModus"+Integer.toString(i+1), "1", null);
+				mustsave = true;
+				sdummy = "1";
+			}
+			modusdummy.add(Integer.parseInt(sdummy));
+		}
+		if(mustsave){
+			f.save();
 		}
 	}
 	public static void getHMRAbrechnung(INIFile f,String disziplin,int tarife){
@@ -399,12 +438,15 @@ public class SystemPreislisten {
 		hmNeuePreiseRegel.clear();
 		hmHBRegeln.clear();
 		hmBerichtRegeln.clear();
-				
+		hmFristen.clear();
+		
 		dummy.clear();
 		intdummy.clear();
 		hbdummy.clear();
 		hbdummy_1.clear();
 		preisliste.clear();
+		hmFristen.clear();
+		odummy.clear(); 
 		
 		hmPreisGruppen.clear();
 		hmPreisBereich.clear();
@@ -414,7 +456,8 @@ public class SystemPreislisten {
 		hmNeuePreiseRegel.clear();
 		hmHBRegeln.clear();
 		hmBerichtRegeln.clear();
-				
+		
+		
 		dummy.trimToSize();
 		intdummy.trimToSize();
 		hbdummy.trimToSize();
@@ -423,25 +466,103 @@ public class SystemPreislisten {
 
 	}
 
-class Sortiere{
-	Vector<Vector<String>> vector = null;
-	public Sortiere (Vector<Vector<String>> vec){
-		this.vector = vec;
-		}
-	@SuppressWarnings("unchecked")
-	public Vector<Vector<String>> sortieren(){
-		Comparator<Vector> comparator = new Comparator<Vector>() {
-
-			@Override
-			public int compare(Vector o1, Vector o2) {
-				String s1 = (String)((Vector)o1).get(0).toString();
-				String s2 = (String)((Vector)o2).get(0).toString();
-				return s1.compareTo(s2);
+	class Sortiere{
+		Vector<Vector<String>> vector = null;
+		public Sortiere (Vector<Vector<String>> vec){
+			this.vector = vec;
 			}
-		};
+		@SuppressWarnings("unchecked")
+		public Vector<Vector<String>> sortieren(){
+			Comparator<Vector> comparator = new Comparator<Vector>() {
 
-		Collections.sort((Vector)this.vector,comparator);
-		return this.vector;
+				@Override
+				public int compare(Vector o1, Vector o2) {
+					String s1 = (String)((Vector)o1).get(0).toString();
+					String s2 = (String)((Vector)o2).get(0).toString();
+					return s1.compareTo(s2);
+				}
+			};
+
+			Collections.sort((Vector)this.vector,comparator);
+			return this.vector;
+		}
 	}
-}
+/*********************************/
+	private static void doFristen(String disziplin,int anzahl){
+		odummy.clear();
+		Vector<Object> xdummy = new Vector<Object>(); 
+		for(int i = 0; i < anzahl;i++){
+			xdummy.add(fristenTesten("Fristen_"+disziplin, "FristBeginn"+Integer.toString(i+1),true));
+			//xdummy.add(fristenini.getIntegerProperty("Fristen_"+disziplin, "FristBeginn"+Integer.toString(i+1)));
+		}
+		odummy.add(xdummy.clone());
+		xdummy.clear();
+		for(int i = 0; i < anzahl;i++){
+			//xdummy.add( (fristenini.getIntegerProperty("Fristen_"+disziplin, "BeginnKalendertage"+Integer.toString(i+1))==1 ? true : false));
+			xdummy.add(fristenTesten("Fristen_"+disziplin, "BeginnKalendertage"+Integer.toString(i+1),false));
+		}
+		odummy.add(xdummy.clone());
+		xdummy.clear();
+		for(int i = 0; i < anzahl;i++){
+			xdummy.add(fristenTesten("Fristen_"+disziplin, "FristUnterbrechung"+Integer.toString(i+1),true));
+			//xdummy.add(fristenini.getIntegerProperty("Fristen_"+disziplin, "FristUnterbrechung"+Integer.toString(i+1)));
+		}
+		odummy.add(xdummy.clone());
+		xdummy.clear();
+		for(int i = 0; i < anzahl;i++){
+			xdummy.add(fristenTesten("Fristen_"+disziplin, "UnterbrechungKalendertage"+Integer.toString(i+1),false));
+			//xdummy.add( (fristenini.getIntegerProperty("Fristen_"+disziplin, "UnterbrechungKalendertage"+Integer.toString(i+1))==1 ? true : false));
+		}
+		odummy.add(xdummy.clone());
+		xdummy.clear();
+		for(int i = 0; i < anzahl;i++){
+			xdummy.add(fristenTesten("Fristen_"+disziplin, "BeginnMitSamstag"+Integer.toString(i+1),false));
+			//xdummy.add( (fristenini.getIntegerProperty("Fristen_"+disziplin, "UnterbrechungKalendertage"+Integer.toString(i+1))==1 ? true : false));
+		}
+		odummy.add(xdummy.clone());
+		xdummy.clear();
+		for(int i = 0; i < anzahl;i++){
+			xdummy.add(fristenTesten("Fristen_"+disziplin, "UnterbrechungMitSamstag"+Integer.toString(i+1),false));
+			//xdummy.add( (fristenini.getIntegerProperty("Fristen_"+disziplin, "UnterbrechungKalendertage"+Integer.toString(i+1))==1 ? true : false));
+		}
+		odummy.add(xdummy.clone());
+		xdummy.clear();
+		
+		hmFristen.put(disziplin,(Vector<Object>)odummy.clone());
+		odummy.clear();
+	}
+	
+	/***
+	 * 
+	 *	if(sask==null){
+			System.out.println("Erstelle Parameter 'ZuzahlmodusNormal'");
+			inif.setStringProperty("GemeinsameParameter", "ZuzahlmodusNormal","1",null);
+			inif.save();
+		}
+		hmAbrechnung.put("hmnormalzuzahl", inif.getStringProperty("GemeinsameParameter", "ZuzahlmodusNormal"));
+
+	 * 
+	 * @param kategorie
+	 * @param item
+	 * @param retint
+	 * @return
+	 */
+	private static Object fristenTesten(String kategorie,String item, boolean retint){
+		if(fristenini.getIntegerProperty(kategorie,item)==null){
+			System.out.println("SytemPreislisten: erstelle Parameter für Kategorie="+kategorie+" Preisgruppe="+item);
+			if(retint){
+				fristenini.setIntegerProperty(kategorie,item,14,null);
+			}else{
+				fristenini.setIntegerProperty(kategorie,item,1,null);
+			}
+			fristenini.save();
+		}
+		if(retint){
+			return fristenini.getIntegerProperty(kategorie,item);
+		}else{
+			return (fristenini.getIntegerProperty(kategorie,item)==1 ? true : false );
+		}
+	}
+	
+/*********************************/	
 }

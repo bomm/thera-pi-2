@@ -2,13 +2,20 @@ package hmrCheck;
 
 import hauptFenster.Reha;
 
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
+
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
+import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import terminKalender.DatFunk;
 
 public class HMRCheck {
@@ -33,6 +40,8 @@ public class HMRCheck {
 	boolean neurezept = false;
 	boolean doppelbehandlung = false;
 	boolean unter18 = false;
+	static SimpleDateFormat sdDeutsch = new SimpleDateFormat("dd.MM.yyyy");	
+	static SimpleDateFormat sdSql = new SimpleDateFormat("yyyy-MM-dd");
 	
 	String[] rezarten = {"Erstverodnung","Folgeverordnung",	"außerhalb des Regelfalles"};
 
@@ -171,19 +180,18 @@ public class HMRCheck {
 			
 			//Jetzt auf Rezeptbeginn testen
 			if(neurezept){
-				//LetzterBeginn abhandeln
-				long differenz = hmrTageErmitteln(preisgruppe,rezdatum,DatFunk.sHeute(),letztbeginn);
+				long differenz = DatFunk.TageDifferenz(rezdatum,DatFunk.sHeute());
 				if(differenz < 0){
 					fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist absolut kritisch!</font><br>Spanne zwischen Behandlungsbeginn und Rezeptdatum beträgt <font color='#ff0000'>"+
 					Long.toString(differenz)+" Tag(e) </font>.<br>Behandlungsbeginn ist also <font color='#ff0000'>vor</font> dem  Ausstellungsdatum!!</b><br><br>";
 					testok = false;
-				}else if( differenz >10){
-					if(DatFunk.TageDifferenz(letztbeginn,DatFunk.sHeute() ) > 0){
-						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Die Differenz zwischen Rezeptdatum und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
-						Long.toString(differenz)+" Tage </font><br>" +
-						"Behandlungsbeginn spätestens am: <font color='#ff0000'>"+letztbeginn+"</font> wurde ebenfalls überschritten</b><br><br>";
-						testok = false;
-					}
+				}					
+				if( (differenz=DatFunk.TageDifferenz(letztbeginn,DatFunk.sHeute() )) > 0){
+					System.out.println("Differenz 2 = "+differenz);
+					fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Behandlungsbeginn ist kritisch!</font><br><br>Die Differenz zwischen <font color='#ff0000'>spätester Behandlungsbeginn</font> und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
+					Long.toString(differenz)+" Tage </font><br>" +
+					"</b><br><br>";
+					testok = false;
 				}
 			}else{
 				String cmd = "select termine from verordn where rez_nr='"+reznummer+"' LIMIT 1";
@@ -191,34 +199,35 @@ public class HMRCheck {
 				//Keine Termine notiert
 				if(termine.trim().equals("")){
 					//LetzterBeginn abhandeln
-					long differenz = hmrTageErmitteln(preisgruppe,rezdatum,DatFunk.sHeute(),letztbeginn);
+					long differenz = DatFunk.TageDifferenz(rezdatum,DatFunk.sHeute());
 					if(differenz < 0){
 						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist absolut kritisch!</font><br>Spanne zwischen Behandlungsbeginn und Rezeptdatum beträgt <font color='#ff0000'>"+
 						Long.toString(differenz)+" Tag(e) </font>.<br>Behandlungsbeginn ist also <font color='#ff0000'>vor</font> dem  Ausstellungsdatum!!</b><br><br>";
 						testok = false;
-					}else if( differenz >10){
-						if(DatFunk.TageDifferenz(letztbeginn,DatFunk.sHeute() ) > 0){
-							fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Die Differenz zwischen Rezeptdatum und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
-							Long.toString(differenz)+" Tage </font><br>" +
-							"Behandlungsbeginn spätestens am: <font color='#ff0000'>"+letztbeginn+"</font> wurde ebenfalls überschritten</b><br><br>";
-							testok = false;
-						}
+					}					
+					if( (differenz=DatFunk.TageDifferenz(letztbeginn,DatFunk.sHeute() )) > 0){
+						System.out.println("Differenz 2 = "+differenz);
+						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Behandlungsbeginn ist kritisch!</font><br><br>Die Differenz zwischen <font color='#ff0000'>spätester Behandlungsbeginn</font> und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
+						Long.toString(differenz)+" Tage </font><br>" +
+						"</b><br><br>";
+						testok = false;
 					}
+
 				}else{
 					//LetzterBeginn abhandeln
 					String erstbehandlung = RezTools.holeEinzelTermineAusRezept(null, termine).get(0);
-					long differenz = hmrTageErmitteln(preisgruppe,rezdatum,erstbehandlung,letztbeginn);
+					long differenz = DatFunk.TageDifferenz(rezdatum,erstbehandlung);
 					if(differenz < 0){
 						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist absolut kritisch!</font><br>Spanne zwischen Behandlungsbeginn und Rezeptdatum beträgt <font color='#ff0000'>"+
 						Long.toString(differenz)+" Tag(e) </font>.<br>Behandlungsbeginn ist also <font color='#ff0000'>vor</font> dem  Ausstellungsdatum!!</b><br><br>";
 						testok = false;
-					}else if( differenz >10){
-						if(DatFunk.TageDifferenz(letztbeginn,erstbehandlung ) > 0){
-							fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Rezeptdatum ist kritisch!</font><br>Die Differenz zwischen Rezeptdatum und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
-							Long.toString(differenz)+" Tage </font><br>" +
-							"Behandlungsbeginn spätestens am: <font color='#ff0000'>"+letztbeginn+"</font> wurde ebenfalls überschritten</b><br><br>";
-							testok = false;
-						}
+					}					
+					if( (differenz=DatFunk.TageDifferenz(letztbeginn,erstbehandlung )) > 0){
+						System.out.println("Differenz 2 = "+differenz);
+						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Behandlungsbeginn ist kritisch!</font><br><br>Die Differenz zwischen <font color='#ff0000'>spätester Behandlungsbeginn</font> und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
+						Long.toString(differenz)+" Tage </font><br>" +
+						"</b><br><br>";
+						testok = false;
 					}
 
 				}
@@ -261,6 +270,124 @@ public class HMRCheck {
 		return "";
 	}
 	/************************/
+
+	public static String holeLetztMoeglichenTag(boolean erstebehandlung,String disziplin,int preisgruppe,String referenz){
+		int frist = (Integer)((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get((erstebehandlung ? 0 : 2))).get(preisgruppe);
+		boolean kalendertage = (Boolean) ((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get((erstebehandlung ? 1 : 3))).get(preisgruppe);
+		boolean mitsamstag = (Boolean) ((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get((erstebehandlung ? 4 : 5))).get(preisgruppe);
+		if(kalendertage){
+			return DatFunk.sDatPlusTage(referenz, frist);
+		}
+		return hmrLetztesDatum(referenz,frist,mitsamstag);
+	}
+	
+	public static long X_hmrTageErmitteln(int preisgruppe,String reznum,String rezdatum,String testdatum,String letzter){
+		long differenz = DatFunk.TageDifferenz(rezdatum, testdatum	);
+		int wotag = DatFunk.TagDerWoche(rezdatum);
+		//System.out.println("Tag der Woche der Rezeptausstellung = "+wotag);
+		//System.out.println("Preisgruppe = "+preisgruppe);
+		//System.out.println("Tage Differenz insgesamt = "+differenz);
+		if(preisgruppe != 1 && differenz > 10){
+			if(wotag >= 3){
+				differenz -= 2;
+			}else{
+				differenz -= 1;	
+			}
+		}
+
+		return differenz;
+	}
+	@SuppressWarnings("deprecation")
+	public static int[] hmrArbeitsTage(Date start,Date ende,boolean samstagWochenende,boolean checkFeiertage){
+		int[] ret = {0,0,0};  //0=Arbeitstag,1=wochenende,2=Feiertag
+
+		for(Date date = start; date.compareTo(ende) <= 0; date = new Date(date.getTime() + 24*60*60*1000)) {
+		   if (date.getDay() % 7 == 0) {
+			   ret[1] ++;
+		   } else if (checkFeiertage && istFeiertag(date)) {  //selber implementieren
+			   ret[2] ++; 
+		   } else {
+		     ret[0]++;
+		   }
+		}
+		return ret;
+	}
+	@SuppressWarnings("deprecation")
+	public static String hmrLetztesDatum(String startdatum,int differenz,boolean samstagistwerktag){
+		//SimpleDateFormat sd = new SimpleDateFormat("dd.MM.yyyy");
+		int i = 0; 
+		int werktage = 0;
+		Date date = null;
+		//System.out.println("Übergabe = "+startdatum);
+		
+		try {
+			date = sdDeutsch.parse(startdatum);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		 
+		//System.out.println("geparstes Datum = "+sd.format(date));
+		while(true){
+			//System.out.println("Getestetes Datum = "+sd.format(date));
+			if( (!(date.getDay() % 7 ==0)) && (samstagistwerktag) ){
+				if(! istFeiertag(date)){
+					if(werktage==differenz){
+						return sdDeutsch.format(date);	
+					}
+					werktage++;
+				}
+			}else if( (!(date.getDay() % 7 ==0)) && (!samstagistwerktag) && (!(date.getDay() % 6 ==0))){
+				if(! istFeiertag(date)){
+					if(werktage==differenz){
+						return sdDeutsch.format(date);	
+					}
+					werktage++;
+				}
+			}
+			i++;
+			date = new Date(date.getTime()+ (24*60*60*1000) );
+		}
+	}
+	@SuppressWarnings("deprecation")
+	public static int hmrAnzahlTageLetztesDatum(String startdatum,int differenz){
+		//SimpleDateFormat sd = new SimpleDateFormat("dd.MM.yyyy");
+		int i = 0; 
+		int werktage = 0;
+
+		Date date = null;
+		//System.out.println("Übergabe = "+startdatum);
+		
+		try {
+			date = sdDeutsch.parse(startdatum);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		 
+		//System.out.println("geparstes Datum = "+sd.format(date));
+		while(true){
+			//System.out.println("Getestetes Datum = "+sd.format(date));
+			if(! (date.getDay() % 7 ==0) ){
+				if(! istFeiertag(date)){
+					if(werktage==differenz){
+						return Integer.valueOf(i);	
+					}
+					werktage++;
+				}
+			}
+			i++;
+			date = new Date(date.getTime()+ (24*60*60*1000) );
+		}
+	}	
+
+	public static boolean istFeiertag(Date date){
+		//SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+		//System.out.println("*******************"+sd.format(date));
+		if( SystemConfig.vFeiertage.contains(sdSql.format(date))){
+			return true;
+		}
+		return false;
+	}
+	
 	/*
 	private void aktualisiereHMRs(){
 		Vector<Vector<String>> vec = SqlInfo.holeFelder("select ergaenzend,maxergaenzend,id from hmrcheck  where ergaenzend LIKE '%1508%'");
@@ -281,19 +408,4 @@ public class HMRCheck {
 		}
 	}
 	*/
-	public static long hmrTageErmitteln(int preisgruppe,String rezdatum,String testdatum,String letzter){
-		long differenz = DatFunk.TageDifferenz(rezdatum, testdatum	);
-		int wotag = DatFunk.TagDerWoche(rezdatum);
-		//System.out.println("Tag der Woche der Rezeptausstellung = "+wotag);
-		//System.out.println("Preisgruppe = "+preisgruppe);
-		//System.out.println("Tage Differenz insgesamt = "+differenz);
-		if(preisgruppe != 1 && differenz > 10){
-			if(wotag >= 3){
-				differenz -= 2;
-			}else{
-				differenz -= 1;	
-			}
-		}
-		return differenz;
-	}
 }

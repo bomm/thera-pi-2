@@ -61,7 +61,7 @@ import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValues;
-import org.thera_pi.nebraska.gui.utils.DatFunk;
+
 
 import patientenFenster.HistorDaten;
 import patientenFenster.KeinRezept;
@@ -72,6 +72,7 @@ import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.IconListRenderer;
 import systemTools.JCompTools;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

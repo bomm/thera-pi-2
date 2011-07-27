@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
@@ -42,6 +43,7 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 	JButton[] but = {null,null,null,null,null};
 	JRtaTextField[] tf = {null,null,null,null};
 	JRtaRadioButton[] rbut = {null,null,null,null,null,null,null,null};
+	JRtaCheckBox cbemail = null;
 	String[] exemplare = {"0","1","2","3","4","5"};
 	ButtonGroup bg = new ButtonGroup();
 	ButtonGroup bg2 = new ButtonGroup();
@@ -155,6 +157,13 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		builder.add(rbut[3] = macheRadio("im OpenOffice-Writer öffnen","druckoffice"),cc.xyw(3,35,3));
 		rbut[3].setOpaque(false);
 		bg2.add(rbut[3]);
+		
+		
+		builder.addLabel("Vor dem Versand der  302-er Mail",cc.xy(1, 37));
+		builder.add(cbemail = new JRtaCheckBox("immer fragen"), cc.xyw(3, 37,3));
+		cbemail.setOpaque(false);
+		
+
 		
 
 		new SwingWorker<Void,Void>(){
@@ -281,6 +290,13 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		}else{
 			rbut[2].setSelected(true);
 		}
+		wert = SystemConfig.hmAbrechnung.get("hmaskforemail");
+		if(wert.equals("1")){
+			cbemail.setSelected(true);
+		}else{
+			cbemail.setSelected(false);
+		}
+		
 		
 	}
 	private void doSpeichern(){
@@ -303,6 +319,8 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		inif.setStringProperty("HMBGERechnung", "Bexemplare",(String)jcmb[6].getSelectedItem() , null);
 		wert = (rbut[3].isSelected() ? "1" : "0");
 		inif.setStringProperty("GemeinsameParameter", "InOfficeStarten",wert , null);
+		wert = (cbemail.isSelected() ? "1" : "0");
+		inif.setStringProperty("GemeinsameParameter", "FragenVorEmail",wert , null);
 		inif.save();
 		new SwingWorker<Void,Void>(){
 			@Override

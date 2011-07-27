@@ -35,11 +35,12 @@ import org.jdesktop.swingx.JXTable;
 
 import sqlTools.SqlInfo;
 import systemTools.ButtonTools;
+import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.ZeitFunk;
-import utils.JCompTools;
+
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

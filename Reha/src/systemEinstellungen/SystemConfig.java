@@ -42,6 +42,7 @@ public class SystemConfig {
 	public static Vector<String> vSysColsBedeut;	
 	public static Vector<String> vSysColsCode;	
 	public static Vector<String> vSysDefNamen;
+	
 
 	@SuppressWarnings("unchecked")
 	public static Vector vSysColDlg;
@@ -114,6 +115,8 @@ public class SystemConfig {
 	public static List<String> lAdrRDaten = null;
 	*/
 	public static HashMap<String,Integer> hmContainer = null;
+	
+
 	
 	/*
 	public static Vector<String> vPreisGruppen;
@@ -196,7 +199,7 @@ public class SystemConfig {
 	public static boolean timerpopup = true;
 	public static boolean timerprogressbar = true;
 	
-
+	public static Vector<String> vFeiertage;
 	                     
 	public SystemConfig(){
 	
@@ -1273,6 +1276,15 @@ public class SystemConfig {
 		hmAbrechnung.put("rehapriik", inif.getStringProperty("RehaPRIRechnung", "RehaPRIik"));
 		
 		hmAbrechnung.put("hmallinoffice", inif.getStringProperty("GemeinsameParameter", "InOfficeStarten"));
+		String sask = inif.getStringProperty("GemeinsameParameter", "FragenVorEmail");
+		if(sask==null){
+			System.out.println("Erstelle Parameter 'FrageVorEmail'");
+			inif.setStringProperty("GemeinsameParameter", "FragenVorEmail","1",null);
+			inif.save();
+		}
+		hmAbrechnung.put("hmaskforemail", inif.getStringProperty("GemeinsameParameter", "FragenVorEmail"));
+		//sask = inif.getStringProperty("GemeinsameParameter", "ZuzahlmodusNormal");
+		
 		String INI_FILE = "";
 		if(System.getProperty("os.name").contains("Windows")){
 			INI_FILE = Reha.proghome+ "nebraska_windows.conf";
@@ -1373,6 +1385,10 @@ public class SystemConfig {
 		}
 		//Reha.thisClass.copyLabel.setDropTarget(true);
 		////System.out.println("System-Icons wurden geladen");
+	}
+	public static void Feiertage(){
+		vFeiertage = SqlInfo.holeFeld("select datsql from feiertage where jahr >= '"+aktJahr+"' AND "+
+				"buland <> ''");
 	}
 	/*
 	public static void compTest(){

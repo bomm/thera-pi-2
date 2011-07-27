@@ -1,6 +1,15 @@
 package systemTools;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.Vector;
+
+import javax.swing.JOptionPane;
 
 public class StringTools {
 	public static String TRIGGER_EINRUECKEN = "          ";
@@ -365,55 +374,109 @@ public class StringTools {
 	
 	@SuppressWarnings("unchecked")
 	public static Vector<String> fliessTextZerhacken(String textcontent,int max_line_lenght,String trenner){
+		//Ausgabe in eine Datei schreiben
+		/*
+		RandomAccessFile file = null;
+		Writer out = null;
+		try {
+			file = new RandomAccessFile("C:/kontroll.txt", "rw");
+			out = new OutputStreamWriter(new FileOutputStream(file.getFD()), "UTF-8");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		*/ 
+		Vector<String> dtavec = new Vector<String>();
+		try{
 		String[] teile = textcontent.split(trenner);
 		String ohneumbruch = null;
 		String LEER = " ";
 		String reststring = "";
-		Vector<String> dtavec = new Vector<String>();
-		for(int i = 0; i < teile.length;i++){
+		String dummy = "";
+		int i = 0; int i2 = 0; int i3 = 0;
+		for(i = 0; i < teile.length;i++){
+			//out.append("0: Eintritt in Uebergeordnete for/next"+System.getProperty("line.separator"));
 			ohneumbruch = teile[i].replace("\f","").replace("\r","").replace("\n","").replace("\t"," ");
 			reststring = String.valueOf(ohneumbruch);
 			if(ohneumbruch.length()==0){
 				dtavec.add("");
+				//out.append("1: = leer"+System.getProperty("line.separator"));
 			}else if(ohneumbruch.length() > 0 && ohneumbruch.length() <= max_line_lenght){
 				if(ohneumbruch.trim().length()>0){
-					//dtavec.add(ohneumbruch.trim() );
-					dtavec.add( (ohneumbruch.startsWith(TRIGGER_EINRUECKEN) ? ohneumbruch : ohneumbruch.trim()) );
+					//out.append("2: "+(ohneumbruch.startsWith(TRIGGER_EINRUECKEN) ? ohneumbruch : ohneumbruch.trim())+System.getProperty("line.separator"));
+					dummy = testeString( (ohneumbruch.startsWith(TRIGGER_EINRUECKEN) ? ohneumbruch : ohneumbruch.trim()), max_line_lenght);
+					//dtavec.add( (ohneumbruch.startsWith(TRIGGER_EINRUECKEN) ? ohneumbruch : ohneumbruch.trim()) );
+					dtavec.add( String.valueOf(dummy));	
 				}
-				//hier neu >= anstatt >
+			//hier neu >= anstatt >
 			}else if(ohneumbruch.length() > max_line_lenght){
-
-				for(int i2 = 0; i2 < reststring.length();i2++){
+				//out.append("3: = reststring");
+				for(i2 = 0; i2 < reststring.length();i2++){
+					//out.append("4.0: Eintritt in Pruefung: "+(reststring.length() < max_line_lenght ? reststring : " Laenge ="+reststring.length() )+System.getProperty("line.separator"));
 					if(reststring.length() <= max_line_lenght){
 						if(reststring.trim().length() > 0){
-							//dtavec.add(reststring.trim());
-							dtavec.add( (reststring.startsWith(TRIGGER_EINRUECKEN) ? reststring : reststring.trim()) );
+							dummy = testeString((reststring.startsWith(TRIGGER_EINRUECKEN) ? reststring : reststring.trim()),max_line_lenght );
+							//dtavec.add( (reststring.startsWith(TRIGGER_EINRUECKEN) ? reststring : reststring.trim()) );
+							dtavec.add( String.valueOf(dummy));
+							//out.append("4.1: "+(ohneumbruch.startsWith(TRIGGER_EINRUECKEN) ? ohneumbruch : ohneumbruch.trim())+System.getProperty("line.separator"));
 						}
 						break;
 					}else{
-						for(int i3 = max_line_lenght-1; i3 >= 0; i3--){
+
+						for(i3 = max_line_lenght-1; i3 >= 0; i3--){
+							//System.out.println("6: untere for/next");
+							dummy = "";
 							if(reststring.substring(i3,i3+1).equals(LEER)){
 								if(reststring.substring(0,i3).trim().length()>0){
 									//dtavec.add(reststring.substring(0,i3).trim());
-									dtavec.add( (reststring.substring(0,i3).startsWith(TRIGGER_EINRUECKEN) ? reststring.substring(0,i3) : reststring.substring(0,i3).trim()) );
+									dummy = testeString((reststring.substring(0,i3).startsWith(TRIGGER_EINRUECKEN) ? reststring.substring(0,i3) : reststring.substring(0,i3).trim()),max_line_lenght );
+									//dtavec.add( (reststring.substring(0,i3).startsWith(TRIGGER_EINRUECKEN) ? reststring.substring(0,i3) : reststring.substring(0,i3).trim()) );
+									dtavec.add(String.valueOf(dummy));
+									//out.append("7: "+(reststring.substring(0,i3).startsWith(TRIGGER_EINRUECKEN) ? reststring.substring(0,i3) : reststring.substring(0,i3).trim())+System.getProperty("line.separator"));
 								}
 								//reststring = reststring.substring(i3).trim();
-								reststring = (reststring.substring(i3).startsWith(TRIGGER_EINRUECKEN) ? reststring.substring(i3) : reststring.substring(i3).trim());
+								reststring = String.valueOf( (reststring.substring(i3).startsWith(TRIGGER_EINRUECKEN) ? reststring.substring(i3) : reststring.substring(i3).trim()) );
+								//out.append("8: "+reststring+System.getProperty("line.separator"));
+								if(  (reststring.length() <= max_line_lenght) && (i2 >= reststring.length())){
+									//out.append("11!!!!!: Laenge = "+reststring.length()+" / "+
+									//		" Stand i2 = "+i2+" / Stand i3 = "+i3+" String = "+reststring+System.getProperty("line.separator"));
+									dummy = testeString(reststring,max_line_lenght );
+									dtavec.add(String.valueOf(dummy));
+									String mes = "Achtung!\n"+
+									"Spezielle Fallkonstellation\n"+
+									"Reststring = "+reststring+" / Laenge ="+Integer.toString(reststring.length())+"\n"+
+									"Stand i3 = "+Integer.toString(i3)+"\n"+
+									"Stand i2 = "+Integer.toString(i2)+"\n";
+									JOptionPane.showMessageDialog(null, mes);
+								}
 								break;
 							}else if(i == 0){
 								//hier neu >= anstatt >
 								if(reststring.length() > max_line_lenght){
+									//out.append("9: > max_line_length"+System.getProperty("line.separator"));
 									continue;
 								}else{
-									dtavec.add(reststring);
+									dummy = testeString(reststring,max_line_lenght);
+									//dtavec.add(reststring);
+									dtavec.add(String.valueOf(dummy));
+									//out.append("10: "+reststring+System.getProperty("line.separator"));
 									break;
 								}
 								
 							}
 						}
 					}
+				/********ende der i2 for/next**********/	
 				}
 			}
+		}
+		//out.flush();
+		//out.close();
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler in Fließtextaufbereitung. Bericht keinesfalls!!!! versenden");
 		}
 		/*
 		for(int i = 0; i < dtavec.size();i++){
@@ -423,11 +486,20 @@ public class StringTools {
 		*/
 		return (Vector<String>)dtavec.clone();
 	}
+	public static String testeString(String string,int lang){
+		if(string.length() > lang){
+			JOptionPane.showMessageDialog(null, "Der String "+string+" ist länger als"+Integer.toString(lang)+" Zeichen\n"+
+					"Bericht bitte keinesfalls versenden!!!!!");
+		}
+		return string;
+	}
 	public static String do301String(String string){
 		String ret = string;
 		ret = ret.replace("?", "??").replace("'","?'").replace(":", "?:").replace("+", "?+");
 		ret = ret.replace("ü","}").replace("ä","{").replace("ö","|").replace("ß","~");
 		ret = ret.replace("Ü","]").replace("Ä","[").replace("Ö","\\");
+		ret = ret.replace("„","\"").replace("“","\"");
+		
 		//ret = ret.replace(":", "?:").replace(",","?,");
 		return ret;
 	}

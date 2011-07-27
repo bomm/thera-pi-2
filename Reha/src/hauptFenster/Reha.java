@@ -103,14 +103,12 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.thera_pi.updates.TestForUpdates;
-import org.thera_pi.updates.UpdateConfig;
 import org.therapi.reha.patient.LadeProg;
 import org.therapi.reha.patient.PatientHauptPanel;
 
 import rechteTools.Rechte;
 import rehaInternalFrame.JRehaInternal;
 import rehaInternalFrame.OOODesktopManager;
-
 import roogle.RoogleFenster;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
@@ -126,6 +124,7 @@ import systemTools.TestePatStamm;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
+
 import urlaubBeteiligung.Beteiligung;
 import urlaubBeteiligung.Urlaub;
 import verkauf.Verkauf;
@@ -1231,8 +1230,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				@Override
 				protected Void doInBackground() throws java.lang.Exception {
 					try{
-						if(!UpdateConfig.getInstance().isCheckUpdates()){
-							System.out.println("update check disabled");
+						INIFile updateini = new INIFile(Reha.proghome+"ini/tpupdate.ini");
+						try{
+							Reha.updatesChecken = (updateini.getIntegerProperty("TheraPiUpdates", "UpdateChecken") > 0 ? true : false);
+						}catch(NullPointerException ex){
+							Reha.updatesChecken = true;
+						}
+						if(!Reha.updatesChecken){
 							return null;
 						}
 						TestForUpdates tfupd = null;
@@ -2847,6 +2851,8 @@ final class DatenbankStarten implements Runnable{
 				SystemConfig.OffenePostenIni_ReadFromIni();
 				
 				SystemConfig.JahresUmstellung();
+				
+				SystemConfig.Feiertage();
 
 				new Thread(new PreisListenLaden()).start();
 				
@@ -3010,7 +3016,21 @@ final class PreisListenLaden implements Runnable{
 		SystemPreislisten.ladePreise("Podo");
 		SystemPreislisten.ladePreise("Common");
 		new SocketClient().setzeInitStand("System-Init abgeschlossen!");
-		
+		/*
+		System.out.println("******************");
+		System.out.println(SystemPreislisten.hmFristen.get("Physio"));
+		System.out.println("******************");
+		System.out.println(SystemPreislisten.hmFristen.get("Massage"));
+		System.out.println("******************");
+		System.out.println(SystemPreislisten.hmFristen.get("Ergo"));
+		System.out.println("******************");
+		System.out.println(SystemPreislisten.hmFristen.get("Logo"));
+		System.out.println("******************");
+		System.out.println(SystemPreislisten.hmFristen.get("Reha"));
+		System.out.println("******************");
+		System.out.println(SystemPreislisten.hmFristen.get("Podo"));
+		System.out.println("******************");
+		*/
 		/*
 		//System.out.println(SystemPreislisten.vKGPreise);
 		//System.out.println(SystemPreislisten.vKGPreise.get(0));

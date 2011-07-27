@@ -942,7 +942,16 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 
 			
 			try{
-				doEmail();
+				if("1".equals(SystemConfig.hmAbrechnung.get("hmaskforemail"))){
+					int frage = JOptionPane.showConfirmDialog(null,"Wollen Sie die Abrechnungsdatei esol0"+aktEsol+" an die Adresse\n"+
+							"--> "+ik_email+" <-- versenden?","Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+					if(frage==JOptionPane.YES_OPTION){
+						doEmail();
+					}
+				}else{
+					doEmail();	
+				}
+				
 				/*
 				String meldung = "Die Dateien "+"esol0"+aktEsol+".auf und "+"esol0"+aktEsol+" wurden erfolgreich\n"+
 				"an die Adresse "+ik_email+" versandt.\n";

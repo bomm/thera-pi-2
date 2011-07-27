@@ -22,9 +22,10 @@ import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
-import org.thera_pi.nebraska.gui.utils.ButtonTools;
+
 
 import systemEinstellungen.SysUtilKuerzel;
+import systemTools.ButtonTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
 
@@ -169,10 +170,10 @@ public class KuerzelNeu extends JXDialog implements  WindowListener, KeyListener
 		CellConstraints cc2 = new CellConstraints();
 		JXPanel jpan = new JXPanel();
 		jpan.setLayout(lay2);
-		buts[0] = ButtonTools.macheBut("speichern", "speichern",al );
+		buts[0] = ButtonTools.macheButton("speichern", "speichern",al );
 		jpan.add(buts[0],cc2.xy(2, 2));
 		
-		buts[1] = ButtonTools.macheBut("abbrechen", "abbrechen",al );
+		buts[1] = ButtonTools.macheButton("abbrechen", "abbrechen",al );
 		jpan.add(buts[1],cc2.xy(4, 2));
 		
 		content.add(jpan,cc.xyw(1,10,5));

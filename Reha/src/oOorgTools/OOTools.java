@@ -189,6 +189,7 @@ public class OOTools{
 		
 		try {
 			document = documentService.loadDocument(url,docdescript);
+			
 
 			/*
 			final IDocument xdocument = document;
@@ -210,6 +211,7 @@ public class OOTools{
 			e.printStackTrace();
 		}
 		textDocument = (ITextDocument)document;
+		
 		/**********************/
 		if(drucker != null){
 			String druckerName = null;

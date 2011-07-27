@@ -513,6 +513,21 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 				treffer = Arrays.asList(janein).indexOf(swert);
 				SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(4, (treffer==0 ? "1" : "0"));
 				inif.setStringProperty("HBRegeln_"+diszi, "HBHeimMitZuZahl"+(i+1), (treffer==0 ? "1" : "0"), null);
+				/*
+				 * 
+				 * Hier rein die Fristengeschichte
+				 * zuerst abprüfen ob die Fristen existieren wenn nicht neue anlegen.				 *
+				 *  
+				 */
+				if( i > ((Vector<?>)SystemPreislisten.hmFristen.get(diszi).get(0)).size() ){
+					System.out.println("Erstelle Parameter für Disziplin="+diszi+" Preisgruppe="+Integer.toString(i+1));
+					SystemPreislisten.fristenini.setIntegerProperty("Fristen_"+diszi, "FristBeginn"+Integer.toString(i+1),14,null);
+					SystemPreislisten.fristenini.setIntegerProperty("Fristen_"+diszi, "BeginnKalendertage"+Integer.toString(i+1),1,null);
+					SystemPreislisten.fristenini.setIntegerProperty("Fristen_"+diszi, "FristUnterbrechung"+Integer.toString(i+1),14,null);
+					SystemPreislisten.fristenini.setIntegerProperty("Fristen_"+diszi, "UnterbrechungKalendertage"+Integer.toString(i+1),1,null);
+					SystemPreislisten.fristenini.save();
+				}
+				
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}

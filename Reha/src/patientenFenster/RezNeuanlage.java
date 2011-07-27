@@ -997,6 +997,20 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		if(hmpositionen.size() > 0){
 			String[] idiszi = {"Physio-Rezept","Massage/Lymphdrainage-Rezept",
 					"Ergotherapie-Rezept","Logopädie-Rezept","REHA-Verordnung"};  // Lemmi Fehler: Wa ist die Podologie ? Warum müssen diese "Standard-Strings immer neu aufgeführt werden? (genau EINAML an zentraler Stelle reicht! dt. für die 2-Buchstaben-Kürzel !
+			String letztbeginn =  jtf[cBEGINDAT].getText().trim();
+			if(letztbeginn.equals(".  .")){
+				//Preisgruppe holen
+				int pg = Integer.parseInt(jtf[cPREISGR].getText())-1;
+				//Frist zwischen Rezeptdatum und erster Behandlung
+				int frist = (Integer)((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(0)).get(pg);
+				//Kalendertage
+				if((Boolean) ((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(1)).get(pg)){
+					letztbeginn = DatFunk.sDatPlusTage(jtf[cREZDAT].getText().trim(), frist);					
+				}else{ //Werktage
+					boolean mitsamstag = (Boolean)((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(4)).get(pg);
+					letztbeginn = HMRCheck.hmrLetztesDatum(jtf[cREZDAT].getText().trim(), (Integer)((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(0)).get(pg),mitsamstag );
+				}
+			}
 			boolean checkok = new HMRCheck(
 					indi,
 					Arrays.asList(idiszi).indexOf((String)jcmb[cRKLASSE].getSelectedItem().toString()),
@@ -1007,7 +1021,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 					jcmb[cVERORD].getSelectedIndex(),
 					(this.neu ? "" : this.vec.get(1).trim()),
 					jtf[cREZDAT].getText().trim(),
-					(jtf[cBEGINDAT].getText().trim().equals(".  .") ? jtf[cREZDAT].getText().trim() : jtf[cBEGINDAT].getText().trim())
+					letztbeginn
 					).check();
 			if(checkok){
 				JOptionPane.showMessageDialog(null, "<html><b>Das Rezept <font color='#ff0000'>entspricht</font> den geltenden Heilmittelrichtlinien</b></html>");
@@ -1517,7 +1531,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 			String stest2 = jtf[cBEGINDAT].getText().trim();
 			if(stest2.equals(".  .")){
-				stest2 = DatFunk.sDatPlusTage(stest, 10);
+				//Preisgruppe holen
+				int pg = Integer.parseInt(jtf[cPREISGR].getText())-1;
+				//Frist zwischen Rezeptdatum und erster Behandlung
+				int frist = (Integer)((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(0)).get(pg);
+				//Kalendertage
+				if((Boolean) ((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(1)).get(pg)){
+					stest2 = DatFunk.sDatPlusTage(stest, frist);					
+				}else{ //Werktage
+					boolean mitsamstag = (Boolean)((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(4)).get(pg);
+					stest2 = HMRCheck.hmrLetztesDatum(stest, (Integer)((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(0)).get(pg),mitsamstag );
+				}
 			}
 			if(row >= 0){
 				Reha.thisClass.patpanel.aktRezept.tabaktrez.getModel().setValueAt(stest2, row, 4);	
@@ -1739,10 +1763,22 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			if(stest.equals(".  .")){
 				stest = DatFunk.sHeute();
 			}
+			//Zunächst ermitteln welche Fristen und ob Kalender oder Werktage gelten
+			//Dann das Rezeptdatum übergeben, Rückgabewert ist spätester Beginn. 
 			sbuf.append("rez_datum='"+DatFunk.sDatInSQL(stest)+"', ");
 			String stest2 = jtf[cBEGINDAT].getText().trim();
 			if(stest2.equals(".  .")){
-				stest2 = DatFunk.sDatPlusTage(stest, 10);
+				//Preisgruppe holen
+				int pg = Integer.parseInt(jtf[cPREISGR].getText())-1;
+				//Frist zwischen Rezeptdatum und erster Behandlung holen
+				int frist = (Integer)((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(0)).get(pg);
+				//Kalendertage
+				if((Boolean) ((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(1)).get(pg)){
+					stest2 = DatFunk.sDatPlusTage(stest, frist);					
+				}else{ //Werktage
+					boolean mitsamstag = (Boolean)((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(4)).get(pg);
+					stest2 = HMRCheck.hmrLetztesDatum(stest, (Integer)((Vector<?>)SystemPreislisten.hmFristen.get(aktuelleDisziplin).get(0)).get(pg),mitsamstag );
+				}
 			}
 			sbuf.append("lastdate='"+DatFunk.sDatInSQL(stest2)+"', ");
 			sbuf.append("lasteddate='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', ");

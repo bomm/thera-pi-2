@@ -2043,37 +2043,34 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String vgldat1 = (String) tabaktrez.getValueAt(currow, 2);
 				String vgldat2 = (String) dtermm.getValueAt(0,0);
 				String vgldat3 = (String) tabaktrez.getValueAt(currow, 4);
+				String vglreznum = tabaktrez.getValueAt(currow,0).toString();
 				//System.out.println(vgldat1+" / "+vgldat2);
 				/***Kann ausgeschaltet werden wenn die HMRCheck-Tabelle vollständig befüll ist**/
 				// ist ohnehin nur halblebig
 				int dummypeisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41))-1;
-				long differenz = HMRCheck.hmrTageErmitteln(dummypeisgruppe,vgldat1,vgldat2,vgldat3);
+				/*
+				long differenz = HMRCheck.hmrTageErmitteln(dummypeisgruppe,vglreznum,vgldat1,vgldat2,vgldat3);
 				if(differenz < 0){
 					JOptionPane.showMessageDialog(null, "Behandlungsbeginn ist vor dem Rezeptdatum!");
 					return;
 				}else if(differenz > 10){
-					//LetzterBeginn abhandeln
 					if(DatFunk.TageDifferenz(vgldat3, vgldat2) > 0){
 						int anfrage = JOptionPane.showConfirmDialog(null, "Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!\nSpätester Behandlungsbeginn wurde ebenfalls überschritten\n\nRezept trotzdem abschließen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-						//JOptionPane.showMessageDialog(null,"Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!");
 						if(anfrage != JOptionPane.YES_OPTION){
 							return;
 						}else{
-							//Abgeschlossen trotz verspäteter Behandlungsbeginn;
 						}
 					}
 				}else if(differenz <= 10 && differenz >= 0){
 					if(DatFunk.TageDifferenz(vgldat3, vgldat2) > 0){
 						int anfrage = JOptionPane.showConfirmDialog(null, "Behandlungsbeginn nach der Angabe --> spätester Beginn, Frist ist somit überschritten.\n\nRezept trotzdem abschließen", "Achtung wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-						//JOptionPane.showMessageDialog(null,"Behandlungsbeginn länger als 10 Tage nach Ausstellung des Rezeptes!!!");
 						if(anfrage != JOptionPane.YES_OPTION){
 							return;
 						}else{
-							//Abgeschlossen trotz verspäteter Behandlungsbeginn;
 						}
 					}
-					// Hier noch einbauen falls spätester Beginn kürzer als die 
 				}
+				*/
 				/***/
 				if(Reha.thisClass.patpanel.patDaten.get(14).trim().equals("")){
 					JOptionPane.showMessageDialog(null, "Die im Patientenstamm zugewiesene Krankenkasse hat keine Kassennummer");
@@ -2093,11 +2090,17 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					return;					
 				}
 				
-				if(! doTageTest(vgldat2,anzterm)){return;}
+				/*********************/
+				String diszi = RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1));
+				String preisgruppe = Reha.thisClass.patpanel.vecaktrez.get(41);
+
+				if(! doTageTest(vgldat3,vgldat2,anzterm,diszi,Integer.parseInt(preisgruppe)-1)){return;}
 				
 
 				/*********************/
-				String diszi = RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1));
+				//String diszi = RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1));
+				//String preisgruppe = Reha.thisClass.patpanel.vecaktrez.get(41);
+				
 				int idtest = 0;
 				String indi = Reha.thisClass.patpanel.vecaktrez.get(44);
 				if(indi.equals("") || indi.contains("kein IndiSchl.")){
@@ -2107,7 +2110,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				indi = indi.replace(" ", "");
 				Vector<Integer> anzahlen = new Vector<Integer>();
 				Vector<String> hmpositionen = new Vector<String>();
-				String preisgruppe = Reha.thisClass.patpanel.vecaktrez.get(41);
+				
 				String position = "";
 				String[] diszis = {"Physio","Massage","Ergo","Logo","Reha"};
 				List<String> list = Arrays.asList(diszis);
@@ -2212,13 +2215,26 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}
 			}
 	}
-	private boolean doTageTest(String starttag,int tage){
+	private boolean doTageTest(String latestdat,String starttag,int tageanzahl,String disziplin, int preisgruppe){
 		String vglalt;
 		String vglneu;
 		String kommentar;
 		String ret;
-		for(int i = 0; i < tage;i++){
+		//Frist zwischen RezDat (bzw. spätester BehBeginn) und tatsächlichem BehBeginn
+		int fristbeginn = (Integer)((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get(0)).get(preisgruppe);
+		//Frist zwischen den Behjandlungen
+		int fristbreak = (Integer)((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get(2)).get(preisgruppe);
+		//Beginn-Berechnung nach Kalendertagen
+		boolean ktagebeginn = (Boolean)((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get(1)).get(preisgruppe);
+		//Unterbrechung-Berechnung nach Kalendertagen
+		boolean ktagebreak = (Boolean)((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get(3)).get(preisgruppe);
+		//Beginnfrist: Samstag als Werktag werten (wirk nur bei Werktagregel)
+		boolean beginnsamstag = (Boolean)((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get(4)).get(preisgruppe);
+		//Unterbrechungsfrist: Samstag als Werktag werten (wirk nur bei Werktagregel)
+		boolean breaksamstag = 	(Boolean)((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get(5)).get(preisgruppe);
+		for(int i = 0; i < tageanzahl;i++){
 			if(i > 0){
+				// hier die neue Prüfung einbauen Unterbrechungstest
 				vglalt = (String) dtermm.getValueAt(i-1,0);
 				vglneu = (String) dtermm.getValueAt(i,0);
 				if(vglalt.equals(vglneu)){
@@ -2229,7 +2245,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					JOptionPane.showMessageDialog(null,"Bitte sortieren Sie zuerst die Behandlungstage - Abschluß des Rezeptes fehlgeschlagen");
 					return false;
 				}
+				
 				kommentar = (String) dtermm.getValueAt(i,2);
+
+				//Zuerst ermitteln wie die Unterbrechungsregel ist ob Kalendertage oder Werktage
+				//und ob Samstag mitgezählt wird.
+				
 				if(DatFunk.TageDifferenz(vglalt, vglneu) > 10 && kommentar.trim().equals("")){
 					ret = rezUnterbrechung(true,"",i+1);// Unterbrechungsgrund
 					if(ret.equals("")){
@@ -2238,6 +2259,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						dtermm.setValueAt(ret,i,2);
 					}
 				}
+			}else{
+				//hier die neue Prüfung einbauen Frist bis erste Behandlung
 			}
 		}
 		return true;

@@ -251,10 +251,8 @@ private JScrollPane getParameterListe(){
 	node.add(treeitem ); 
 	treeitem = new DefaultMutableTreeNode("Abrechnungsformulare und Drucker");
 	node.add(treeitem ); 
-	/*
-	treeitem = new DefaultMutableTreeNode("Annahmekey abholen/einlesen");
+	treeitem = new DefaultMutableTreeNode("Fristen und 302-er Einstellungen");
 	node.add(treeitem );
-	*/ 
 	treeitem = new DefaultMutableTreeNode("Kostenträgerdatei einlesen");
 	node.add(treeitem ); 
 
@@ -766,6 +764,20 @@ private void auswertenSysUtil(String util){
 			cursorWait(false);
 			break;
 		}
+		if(util.equals("Fristen und 302-er Einstellungen")){
+			if(!Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
+				doAccessDenied();
+				return;
+			}
+			jxInhaltRechts = new SysUtilAbrechnungFristen();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			break;
+		}
+		
+		
 
 		
 

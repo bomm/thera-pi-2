@@ -31,9 +31,10 @@ import rehaInternalFrame.JAnmeldungenInternal;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemTools.ButtonTools;
+import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
-import utils.JCompTools;
+
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

@@ -24,12 +24,13 @@ import javax.swing.JScrollPane;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.thera_pi.nebraska.gui.utils.ButtonTools;
-import org.thera_pi.updates.JCompTools;
+
 
 import sqlTools.SqlInfo;
+import systemTools.ButtonTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
+
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -198,11 +199,11 @@ public class SysUtilOpMahnung extends JXPanel implements KeyListener, ActionList
 
 		iAktY += 2;
 //		builder.addLabel("RGR u. AFR in OPs testen", cc.xy(1, iAktY ));
-		buts[0] = ButtonTools.macheBut("RGR & AFR für OPs testen", "testen", this);
+		buts[0] = ButtonTools.macheButton("RGR & AFR für OPs testen", "testen", this);
 		builder.add(buts[0], cc.xy(1,iAktY,CellConstraints.FILL,CellConstraints.DEFAULT));
 
 		iAktY += 2;
-		buts[1] = ButtonTools.macheBut("RGR & AFR in OPs übertragen", "uebernehmen", this);
+		buts[1] = ButtonTools.macheButton("RGR & AFR in OPs übertragen", "uebernehmen", this);
 		builder.add(buts[1], cc.xy(1,iAktY,CellConstraints.FILL,CellConstraints.DEFAULT));
 	
 		

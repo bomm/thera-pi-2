@@ -24,10 +24,11 @@ import javax.swing.JProgressBar;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.thera_pi.nebraska.gui.utils.ButtonTools;
+
 
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
+import systemTools.ButtonTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -110,12 +111,12 @@ public class SysUtilJahresUmstellung extends JXPanel implements KeyListener, Act
 		builder.add(nextyear, cc.xy(4,9,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		
 		builder.addLabel("Umstellung testen", cc.xyw(2, 11 ,2));
-		buts[0] = ButtonTools.macheBut("testen", "testen", this);
+		buts[0] = ButtonTools.macheButton("testen", "testen", this);
 		builder.add(buts[0], cc.xy(4,11,CellConstraints.FILL,CellConstraints.DEFAULT));
 		
 		builder.addSeparator("Umstellung starten", cc.xyw(1, 13, 4));
 		builder.addLabel("Kalenderjahr jetzt umstellen", cc.xyw(2, 15 ,2));
-		buts[1] = ButtonTools.macheBut("umstellen", "umstellen", this);
+		buts[1] = ButtonTools.macheButton("umstellen", "umstellen", this);
 		builder.add(buts[1], cc.xy(4,15,CellConstraints.FILL,CellConstraints.DEFAULT));
 		buts[1].setEnabled(false);
 		

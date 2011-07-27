@@ -38,11 +38,12 @@ import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.thera_pi.nebraska.gui.utils.ButtonTools;
+
 
 import rehaInternalFrame.JDta301Internal;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
+import systemTools.ButtonTools;
 import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
@@ -398,7 +399,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		jscr.validate();
 		pan.add(jscr,cc.xyw(2,16,3,CellConstraints.FILL,CellConstraints.FILL));
 		/*********Button zum Abfeuern********/
-		buts[0] = ButtonTools.macheBut("Nachricht erzeugen und senden", "beginnsenden", al);
+		buts[0] = ButtonTools.macheButton("Nachricht erzeugen und senden", "beginnsenden", al);
 		pan.add(buts[0],cc.xyw(2, 18, 3, CellConstraints.FILL,CellConstraints.FILL));
 		pan.validate();
 		headerpan.add(getHeader(0),BorderLayout.NORTH);
@@ -463,7 +464,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		jscr.validate();
 		pan.add(jscr,cc.xyw(3,14,3,CellConstraints.FILL,CellConstraints.FILL));
 		
-		buts[1] = ButtonTools.macheBut("Nachricht erzeugen und senden", "ubsenden", al);
+		buts[1] = ButtonTools.macheButton("Nachricht erzeugen und senden", "ubsenden", al);
 		pan.add(buts[1],cc.xyw(3, 16, 3, CellConstraints.FILL,CellConstraints.FILL));
 		
 		pan.validate();
@@ -530,7 +531,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		jscr.validate();
 		pan.add(jscr,cc.xyw(3,14,3,CellConstraints.FILL,CellConstraints.FILL));
 		
-		buts[3] = ButtonTools.macheBut("Nachricht erzeugen und senden", "vbsenden", al);
+		buts[3] = ButtonTools.macheButton("Nachricht erzeugen und senden", "vbsenden", al);
 		pan.add(buts[3],cc.xyw(3, 16, 3, CellConstraints.FILL,CellConstraints.FILL));
 		
 		pan.validate();
@@ -635,7 +636,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		entlassnurfahrgeld = new JRtaCheckBox("Nur Fahrtgeld in Rechnung stellen");
 		entlassnurfahrgeld.setHorizontalTextPosition(SwingConstants.LEFT);
 		pan.add(entlassnurfahrgeld,cc2.xy(2,16));
-		buts[2] = ButtonTools.macheBut("Nachricht erzeugen und senden", "entlsenden", al);
+		buts[2] = ButtonTools.macheButton("Nachricht erzeugen und senden", "entlsenden", al);
 		pan.add(buts[2],cc.xyw(2, 18, 3, CellConstraints.FILL,CellConstraints.FILL));
 		pan.validate();
 		headerpan.add(getHeader(2),BorderLayout.NORTH);
