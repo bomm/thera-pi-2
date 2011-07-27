@@ -271,7 +271,7 @@ public class HMRCheck {
 	}
 	/************************/
 
-	public static String holeLetztMoeglichenTag(boolean erstebehandlung,String disziplin,int preisgruppe,String referenz){
+	public static String X_holeLetztMoeglichenTag(boolean erstebehandlung,String disziplin,int preisgruppe,String referenz){
 		int frist = (Integer)((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get((erstebehandlung ? 0 : 2))).get(preisgruppe);
 		boolean kalendertage = (Boolean) ((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get((erstebehandlung ? 1 : 3))).get(preisgruppe);
 		boolean mitsamstag = (Boolean) ((Vector<?>)SystemPreislisten.hmFristen.get(disziplin).get((erstebehandlung ? 4 : 5))).get(preisgruppe);
@@ -298,7 +298,7 @@ public class HMRCheck {
 		return differenz;
 	}
 	@SuppressWarnings("deprecation")
-	public static int[] hmrArbeitsTage(Date start,Date ende,boolean samstagWochenende,boolean checkFeiertage){
+	public static int[] XX_hmrArbeitsTage(Date start,Date ende,boolean samstagWochenende,boolean checkFeiertage){
 		int[] ret = {0,0,0};  //0=Arbeitstag,1=wochenende,2=Feiertag
 
 		for(Date date = start; date.compareTo(ende) <= 0; date = new Date(date.getTime() + 24*60*60*1000)) {
@@ -312,6 +312,12 @@ public class HMRCheck {
 		}
 		return ret;
 	}
+	/******************************************/
+	public static int hmrTageDifferenz(String referenzdatum,String vergleichsdatum,int differenz,boolean samstagistwerktag){
+		int ret = -1;
+		return ret;
+	}
+	/******************************************/	
 	@SuppressWarnings("deprecation")
 	public static String hmrLetztesDatum(String startdatum,int differenz,boolean samstagistwerktag){
 		//SimpleDateFormat sd = new SimpleDateFormat("dd.MM.yyyy");
@@ -349,7 +355,7 @@ public class HMRCheck {
 		}
 	}
 	@SuppressWarnings("deprecation")
-	public static int hmrAnzahlTageLetztesDatum(String startdatum,int differenz){
+	public static int XX_hmrAnzahlTageLetztesDatum(String startdatum,int differenz){
 		//SimpleDateFormat sd = new SimpleDateFormat("dd.MM.yyyy");
 		int i = 0; 
 		int werktage = 0;
