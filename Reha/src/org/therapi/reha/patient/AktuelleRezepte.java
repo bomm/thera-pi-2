@@ -2247,17 +2247,31 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}
 				
 				kommentar = (String) dtermm.getValueAt(i,2);
-
-				//Zuerst ermitteln wie die Unterbrechungsregel ist ob Kalendertage oder Werktage
-				//und ob Samstag mitgezählt wird.
 				
-				if(DatFunk.TageDifferenz(vglalt, vglneu) > 10 && kommentar.trim().equals("")){
-					ret = rezUnterbrechung(true,"",i+1);// Unterbrechungsgrund
-					if(ret.equals("")){
-						return false;
-					}else{
-						dtermm.setValueAt(ret,i,2);
+				//Wenn nach Kalendertagen ermittelt werden soll
+				if(ktagebreak){
+					System.out.println("Kalendertage zwischen den Behandlungen = "+DatFunk.TageDifferenz(vglalt, vglneu)+"\n"+
+							"erlaubt sind "+fristbreak);
+					if(DatFunk.TageDifferenz(vglalt, vglneu) >  fristbreak){
+						ret = rezUnterbrechung(true,"",i+1);// Unterbrechungsgrund
+						if(ret.equals("")){
+							return false;
+						}else{
+							dtermm.setValueAt(ret,i,2);
+						}
 					}
+				}else{
+					System.out.println("Differenz zwischen dem letzt möglichen und dem tatsächlichen Zeitaum\n"+
+							HMRCheck.hmrTageDifferenz(vglalt,vglneu,fristbreak,breaksamstag));
+					if(HMRCheck.hmrTageDifferenz(vglalt,vglneu,fristbreak,breaksamstag) > 0 && kommentar.trim().equals("")){	
+						ret = rezUnterbrechung(true,"",i+1);// Unterbrechungsgrund
+						if(ret.equals("")){
+							return false;
+						}else{
+							dtermm.setValueAt(ret,i,2);
+						}
+					}
+					
 				}
 			}else{
 				//hier die neue Prüfung einbauen Frist bis erste Behandlung

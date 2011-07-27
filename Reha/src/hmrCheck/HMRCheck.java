@@ -314,7 +314,14 @@ public class HMRCheck {
 	}
 	/******************************************/
 	public static int hmrTageDifferenz(String referenzdatum,String vergleichsdatum,int differenz,boolean samstagistwerktag){
-		int ret = -1;
+		int ret = 1;
+		try{
+		String letztesdatum = hmrLetztesDatum(referenzdatum,differenz,samstagistwerktag);
+		ret = Integer.parseInt(Long.toString(DatFunk.TageDifferenz(letztesdatum, vergleichsdatum)));
+		}catch(Exception ex){
+			System.out.println("Fehler in der Ermittlung der Unterbrechungszeiträume");
+			ex.printStackTrace();
+		}
 		return ret;
 	}
 	/******************************************/	
