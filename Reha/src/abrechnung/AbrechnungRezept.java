@@ -201,6 +201,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 	public boolean	rezeptSichtbar = false;
 	
+	private boolean zuzahlModusDefault = true;
+	
 	public JXTable tageTbl = null;
 	//public MyTageTableModel tageMod = new MyTageTableModel();
 	MyTableComboBox mycomb;
@@ -389,6 +391,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				setKuerzelVec(rez,preisgr);
 				setWerte(rez);
 				regleAbrechnungsModus();
+				zuzahlModusDefault = (SystemPreislisten.hmZuzahlModus.get(aktDisziplin).get(Integer.parseInt(preisgr)-1)==1 ? true : false); 
 				Reha.thisClass.progressStarten(false);
 			}else{
 				////System.out.println("Einlesen aus Edifact-Daten");
@@ -410,6 +413,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 					
 					parseHTML(rez.trim());
 					doPositionenErmitteln();
+					zuzahlModusDefault = (SystemPreislisten.hmZuzahlModus.get(aktDisziplin).get(Integer.parseInt(preisgr)-1)==1 ? true : false); 
 				}
 				
 			}

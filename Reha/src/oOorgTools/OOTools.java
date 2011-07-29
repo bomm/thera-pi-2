@@ -217,7 +217,6 @@ public class OOTools{
 			documentService = Reha.officeapplication.getDocumentService();
 
 		} catch (OfficeApplicationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -235,22 +234,6 @@ public class OOTools{
 		}
 		textDocument = (ITextDocument)document;
 
-		/*
-		textDocument.getXTextDocument().getText().createTextCursor().gotoStart(false);
-		
-		ArrayList<XTextRange> arrayList = testePlatzhalter(textDocument.getXTextDocument());
-		if(arrayList==null){return;}
-    	try{
-    		for(int i = 0; i < arrayList.size();i++ ){
-    			System.out.println("Ersetze Platzhalter Nr. "+Integer.toString(i+1)+" = "+(arrayList.get(i).getString().equals("") ? "Name nicht gefunden!!!!!!" : arrayList.get(i).getString())+
-    					" mit DummyContent: Dummy"+Integer.toString(i+1));
-    			//arrayList.get(i).setString("Dummy"+Integer.toString(i+1));
-    		}
-    		
-    	}catch(NullPointerException ex){
-    		ex.printStackTrace();
-    	}		
-		*/
 		/**********************/
 		if(drucker != null){
 			String druckerName = null;
@@ -260,19 +243,16 @@ public class OOTools{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//Wenn nicht gleich wie in der INI angegeben -> Drucker wechseln
 			IPrinter iprint = null;
 			if(! druckerName.equals(drucker)){
 				try {
 					iprint = (IPrinter) textDocument.getPrintService().createPrinter(drucker);
 				} catch (NOAException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				try {
 					textDocument.getPrintService().setActivePrinter(iprint);
 				} catch (NOAException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -283,24 +263,14 @@ public class OOTools{
 		ITextField[] placeholders = null;
 		try {
 			placeholders = textFieldService.getPlaceholderFields();
-			//Thread.sleep(100);
+
 		} catch (TextException e) {
 			e.printStackTrace();
 		}
-		/*
-		for (int i = 0; i < placeholders.length; i++) {
-			try{
-				System.out.println(placeholders[i].getDisplayText());
-			}catch(com.sun.star.uno.RuntimeException ex){
-				System.out.println("Fehler bei placeholder "+i);
-			}
-		}
-		*/
+
 		String placeholderDisplayText = "";
 		try{
 		for (int i = 0; i < placeholders.length; i++) {
-			//boolean loeschen = false;
-			
 			boolean schonersetzt = false;
 			try{
 				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
@@ -319,11 +289,9 @@ public class OOTools{
 		      if(entry.getKey().toString().toLowerCase().equals(placeholderDisplayText)){
 		    	  if(entry.getValue().toString().trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("\b");
-		    		  //OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
 		    	  }else{
 			    	  placeholders[i].getTextRange().setText(entry.getValue().toString());		    		  
 		    	  }
-		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
 		    	  break;
 		      }
@@ -339,7 +307,6 @@ public class OOTools{
 		    	  }else{
 			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
 		    	  }
-		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
 		    	  break;
 		      }
@@ -351,12 +318,10 @@ public class OOTools{
 		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
-		    		  //placeholders[i].getTextRange().setText("\b");
 		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
 		    	  }else{
 			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
 		    	  }
-		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
 		    	  break;
 		      }
@@ -367,14 +332,7 @@ public class OOTools{
 		    while (it.hasNext() && (!schonersetzt)) {
 		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-		    	  /*
-		    	  ////System.out.println("Gefunden ->"+((String)entry.getValue()));
-		    	  try{
-		    		  
-		    	  }catch(com.sun.star.uno.RuntimeException ex){
-		    		  //System.out.println("Fehler bei AdrRDaten");
-		    	  }
-		    	  */
+
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("");
 		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
@@ -404,12 +362,8 @@ public class OOTools{
 				return;
 			}
 		}
-		//sucheNachPlatzhalter(textDocument);
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.getPageCursor().jumpToFirstPage();
-
-		//document.removeDocumentListener(docListener);
-		//docListener = null;
 		final ITextDocument xtextDocument = textDocument;
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
@@ -595,51 +549,20 @@ public class OOTools{
 		ITextDocument textDocument = (ITextDocument)document;
 		/**********************/
 		OOTools.druckerSetzen(textDocument, SystemConfig.rezBarcodeDrucker);
-		/*
-		if(drucker != null){
-			String druckerName = null;
-			try {
-				druckerName = textDocument.getPrintService().getActivePrinter().getName();
-			} catch (NOAException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			//Wenn nicht gleich wie in der INI angegeben -> Drucker wechseln
-			IPrinter iprint = null;
-			if(! druckerName.equals(drucker)){
-				try {
-					iprint = (IPrinter) textDocument.getPrintService().createPrinter(drucker);
-				} catch (NOAException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				try {
-					textDocument.getPrintService().setActivePrinter(iprint);
-				} catch (NOAException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		*/
 		/**********************/
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
 		ITextField[] placeholders = null;
 		try {
 			placeholders = textFieldService.getPlaceholderFields();
 		} catch (TextException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		String placeholderDisplayText = "";
 		for (int i = 0; i < placeholders.length; i++) {
-			//boolean loeschen = false;
 			boolean schonersetzt = false;
 			try{
 				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
-				//System.out.println(placeholderDisplayText);
 			}catch(com.sun.star.uno.RuntimeException ex){
-				//System.out.println("************catch()*******************");
 				ex.printStackTrace();
 			}
 	
@@ -651,7 +574,6 @@ public class OOTools{
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("\b");
-		    		  //OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
 		    	  }else{
 			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
 		    	  }
@@ -670,7 +592,6 @@ public class OOTools{
 		    	  }else{
 			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
 		    	  }
-		    	  //placeholders[i].getTextRange().setText(((String)entry.getValue()));
 		    	  schonersetzt = true;
 		    	  break;
 		      }
@@ -697,14 +618,6 @@ public class OOTools{
 		    while (it.hasNext() && (!schonersetzt)) {
 		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
 		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-		    	  /*
-		    	  ////System.out.println("Gefunden ->"+((String)entry.getValue()));
-		    	  try{
-		    		  
-		    	  }catch(com.sun.star.uno.RuntimeException ex){
-		    		  //System.out.println("Fehler bei AdrRDaten");
-		    	  }
-		    	  */
 		    	  if(((String)entry.getValue()).trim().equals("")){
 		    		  placeholders[i].getTextRange().setText("");
 		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
@@ -720,7 +633,6 @@ public class OOTools{
 		    }
 		    /*****************/
 		}
-		sucheNachPlatzhalter(textDocument);
 		Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.getPageCursor().jumpToFirstPage();
@@ -728,41 +640,27 @@ public class OOTools{
 			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 			textDocument.getFrame().setFocus();
 		}else{
-			try {
-				textDocument.print();
-				while(textDocument.getPrintService().isActivePrinterBusy()){
-					Thread.sleep(50);
-				}
-				Thread.sleep(100);
-				textDocument.close();
-			} catch (DocumentException e) {
-				e.printStackTrace();
-			} catch (NOAException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		/*
-		final ITextDocument xtextDocument = textDocument;
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run(){
-				if(!SystemConfig.oTerminListe.DirektDruck){
-					xtextDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-					xtextDocument.getFrame().setFocus();
-				}else{
-					try {
-						xtextDocument.print();
-						xtextDocument.close();
-					} catch (DocumentException e) {
-						e.printStackTrace();
+				final ITextDocument xdoc = textDocument; 
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws java.lang.Exception {
+						try {
+							//textDocument.print();
+							xdoc.print();
+							Thread.sleep(50);
+							//textDocument.close();
+							xdoc.close();
+							Thread.sleep(100);
+						} catch (DocumentException e) {
+							e.printStackTrace();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						return null;
 					}
-				}
-			}
-		});
-		*/
+				}.execute();
+		}
 	}
 	/*******************************************************************************************/
 
@@ -876,17 +774,25 @@ public class OOTools{
 		if(SystemConfig.hmAbrechnung.get("hmallinoffice").equals("1")){
 			textDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 		}else{
-			try{
-				textDocument.print();
-				while(textDocument.getPrintService().isActivePrinterBusy()){
-					Thread.sleep(50);
-				}
-				Thread.sleep(100);
-				textDocument.close();
+			final ITextDocument xdoc = textDocument; 
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws java.lang.Exception {
+					try{
+						//textDocument.print();
+						xdoc.print();
+						Thread.sleep(50);
+						//textDocument.close();
+						xdoc.close();
+						Thread.sleep(100);
 
-			}catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+					}catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
+			}.execute();
+			
 			
 		}	
 	}

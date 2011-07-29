@@ -14,6 +14,8 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import org.jdesktop.swingworker.SwingWorker;
+
 import systemEinstellungen.SystemConfig;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -76,11 +78,11 @@ SuchenSeite eltern;
 	        patname = patname+rez;
 	        
 	        /**********/
-	        eltern.getFortschritt().setStringPainted(false);
-	        eltern.getFortschritt().setIndeterminate(true);
+	        eltern.getFortschritt().setStringPainted(true);
+	        //eltern.getFortschritt().setIndeterminate(true);
 	        eltern.setFortschrittZeigen(true);
-	        //eltern.setFortschrittRang(0, Long.valueOf(Integer.toString(termindat.size()))+(termindat.size()/10));
-	        //eltern.setFortschrittSetzen(0);
+	        eltern.setFortschrittRang(0, Long.valueOf(Integer.toString(termindat.size())));
+	        eltern.setFortschrittSetzen(0);
 	        //eltern.setFortschrittZeigen(true);
 	        /**********/
 	        
@@ -114,7 +116,7 @@ SuchenSeite eltern;
 			tbl = textDocument.getTextTableService().getTextTables();
 
 			if(tbl.length != AnzahlTabellen){
-				JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit der Vorlagen.ini �berein.\nDruck nicht m�glich");
+				JOptionPane.showMessageDialog (null, "Anzahl Tabellen stimmt nicht mit der Vorlagen.ini überein.\nDruck nicht m�glich");
 				textDocument.close();
 				eltern.cursorWait(false);
 				return;
@@ -191,7 +193,7 @@ SuchenSeite eltern;
 
 				aktTerminInTabelle = aktTerminInTabelle+1;
 				aktTermin = aktTermin+1;
-				//eltern.setFortschrittSetzen(aktTermin);				
+				eltern.setFortschrittSetzen(aktTermin);				
 				if(aktTermin >= anzahl){
 					break;
 				}
@@ -295,7 +297,7 @@ SuchenSeite eltern;
 				try {
 					zaehler+=1;
 					if(zaehler >= 50){
-						Thread.sleep(25);
+						Thread.sleep(50);
 						zaehler=0;
 					}
 					
@@ -309,42 +311,46 @@ SuchenSeite eltern;
 			if (ldrucken){
 				
 				try {
+						final ITextDocument xdoc = textDocument;
 						if(SystemConfig.oTerminListe.DirektDruck){
 
 							//eltern.setFortschrittSetzen(termindat.size()+(termindat.size()/20));
-							textDocument.print();
-							try {
-								while(textDocument.getPrintService().isActivePrinterBusy()){
-									Thread.sleep(50);
+							new SwingWorker<Void,Void>(){
+								@Override
+								protected Void doInBackground()
+										throws Exception {
+									System.out.println("vor print()");
+									try {
+										xdoc.print();
+										//textDocument.print();
+										Thread.sleep(150);
+									}catch (InterruptedException e) {
+										e.printStackTrace();
+									} catch(NullPointerException ex){
+										ex.printStackTrace();
+									}
+									System.out.println("vor close()");
+									xdoc.close();
+									//textDocument.close();
+									return null;
 								}
-								Thread.sleep(150);
-							} catch (NOAException e) {
-								e.printStackTrace();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							} catch(NullPointerException ex){
-								ex.printStackTrace();
-							}
-							//System.out.println("vor close()");
-							textDocument.close();
-							//eltern.setFortschrittSetzen(termindat.size()+(termindat.size()/10));
-							//eltern.setFortschrittZeigen(false);
-							eltern.getFortschritt().setIndeterminate(false);
+							}.execute();
+							
+							eltern.setFortschrittSetzen(termindat.size());
 							eltern.setFortschrittZeigen(false);
 					        eltern.getFortschritt().setStringPainted(true);
 							this.termindat = null;
 							eltern.cursorWait(false);
 						}else{
 							eltern.cursorWait(false);
-							//document.getFrame().getXFrame().getContainerWindow().setVisible(true);
-							//eltern.setFortschrittSetzen(termindat.size()+(termindat.size()/10));
-							eltern.getFortschritt().setIndeterminate(false);
 							eltern.setFortschrittZeigen(false);
 					        eltern.getFortschritt().setStringPainted(true);
 							this.termindat = null;
+							document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+							
 						}
 						
-				} catch (DocumentException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -362,14 +368,24 @@ SuchenSeite eltern;
 			// Anschließend die Vorlagendatei schließen
 			//textDocument.close();
 			if(!ldrucken){
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				textDocument.close();
-				sendeEmail();
-				eltern.getFortschritt().setIndeterminate(false);
+				final ITextDocument xdoc = textDocument;
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground()
+							throws Exception {
+						try {
+							Thread.sleep(50);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						//textDocument.close();
+						xdoc.close();
+						sendeEmail();
+
+						return null;
+					}
+				}.execute();
+				
 				eltern.setFortschrittZeigen(false);
 		        eltern.getFortschritt().setStringPainted(true);
 				this.termindat = null;
@@ -398,7 +414,7 @@ SuchenSeite eltern;
 			}
 			pat_intern = holeAusDB("select PAT_INTERN from verordn where REZ_NR ='"+trailing+"'");
 			if(pat_intern.equals("")){
-				emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine g�ltige Email-Adresse ein");
+				emailaddy = JOptionPane.showInputDialog (null, "Bitte geben Sie eine gültige Email-Adresse ein");
 				try{
 					if(emailaddy.equals("")){
 						return;
@@ -409,7 +425,7 @@ SuchenSeite eltern;
 			}else{
 				emailaddy = holeAusDB("select EMAILA from pat5 where PAT_INTERN ='"+pat_intern+"'");
 				if(emailaddy.equals("")){
-					emailaddy = JOptionPane.showInputDialog(null,"Bitte geben Sie eine g�ltige Email-Adresse ein" , emailaddy);
+					emailaddy = JOptionPane.showInputDialog(null,"Bitte geben Sie eine gültige Email-Adresse ein" , emailaddy);
 					try{
 						if(emailaddy.equals("")){
 						return;

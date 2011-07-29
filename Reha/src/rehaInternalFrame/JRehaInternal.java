@@ -645,7 +645,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 							////System.out.println("In den Hintergrund "+xname);
 							////System.out.println("In den Hintergrund "+((JRehaInternal)frm[i]).getName());							
 							((JRehaInternal)frm[i]).fireInternalFrameEvent(25555);
-							((JRehaInternal)frm[i]).validateTree();
+							//((JRehaInternal)frm[i]).validateTree();
 						}
 				}
 				
@@ -656,7 +656,7 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 					if(!((JRehaInternal)frmin[i]).getName().equals(xname)){
 						////System.out.println("Inaktiver Desktop Hintergrund -> "+((JRehaInternal)frmin[i]).getName());
 						((JRehaInternal)frmin[i]).fireInternalFrameEvent(25555);
-						((JRehaInternal)frmin[i]).validateTree();
+						//((JRehaInternal)frmin[i]).validateTree();
 						//((JRehaInternal)frmin[i]).repaint();
 					}
 				}
