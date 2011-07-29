@@ -5,6 +5,7 @@ import hauptFenster.Reha;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -49,6 +50,8 @@ import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.beans.XPropertySet;
 import com.sun.star.comp.helper.BootstrapException;
 import com.sun.star.container.NoSuchElementException;
+import com.sun.star.container.XEnumeration;
+import com.sun.star.container.XEnumerationAccess;
 import com.sun.star.container.XNameContainer;
 import com.sun.star.datatransfer.DataFlavor;
 import com.sun.star.datatransfer.UnsupportedFlavorException;
@@ -60,6 +63,7 @@ import com.sun.star.lang.IllegalArgumentException;
 import com.sun.star.lang.IndexOutOfBoundsException;
 import com.sun.star.lang.WrappedTargetException;
 import com.sun.star.lang.XMultiComponentFactory;
+import com.sun.star.lang.XServiceInfo;
 import com.sun.star.sheet.XSheetCellCursor;
 import com.sun.star.sheet.XSpreadsheet;
 import com.sun.star.sheet.XSpreadsheetDocument;
@@ -70,6 +74,9 @@ import com.sun.star.table.XCell;
 import com.sun.star.table.XCellRange;
 import com.sun.star.text.XText;
 import com.sun.star.text.XTextDocument;
+import com.sun.star.text.XTextField;
+import com.sun.star.text.XTextFieldsSupplier;
+import com.sun.star.text.XTextRange;
 import com.sun.star.text.XTextViewCursor;
 import com.sun.star.text.XTextViewCursorSupplier;
 import com.sun.star.uno.Exception;
@@ -160,16 +167,49 @@ public class OOTools{
 		return placeholders.clone();
 	}
 	/**************************************************************************************/
+    private static ArrayList<XTextRange> testePlatzhalter(XTextDocument xTextDocument){
+    	if(xTextDocument==null){return null;}
+    	long millis = 50;
+    	ArrayList<XTextRange> arrayList = new ArrayList<XTextRange>();
+		    try {
+	 		      XTextFieldsSupplier xTextFieldsSupplier = (XTextFieldsSupplier)UnoRuntime.queryInterface(XTextFieldsSupplier.class, xTextDocument);
+	 		      Thread.sleep(millis);
+	 		      XEnumerationAccess xEnumerationAccess = xTextFieldsSupplier.getTextFields();
+	 		      Thread.sleep(millis);
+	 		      XEnumeration xEnumeration = xEnumerationAccess.createEnumeration();
+	 		      while(xEnumeration.hasMoreElements()) {
+	 		        Object object = xEnumeration.nextElement();
+	 		        Thread.sleep(millis);
+	 		        XTextField xTextField = (XTextField)UnoRuntime.queryInterface(XTextField.class, object);
+	 		        XServiceInfo xInfo = (XServiceInfo)UnoRuntime.queryInterface(XServiceInfo.class, xTextField);
+	 		        XTextRange range = xTextField.getAnchor();
+	 		        // nur die Platzhalter
+	 		        if(xInfo.supportsService("com.sun.star.text.TextField.JumpEdit") /* || 
+	 		        		xInfo.supportsService("com.sun.star.text.TextField.User")*/){
+	 		          arrayList.add(range);
+	 		        }
+	 		      }
+		    }catch(Exception exception) {
+		    	exception.printStackTrace();
+		    } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    return arrayList;
+  }	
 	/**************************************************************************************/
 	public static void starteStandardFormular(String url,String drucker) {
-		
-				
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws java.lang.Exception {
+				Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+				return null;
+			}
+			
+		}.execute();
 		IDocumentService documentService = null;
 		ITextDocument textDocument = null;
-		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		
-		//TheraPiDocListener docListener = null;
-		//System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
 			Reha.starteOfficeApplication();
 		}
@@ -189,29 +229,28 @@ public class OOTools{
 		
 		try {
 			document = documentService.loadDocument(url,docdescript);
-			
-
-			/*
-			final IDocument xdocument = document;
-			new Thread(){
-				public void run(){
-					xdocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
-					xdocument.getFrame().getXFrame().getContainerWindow().setVisible(false);
-				}
-			}.start();
-			*/
-			//docListener = new TheraPiDocListener((IDocument)document);
-			//document.addDocumentListener(docListener);
-			//System.out.println("Dokument wurde geöffnet "+document.isOpen());
-			//document.getFrame().getXFrame().getContainerWindow().setVisible(true);
-			//document.getFrame().getXFrame().getContainerWindow().setVisible(false);
-			
 		} catch (NOAException e) {
 
 			e.printStackTrace();
 		}
 		textDocument = (ITextDocument)document;
+
+		/*
+		textDocument.getXTextDocument().getText().createTextCursor().gotoStart(false);
 		
+		ArrayList<XTextRange> arrayList = testePlatzhalter(textDocument.getXTextDocument());
+		if(arrayList==null){return;}
+    	try{
+    		for(int i = 0; i < arrayList.size();i++ ){
+    			System.out.println("Ersetze Platzhalter Nr. "+Integer.toString(i+1)+" = "+(arrayList.get(i).getString().equals("") ? "Name nicht gefunden!!!!!!" : arrayList.get(i).getString())+
+    					" mit DummyContent: Dummy"+Integer.toString(i+1));
+    			//arrayList.get(i).setString("Dummy"+Integer.toString(i+1));
+    		}
+    		
+    	}catch(NullPointerException ex){
+    		ex.printStackTrace();
+    	}		
+		*/
 		/**********************/
 		if(drucker != null){
 			String druckerName = null;
@@ -240,6 +279,7 @@ public class OOTools{
 		}
 		/**********************/
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
+		
 		ITextField[] placeholders = null;
 		try {
 			placeholders = textFieldService.getPlaceholderFields();
@@ -364,8 +404,7 @@ public class OOTools{
 				return;
 			}
 		}
-		sucheNachPlatzhalter(textDocument);
-		Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+		//sucheNachPlatzhalter(textDocument);
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.getPageCursor().jumpToFirstPage();
 
@@ -374,6 +413,7 @@ public class OOTools{
 		final ITextDocument xtextDocument = textDocument;
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
+				Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 				xtextDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
 				xtextDocument.getFrame().setFocus();
 			}
