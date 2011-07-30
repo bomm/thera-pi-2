@@ -53,6 +53,7 @@ import rehaInternalFrame.JAbrechnungInternal;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
+import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
@@ -157,6 +158,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	public String abrechnungsModus = "abrechnung302";
 	final String ABR_MODE_302 = "abrechnung302";
 	final String ABR_MODE_IV = "abrechnungIV";
+	
+	public boolean zuzahlModusDefault = true;
 	
 	public AbrechnungGKV(JAbrechnungInternal xjry){
 		super();
@@ -304,6 +307,10 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			
 		}
 	}
+	private String getDiszis(){
+		String[] diszis = {"Physio","Massage","Ergo","Logo","Podo"};
+		return String.valueOf(diszis[cmbDiszi.getSelectedIndex()]);
+	}
 	public void einlesenErneuern(){
 		String[] diszis = {"Physio","Massage","Ergo","Logo","Podo"};
 		aktDisziplin = diszis[cmbDiszi.getSelectedIndex()];
@@ -413,11 +420,16 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 				vecKassen.get(i).get(1)+"' LIMIT 1";
 
 				String name = SqlInfo.holeFelder(cmd).get(0).get(0);
+				cmd = "select preisgruppe from verordn where rez_nr='"+vecKassen.get(i).get(0)+"' LIMIT 1";;
+				//System.out.println(cmd);
+				String preisgr = SqlInfo.holeEinzelFeld(cmd); 
+				//System.out.println("Preisgruppe="+preisgr);
 
 				KnotenObjekt rezeptknoten = new KnotenObjekt(vecKassen.get(i).get(0)+"-"+name,
 						vecKassen.get(i).get(0),
 						(vecKassen.get(i).get(2).equals("T")? true : false),
-						vecKassen.get(i).get(3),"");
+						vecKassen.get(i).get(3),
+						preisgr);
 				rezeptknoten.ktraeger = ktraeger;
 				rezeptknoten.pat_intern = vecKassen.get(i).get(1);
 				meinitem = new JXTTreeNode(rezeptknoten,true);
@@ -525,6 +537,17 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
     		doKassenTreeAuswerten(node.knotenObjekt);
     		aktuellerPat = node.knotenObjekt.pat_intern;
     		aktuellerKassenKnoten =(JXTTreeNode) ((JXTTreeNode)aktuellerKnoten).getParent();
+    		int pgr = -1;
+    		if(! ((JXTTreeNode)node).knotenObjekt.preisgruppe.trim().equals("")){
+    			//System.out.println("Aktuelle Disziplin = "+getDiszis()+" / Aktuelle Preisgruppe = "+pgr);
+    			pgr = Integer.parseInt(((JXTTreeNode)node).knotenObjekt.preisgruppe.trim());
+    			zuzahlModusDefault = (SystemPreislisten.hmZuzahlModus.get(getDiszis()).get(pgr-1)==1 ? true : false);
+    		}
+    		if(pgr < 0){
+    			JOptionPane.showMessageDialog(null,"Achtung Preisgruppe kann nicht ermittelt werden!\nBitte dieses Rezept nicht abrechnen!");
+    		}
+    		//System.out.println("Preisguppe = "+Integer.toString(pgr)+"\nZuhahlmodus = "+(zuzahlModusDefault ? "Normal" : "Bayrisch"));
+
     	}else{
     		abrRez.setRechtsAufNull();
     		aktuellerKnoten = (JXTTreeNode)node;
@@ -557,7 +580,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
     	}	
 	}
 	public String getAbrechnungKasse(){
-		System.out.println(((JXTTreeNode)aktuellerKnoten).knotenObjekt.ktraeger);
+		//System.out.println(((JXTTreeNode)aktuellerKnoten).knotenObjekt.ktraeger);
 		return ((JXTTreeNode)aktuellerKnoten).knotenObjekt.ktraeger;
 	}
 	public void rechneKasse(JXTTreeNode aktKasse){
@@ -1534,12 +1557,15 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 					if(woerter.length==7){
 						//Einstieg2 für Kilometer
 						dummy = woerter[6].replace("'", "").replace(",", ".");
-						//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
-						//rezgeb.add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl));
-						rezgeb.add(BigDecimal.valueOf(Double.valueOf(dummy)));
-						//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
-						//einzelzuzahlung.add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl));
-						einzelzuzahlung.add(BigDecimal.valueOf(Double.valueOf(dummy)));
+						if(zuzahlModusDefault){
+							rezgeb.add(BigDecimal.valueOf(Double.valueOf(dummy)));
+							einzelzuzahlung.add(BigDecimal.valueOf(Double.valueOf(dummy)));
+						}else{
+							//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
+							rezgeb.add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl));
+							//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
+							einzelzuzahlung.add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl));
+						}
 					}else{
 						rezgeb.add(BigDecimal.valueOf(Double.valueOf("0.00")));
 						einzelzuzahlung.add(BigDecimal.valueOf(Double.valueOf("0.00")));						
@@ -1561,13 +1587,18 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 					if(woerter.length==7){
 						//Einstieg3 für Kilometer
 						dummy = woerter[6].replace("'", "").replace(",", ".");
-						//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
-						//rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(anzahl.get(pos))));
-						rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf(dummy))));
-						//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
-						//if(! BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl).equals(einzelzuzahlung.get(pos))){
-						if(! BigDecimal.valueOf(Double.valueOf(dummy)).equals(einzelzuzahlung.get(pos))){
-							zuzahlUmstellung = true;
+						if(zuzahlModusDefault){
+							rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf(dummy))));
+							if(! BigDecimal.valueOf(Double.valueOf(dummy)).equals(einzelzuzahlung.get(pos))){
+								zuzahlUmstellung = true;
+							}
+						}else{
+							//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
+							rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(anzahl.get(pos))));
+							//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
+							if(! BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl).equals(einzelzuzahlung.get(pos))){
+								zuzahlUmstellung = true;
+							}
 						}
 					}else{
 						rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf("0.00"))));

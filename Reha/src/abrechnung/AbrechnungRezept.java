@@ -201,8 +201,6 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 
 	public boolean	rezeptSichtbar = false;
 	
-	private boolean zuzahlModusDefault = true;
-	
 	public JXTable tageTbl = null;
 	//public MyTageTableModel tageMod = new MyTageTableModel();
 	MyTableComboBox mycomb;
@@ -391,7 +389,6 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				setKuerzelVec(rez,preisgr);
 				setWerte(rez);
 				regleAbrechnungsModus();
-				zuzahlModusDefault = (SystemPreislisten.hmZuzahlModus.get(aktDisziplin).get(Integer.parseInt(preisgr)-1)==1 ? true : false); 
 				Reha.thisClass.progressStarten(false);
 			}else{
 				////System.out.println("Einlesen aus Edifact-Daten");
@@ -413,7 +410,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 					
 					parseHTML(rez.trim());
 					doPositionenErmitteln();
-					zuzahlModusDefault = (SystemPreislisten.hmZuzahlModus.get(aktDisziplin).get(Integer.parseInt(preisgr)-1)==1 ? true : false); 
+				}else{
+					JOptionPane.showMessageDialog(null,"Fehler im EDIFACT dieses Rezeptes");
+					setRechtsAufNull();
 				}
 				
 			}
@@ -3384,11 +3383,15 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			edibuf.append(ediDatumFromDeutsch(node.abr.datum));
 			if(node.abr.rezgeb > 0){
 				rez += node.abr.rezgeb;
-				//Einstieg1 für Kilometer
-				//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
-				//edibuf.append(plus+dfx.format(node.abr.rezgeb/node.abr.anzahl)+EOL);
+				//System.out.println("1. Zuzahlmodus = "+(eltern.zuzahlModusDefault ? "Normal" : "Bayrisch"));
+				if(eltern.zuzahlModusDefault){
+					edibuf.append(plus+dfx.format(node.abr.rezgeb)+EOL);	
+				}else{ //bayrischer Modus
+					//Einstieg1 für Kilometer
+					//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
+					edibuf.append(plus+dfx.format(node.abr.rezgeb/node.abr.anzahl)+EOL);
+				}
 				
-				edibuf.append(plus+dfx.format(node.abr.rezgeb)+EOL);
 			}else{
 				edibuf.append(EOL);
 			}
@@ -3538,10 +3541,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				//Hier ganz wichtig die Multiplikation mit der Anzahl
 				if(pos.length==7){
 					vecdummy.add((boolean) Boolean.valueOf(true));
-					//Herr Lehmann: nächste 2 Zeilen müssen freigeschaltet werden für Einzelkilometer
-					//vecdummy.add((Double) Double.valueOf(pos[6].replace(",", ".").replace("'", "")) *
-					//		Double.valueOf(pos[3].replace(",", ".")) );
-					vecdummy.add((Double) Double.valueOf(pos[6].replace(",", ".").replace("'", "")));
+					//System.out.println("2. Zuzahlmodus = "+(eltern.zuzahlModusDefault ? "Normal" : "Bayrisch"));
+					if(eltern.zuzahlModusDefault){
+						vecdummy.add((Double) Double.valueOf(pos[6].replace(",", ".").replace("'", "")));	
+					}else{ //bayrischer Modus
+						//Herr Lehmann: nächste 2 Zeilen müssen freigeschaltet werden für Einzelkilometer
+						vecdummy.add((Double) Double.valueOf(pos[6].replace(",", ".").replace("'", "")) *
+								Double.valueOf(pos[3].replace(",", ".")) );
+					}
 				}else{
 					vecdummy.add((boolean) Boolean.valueOf(false));
 					vecdummy.add((Double) Double.valueOf("0.00"));
