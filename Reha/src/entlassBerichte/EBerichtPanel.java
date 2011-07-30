@@ -215,8 +215,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			"^dem/der Pat.^",//20
 			"^Des/Der Pat.^",//21
 			"^des/der Pat.^",//22
-			"^Seine/Ihre^",//23
-			"^seine/ihre^",//24
+			"^Der/Die Vers.^",//23 ab hier 4 neue eingefügt
+			"^der/die Vers.^",//24
+			"^Der/Die Rehab.^",//25
+			"^der/die Rehab.^",//26			
+			"^Seine/Ihre^",//27
+			"^seine/ihre^",//28
 			};
 	/*
 	String[] varinhalt = {"^Heute^","^Anrede^","^PatName^","^PatVorname^","^Geburtsdatum^",
@@ -1333,6 +1337,10 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					(isherr ? "dem Patienten" : "der Patientin"),
 					(isherr ? "Des Patienten" : "Der Patientin"),
 					(isherr ? "des Patienten" : "der Patientin"),
+					(isherr ? "Der Versicherte" : "Die Versicherte"),
+					(isherr ? "der Versicherte" : "die Versicherte"),
+					(isherr ? "Der Rehabilitand" : "Die Rehabilitandin"),
+					(isherr ? "der Rehabilitand" : "die Rehabilitandin"),
 					(isherr ? "Seine" : "Ihre"),
 					(isherr ? "seine" : "ihre"),
 			};
