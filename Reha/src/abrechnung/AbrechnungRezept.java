@@ -170,6 +170,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	
 	JRtaComboBox cmbkuerzel = null;
 	JRtaComboBox cmbbreak = null;
+	@SuppressWarnings("rawtypes")
 	JComboBox cmbpreis = null;
 	JCheckBox chkzuzahl = null;
 	
