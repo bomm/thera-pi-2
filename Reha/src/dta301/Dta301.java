@@ -899,7 +899,11 @@ public class Dta301 extends JXPanel implements FocusListener {
 			//JRtaCheckBox entlassmitfahrgeld = null;
 			//JRtaTextField entlassfahrgeld = null;
 			//JTextArea entlasstpan = null;
-
+			if(DatFunk.TageDifferenz(this.entlasserstdatum.getText().trim(), 
+					this.entlassletztdatum.getText().trim()) <= 0){
+				JOptionPane.showMessageDialog(null,"Entlassungsdatum ist vor dem Aufnahmetag, oder am Aufnahmetag!!!\n\nBitte überprüfen");
+				return false;
+			}
 			meldung301.doEntlassung(this.entlasserstdatum.getText().trim(),
 					this.entlassletztdatum.getText().trim(),
 					this.entlassstunde.getText().trim()+this.entlassminute.getText().trim(),

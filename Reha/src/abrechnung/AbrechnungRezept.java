@@ -2460,6 +2460,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		
 		public void valueChanged(TreeSelectionEvent e) {
 			if (!isUpdating) {
+				/******/
+				try{
 				isUpdating = true;
 				JXTreeTable tt = jXTreeTable;//(JXTreeTable) e.getSource();
 				TreeTableModel ttmodel = tt.getTreeTableModel();
@@ -2506,8 +2508,13 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 						
 					}.execute();
 				}
+				/**********/
+			}catch(NullPointerException ex){}	
+				
+				/**********/
 			}
 			isUpdating = false;
+
 		}
 		
 		
