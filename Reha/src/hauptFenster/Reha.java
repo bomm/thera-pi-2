@@ -305,7 +305,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-06-30/02-DB=";
+	public static String aktuelleVersion = "V=2011-07-31/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1842,10 +1842,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                 config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
                 		new String[] {"--nologo",
                 		"--nofirststartwizard",
-                		"--quickstart",
-                		"--norestore",
-                		"--nolockcheck"
-                		
+                		"--headless",
+                		"--nodefault"
                 		});
                 System.out.println("Nehme LibreOffice Configuration ");
             }
@@ -1856,6 +1854,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             //Nachfolgende try/catch nur dann einschalten
             //wenn Sie über die neueste ag.ion.noa_2.2.3.jar vom 20.06.2011
             //verfügen!!!!! sonst läuft nix mehr /st.
+
             
             try {
 				if(officeapplication.getOfficeConnection() != null){
@@ -1871,6 +1870,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			} catch (java.lang.Exception e1) {
 				e1.printStackTrace();
 			}
+			
 			
             
             officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {

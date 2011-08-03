@@ -2274,7 +2274,17 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					
 				}
 			}else{
+				/*
 				//hier die neue Prüfung einbauen Frist bis erste Behandlung
+				if(ktagebeginn){ //Frist bis Rezeptbeginn in Kalendertagen
+					if(DatFunk.TageDifferenz(latestdat, starttag) < 0){
+						System.out.println("Letzter Behandlungsbeginn wurde überschritten");
+					}
+				}else{//Frist bis Rezeptbeginn in Werktagen 
+					
+				}
+				*/
+				
 			}
 		}
 		return true;

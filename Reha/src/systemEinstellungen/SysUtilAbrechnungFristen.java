@@ -235,7 +235,8 @@ public class SysUtilAbrechnungFristen extends JXPanel implements KeyListener, Ac
 			SystemConfig.UpdateIni("fristen.ini", "Fristen_"+lastdiszi, "UnterbrechungKalendertage"+Integer.toString(lasttarif+1),(rads[2].isSelected() ? "1" : "0"));
 			SystemConfig.UpdateIni("fristen.ini", "Fristen_"+lastdiszi, "BeginnMitSamstag"+Integer.toString(lasttarif+1),(cbox[0].isSelected() ? "1" : "0"));
 			SystemConfig.UpdateIni("fristen.ini", "Fristen_"+lastdiszi, "UnterbrechungMitSamstag"+Integer.toString(lasttarif+1),(cbox[1].isSelected() ? "1" : "0"));
-			SystemConfig.UpdateIni("preislisten.ini", "ZuzahlRegeln_"+lastdiszi, "ZuzahlModus"+Integer.toString(lasttarif+1),(rads[4].isSelected() ? "1" : "0"));
+			SystemConfig.UpdateIni("preisgruppen.ini", "ZuzahlRegeln_"+lastdiszi, "ZuzahlModus"+Integer.toString(lasttarif+1),(rads[4].isSelected() ? "1" : "0"));
+			JOptionPane.showMessageDialog(null, "Werte wurden erfolgreich gespeichert");
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null, "Fehler beim speichern der Werte");
 		}

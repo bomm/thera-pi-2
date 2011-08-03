@@ -802,6 +802,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				}
 				new LadeProg(Reha.proghome+"ArztBaustein.jar "+
 						Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");	
+				
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
@@ -817,6 +818,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 						return null;
 					}
 				}.execute();
+				
 				break;
 			}
 			

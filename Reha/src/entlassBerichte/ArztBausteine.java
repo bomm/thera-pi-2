@@ -511,6 +511,8 @@ public class ArztBausteine extends JDialog implements WindowListener{
 	    if (noaPanel != null) {
 		      try {
 		        officeFrame = constructOOOFrame(Reha.officeapplication, noaPanel);
+		        //DocumentDescriptor desc = DocumentDescriptor.DEFAULT;
+		        //desc.setReadOnly(true);
 		        document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(officeFrame,
 		            IDocument.WRITER,
 		            DocumentDescriptor.DEFAULT);
@@ -629,7 +631,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 	}
 	@Override
 	public void windowClosed(WindowEvent arg0) {
-		if(document.isOpen()){
+		if(document != null){
 			document.close();
 		}
 		eltern.arztbaus = null;
@@ -637,7 +639,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 	@Override
 	public void windowClosing(WindowEvent arg0) {
 		////System.out.println("in closing.....");
-		if(document.isOpen()){
+		if(document != null){
 			document.close();
 		}
 	}

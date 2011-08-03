@@ -297,7 +297,7 @@ SuchenSeite eltern;
 				try {
 					zaehler+=1;
 					if(zaehler >= 50){
-						Thread.sleep(50);
+						Thread.sleep(25);
 						zaehler=0;
 					}
 					
@@ -313,8 +313,14 @@ SuchenSeite eltern;
 				try {
 						final ITextDocument xdoc = textDocument;
 						if(SystemConfig.oTerminListe.DirektDruck){
-
+							System.out.println("vor print()");
+							xdoc.print();
+							Thread.sleep(150);
+							System.out.println("vor close()");
+							xdoc.close();
+							System.out.println("nach close()");
 							//eltern.setFortschrittSetzen(termindat.size()+(termindat.size()/20));
+							/*
 							new SwingWorker<Void,Void>(){
 								@Override
 								protected Void doInBackground()
@@ -335,7 +341,7 @@ SuchenSeite eltern;
 									return null;
 								}
 							}.execute();
-							
+							*/
 							eltern.setFortschrittSetzen(termindat.size());
 							eltern.setFortschrittZeigen(false);
 					        eltern.getFortschritt().setStringPainted(true);

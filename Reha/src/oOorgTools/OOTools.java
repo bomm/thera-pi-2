@@ -259,7 +259,7 @@ public class OOTools{
 		}
 		/**********************/
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
-		
+
 		ITextField[] placeholders = null;
 		try {
 			placeholders = textFieldService.getPlaceholderFields();

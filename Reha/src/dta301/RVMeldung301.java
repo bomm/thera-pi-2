@@ -1028,7 +1028,8 @@ public class RVMeldung301 {
 		buf301Body.append("BGM+30++10'"+NEWLINE);zeilen++; 
 		buf301Body.append("DTM+137:"+DATUM10+":102'"+NEWLINE);zeilen++;
 		buf301Body.append("DTM+3:"+DATUM10+":102'"+NEWLINE);zeilen++;
-		buf301Body.append("RFF+ACD:"+StringTools.fuelleMitZeichen(Integer.toString(this.lfdNr), "0", true, 2)+"'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		//buf301Body.append("RFF+ACD:"+StringTools.fuelleMitZeichen(Integer.toString(this.lfdNr), "0", true, 2)+"'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
+		buf301Body.append("RFF+ACD:"+StringTools.fuelleMitZeichen(Integer.toString(1), "0", true, 2)+"'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
 		//buf301Body.append("RFF+ACD:01'"+NEWLINE);zeilen++; //Hier die Datenbank untersuchen
 		//Rechnungsnummer im RTA
 		//int rnummer = SqlInfo.erzeugeNummer("rnr");
