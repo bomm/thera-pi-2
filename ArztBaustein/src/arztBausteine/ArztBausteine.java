@@ -22,7 +22,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXFrame;
 
-
 import com.sun.star.uno.Exception;
 
 import ag.ion.bion.officelayer.application.IOfficeApplication;
@@ -56,7 +55,6 @@ public class ArztBausteine implements WindowListener, WindowStateListener {
 	public static String dbPassword = "entwickler";
 	
 	ArztBausteinPanel arztbausteinpanel = null;
-	
 	
 	public static void main(String[] args) throws OfficeApplicationException {
 	
@@ -163,9 +161,9 @@ public class ArztBausteine implements WindowListener, WindowStateListener {
 	}
 	@Override
 	public void windowClosed(WindowEvent arg0) {
-	}
-	@Override
-	public void windowClosing(WindowEvent arg0) {
+		if(arztbausteinpanel.document != null){
+			arztbausteinpanel.document.close();
+		}
 		if(conn != null){
 			try {
 				conn.close();
@@ -175,11 +173,29 @@ public class ArztBausteine implements WindowListener, WindowStateListener {
 			}
 		}
 		try{
-			if(arztbausteinpanel.document.isOpen()){
+			if(arztbausteinpanel.document != null){
 				arztbausteinpanel.document.close();
+				arztbausteinpanel.document = null;
 			}
 		}catch(java.lang.NullPointerException ex){
 			ex.printStackTrace();
+		}
+		System.exit(0);
+		
+	}
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		if(arztbausteinpanel.document != null){
+			arztbausteinpanel.document.close();
+			arztbausteinpanel.document = null;
+		}
+		if(conn != null){
+			try {
+				conn.close();
+				System.out.println("Datenbankverbindung wurde geschlossen-2");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	@Override
@@ -198,38 +214,51 @@ public class ArztBausteine implements WindowListener, WindowStateListener {
 	public void windowStateChanged(WindowEvent arg0) {
 	}
 	
-    public static void starteOfficeApplication() throws OfficeApplicationException{ 
+    public static void starteOfficeApplication()
+    { 
 
-    	final String OPEN_OFFICE_ORG_PATH = OpenOfficePfad;
-
-        
-        	System.out.println("**********Open-Office wird gestartet***************");
+    	final String OPEN_OFFICE_ORG_PATH = ArztBausteine.OpenOfficePfad;
+    	//final String OPEN_OFFICE_ORG_PATH = "C:\\Programme\\OpenOffice.org 2.3";
+        try
+        {
+        	//System.out.println(piHelp.OpenOfficePfad);
+        	//System.out.println(piHelp.OfficeNativePfad);
             String path = OPEN_OFFICE_ORG_PATH;
             Map <String, String>config = new HashMap<String, String>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
             config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-            System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,OpenOfficeNativePfad);
+            config.put(IOfficeApplication.APPLICATION_HOST_KEY, "localhost");
+            //config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
+            System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,ArztBausteine.OpenOfficeNativePfad);
             officeapplication = OfficeApplicationRuntime.getApplication(config);
             officeapplication.activate();
             officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
-            	  public void queryTermination(ITerminateEvent terminateEvent) {
-            	    super.queryTermination(terminateEvent);
-            	    try {
-            	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
-            	      if (docs.length == 1) { 
-            	        docs[0].close();
-            	        System.out.println("Letztes Dokument wurde geschlossen");
-            	      }
-            	    }
-            	    catch (DocumentException e) {
-            	    	e.printStackTrace();
-            	    } catch (OfficeApplicationException e) {
+          	  public void queryTermination(ITerminateEvent terminateEvent) {
+          	    super.queryTermination(terminateEvent);
+          	    try {
+          	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
+          	      if (docs.length == 1) { 
+          	        docs[0].close();
+          	        ////System.out.println("Letztes Dokument wurde geschlossen");
+          	      }
+          	    }
+          	    catch (DocumentException e) {
+          	    	e.printStackTrace();
+          	    } catch (OfficeApplicationException e) {
 						e.printStackTrace();
-					}
-            	  }
-            });
-            	
-        
+				}
+          	  }
+          	});
+            
+            //IFrame frame = Reha.officeapplication.getDesktopService().constructNewOfficeFrame();
+            //System.out.println("Open-Office wurde gestartet");
+            //System.out.println("Open-Office-Typ: "+officeapplication.getApplicationType());
+        }
+        catch (OfficeApplicationException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 	
 	private void starteDB() throws InstantiationException, IllegalAccessException, ClassNotFoundException{

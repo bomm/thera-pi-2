@@ -116,14 +116,18 @@ public class ArztBausteinPanel extends JXPanel {
 			"Der/Die Patient/in","der/die Patient/in","Er/Sie","er/sie","Seines/Ihres","seines/ihres",
 			"Sein/Ihr","sein/ihr",
 			"Dem/Der Patienten/in","dem/der Patienten/in","Des/Der Patienten/in","des/der Patienten/in",
+			"Der/Die Versicherte","der/die Versicherte","Der/Die Rehabilitand/in","der/die Rehabilitand/in",
 			"Seine/Ihre","seine/ihre",
+			"Der/Die 99-jährige","der/die 99-jährige",
 			"freie Variable setzen!!!!"};
 	String[] varinhalt = {"Heute","Anrede","PatName","PatVorname","Geburtsdatum",
 						"Strasse","PLZ","Ort","Aufnahme","Etlassung",
 						"arbeitsfähig?","Der/Die Pat.","der/die Pat.",
 						"Er/Sie","er/sie","Seines/Ihres","seines/ihres","Sein/Ihr","sein/ihr",
 						"Dem/Der Pat.","dem/der Pat.","Des/Der Pat.","des/der Pat.",
+						"Der/Die Vers.","der/die Vers.","Der/Die Rehab.","der/die Rehab.",
 						"Seine/Ihre","seine/ihre",
+						"Der/Die 99-jährige","der/die 99-jährige",
 						"frei"};
 
 	JComboBox jcmb = null;
@@ -134,6 +138,9 @@ public class ArztBausteinPanel extends JXPanel {
 	
 	boolean neu = false;
 	
+	private boolean noapanelready = false;
+	private boolean tablepanelready = false;
+
 	public ArztBausteinPanel(){
 		super();
 		setSize(1024,800);
@@ -142,23 +149,60 @@ public class ArztBausteinPanel extends JXPanel {
 		activateListener();
 		add(constructSplitPaneLR(),BorderLayout.CENTER);
 		//add(getnoaDummy(),BorderLayout.CENTER);
+		/*
+		try{
+		noaDummy.add(getOOorgPanel());
+		noaPanel.setVisible(true);
+		fillNOAPanel();
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		noapanelready = true;
+		*/
+		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					noaDummy.add(getOOorgPanel());
+					noaPanel.setVisible(true);
+					fillNOAPanel();		
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				noapanelready = true;
+				return null;
+			}
+		}.execute();
+		
+		validate();
+		setVisible(true);
 
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				noaDummy.add(getOOorgPanel());
-				noaPanel.setVisible(true);
-				fillNOAPanel();		
+				for(int i = 0; i < 10000;i++){
+					if(noapanelready && tablepanelready){
+						bausteintbl.setRowSelectionInterval(0, 0);
+						//System.out.println(noapanelready+"  /  "+tablepanelready);
+						setzeFocus();
+						break;
+					}else{
+						//System.out.println(noapanelready+"  /  "+tablepanelready);
+					}
+					try {
+						Thread.sleep(25);
+					} catch (InterruptedException e) {
+						
+						e.printStackTrace();
+					}
+				}
 				return null;
 			}
+			
 		}.execute();
-		validate();
-		setVisible(true);
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run(){
-				setzeFocus();
-			}
-		});
+		/*
+		*/
 	}
 	private void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
@@ -325,7 +369,7 @@ public class ArztBausteinPanel extends JXPanel {
 		return noaPanel;
 	}
 	private JXPanel getnoaDummy(){
-		noaDummy = new JXPanel(new GridLayout());
+		noaDummy = new JXPanel(new GridLayout(0,1));
 		return noaDummy;
 	}
 
@@ -481,7 +525,8 @@ public class ArztBausteinPanel extends JXPanel {
 					while(!ArztBausteine.DbOk){
 						Thread.sleep(20);
 					}
-					fuelleTabelle("");					
+					fuelleTabelle("");	
+					tablepanelready = true;
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
@@ -563,7 +608,7 @@ public class ArztBausteinPanel extends JXPanel {
 		IViewCursor viewCursor = null;
 		try {
 			textCursor = document.getTextService().getCursorService().getTextCursor();
-			
+
 			textCursor.insertDocument(ArztBausteine.proghome+"tbout.tb");
 			//textCursor.insertDocument(ins, RTFFilter.FILTER);
 			textCursor.gotoStart(false);
@@ -595,6 +640,7 @@ public class ArztBausteinPanel extends JXPanel {
 		      catch (Throwable throwable) {
 		        noaPanel.add(new JLabel("Ein Fehler ist aufgetreten: " + throwable.getMessage()));
 		      }
+		      noapanelready = true;
 		    }
 		  }
 	
@@ -769,7 +815,7 @@ public class ArztBausteinPanel extends JXPanel {
 					new SwingWorker<Void,Void>(){
 						@Override
 						protected Void doInBackground() throws Exception {
-							bausteintbl.setRowSelectionInterval(0, 0);
+							//bausteintbl.setRowSelectionInterval(0, 0);
 							return null;
 						}
 					}.execute();
