@@ -63,6 +63,7 @@ import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextRange;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.noa.NOAException;
+import ag.ion.noa.filter.OpenDocumentFilter;
 import ag.ion.noa.frame.ILayoutManager;
 import ag.ion.noa.internal.frame.LayoutManager;
 
@@ -165,7 +166,7 @@ public class ArztBausteinPanel extends JXPanel {
 			protected Void doInBackground() throws Exception {
 				try{
 					noaDummy.add(getOOorgPanel());
-					noaPanel.setVisible(true);
+					//noaPanel.setVisible(true);
 					fillNOAPanel();		
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -580,6 +581,7 @@ public class ArztBausteinPanel extends JXPanel {
 	private void holeTextBaustein(String id){
 		InputStream ins = SqlInfo.holeStream("tbar", "tbtext", "id='"+id+"'");
 /*****/
+		/*
 	    File f=new File(ArztBausteine.proghome+"tbout.tb");
 	    f.deleteOnExit();
 	    OutputStream out;
@@ -598,6 +600,7 @@ public class ArztBausteinPanel extends JXPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 		
 /*****/		
 		
@@ -608,14 +611,15 @@ public class ArztBausteinPanel extends JXPanel {
 		IViewCursor viewCursor = null;
 		try {
 			textCursor = document.getTextService().getCursorService().getTextCursor();
-
-			textCursor.insertDocument(ArztBausteine.proghome+"tbout.tb");
+			textCursor.insertDocument(ins, OpenDocumentFilter.FILTER);
+			
+			//textCursor.insertDocument(ArztBausteine.proghome+"tbout.tb");
 			//textCursor.insertDocument(ins, RTFFilter.FILTER);
 			textCursor.gotoStart(false);
 			viewCursor = document.getViewCursorService().getViewCursor();
 			viewCursor.getPageCursor().jumpToFirstPage();
 			viewCursor.getPageCursor().jumpToStartOfPage();
-			ins.close();
+			//ins.close();
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -623,6 +627,7 @@ public class ArztBausteinPanel extends JXPanel {
 	private void fillNOAPanel() {
 	    if (noaPanel != null) {
 		      try {
+		    	  System.out.println("Konstruiere das NOA-Panel");
 		        officeFrame = constructOOOFrame(ArztBausteine.officeapplication, noaPanel);
 		        document = (ITextDocument) ArztBausteine.officeapplication.getDocumentService().constructNewDocument(officeFrame,
 		            IDocument.WRITER,
@@ -630,7 +635,7 @@ public class ArztBausteinPanel extends JXPanel {
 	        	OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
 	        	OOTools.setzeRaender(document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 		        hideElements(LayoutManager.URL_MENUBAR);
-	        	nativeView.validate();
+	        	//nativeView.validate();
 		        try {
 					document.zoom(DocumentZoomType.BY_VALUE, (short)100);
 				} catch (DocumentException e) {
@@ -645,13 +650,14 @@ public class ArztBausteinPanel extends JXPanel {
 		  }
 	
 	private IFrame constructOOOFrame(IOfficeApplication officeApplication, final Container parent) throws Throwable {
+  	  System.out.println("Konstruiere die Native-View");
 	    nativeView = new NativeView(ArztBausteine.OpenOfficeNativePfad);
 	    parent.add(nativeView);
 	    parent.addComponentListener(new ComponentAdapter() {
 	      public void componentResized(ComponentEvent e) {
-	    	refreshSize();
 	        nativeView.setPreferredSize(new Dimension(parent.getWidth() - 5, parent.getHeight() - 5));
 	        parent.getLayout().layoutContainer(parent);
+	    	refreshSize();
 	      }
 	    });
 
