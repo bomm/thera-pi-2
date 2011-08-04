@@ -221,6 +221,9 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			"^der/die Rehab.^",//26			
 			"^Seine/Ihre^",//27
 			"^seine/ihre^",//28
+			"^Der/Die 99-jährige^",//29
+			"^der/die 99-jährige^"//30
+
 			};
 	/*
 	String[] varinhalt = {"^Heute^","^Anrede^","^PatName^","^PatVorname^","^Geburtsdatum^",
@@ -1285,6 +1288,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 /*
  			
  */
+			/*
 			@SuppressWarnings("unused")
 			String[] varinhalt = {
 					"^Heute^", //0
@@ -1310,39 +1314,52 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 					"^dem/der Pat.^",//20
 					"^Des/Der Pat.^",//21
 					"^des/der Pat.^",//22
-					"^Seine/Ihre^",//23
-					"^seine/ihre^",//24
+					"^Der/Die Vers.^",//23 ab hier 4 neue eingefügt
+					"^der/die Vers.^",//24
+					"^Der/Die Rehab.^",//25
+					"^der/die Rehab.^",//26			
+					"^Seine/Ihre^",//27
+					"^seine/ihre^",//28
+					"^Der/Die 99-jährige^",//29
+					"^der/die 99-jährige^",//30
+					"^seine/ihre^",//31
 					};
+			*/	
 
-			String[] dummy = {DatFunk.sHeute(),
-					(isherr ? "Herr" : "Frau"),
-					StringTools.EGross(btf[2].getText().split(",")[0].trim()), //name
-					StringTools.EGross(btf[2].getText().split(",")[1].trim()), //vorname
-					btf[3].getText().trim(), //geburtsdatum
-					StringTools.EGross(btf[4].getText().trim()), //strasse
-					StringTools.EGross(btf[5].getText().trim()), //plz
-					StringTools.EGross(btf[6].getText().trim()), //ort
-					btf[15].getText(), //aufnahmedatum
-					btf[16].getText(), //entlassdatum
-					entlassform,
-					(isherr ? "Der Patient" : "Die Patientin"),
-					(isherr ? "der Patient" : "die Patientin"),
-					(isherr ? "Er" : "Sie"),
-					(isherr ? "er" : "sie"),
-					(isherr ? "Seines" : "Ihres"),
-					(isherr ? "seines" : "ihres"),
-					(isherr ? "Sein" : "Ihr"),
-					(isherr ? "sein" : "ihr"),
-					(isherr ? "Dem Patienten" : "Der Patientin"),
-					(isherr ? "dem Patienten" : "der Patientin"),
-					(isherr ? "Des Patienten" : "Der Patientin"),
-					(isherr ? "des Patienten" : "der Patientin"),
-					(isherr ? "Der Versicherte" : "Die Versicherte"),
-					(isherr ? "der Versicherte" : "die Versicherte"),
-					(isherr ? "Der Rehabilitand" : "Die Rehabilitandin"),
-					(isherr ? "der Rehabilitand" : "die Rehabilitandin"),
-					(isherr ? "Seine" : "Ihre"),
-					(isherr ? "seine" : "ihre"),
+			String[] dummy = {DatFunk.sHeute(), //0
+					(isherr ? "Herr" : "Frau"), //1
+					StringTools.EGross(btf[2].getText().split(",")[0].trim()), //name  2
+					StringTools.EGross(btf[2].getText().split(",")[1].trim()), //vorname 3
+					btf[3].getText().trim(), //geburtsdatum 4
+					StringTools.EGross(btf[4].getText().trim()), //strasse 5
+					StringTools.EGross(btf[5].getText().trim()), //plz 6
+					StringTools.EGross(btf[6].getText().trim()), //ort 7
+					btf[15].getText(), //aufnahmedatum 8
+					btf[16].getText(), //entlassdatum 9
+					entlassform, //10
+					(isherr ? "Der Patient" : "Die Patientin"), //11
+					(isherr ? "der Patient" : "die Patientin"), //12
+					(isherr ? "Er" : "Sie"), //13
+					(isherr ? "er" : "sie"), //14
+					(isherr ? "Seines" : "Ihres"), //15
+					(isherr ? "seines" : "ihres"), //16
+					(isherr ? "Sein" : "Ihr"), //17
+					(isherr ? "sein" : "ihr"), //18
+					(isherr ? "Dem Patienten" : "Der Patientin"), //19
+					(isherr ? "dem Patienten" : "der Patientin"), //20
+					(isherr ? "Des Patienten" : "Der Patientin"), //21
+					(isherr ? "des Patienten" : "der Patientin"), //22
+					(isherr ? "Der Versicherte" : "Die Versicherte"), //23
+					(isherr ? "der Versicherte" : "die Versicherte"), //24
+					(isherr ? "Der Rehabilitand" : "Die Rehabilitandin"), //25
+					(isherr ? "der Rehabilitand" : "die Rehabilitandin"), //26
+					(isherr ? "Seine" : "Ihre"), //27
+					(isherr ? "seine" : "ihre"), //28
+					(isherr ? "Der "+SystemConfig.hmAdrPDaten.get("<Palter>")+"-jährige Patient" : 
+						"Die "+SystemConfig.hmAdrPDaten.get("<Palter>")+"-jährige Patientin"), //29
+					(isherr ? "der "+SystemConfig.hmAdrPDaten.get("<Palter>")+"-jährige Patient" : 
+						"die "+SystemConfig.hmAdrPDaten.get("<Palter>")+"-jährige Patientin"), //30
+
 			};
 			sysVarInhalt = Arrays.asList(dummy);
 		}catch(Exception ex){

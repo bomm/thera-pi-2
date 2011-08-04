@@ -711,7 +711,11 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 					return;
 				}
 				*/
-				new LadeProg(Reha.proghome+"RehaWissen.jar");
+				new Thread(){
+					public void run(){
+						new LadeProg(Reha.proghome+"RehaWissen.jar");		
+					}
+				}.start();
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
@@ -737,7 +741,12 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				if(! RehaIOServer.rehaMailIsActive){
 					if(Reha.aktUser.startsWith("Therapeut")){return;}
 					Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
-					new LadeProg(Reha.proghome+"RehaMail.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport+" "+Reha.aktUser.replace(" ", "#"));
+					new Thread(){
+						public void run(){
+							new LadeProg(Reha.proghome+"RehaMail.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport+" "+Reha.aktUser.replace(" ", "#"));		
+						}
+					}.start();
+					
 				}else{
 					if(Reha.aktUser.startsWith("Therapeut")){return;}
 					new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaMailreversePort,"Reha#"+RehaIOMessages.MUST_GOTOFRONT);
@@ -766,7 +775,11 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				break;
 			}
 			if (cmd.equals("piHelp")){
-				new LadeProg(Reha.proghome+"piHelp.jar");
+				new Thread(){
+					public void run(){
+						new LadeProg(Reha.proghome+"piHelp.jar");		
+					}
+				}.start();
 				break;
 			}
 			if (cmd.equals("piTool")){
@@ -800,8 +813,12 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				if(!Rechte.hatRecht(Rechte.Sonstiges_textbausteinegutachten, true)){
 					return;
 				}
-				new LadeProg(Reha.proghome+"ArztBaustein.jar "+
-						Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");	
+				new Thread(){
+					public void run(){
+						new LadeProg(Reha.proghome+"ArztBaustein.jar "+
+								Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");	
+					}
+				}.start();
 				
 				new SwingWorker<Void,Void>(){
 					@Override
