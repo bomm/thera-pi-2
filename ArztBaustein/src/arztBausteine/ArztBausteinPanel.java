@@ -118,7 +118,7 @@ public class ArztBausteinPanel extends JXPanel {
 			"Dem/Der Patienten/in","dem/der Patienten/in","Des/Der Patienten/in","des/der Patienten/in",
 			"Der/Die Versicherte","der/die Versicherte","Der/Die Rehabilitand/in","der/die Rehabilitand/in",
 			"Seine/Ihre","seine/ihre",
-			"Der/Die 99-jährige","der/die 99-jährige",
+			"Der/Die 99-jährige Pat.","der/die 99-jährige Pat.",
 			"freie Variable setzen!!!!"};
 	String[] varinhalt = {"Heute","Anrede","PatName","PatVorname","Geburtsdatum",
 						"Strasse","PLZ","Ort","Aufnahme","Etlassung",

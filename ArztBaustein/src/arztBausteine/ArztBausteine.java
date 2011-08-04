@@ -163,30 +163,6 @@ public class ArztBausteine implements WindowListener, WindowStateListener {
 	public void windowClosed(WindowEvent arg0) {
 		if(arztbausteinpanel.document != null){
 			arztbausteinpanel.document.close();
-		}
-		if(conn != null){
-			try {
-				conn.close();
-				System.out.println("Datenbankverbindung wurde geschlossen-2");
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		try{
-			if(arztbausteinpanel.document != null){
-				arztbausteinpanel.document.close();
-				arztbausteinpanel.document = null;
-			}
-		}catch(java.lang.NullPointerException ex){
-			ex.printStackTrace();
-		}
-		System.exit(0);
-		
-	}
-	@Override
-	public void windowClosing(WindowEvent arg0) {
-		if(arztbausteinpanel.document != null){
-			arztbausteinpanel.document.close();
 			arztbausteinpanel.document = null;
 		}
 		if(conn != null){
@@ -197,6 +173,38 @@ public class ArztBausteine implements WindowListener, WindowStateListener {
 				e.printStackTrace();
 			}
 		}
+		System.exit(0);
+		
+	}
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		if(arztbausteinpanel.document != null){
+			arztbausteinpanel.document.close();
+			arztbausteinpanel.document = null;
+			System.out.println("Dokument wurde geschlossen");
+			try {
+				IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
+				if(docs.length > 0){
+					for(int i = docs.length-1; i >= 0;i--){
+						docs[i].close();
+						System.out.println("Schliesse Dokument "+i);
+					}
+				}
+			} catch (DocumentException e) {
+				e.printStackTrace();
+			} catch (OfficeApplicationException e) {
+				e.printStackTrace();
+			}
+		}
+		if(conn != null){
+			try {
+				conn.close();
+				System.out.println("Datenbankverbindung wurde geschlossen");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		System.exit(0);
 	}
 	@Override
 	public void windowDeactivated(WindowEvent arg0) {
@@ -232,6 +240,7 @@ public class ArztBausteine implements WindowListener, WindowStateListener {
             System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,ArztBausteine.OpenOfficeNativePfad);
             officeapplication = OfficeApplicationRuntime.getApplication(config);
             officeapplication.activate();
+            /*
             officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
           	  public void queryTermination(ITerminateEvent terminateEvent) {
           	    super.queryTermination(terminateEvent);
@@ -240,6 +249,8 @@ public class ArztBausteine implements WindowListener, WindowStateListener {
           	      if (docs.length == 1) { 
           	        docs[0].close();
           	        ////System.out.println("Letztes Dokument wurde geschlossen");
+          	      }else{
+          	    	System.out.println("Es sind noch "+docs.length+" Dokumente offen");
           	      }
           	    }
           	    catch (DocumentException e) {
@@ -249,6 +260,7 @@ public class ArztBausteine implements WindowListener, WindowStateListener {
 				}
           	  }
           	});
+          	*/
             
             //IFrame frame = Reha.officeapplication.getDesktopService().constructNewOfficeFrame();
             //System.out.println("Open-Office wurde gestartet");
