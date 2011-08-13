@@ -641,6 +641,7 @@ public class ArztBausteine extends JDialog implements WindowListener{
 		////System.out.println("in closing.....");
 		if(document != null){
 			document.close();
+			document = null;
 		}
 	}
 	private void hideAllElements() throws UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException, NOAException{

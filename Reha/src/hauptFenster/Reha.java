@@ -94,6 +94,8 @@ import kvKarte.KVKWrapper;
 import menus.TerminMenu;
 import oOorgTools.OOTools;
 
+import ocf.OcKVK;
+
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
@@ -326,6 +328,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean isStarted = false;
 	public static int divider1 = -1;
 	public static int divider2 = -1;
+	
+	public OcKVK ocKVK = null;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -609,6 +613,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+		if(Reha.thisClass.ocKVK.sc != null){
+			Reha.thisClass.ocKVK.TerminalDeaktivieren();
+			System.out.println("Card-Terminal deaktiviert");
 		}
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
@@ -1776,6 +1784,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 								e2.printStackTrace();
 							}
 						}
+						if(Reha.thisClass.ocKVK.sc != null){
+							Reha.thisClass.ocKVK.TerminalDeaktivieren();
+							System.out.println("Card-Terminal deaktiviert");
+						}
+
 						INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 						SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
 						SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
@@ -1836,17 +1849,19 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             Map <String, Object>config = new HashMap<String, Object>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
             config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-            
+
             if(path.indexOf("LibreOffice 3.") >= 0){
             	System.out.println("Nehme die neue Variante");
                 config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
-                		new String[] {"--nologo",
+                		new String[] {"--nodefault",
                 		"--nofirststartwizard",
-                		"--headless",
-                		"--nodefault"
+                		"--nologo",
+                		"--norestore",
+                		"--headless"
                 		});
                 System.out.println("Nehme LibreOffice Configuration ");
             }
+
             
             System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,SystemConfig.OpenOfficeNativePfad);
             officeapplication = OfficeApplicationRuntime.getApplication(config);
@@ -2370,6 +2385,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				Reha.nachrichtenLaeuft = false;
 				Reha.nachrichtenTimer = null;
 			}
+			if(Reha.thisClass.ocKVK.sc != null){
+				Reha.thisClass.ocKVK.TerminalDeaktivieren();
+				System.out.println("Card-Terminal deaktiviert");
+			}
+
 			
 			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 			SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
@@ -2965,9 +2985,25 @@ final class ErsterLogin implements Runnable{
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
+						try{
+							Reha.thisClass.ocKVK = new OcKVK("SCR335","ctpcsc31kv");
+							Vector<Vector<String>> vec = Reha.thisClass.ocKVK.getReaderList();
+							for(int i = 0; i < vec.get(0).size();i++){
+								System.out.println("*******************");
+								System.out.println(vec.get(0).get(i)+" - "+
+										vec.get(1).get(i)+" - "+
+										vec.get(2).get(i)+" - "+
+										vec.get(3).get(i));
+							}
+						//SCR335
+						//ctpcsc31kv
+
 						if(SystemConfig.sReaderAktiv.equals("1")){
 							KVKWrapper kvw = new KVKWrapper(SystemConfig.sReaderName);
 							kvw.KVK_Einlesen();
+						}
+						}catch(NullPointerException ex){
+							ex.printStackTrace();
 						}
 						return null;
 					}

@@ -36,6 +36,7 @@ Class-Path: Libraries/lib/sql/adsjdbc.jar
  Libraries/lib/apachecommons/commons-net-2.0.jar 
  Libraries/lib/itext/iText-2.1.6.jar 
  Libraries/lib/mmscomputing/uk.co.mmscomputing.device.twain.jar 
+ Libraries/lib/ocf/OpenCard.jar 
  Nebraska.jar 
  TheraPiUpdates.jar 
 
