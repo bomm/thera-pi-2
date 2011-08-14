@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="dist" name="Build">
+	<property file="../Build/build-common.properties"/>
+
+	<import file="../Build/build-common.xml"/>
+
+    <target name="clean">
+    	<property name="build.target" value="clean"/>
+    	<ant target="subprojects"/>
+        <delete>
+            <fileset dir="${dir.dist}" includes="**/*"/>
+        </delete>
+    </target>
+	<target name="dist" depends="jars,copyfiles"/>
+	<target name="copyfiles">
+		<ant antfile="${dir.therapi.common}/build.xml" dir="${dir.therapi.common}" inheritAll="false" target="copylibs"/>
+	</target>
+
+    <target description="Build all JARs in dist directory." name="jars" depends="buildnumber">
+    	<property name="build.target" value="jar"/>
+    	<ant target="subprojects"/>
+    </target>
+
+    <target description="Build the same target for all subprojects." name="subprojects">
+    	<ant dir="${dir.therapi.common}" target="${build.target}"/>
+        <ant dir="${dir.nebraska}" target="${build.target}"/>
+        <ant dir="${dir.therapi.updates}" target="${build.target}"/>
+        <ant dir="${dir.arzt.baustein}" target="${build.target}"/>
+        <ant dir="${dir.bmi.rechner}" target="${build.target}"/>
+        <ant dir="${dir.lva.entlassung}" target="${build.target}"/>
+        <ant dir="${dir.offene.posten}" target="${build.target}"/>
+        <ant dir="${dir.op.rgaf}" target="${build.target}"/>
+        <ant dir="${dir.reha}" target="${build.target}"/>
+        <ant dir="${dir.reha.301}" target="${build.target}"/>
+        <ant dir="${dir.reha.bill.edit}" target="${build.target}"/>
+        <ant dir="${dir.reha.kassenbuch}" target="${build.target}"/>
+        <ant dir="${dir.reha.mail}" target="${build.target}"/>
+        <ant dir="${dir.reha.sql}" target="${build.target}"/>
+        <ant dir="${dir.reha.statistik}" target="${build.target}"/>
+        <ant dir="${dir.reha.urlaub}" target="${build.target}"/>
+        <ant dir="${dir.reha.xswing}" target="${build.target}"/>
+        <ant dir="${dir.text.baustein}" target="${build.target}"/>
+        <ant dir="${dir.text.baustein}" target="${build.target}"/>
+        <ant dir="${dir.therapi}" target="${build.target}"/>
+    </target>
+
+	<target name="jar"/>
+</project>

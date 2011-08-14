@@ -1,0 +1,19 @@
+<?eclipse.ant.import?>
+<!-- 
+  The line above must be the first line to make Eclipse add
+  an import tag to the exported Ant buildfile.
+  
+  This import file can be used in all projects (hopefully) without change.
+  For project specific settings use project.properties.
+ -->
+
+<project default="jar">
+	<!-- common settings for all projects -->	
+	<property file="../Build/build-common.properties"/>
+
+	<!-- project specific settings -->
+	<property file="project.properties"/>
+
+	<!-- common targets for all projects -->
+	<import file="../Build/build-common.xml"/>
+</project>

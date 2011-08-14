@@ -21,7 +21,6 @@
     <property name="RehaUrlaub.location" value="../RehaUrlaub"/>
     <property name="TextB.location" value="../TextB"/>
     <property name="TheraPi.location" value="../TheraPi"/>
-    <property name="TheraPiDBAdmin.location" value="../TheraPiDBAdmin"/>
     <property name="TheraPiUpdates.location" value="../TheraPiUpdates"/>
     <property name="ECLIPSE_HOME" value="../../../../usr/lib/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
@@ -140,12 +139,6 @@
         </ant>
         <ant antfile="${TheraPi.location}/build.xml" dir="${TheraPi.location}" inheritAll="false" target="clean"/>
         <ant antfile="${TheraPi.location}/build.xml" dir="${TheraPi.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${TheraPiDBAdmin.location}/build.xml" dir="${TheraPiDBAdmin.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${TheraPiDBAdmin.location}/build.xml" dir="${TheraPiDBAdmin.location}" inheritAll="false" target="build">
             <propertyset>
                 <propertyref name="build.compiler"/>
             </propertyset>

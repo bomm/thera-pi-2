@@ -8,7 +8,7 @@
 		<buildnumber file="../Build/build-number.properties"/>
 	</target>
 	
-	<target name="jar" depends="build,buildnumber,jar-prepare,jar-main,jar-nomain" description="create jar file from compiled classes">
+	<target name="jar" depends="build,jar-prepare,jar-main,jar-nomain" description="create jar file from compiled classes">
 		<echo message="${file.output.jar}: Implementation-Version: ${version.number}-b${build.number}"/>
 	</target>
 
