@@ -96,6 +96,9 @@ import oOorgTools.OOTools;
 
 import ocf.OcKVK;
 
+import opencard.core.service.CardServiceException;
+import opencard.core.terminal.CardTerminalException;
+
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
@@ -307,7 +310,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-08-03/01-DB=";
+	public static String aktuelleVersion = "V=2011-08-16/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -614,7 +617,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}
-		if(Reha.thisClass.ocKVK.sc != null){
+		if(SystemConfig.sReaderAktiv.equals("1") && Reha.thisClass.ocKVK.sc != null){
 			Reha.thisClass.ocKVK.TerminalDeaktivieren();
 			System.out.println("Card-Terminal deaktiviert");
 		}
@@ -1784,7 +1787,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 								e2.printStackTrace();
 							}
 						}
-						if(Reha.thisClass.ocKVK.sc != null){
+						if(SystemConfig.sReaderAktiv.equals("1") && Reha.thisClass.ocKVK.sc != null){
 							Reha.thisClass.ocKVK.TerminalDeaktivieren();
 							System.out.println("Card-Terminal deaktiviert");
 						}
@@ -2385,7 +2388,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				Reha.nachrichtenLaeuft = false;
 				Reha.nachrichtenTimer = null;
 			}
-			if(Reha.thisClass.ocKVK.sc != null){
+			if(SystemConfig.sReaderAktiv.equals("1") && Reha.thisClass.ocKVK.sc != null){
 				Reha.thisClass.ocKVK.TerminalDeaktivieren();
 				System.out.println("Card-Terminal deaktiviert");
 			}
@@ -2986,21 +2989,42 @@ final class ErsterLogin implements Runnable{
 					@Override
 					protected Void doInBackground() throws Exception {
 						try{
-							Reha.thisClass.ocKVK = new OcKVK("SCR335","ctpcsc31kv");
-							Vector<Vector<String>> vec = Reha.thisClass.ocKVK.getReaderList();
-							for(int i = 0; i < vec.get(0).size();i++){
-								System.out.println("*******************");
-								System.out.println(vec.get(0).get(i)+" - "+
-										vec.get(1).get(i)+" - "+
-										vec.get(2).get(i)+" - "+
-										vec.get(3).get(i));
-							}
+							//JOptionPane.showMessageDialog(null,System.getProperty("java.home"));
+							//JOptionPane.showMessageDialog(null,System.getProperty("java.version"));
+							
+							
 						//SCR335
 						//ctpcsc31kv
 
 						if(SystemConfig.sReaderAktiv.equals("1")){
-							KVKWrapper kvw = new KVKWrapper(SystemConfig.sReaderName);
-							kvw.KVK_Einlesen();
+							try{
+
+								System.out.println("Aktiviere Reader: "+SystemConfig.sReaderName+"\n"+
+										"CT-API Bibliothek: "+SystemConfig.sReaderCtApiLib);
+								Reha.thisClass.ocKVK = new OcKVK(SystemConfig.sReaderName.trim().replace(" ", "_"),
+									SystemConfig.sReaderCtApiLib,false);
+							}catch(CardTerminalException ex){
+								disableReader("Fehlerstufe rc = -8 = CardTerminal reagiert nicht\n"+ex.getMessage());
+							} catch (CardServiceException e) {
+								disableReader("Fehlerstufe rc = -2 oder -4  = Karte wird nicht unterstützt\n"+e.getMessage());
+							} catch (ClassNotFoundException e) {
+								disableReader("Fehlerstufe rc = -1 = CT-API läßt sich nicht initialisieren\n"+e.getMessage());
+							} catch (java.lang.Exception e) {
+								disableReader("Anderweitiger Fehler\n"+e.getMessage());
+							}
+							if(Reha.thisClass.ocKVK != null){
+								Vector<Vector<String>> vec = Reha.thisClass.ocKVK.getReaderList();
+								for(int i = 0; i < vec.get(0).size();i++){
+									System.out.println("*******************");
+									System.out.println(vec.get(0).get(i)+" - "+
+											vec.get(1).get(i)+" - "+
+											vec.get(2).get(i)+" - "+
+											vec.get(3).get(i));
+								}
+								
+							}
+							//KVKWrapper kvw = new KVKWrapper(SystemConfig.sReaderName);
+							//kvw.KVK_Einlesen();
 						}
 						}catch(NullPointerException ex){
 							ex.printStackTrace();
@@ -3010,6 +3034,11 @@ final class ErsterLogin implements Runnable{
 				}.execute();
 			}
 		});
+	}
+	private void disableReader(String error){
+		SystemConfig.sReaderAktiv = "0";
+		Reha.thisClass.ocKVK = null;
+		JOptionPane.showMessageDialog(null, error);
 	}
 }
 

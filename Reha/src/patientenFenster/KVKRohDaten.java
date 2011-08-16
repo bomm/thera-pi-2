@@ -315,6 +315,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 		}
 		if(comm.equals("abbrechen")){
 			aufraeumen();
+			//SystemConfig.hmKVKDaten.clear();
 			this.dispose();
 		}
 		
@@ -355,7 +356,8 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 					if(!test1.equals(test2)){
 						String dlg = "Das Geburtsdatum des aktuellen Patienten und das Geburtsdatum der KV-Karte stimmen nicht überein!\n"+
 						"übertragen wird daher (sicherheitshalber) --> nix!";
-			        	JOptionPane.showMessageDialog(null, dlg);
+						SystemConfig.hmKVKDaten.clear();
+						JOptionPane.showMessageDialog(null, dlg);
 			        		return null;
 					}
 				}
@@ -399,7 +401,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 				thisPat.jtf[5].setText(SystemConfig.hmKVKDaten.get("Plz").toUpperCase());				
 				thisPat.jtf[6].setText(SystemConfig.hmKVKDaten.get("Ort").toUpperCase());				
 				thisPat.jtf[11].setText(gerGeboren);
-
+				//SystemConfig.hmKVKDaten.clear();
 				return null;
 			}
 			

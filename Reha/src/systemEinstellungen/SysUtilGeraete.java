@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -17,6 +20,8 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import ocf.OcKVK;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
@@ -38,15 +43,16 @@ public class SysUtilGeraete extends JXPanel implements KeyListener, ActionListen
 	JCheckBox barcodeakt = null;
 	JCheckBox ecakt = null;
 	JComboBox kvkgeraet = null;
-	JComboBox kvkan = null;
+	//JComboBox kvkan = null;
 	JComboBox docscangeraet = null;
 	JComboBox barcodegeraet = null;
 	JComboBox barcodean = null;
 	JComboBox ecgeraet = null;
 	JComboBox ecan = null;
-	
+	JButton kvktest = null;
 	JButton knopf1 = null;
 	JButton knopf2 = null;
+	boolean readerTestSuccess = true;
 	String[] anschluesse = new String[] {"./.", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "COM10","USB"};
 	Scanner scanner;
 	public SysUtilGeraete(){
@@ -123,8 +129,11 @@ private JPanel getKnopfPanel(){
 		kvkgeraet = new JComboBox( (String[]) SystemConfig.hmGeraete.get("Kartenleser"));
 		kvkgeraet.setSelectedItem(SystemConfig.sReaderName);
 		
-		kvkan = new JComboBox(anschluesse);
-		kvkan.setSelectedItem(SystemConfig.sReaderCom);
+		kvktest = new JButton("testen....");
+		kvktest.setActionCommand("kvktesten");
+		kvktest.addActionListener(this);
+		//kvkan = new JComboBox((String[]) SystemConfig.hmGeraete.get("CTApi"));
+		//kvkan.setSelectedItem(SystemConfig.sReaderCtApiLib);
 		
 		docscangeraet = new JComboBox();
 		new SwingWorker<String,String>(){
@@ -179,7 +188,8 @@ private JPanel getKnopfPanel(){
 		builder.addLabel("Gerät", cc.xy(3,5));
 		builder.add(kvkgeraet, cc.xyw(4,5,2));
 		builder.addLabel("Anschluss", cc.xy(3,7));
-		builder.add(kvkan, cc.xyw(4,7,2));
+		//builder.add(kvkan, cc.xyw(4,7,2));
+		builder.add(kvktest, cc.xyw(4,7,2));
 		builder.addSeparator("Dokumentenscanner", cc.xyw(1,9,5));
 		builder.addLabel("aktivieren", cc.xy(3,11));
 		builder.add(docscanakt, cc.xy(5,11));
@@ -233,8 +243,71 @@ private JPanel getKnopfPanel(){
 			SystemInit.abbrechen();
 			//SystemUtil.thisClass.parameterScroll.requestFocus();			
 		}
-	}
+		if(com.equals("kvktesten")){
+			readerTest();
+		}
 
+		
+	}
+	private void readerTest(){
+		OcKVK ocKVK = null;
+		String reader = null;
+		String api = null;
+		boolean ocAktive = false;
+		//Damit der ganze Scheiß nicht abstürtzt muß hier noch eine
+		//Routine eingebaut werden die überprüft ob die angegebene .dll bzw. .so überhaupt existiert.
+		try {
+			if(Reha.thisClass.ocKVK != null){
+				Reha.thisClass.ocKVK.TerminalDeaktivieren();
+				ocAktive = true;
+			}
+			int antwort = JOptionPane.showConfirmDialog(null,"Bitte KV-Karte einlegen und ok. drücken","Vorbereitung für Reader-Test",JOptionPane.OK_CANCEL_OPTION);
+			if(antwort == JOptionPane.OK_OPTION){
+				reader = kvkgeraet.getSelectedItem().toString().trim().replace(" ", "_")+"test";
+				api = SystemConfig.hmGeraete.get("CTApi")[kvkgeraet.getSelectedIndex()];
+				System.out.println("Starte Test mit Reader="+reader+" und API="+api);
+				
+				ocKVK = new OcKVK(reader,api,true);
+				if(ocKVK.terminalOk){
+					SystemConfig.hmKVKDaten.clear();
+					ocKVK.lesen();
+					if(!SystemConfig.hmKVKDaten.isEmpty()){
+						//ocKVK.TerminalDeaktivieren();
+						Set<?> entries = SystemConfig.hmKVKDaten.entrySet();
+					    Iterator<?> it = entries.iterator();
+					    String message = "";
+					    while (it.hasNext()) {
+					      Map.Entry<?,?> entry = (Map.Entry<?, ?>) it.next();
+					      message = message + entry.getKey().toString()+"="+entry.getValue().toString()+"\n";
+					    }
+					    JOptionPane.showMessageDialog(null, "Glückwunsch der Card-Reader funktoniert\n\nnachfolgend die eingelesenen Rohdaten der KV-Karte\n"+message);
+					}else{
+						JOptionPane.showMessageDialog(null, "Card-Reader konnte nicht angesprochen werden - Fehler:1");
+						ocKVK = null;
+					}
+
+				}else{
+					JOptionPane.showMessageDialog(null, "Card-Reader konnte nicht angesprochen werden - Fehler:2");
+					ocKVK = null;
+				}
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Card-Reader konnte nicht angesprochen werden oder keine KV-Karte im Reader - Fehler:3");
+			ocKVK = null;
+			//e.printStackTrace();
+		}
+		if(ocAktive){
+			try {
+				Reha.thisClass.ocKVK = new OcKVK(SystemConfig.sReaderName.trim().replace(" ", "_"),
+						SystemConfig.sReaderCtApiLib,false);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+	}
+	
+	
 	private void doSpeichern(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/geraete.ini");
 
@@ -244,8 +317,11 @@ private JPanel getKnopfPanel(){
 		SystemConfig.sReaderName = (kvkgeraet.getSelectedItem()==null ? "" : (String)kvkgeraet.getSelectedItem()); 
 		inif.setStringProperty("KartenLeser", "KartenLeserName",SystemConfig.sReaderName , null);
 
-		SystemConfig.sReaderCom = (kvkan.getSelectedItem()==null ? "" : (String)kvkan.getSelectedItem());
-		inif.setStringProperty("KartenLeser", "KartenLeserAnschluss",SystemConfig.sReaderCom , null);
+		SystemConfig.sReaderCtApiLib = (kvkgeraet.getSelectedItem()==null ? "" : 
+			SystemConfig.hmGeraete.get("CTApi")[kvkgeraet.getSelectedIndex()] );
+		
+		
+		inif.setStringProperty("KartenLeser", "KartenLeserCTAPILib",SystemConfig.sReaderCtApiLib , null);
 		/***************************/
 		SystemConfig.sBarcodeAktiv = (barcodeakt.isSelected() ? "1" : "0");
 		inif.setStringProperty("BarcodeScanner", "BarcodeScannerAktivieren",SystemConfig.sBarcodeAktiv , null);
@@ -263,6 +339,6 @@ private JPanel getKnopfPanel(){
 		inif.setStringProperty("DokumentenScanner", "DokumentenScannerName",SystemConfig.sDokuScanner , null);		
 
 		inif.save();
-		JOptionPane.showMessageDialog(null, "Gerätekonfiguration wurde gespeichert und steht nach dem nächsten\nStart der Software zur Verfügung");
+		JOptionPane.showMessageDialog(null, "Gerätekonfiguration wurde erfolgrich gespeichert und steht nach dem nächsten\nStart der Software zur Verfügung");
 	}
 }

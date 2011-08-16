@@ -135,7 +135,7 @@ public class SystemConfig {
 	public static HashMap<String,String> hmKVKDaten = null;
 	public static String sReaderName = null;
 	public static String sReaderAktiv = null;
-	public static String sReaderCom = null;
+	public static String sReaderCtApiLib = null;
 	public static String sDokuScanner = null;
 	public static String sBarcodeScanner = null;
 	public static String sBarcodeAktiv = null;
@@ -878,7 +878,7 @@ public class SystemConfig {
 		if(inif.getIntegerProperty("KartenLeser", "KartenLeserAktivieren") > 0){
 			sReaderName = inif.getStringProperty("KartenLeser", "KartenLeserName");
 			sReaderAktiv = "1";
-			sReaderCom = inif.getStringProperty("KartenLeser", "KartenLeserAnschluss");			
+			sReaderCtApiLib = inif.getStringProperty("KartenLeser", "KartenLeserCTAPILib");			
 			hmKVKDaten = new HashMap<String,String>();
 			hmKVKDaten.put("Krankekasse", "");
 			hmKVKDaten.put("Kassennummer", "");
@@ -900,7 +900,7 @@ public class SystemConfig {
 		}else{
 			sReaderName = "";
 			sReaderAktiv = "0";
-			sReaderCom = inif.getStringProperty("KartenLeser", "KartenLeserAnschluss");			
+			sReaderCtApiLib = inif.getStringProperty("KartenLeser", "KartenLeserCTAPILib");			
 		}
 		if(inif.getIntegerProperty("BarcodeScanner", "BarcodeScannerAktivieren") > 0){
 			sBarcodeScanner = inif.getStringProperty("BarcodeScanner", "BarcodeScannerName");
@@ -1177,10 +1177,13 @@ public class SystemConfig {
 
 		int anzahl =  inif.getIntegerProperty("KartenLeserListe", "LeserAnzahl");
 		String[] string = new String[anzahl]; 
+		String[] string2 = new String[anzahl];
 		for(int i = 0; i < anzahl; i++){
 			string[i] = inif.getStringProperty("KartenLeserListe", "Leser"+(i+1));
+			string2[i] = inif.getStringProperty("KartenLeserListe", "CTAPILib"+(i+1));
 		}
 		hmGeraete.put("Kartenleser", string.clone());
+		hmGeraete.put("CTApi", string2.clone());
 
 		anzahl =  inif.getIntegerProperty("BarcodeScannerListe", "ScannerAnzahl");
 		string = new String[anzahl];

@@ -53,7 +53,10 @@ public class PatientHauptLogic {
 	private Vector<String> formular = new Vector<String>();
 	private int iformular;
 	private JRtaTextField formularid = new JRtaTextField("NIX",false);
+	private PatNeuDlg neuPat;
+	public PatNeuanlage pneu;
 	public PatientHauptLogic(PatientHauptPanel patHauptPanel){
+		
 		this.patientHauptPanel = patHauptPanel;
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -348,7 +351,7 @@ public class PatientHauptLogic {
 			return;
 		}
 		neuDlgOffen = true;
-		PatNeuDlg neuPat = new PatNeuDlg();
+		neuPat = new PatNeuDlg();
 		PinPanel pinPanel = new PinPanel();
 		pinPanel.setName("PatientenNeuanlage");
 		pinPanel.getGruen().setVisible(false);
@@ -362,7 +365,7 @@ public class PatientHauptLogic {
 		neuPat.setPreferredSize(new Dimension(960,600));
 		neuPat.getSmartTitledPanel().setPreferredSize(new Dimension (960,600));
 		neuPat.setPinPanel(pinPanel);
-		PatNeuanlage pneu = new PatNeuanlage(null,lneu,feldname);
+		pneu = new PatNeuanlage(null,lneu,feldname);
 		neuPat.getSmartTitledPanel().setContentContainer(pneu);
 		neuPat.getSmartTitledPanel().getContentContainer().setName("PatientenNeuanlage");
 	    neuPat.setName("PatientenNeuanlage");
@@ -374,6 +377,7 @@ public class PatientHauptLogic {
 		neuPat.setVisible(true);
 		//neuPat.dispose();
 		neuPat = null;
+		pneu = null;
 	    pinPanel = null;
 		//System.out.println("Pat Neu/ändern ist disposed");
 		neuDlgOffen = false;

@@ -50,6 +50,8 @@ import krankenKasse.KassenFormulare;
 import kvKarte.KVKWrapper;
 import oOorgTools.OOTools;
 
+import ocf.OcKVK;
+
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
@@ -651,9 +653,9 @@ private KVKWrapper kvw;
 		knopf3.setName("einlesen");
 		knopf3.addKeyListener(this);
 		knopf3.setMnemonic(KeyEvent.VK_C);
-		if(SystemConfig.sReaderAktiv.equals("0")){
+		//if(SystemConfig.sReaderAktiv.equals("0")){
 			knopf3.setEnabled(false);
-		}
+		//}
 	
 		knopf4 = new JButton("speichern");
 		knopf4.setPreferredSize(new Dimension(70, 20));
@@ -1431,10 +1433,27 @@ private KVKWrapper kvw;
 			}
 		}
 	}
+	public void enableReaderButton(){
+		if(SystemConfig.sReaderAktiv.equals("0")){
+			return;
+		}
+		knopf3.setEnabled(true);
+		einlesen();
+	}
+	public void disableReaderButton(){
+		if(SystemConfig.sReaderAktiv.equals("0")){
+			return;
+		}
+		knopf3.setEnabled(false);
+	}
 
 	private void einlesen(){
 
 		if(SystemConfig.sReaderAktiv.equals("0")){
+			return;
+		}
+		if(SystemConfig.hmKVKDaten.isEmpty() || (!Reha.thisClass.ocKVK.isCardReady)){
+			JOptionPane.showMessageDialog(null,"Bitte zuerst die Chipkarten in das Lesegerät einführen");
 			return;
 		}
 		////System.out.println("Aufruf der KVK");
@@ -1449,9 +1468,9 @@ private KVKWrapper kvw;
 			kvkr = null;
 			//cbanrede.requestFocus();
 		}else{
-			String fehlertext = "Fehler beim einlesen der Versichertenkarte.\nBitte erneut einlesen\n\n"+
-						"Fehler-Code: "+SystemConfig.hmKVKDaten.get("Fehlercode")+"\n"+
-						"Fehler-Text: "+SystemConfig.hmKVKDaten.get("Fehlertext")+"\n";
+			String fehlertext = "Fehler beim einlesen der Versichertenkarte.\nBitte erneut einlesen\n\n";
+						//"Fehler-Code: "+SystemConfig.hmKVKDaten.get("Fehlercode")+"\n"+
+						//"Fehler-Text: "+SystemConfig.hmKVKDaten.get("Fehlertext")+"\n";
 			JOptionPane.showMessageDialog(null,fehlertext);
 		}	
 	}

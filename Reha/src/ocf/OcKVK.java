@@ -1,11 +1,15 @@
 package ocf;
 
+import hauptFenster.Reha;
+
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
+
+import org.jdesktop.swingworker.SwingWorker;
 
 import opencard.core.OpenCardException;
 import opencard.core.event.CTListener;
@@ -22,6 +26,7 @@ import opencard.core.terminal.CommandAPDU;
 import opencard.core.terminal.ResponseAPDU;
 import opencard.opt.util.PassThruCardService;
 import systemEinstellungen.SystemConfig;
+import systemTools.StringTools;
 
 
 public class OcKVK {
@@ -43,17 +48,17 @@ public class OcKVK {
 	private PassThruCardService ptcs;
 	public SmartCard sc;
 	private CommandAPDU command;
-	private CardListener clistener;
+	public CardListener clistener;
 	private CardRequest cr;
 	private byte[] i;
 	private int n, x;
 	private String s,satrId;
 	
-	public static boolean isCardReady;
-	public static boolean systemStarted = false;
+	public boolean isCardReady;
+	public boolean systemStarted = false;
 
 	ResponseAPDU response;
-	public OcKVK(String readerName,String dllName){
+	public OcKVK(String readerName,String dllName,boolean test) throws Exception,UnsatisfiedLinkError {
 		//SCR335
 		//ctpcsc31kv
 		// nur in der Testphase der testphase
@@ -63,13 +68,14 @@ public class OcKVK {
 		this.aktReaderName = readerName;
 		this.aktDllName = dllName;
 		initProperties();
-		initTerminal();
+		initTerminal(test);
 		systemStarted = true;
+		terminalOk = true;
 	}
 
-	public int lesen(){
+	public int lesen() throws CardTerminalException, CardServiceException, ClassNotFoundException{
 		int ret = 0;
-		try {
+
 			sc = SmartCard.waitForCard(cr);
 			ptcs = (PassThruCardService) sc.getCardService(PassThruCardService.class, true);
 			/*****Karte testen*****/
@@ -92,7 +98,7 @@ public class OcKVK {
 			command = new CommandAPDU(MAX_APDU_SIZE); 
 		    command.append(CMD_READ_BINARY);
 		    response = ptcs.sendCommandAPDU(command);
-		    sc.close();
+
 		    if(response == null || response.getBytes().length==0){
 		    	System.out.println("keine KV-Karte oder Karte defekt");
 		    	sc.close();
@@ -100,7 +106,7 @@ public class OcKVK {
 		    }
 		    if(response.getByte(0)== (byte)0x60){ //Nach ASN.1 Standard der KVK
 		    	getKVKDaten(response.getBytes());
-			    System.out.print(SystemConfig.hmKVKDaten);
+			    //System.out.print(SystemConfig.hmKVKDaten);
 			    sc.close();
 		    }else{
 		    	//Hier entweder neue Routine, falls betriebsintern
@@ -109,22 +115,9 @@ public class OcKVK {
 		    	ret = -1;
 		    	sc.close();
 		    }
-		    
-		} catch (CardTerminalException e) {
-			e.printStackTrace();
-			return -1;
-		} catch (CardServiceException e) {
-			e.printStackTrace();
-			return -1;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return -1;
-		} catch (Exception ex){
-			ex.printStackTrace();
+		    sc.close();
+		    return ret;    
 		}
-		
-		return ret;
-	}
 	
 	public HashMap<String,String> getKVKDaten(byte[] daten){
 		SystemConfig.hmKVKDaten.clear();
@@ -149,22 +142,25 @@ public class OcKVK {
 				try{
 					lang = (int) (0x000000FF & bytes[found+1]);
 					found = found+2;
-					SystemConfig.hmKVKDaten.put(hmProperty[y],string.substring(found,found+lang));
+					SystemConfig.hmKVKDaten.put(hmProperty[y],
+							StringTools.do301NormalizeString(string.substring(found,found+lang)));
 				}catch(Exception ex){
-					ex.printStackTrace();
+					//ex.printStackTrace();
 					//Karte ist keine KV-Karte, Anzahl Tags stimmt nicht.
-					System.out.println("keine KV-Karte oder Karte defekt");
+					JOptionPane.showMessageDialog(null,"keine KV-Karte oder Karte defekt");
 					SystemConfig.hmKVKDaten.clear();
+					isCardReady = false;
 					return SystemConfig.hmKVKDaten;
 				}
 			}else{
 				try{
 					SystemConfig.hmKVKDaten.put(hmProperty[y],"");
 				}catch(Exception ex){
-					ex.printStackTrace();
+					//ex.printStackTrace();
 					//Karte ist keine KV-Karte, Anzahl Tags stimmt nicht.
-					System.out.println("keine KV-Karte oder Karte defekt");
+					JOptionPane.showMessageDialog(null,"keine KV-Karte oder Karte defekt");
 					SystemConfig.hmKVKDaten.clear();
+					isCardReady = false;
 					return SystemConfig.hmKVKDaten;
 				}	
 			}
@@ -174,10 +170,13 @@ public class OcKVK {
 			//Karte ist keine KV-Karte, Anzahl Tags stimmt nicht.
 			System.out.println("keine KV-Karte oder Karte defekt");
 			SystemConfig.hmKVKDaten.clear();
+			isCardReady = false;
 			return SystemConfig.hmKVKDaten;
 		}
 		if(SystemConfig.hmKVKDaten.isEmpty()){
 			System.out.println("keine KV-Karte oder Karte defekt");
+			SystemConfig.hmKVKDaten.clear();
+			isCardReady = false;
 		}
 		return SystemConfig.hmKVKDaten;
 		
@@ -196,8 +195,19 @@ public class OcKVK {
 		}
 		return ret;
 	}
-	private int initTerminal(){
-		int ret = 0;
+	private void initTerminal(boolean test) throws Exception,ClassNotFoundException,
+	CardTerminalException,UnsatisfiedLinkError{
+		int ret = -1;
+		SmartCard.start();
+		if(! test){
+			clistener = new CardListener(this);
+			clistener.register();
+		}
+		cr = new CardRequest(CardRequest.ANYCARD, null, PassThruCardService.class);
+		cr.setTimeout(0);
+		
+
+/*
 		try {
 			SmartCard.start();
 			clistener = new CardListener(this);
@@ -224,6 +234,7 @@ public class OcKVK {
 		} 
 		
 		return ret;
+		*/
 	}
 	/********
 	 * 
@@ -268,6 +279,14 @@ public class OcKVK {
 			} catch (CardTerminalException e) {
 				e.printStackTrace();
 			}
+		}else{
+			clistener.unregister();
+			clistener = null;
+			try {
+				SmartCard.shutdown();
+			} catch (CardTerminalException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
@@ -290,22 +309,43 @@ class CardListener implements CTListener {
 	public void unregister(){
 		EventGenerator.getGenerator().removeCTListener(this);
 	}
-	public void cardInserted(CardTerminalEvent event){
-		if(! OcKVK.systemStarted){
+	public void cardInserted(CardTerminalEvent event) throws CardTerminalException{
+		if(! eltern.systemStarted){
 			JOptionPane.showMessageDialog(null,"Im Kartenlesegerät steckt noch eine Chipkarte!!!!\n\nBitte entnehmen und Eigentümer aushändigen\n");
 			return;
 		}
 		//System.out.println("karte eingesteckt");
 		if (smartcard == null) {
-			try {
+
 				smartcard = SmartCard.getSmartCard(event);
 				terminal = event.getCardTerminal();
 				slotID = event.getSlotID();
-				OcKVK.isCardReady = true;
-				eltern.lesen();
-			} catch (OpenCardException ex) {
-				ex.printStackTrace();
-			}
+				eltern.isCardReady = false;
+				try {
+					eltern.lesen();
+					eltern.isCardReady = true;
+					if(Reha.thisClass.patpanel != null){
+						if(Reha.thisClass.patpanel.getLogic().pneu != null){
+							new SwingWorker<Void,Void>(){
+								@Override
+								protected Void doInBackground()
+										throws Exception {
+									Reha.thisClass.patpanel.getLogic().pneu.enableReaderButton();
+									return null;
+								}
+							}.execute();
+						}	
+					}
+				} catch (CardServiceException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+		}else{
+			smartcard = SmartCard.getSmartCard(event);
+			terminal = event.getCardTerminal();
+			slotID = event.getSlotID();
+			eltern.isCardReady = false;
 		}
 	}
 	public void cardRemoved(CardTerminalEvent event){
@@ -314,7 +354,22 @@ class CardListener implements CTListener {
 			smartcard = null;
 			terminal = null;
 			slotID = -1;
-			OcKVK.isCardReady = false;
+			eltern.isCardReady = false;
+			if(Reha.thisClass.patpanel != null){
+				if(Reha.thisClass.patpanel.getLogic().pneu != null){
+					new SwingWorker<Void,Void>(){
+						@Override
+						protected Void doInBackground()
+								throws Exception {
+							Reha.thisClass.patpanel.getLogic().pneu.disableReaderButton();
+							return null;
+						}
+					}.execute();
+				}	
+			}
+			
+		}else{
+			//System.out.println("anderer Slot oder anderer Terminal");
 		}
 	}
 

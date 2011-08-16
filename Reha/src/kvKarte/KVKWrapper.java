@@ -1,5 +1,6 @@
 package kvKarte;
 
+import systemEinstellungen.SystemConfig;
 import hauptFenster.Reha;
 
 public class KVKWrapper {
@@ -9,7 +10,14 @@ public class KVKWrapper {
 	}
 	public int KVK_Einlesen(){
 		int ret = -1;
+		if(! SystemConfig.hmKVKDaten.isEmpty()){
+			return 0;
+		}else{
+			
+		}
+		/*
 		if(Reha.osVersion.contains("Windows")){
+
 			if(sReaderName.equals("Chipdrive micro 100")){
 				Win_ChipDriveMicro100 wcm = new Win_ChipDriveMicro100();
 				ret = wcm.patientEinlesen();
@@ -21,6 +29,7 @@ public class KVKWrapper {
 				return ret;
 			}
 		}
+		*/
 		return ret;		
 	}
 }
