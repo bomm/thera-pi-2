@@ -2080,6 +2080,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					JOptionPane.showMessageDialog(null, "Der Mitgliedsstatus fehlt im Patientenstamm, bitte eintragen");
 					return;
 				}
+				if("135".indexOf(Reha.thisClass.patpanel.patDaten.get(15).substring(0,1)) < 0){
+					JOptionPane.showMessageDialog(null, "Der im Patientenstamm vermerkte Mitgliedsstatus ist ungültig\n\n"+
+							"Fehlerhafter Status = "+Reha.thisClass.patpanel.patDaten.get(15)+"\n");
+					return;
+				}
 				if(Reha.thisClass.patpanel.patDaten.get(16).trim().equals("")){
 					JOptionPane.showMessageDialog(null, "Die Krankenkassen-Mitgliedsnummer fehlt im Patientenstamm, bitte eintragen");
 					return;

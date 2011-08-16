@@ -308,6 +308,9 @@ public class Eb3 implements RehaEventListener  {
 	    	////System.out.println("parent == null");
 	    }
 	    parent.add(nativeView);
+	    parent.validate();
+	    parent.setVisible(true);	    
+
 
 	    parent.addContainerListener(new ContainerAdapter(){
 	    	public void componentAdded(ContainerEvent e) {
