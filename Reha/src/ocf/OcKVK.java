@@ -33,12 +33,42 @@ public class OcKVK {
 	// CLA || INS || P1 || P2 || Le (= erwartete Länge der Daten)
 	final byte[] CMD_READ_BINARY ={(byte)0x00, (byte)0xB0,(byte)0x00, (byte)0x00, (byte)0x300 };
 	private static final int MAX_APDU_SIZE = 0x300;  //  bytes
+	//Wird später ersetzt durch kvkTags
 	final static String[] hmProperty = {"Rohdaten","Krankenkasse","Kassennummer","Kartennummer","Versichertennummer",
 		"Status","Statusext","Titel","Vorname","Namenszusatz",
 		"Nachname","Geboren","Strasse","Land","Plz",
 		"Ort","Gueltigkeit","Checksumme"};
+	//Wird später ersetzt durch kvkTags	
 	final int[] tags = { 0x60,0x80,0x81,0x8F,0x82,0x83,0x90,0x84,0x85,
 			0x86,0x87,0x88,0x89,0x8A,0x8B,0x8C,0x8D,0x8E};
+	
+	//Integer Tag-Identifier
+	//String (Thera-Pi interner)
+	//Tag-Name
+	//boolean Optional
+	//Integer Länge
+	//String Inhalt
+	static Object[][] kvkTags = {
+		{0x60,"Rohdaten",false,0,""},
+		{0x80,"Krankenkasse",false,0,""},
+		{0x81,"Kassennummer",false,0,""},
+		{0x8F,"Kartennummer",false,0,""},
+		{0x82,"Versichertennummer",false,0,""},
+		{0x83,"Status",false,0,""},
+		{0x90,"Statusext",false,0,""},
+		{0x84,"Titel",true,0,""},
+		{0x85,"Vorname",false,0,""},
+		{0x86,"Namenszusatz",true,0,""},
+		{0x87,"Nachname",false,0,""},
+		{0x88,"Geboren",false,0,""},
+		{0x89,"Strasse",false,0,""},
+		{0x8A,"Land",true,0,""},
+		{0x8B,"Plz",false,0,""},
+		{0x8C,"Ort",false,0,""},
+		{0x8D,"Gueltigkeit",false,0,""},
+		{0x8E,"Checksumme",false,0,""}
+		};
+	
 	public boolean terminalOk = false;
 	public boolean cardOk = false;
 
@@ -105,7 +135,8 @@ public class OcKVK {
 		    	return -1;
 		    }
 		    if(response.getByte(0)== (byte)0x60){ //Nach ASN.1 Standard der KVK
-		    	getKVKDaten(response.getBytes());
+		    	//getKVKDaten(response.getBytes());
+		    	checkKVK_ASN1(response.getBytes(),kvkTags);
 			    //System.out.print(SystemConfig.hmKVKDaten);
 			    sc.close();
 		    }else{
@@ -119,6 +150,8 @@ public class OcKVK {
 		    return ret;    
 		}
 	
+	
+	//Kann später gelöscht werden wird ersetzt durch die Methode 
 	public HashMap<String,String> getKVKDaten(byte[] daten){
 		SystemConfig.hmKVKDaten.clear();
 		//System.out.println("Eintritt in getKVKDaten");
@@ -181,6 +214,64 @@ public class OcKVK {
 		return SystemConfig.hmKVKDaten;
 		
 	}
+	private HashMap<String,String> checkKVK_ASN1(byte[] response,Object[][] tags){
+		int dataLength = -1;
+		int tagLength = -1;
+		int startByte = -1;
+		int i = -1,i2=-1;
+		int testen = -1;
+		byte[] value = null;
+		if((int) (0x000000FF & response[0]) !=  (Integer)tags[0][0] ){
+			JOptionPane.showMessageDialog(null,"Chip-Karte ist defekt oder keine KV-Karte!" );
+			SystemConfig.hmKVKDaten.clear();
+			//System.out.println("Die Karte ist keine KV-Karte");
+			SystemConfig.hmKVKDaten.clear();
+			return SystemConfig.hmKVKDaten;
+		}else{
+			dataLength = (int) (0x000000FF & response[1]);
+		}
+		
+		//Falls nicht sofort mit dem Tag 1 begonnen wird;
+		for(i = 2; i < dataLength; i++){
+			if((int) (0x000000FF & response[i]) ==  (Integer)tags[1][0] ){
+				//System.out.println("Tag 1 beginnt bei Byte "+i);
+				startByte = Integer.valueOf(i);
+				break;
+			}	
+		}
+
+		if(startByte < 0){
+			/*System.out.println("Fehler Tag 1 nicht gefunden");*/
+			return SystemConfig.hmKVKDaten;
+		}
+		
+		for(i=1; i < tags.length;i++ ){
+			//Wenn eines der optionalen Tags nicht vorhanden ist...
+			if((int) (0x000000FF & response[startByte]) !=  (Integer)tags[i][0] ){
+				//kvinhalte.put((String)tags[i][1],"");
+				if(! (Boolean) tags[i][2] ){
+					JOptionPane.showMessageDialog(null,"Das Pflichtfeld "+(String)tags[i][1]+" ist auf der Karte nicht vorhanden" );
+					SystemConfig.hmKVKDaten.clear();
+					return SystemConfig.hmKVKDaten;
+				}
+				SystemConfig.hmKVKDaten.put((String)tags[i][1],"");
+				continue;
+			}
+			startByte += 1;
+			tagLength = (int) (0x000000FF & response[startByte]);
+			startByte += 1;
+			value = new byte[tagLength];
+			for(i2 = startByte; i2 < startByte+tagLength;i2++){
+				value[i2-startByte] = response[i2];
+			}
+			//kvinhalte.put((String)tags[i][1],new String(value));
+			SystemConfig.hmKVKDaten.put((String)tags[i][1],
+					StringTools.do301NormalizeString(new String(value)));
+			startByte += tagLength;
+		}
+		return SystemConfig.hmKVKDaten;
+		
+	}
 
 	
 	private int initProperties(){
@@ -205,36 +296,6 @@ public class OcKVK {
 		}
 		cr = new CardRequest(CardRequest.ANYCARD, null, PassThruCardService.class);
 		cr.setTimeout(0);
-		
-
-/*
-		try {
-			SmartCard.start();
-			clistener = new CardListener(this);
-			clistener.register();
-			cr = new CardRequest(CardRequest.ANYCARD, null, PassThruCardService.class);
-			cr.setTimeout(0);
-
-		} catch (OpenCardException e) {
-			e.printStackTrace(System.err);
-			try {
-				SmartCard.shutdown();
-			} catch (CardTerminalException e1) {
-				e1.printStackTrace();
-			}
-			return -1;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			try {
-				SmartCard.shutdown();
-			} catch (CardTerminalException e1) {
-				e1.printStackTrace();
-			}
-			return -1;
-		} 
-		
-		return ret;
-		*/
 	}
 	/********
 	 * 
