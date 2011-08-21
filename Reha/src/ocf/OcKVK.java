@@ -242,6 +242,7 @@ public class OcKVK {
 
 		if(startByte < 0){
 			/*System.out.println("Fehler Tag 1 nicht gefunden");*/
+			SystemConfig.hmKVKDaten.clear();
 			return SystemConfig.hmKVKDaten;
 		}
 		

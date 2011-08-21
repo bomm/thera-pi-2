@@ -310,7 +310,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-08-16/01-DB=";
+	public static String aktuelleVersion = "V=2011-08-21/01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -617,9 +617,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}
-		if(SystemConfig.sReaderAktiv.equals("1") && Reha.thisClass.ocKVK.sc != null){
+		if(SystemConfig.sReaderAktiv.equals("1") && Reha.thisClass.ocKVK != null){
+			try{
 			Reha.thisClass.ocKVK.TerminalDeaktivieren();
 			System.out.println("Card-Terminal deaktiviert");
+			}catch(NullPointerException ex){
+				
+			}
 		}
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
@@ -1787,9 +1791,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 								e2.printStackTrace();
 							}
 						}
-						if(SystemConfig.sReaderAktiv.equals("1") && Reha.thisClass.ocKVK.sc != null){
+						if(SystemConfig.sReaderAktiv.equals("1") && Reha.thisClass.ocKVK != null){
+							try{
 							Reha.thisClass.ocKVK.TerminalDeaktivieren();
 							System.out.println("Card-Terminal deaktiviert");
+							}catch(NullPointerException ex){
+								
+							}
 						}
 
 						INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
@@ -2388,9 +2396,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				Reha.nachrichtenLaeuft = false;
 				Reha.nachrichtenTimer = null;
 			}
-			if(SystemConfig.sReaderAktiv.equals("1") && Reha.thisClass.ocKVK.sc != null){
+			if(SystemConfig.sReaderAktiv.equals("1") && Reha.thisClass.ocKVK != null){
+				try{
 				Reha.thisClass.ocKVK.TerminalDeaktivieren();
 				System.out.println("Card-Terminal deaktiviert");
+				}catch(NullPointerException ex){
+					
+				}
 			}
 
 			
