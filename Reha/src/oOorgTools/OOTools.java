@@ -362,6 +362,9 @@ public class OOTools{
 				return;
 			}
 		}
+		
+		sucheNachPlatzhalter(textDocument);
+		
 		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
 		viewCursor.getPageCursor().jumpToFirstPage();
 		final ITextDocument xtextDocument = textDocument;

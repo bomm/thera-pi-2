@@ -878,6 +878,10 @@ public class SystemConfig {
 		if(inif.getIntegerProperty("KartenLeser", "KartenLeserAktivieren") > 0){
 			sReaderName = inif.getStringProperty("KartenLeser", "KartenLeserName");
 			sReaderAktiv = "1";
+			if(inif.getStringProperty("KartenLeser", "KartenLeserCTAPILib")==null){
+				inif.setStringProperty("KartenLeser", "KartenLeserCTAPILib","ctpcsc31kv",null);
+				inif.save();
+			}
 			sReaderCtApiLib = inif.getStringProperty("KartenLeser", "KartenLeserCTAPILib");			
 			hmKVKDaten = new HashMap<String,String>();
 			hmKVKDaten.put("Krankekasse", "");
@@ -1178,10 +1182,17 @@ public class SystemConfig {
 		int anzahl =  inif.getIntegerProperty("KartenLeserListe", "LeserAnzahl");
 		String[] string = new String[anzahl]; 
 		String[] string2 = new String[anzahl];
+		boolean speichern = false;
 		for(int i = 0; i < anzahl; i++){
 			string[i] = inif.getStringProperty("KartenLeserListe", "Leser"+(i+1));
+			if(inif.getStringProperty("KartenLeserListe", "CTAPILib"+(i+1))==null){
+				speichern = true;
+				inif.setStringProperty("KartenLeserListe", "CTAPILib"+(i+1),"ctpcsc31kv",null);
+			}
 			string2[i] = inif.getStringProperty("KartenLeserListe", "CTAPILib"+(i+1));
 		}
+		if(speichern){inif.save();}
+		
 		hmGeraete.put("Kartenleser", string.clone());
 		hmGeraete.put("CTApi", string2.clone());
 
@@ -1205,7 +1216,8 @@ public class SystemConfig {
 			string[2] = inif.getStringProperty("COM"+i, "Parity");			
 			string[3] = inif.getStringProperty("COM"+i, "StopBit");
 			hmGeraete.put("COM"+i, string.clone());			
-		}		
+		}
+		
 	}
 	
 	public static void CompanyInit(){
