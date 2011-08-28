@@ -16,6 +16,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -41,7 +43,9 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -83,12 +87,12 @@ import com.jgoodies.forms.layout.FormLayout;
 
 
 
-public class MailPanel extends JXPanel implements TableModelListener{
+public class MailPanel extends JXPanel implements TableModelListener, KeyListener{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4946342165531610888L;
-	/**********für die Tabelle**************/
+	/**********fï¿½r die Tabelle**************/
 	JXTable eintab = null;
 	EinTableModel einmod = null;
 	Vector<String> colName = new Vector<String>();
@@ -129,6 +133,8 @@ public class MailPanel extends JXPanel implements TableModelListener{
 	JButton[] buts = {null,null,null,null,null};
 
 	Vector<String> attachmentFileName = new Vector<String>();
+	
+	JRtaTextField suchen = null;
 
 
 	/**************************/
@@ -235,9 +241,16 @@ public class MailPanel extends JXPanel implements TableModelListener{
 				if(cmd.equals("replyMail")){
 					if(!gelesen){
 						JOptionPane.showMessageDialog(null,"Sie haben die Mail ja noch nicht einmal gelesen!\n"+
-								"Wie bitteschön wollen Sie dann darauf antworten?");
+								"Wie bitteschï¿½n wollen Sie dann darauf antworten?");
 						return;
 					}
+					if(SqlInfo.holeEinzelFeld("select id from pimail where id ='"+
+							aktId+"' LIMIT 1").equals("")){
+						JOptionPane.showMessageDialog(null,"Diese Nachricht existiert nicht mehr!\nAntwort nicht mï¿½glich!");
+						checkForNewMail(true);
+						return;
+					}
+					
 					SwingUtilities.invokeLater(new Runnable(){
 						public void run(){
 							ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -265,7 +278,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 				}
 				if(cmd.equals("loeschen")){
 					if(! Rechte.hatRecht(RehaMail.Sonstiges_NachrichtenLoeschen, false)){
-						JOptionPane.showMessageDialog(null, "Keine Berechtigung zum Löschen der Nachricht");
+						JOptionPane.showMessageDialog(null, "Keine Berechtigung zum Lï¿½schen der Nachricht");
 						return;
 					}
 					if(! Rechte.hatRecht(RehaMail.Sonstiges_NachrichtenLoeschen, false)){
@@ -340,19 +353,31 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		jtb.add( (buts[1]=ButtonTools.macheButton("", "replyMail", al)));
 		ico = new ImageIcon(RehaMail.progHome+"icons/edit-undo.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		buts[1].setIcon(new ImageIcon(ico));
-		buts[1].setToolTipText("auf die gewählte Nachricht antworten");
+		buts[1].setToolTipText("auf die gewÃ¤hlte Nachricht antworten");
 		jtb.addSeparator(new Dimension(15,30));
 		jtb.add( (buts[3]=ButtonTools.macheButton("", "loeschen", al)));
 		ico = new ImageIcon(RehaMail.progHome+"icons/package-remove-red.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		buts[3].setIcon(new ImageIcon(ico));
-		buts[3].setToolTipText("die gewählte Nachricht loeschen");
+		buts[3].setToolTipText("die gewÃ¤hlte Nachricht loeschen");
 		jtb.addSeparator(new Dimension(75,30));
 
 		ico = new ImageIcon(RehaMail.progHome+"icons/document-print.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		jtb.add( (buts[2]=ButtonTools.macheButton("", "print", al)));
 		buts[2].setIcon(new ImageIcon(ico));
-		buts[2].setToolTipText("die gewählte Nachricht drucken");
+		buts[2].setToolTipText("die gewÃ¤hlte Nachricht drucken");
 		jtb.addSeparator(new Dimension(50,30));
+		jtb.add(new JLabel("Betreff oder Nachricht enthÃ¤lt: "));
+		suchen = new JRtaTextField("nix",false);
+		//suchen.setSize(new Dimension(60,15));
+		suchen.setToolTipText("Ein oder mehrere Suchbegriffe eingeben und Enter drÃ¼cken");
+		suchen.setMaximumSize(new Dimension(150,25));
+		suchen.setFont(new Font("Courier New",12,12));
+		suchen.setName("suchen");
+		suchen.addKeyListener(this);
+
+		jtb.add(suchen);
+		jtb.addSeparator(new Dimension(50,30));
+
 		
 		
 		
@@ -364,7 +389,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		
 		buts[4]=ButtonTools.macheButton("", "attachments", al);
 		buts[4].setIcon(RehaMail.attachmentIco[3]);
-		buts[4].setToolTipText("Dateianhänge holen/ansehen");
+		buts[4].setToolTipText("DateianhÃ¤nge holen/ansehen");
 		//buts[4].setEnabled(false);
 		pan.add(buts[4]);
 		pan.validate();
@@ -411,7 +436,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		listenerAusschalten();
 		System.out.println("einlesen text");
 		int[] rows = eintab.getSelectedRows();
-		int frage = JOptionPane.showConfirmDialog(null,"Die ausgewählten Emails wirklich löschen",
+		int frage = JOptionPane.showConfirmDialog(null,"Die ausgewï¿½hlten Emails wirklich lï¿½schen",
 				"Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 		if(frage != JOptionPane.YES_OPTION){return;}
 		for(int i = 0; i < rows.length;i++){
@@ -439,6 +464,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		listenerAusschalten();
 		String stmt = null; 
 		if(all){
+			
 			stmt = "select absender,"+
 			"gelesen,versanddatum,gelesendatum,betreff,id from pimail where empfaenger_person='"+
 			RehaMail.mailUser+"' or empfaenger_gruppe like'%"+
@@ -449,6 +475,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 			RehaMail.mailUser+"' or empfaenger_gruppe like'%"+
 			RehaMail.mailUser+"%' and gelesen = 'F' order by gelesen DESC,versanddatum DESC";
 		}
+		System.out.println(stmt);
 		doStatementAuswerten(stmt,all);
 		for(int i = 0; i < 4; i++){
 			if(buts[i] != null){
@@ -498,7 +525,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		einmod.setValueAt(Boolean.TRUE,eintab.convertRowIndexToModel(eintab.getSelectedRow()),1 );
 		gelesen = true;
 		if(RehaMail.testcase){
-			JOptionPane.showMessageDialog(null,"Zeitstempel für gelesen gesetzt!");
+			JOptionPane.showMessageDialog(null,"Zeitstempel fï¿½r gelesen gesetzt!");
 		}
 	}
 	public void allesAufNull(){
@@ -532,6 +559,12 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		if(row < 0){tabelleLeeren();return;}
 		gelesen = (Boolean)einmod.getValueAt(eintab.convertRowIndexToModel(row),1 );
 		aktId = einmod.getValueAt(eintab.convertRowIndexToModel(row),5 ).toString();
+		if(SqlInfo.holeEinzelFeld("select id from pimail where id ='"+
+				aktId+"' LIMIT 1").equals("")){
+			JOptionPane.showMessageDialog(null,"Diese Nachricht existiert nicht mehr!");
+			checkForNewMail(true);
+			return;
+		}
 		/****************************************************/
 		bins = null;
 
@@ -742,7 +775,7 @@ public class MailPanel extends JXPanel implements TableModelListener{
 	}
 	private void doStatementAuswerten(final String stat,boolean all){
 		
-		
+		eintab.getRowSorter().setSortKeys(null);
 		autoIncCol = -1;
 		einmod.removeTableModelListener(this);
 		if(all){
@@ -765,9 +798,9 @@ public class MailPanel extends JXPanel implements TableModelListener{
 		Vector<Object> vec = new Vector<Object>();
 		int durchlauf = 0;
 
-		//Saudummerweise entspricht der Rückgabewert von getColumnTypeName() oder
+		//Saudummerweise entspricht der Rï¿½ckgabewert von getColumnTypeName() oder
 		//getColumnType() nicht der Abfrag von describe tabelle
-		//so werden alle Integer-Typen unter INT zusammengefaßt
+		//so werden alle Integer-Typen unter INT zusammengefaï¿½t
 		//Longtext, Mediumtext, Varchar = alles VARCHAR
 		//CHAR kann sowohl ein einzelnes Zeichen als auch enum('T','F') also boolean sein...
 		//eigentlich ein Riesenmist!
@@ -998,17 +1031,17 @@ class ToolsDlgAktuelleRezepte{
 		JList list = new JList(obi);
 		list.setCellRenderer(new IconListRenderer(icons));	
 		RehaMail.toolsDlgRueckgabe = -1;
-		ToolsDialog tDlg = new ToolsDialog(RehaMail.thisFrame,"Dateianhänge",list);
+		ToolsDialog tDlg = new ToolsDialog(RehaMail.thisFrame,"DateianhÃ¤nge",list);
 		tDlg.setPreferredSize(new Dimension(200, 60+(attachmentFileName.size()*28)));
 		tDlg.setLocation(pt.x-70,pt.y+30);
 		tDlg.pack();
 		tDlg.setModal(true);
 		tDlg.activateListener();
 		tDlg.setVisible(true);	
-
+		if(RehaMail.toolsDlgRueckgabe < 0){return;}
 		String komplett = RehaMail.progHome+"temp/"+RehaMail.aktIK+"/"+attachmentFileName.get(RehaMail.toolsDlgRueckgabe);
 
-		if(RehaMail.toolsDlgRueckgabe < 0){return;}
+		
 		 if(komplett.toUpperCase().endsWith(".PDF") || komplett.toUpperCase().endsWith(".ODT")
 				 || komplett.toUpperCase().endsWith(".OTT") || komplett.toUpperCase().endsWith(".ODS")){
 				if(!speichereDatei(new String[] {null,RehaMail.progHome+"temp/"+RehaMail.aktIK},
@@ -1082,7 +1115,7 @@ private String[] dateiDialog(String pfad){
 	//String sret = "";
 	String[] sret ={null,null};
 	System.out.println("Speichern in "+pfad);
-	final JFileChooser chooser = new JFileChooser("Verzeichnis auswählen");
+	final JFileChooser chooser = new JFileChooser("Verzeichnis auswÃ¤hlen");
     chooser.setDialogType(JFileChooser.SAVE_DIALOG);
     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
@@ -1121,6 +1154,47 @@ private String[] dateiDialog(String pfad){
     chooser.setVisible(false); 
 
     return sret;
+}
+
+
+
+@Override
+public void keyPressed(KeyEvent arg0) {
+	if( ((JComponent)arg0.getSource()).getName().equals("suchen")){
+		if(arg0.getKeyCode()==KeyEvent.VK_ENTER){
+			if(suchen.getText().trim().equals("")){checkForNewMail(true);return;}
+			try{
+				//toRTF(suchen.getText())
+			((JComponent)arg0.getSource()).requestFocus();
+			String where = SqlInfo.macheWhereKlausel("where (empfaenger_person='"+
+					RehaMail.mailUser+"' or empfaenger_gruppe like'%"+
+					RehaMail.mailUser+"%') AND ", 
+					suchen.getText(), new String[] {"betreff","emailtext"});
+			String cmd = "select absender,"+
+			"gelesen,versanddatum,gelesendatum,betreff,id from pimail "+where+
+			" order by gelesen DESC,versanddatum DESC";
+			//System.out.println(where);
+			doStatementAuswerten(cmd,true);
+			
+
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,ex.getMessage());
+			}
+		}
+	}
+	
+}
+
+
+@Override
+public void keyReleased(KeyEvent arg0) {
+	// TODO Auto-generated method stub
+	
+}
+@Override
+public void keyTyped(KeyEvent arg0) {
+	// TODO Auto-generated method stub
+	
 }
 
 

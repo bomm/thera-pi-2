@@ -112,7 +112,7 @@ public class RehaMail implements WindowListener {
 	public static Vector<Vector<String>> einzelMail = null;
 	public static Vector<Vector<String>> gruppenMail = null;
 	
-	public static String mailUser = "Admin";
+	public static String mailUser = "JÃ¼rgen Steinhilber";
 	
 	public static Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
 	public static Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
@@ -192,7 +192,7 @@ public class RehaMail implements WindowListener {
 					rehaReversePort = Integer.parseInt(args[2]);
 				}
 				if(args.length >= 4){
-					mailUser = args[3];
+					mailUser = args[3].replace("#", " ");
 				}
 
 				inif = new INIFile(args[0]+"ini/"+args[1]+"/nachrichten.ini");
@@ -239,6 +239,10 @@ public class RehaMail implements WindowListener {
 								einzelMail.get(i).set(0,man.decrypt(einzelMail.get(i).get(0)));
 								einzelMail.get(i).set(1,man.decrypt(einzelMail.get(i).get(1)));
 							}
+							Vector<String> vdummy = new Vector<String>();
+							vdummy.add("");
+							vdummy.add("kein Passwort");
+							einzelMail.insertElementAt((Vector<String>)vdummy.clone(), 0);
 							Comparator<Vector<String>> comparator = new Comparator<Vector<String>>() {
 								@Override
 								public int compare(Vector<String> o1, Vector<String> o2) {
@@ -255,7 +259,7 @@ public class RehaMail implements WindowListener {
 							//System.out.println(gruppenMail);
 					/*********************************/
 					if(!DbOk){
-						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\\nReha-Sql kann nicht gestartet werden");				
+						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geÃ¶ffnet werden!\\nReha-Sql kann nicht gestartet werden");				
 					}
 					xapplication.getJFrame();
 					if(timerdelay > 0){
@@ -282,7 +286,7 @@ public class RehaMail implements WindowListener {
 		}else{
 		
 			
-			JOptionPane.showMessageDialog(null, "Keine Datenbankparameter übergeben!\\nReha-Sql kann nicht gestartet werden");
+			JOptionPane.showMessageDialog(null, "Keine Datenbankparameter Ã¼bergeben!\\nReha-Sql kann nicht gestartet werden");
 			System.exit(0);
 			
 		}
@@ -709,8 +713,8 @@ public class RehaMail implements WindowListener {
     		+"{\\fonttbl{\\f0\\froman\\fprq2\\fcharset0 Times New Roman;}{\\f1\\froman\\fprq2\\fcharset2 Symbol;}{\\f2\\fswiss\\fprq2\\fcharset0 Arial;}{\\f3\\fswiss\\fprq2\\fcharset128 Arial;}{\\f4\\fnil\\fprq2\\fcharset0 Microsoft YaHei;}{\\f5\\fnil\\fprq2\\fcharset0 Mangal;}{\\f6\\fnil\\fprq0\\fcharset0 Mangal;}}"
     		+"{\\colortbl;\\red0\\green0\\blue0;\\red0\\green0\\blue255;\\red128\\green128\\blue0;\\red128\\green128\\blue128;}"
     		+"{\\stylesheet{\\s0\\snext0\\nowidctlpar{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\cf0\\kerning1\\hich\\af7\\langfe2052\\dbch\\af5\\afs24\\lang1081\\loch\\f0\\fs24\\lang1031 Standard;}"
-    		+"{\\s15\\sbasedon0\\snext16\\sb240\\sa120\\keepn\\hich\\af4\\dbch\\af5\\afs28\\loch\\f2\\fs28 Überschrift;}"
-    		+"{\\s16\\sbasedon0\\snext16\\sb0\\sa120 Textkörper;}"
+    		+"{\\s15\\sbasedon0\\snext16\\sb240\\sa120\\keepn\\hich\\af4\\dbch\\af5\\afs28\\loch\\f2\\fs28 ï¿½berschrift;}"
+    		+"{\\s16\\sbasedon0\\snext16\\sb0\\sa120 Textkï¿½rper;}"
     		+"{\\s17\\sbasedon16\\snext17\\sb0\\sa120\\dbch\\af6 Liste;}"
     		+"{\\s18\\sbasedon0\\snext18\\sb120\\sa120\\noline\\i\\dbch\\af6\\afs24\\ai\\fs24 Beschriftung;}"
     		+"{\\s19\\sbasedon0\\snext19\\noline\\dbch\\af6 Verzeichnis;}"

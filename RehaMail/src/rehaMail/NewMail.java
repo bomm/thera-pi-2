@@ -190,6 +190,8 @@ public class NewMail extends JFrame  implements WindowListener  {
 			this.rtfEditor.doSchriftArt();
 			this.rtfEditor.doSchriftGroesse();
 			this.rtfEditor.editorArea.setCaretPosition(0);
+			this.rtfEditor.doSchriftArt();
+			this.rtfEditor.doSchriftGroesse();
 			//text = this.rtfEditor.editorArea.getDocument().getText(0, rtfEditor.editorArea.getDocument().getLength());
 			//System.out.println(text);
 			in.close();
@@ -308,12 +310,21 @@ public class NewMail extends JFrame  implements WindowListener  {
 	private void doSenden(){
 		if(betreff.getText().trim().equals("")){
 			JOptionPane.showMessageDialog(null,"Es wurde kein -> Betreff <- eingegeben!\nNachricht wird nicht versendet.");
+			betreff.requestFocus();
 			return;
 		}
 		int frage = JOptionPane.showConfirmDialog(this, "Wollen Sie die Nachricht jetzt versenden","Bitte beachten",JOptionPane.YES_NO_OPTION);
 		if(frage != JOptionPane.YES_OPTION){return;}
 		Vector<String> versand = new Vector<String>();
 		if(rads[0].isSelected()){
+			if(box.getSelectedItem().toString().equals("")){
+				String msg = "<html>Wenn Sie jemandem eine Nachricht zukommen lassen wollen,<br>"+
+				"<b>empfiehlt es sich den Nachrichtenempfänger auszuwählen !</b><br><br>"+
+				"Oh Herr sieh Dein Volk an, aber verzage nicht<br><b>(auch wenn's schwer fällt...)</b><html>";
+				new AaarghHinweis(msg,"Oh jeh, oh jeh....."); 
+				//JOptionPane.showMessageDialog(null, msg);
+				return;
+			}
 			versand.add(box.getSelectedItem().toString());
 		}
 		if(empfaenger.getText().trim().length()>0){

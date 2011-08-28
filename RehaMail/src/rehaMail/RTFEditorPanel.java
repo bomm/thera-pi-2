@@ -115,20 +115,17 @@ public class RTFEditorPanel extends JXPanel implements FocusListener{
 	
 	private JScrollPane getEditorPane(){
 		rtfEditor = new RTFEditorKit();
-
 		editorArea = new JTextPane();
 		editorArea.addFocusListener(this);
-			
 		
 		JScrollPane pan = JCompTools.getTransparentScrollPane(editorArea);
+		
 		editorArea.setEditorKit(rtfEditor);
 		MutableAttributeSet attr = new SimpleAttributeSet();
-		
 		StyleConstants.setFontFamily(attr,"Arial");
 		editorArea.setCharacterAttributes(attr, false);
 		StyleConstants.setFontSize(attr, 16);
 		editorArea.setCharacterAttributes(attr, false);
-		
 		pan.validate();
 		return pan;
 	}
@@ -146,15 +143,13 @@ public class RTFEditorPanel extends JXPanel implements FocusListener{
 					return;
 				}else if(cmd.equals("farbe")){
 					doFarbe();
-					setCaret();
-					
 				}else if(cmd.equals("groesse")){
-					doSchriftGroesse();
 					setCaret();
+					doSchriftGroesse();
 					
 				}else if(cmd.equals("schriftart")){
-					doSchriftArt();
 					setCaret();
+					doSchriftArt();
 				}else if(cmd.equals("unterstrichen")){
 					setCaret();
 					return;
@@ -164,13 +159,48 @@ public class RTFEditorPanel extends JXPanel implements FocusListener{
 			
 		};
 	}
-	
+	private RTFEditorPanel getInstance(){
+		return this;
+	}
 	private void doFarbe(){
 		Color color = JColorChooser.showDialog(this, "Color Chooser", Color.cyan);
 		if (color != null) {
-			MutableAttributeSet attr = new SimpleAttributeSet();
-			StyleConstants.setForeground(attr, color);
-			editorArea.setCharacterAttributes(attr, false);
+			
+			if(selend > 0 && selend != selstart){
+				final Color xcolor = color;
+				SwingUtilities.invokeLater(new Runnable(){
+					public void run(){
+						editorArea.removeFocusListener(getInstance());
+						//editorArea.select(selstart, selend);
+						editorArea.setSelectionStart(selstart);
+						editorArea.setSelectionEnd(selend);
+						MutableAttributeSet attr = new SimpleAttributeSet();
+						StyleConstants.setForeground(attr, xcolor);
+						editorArea.setCharacterAttributes(attr, false);
+						
+						editorArea.select(selend, editorArea.getDocument().getLength());
+						StyleConstants.setForeground(attr, Color.BLACK);
+						
+						editorArea.setCharacterAttributes(attr, false);
+						
+						editorArea.setCaretPosition(selend);
+
+						editorArea.requestFocus();
+						
+						editorArea.addFocusListener(getInstance());
+
+					}
+				});
+
+			}else{
+				editorArea.setCaretPosition(caretposition);
+				MutableAttributeSet attr = new SimpleAttributeSet();
+				StyleConstants.setForeground(attr, color);
+				editorArea.setCharacterAttributes(attr, false);
+
+			}
+			
+            
 		}
 	}
 	
@@ -207,8 +237,9 @@ public class RTFEditorPanel extends JXPanel implements FocusListener{
 			public void run(){
 				editorArea.requestFocus();
 				if(selend > 0){
-					editorArea.setSelectionStart(selstart);
-					editorArea.setSelectionEnd(selend);
+					//editorArea.setSelectionStart(selstart);
+					//editorArea.setSelectionEnd(selend);
+					editorArea.select(selstart, selend);
 				}else{
 					editorArea.setCaretPosition(caretposition);	
 				}

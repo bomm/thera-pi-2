@@ -19,8 +19,75 @@ import rehaMail.RehaMail;
 
 
 public class SqlInfo {
-	
+	private static String toRTF(String toConvert){
+		String convertet = "";
+		convertet = toConvert.replace("Ö", "\\\\\\\\\\'d6").replace("ö", "\\\\\\\\\\'f6");
+		convertet = convertet.replace("Ä", "\\\\\\\\\\'c4").replace("ä", "\\\\\\\\\\'e4");
+		convertet = convertet.replace("Ü", "\\\\\\\\\\'dc").replace("ü", "\\\\\\\\\\'fc");
+		convertet = convertet.replace("ß", "\\\\\\\\\\'df");
+		return String.valueOf(convertet);
+	}
 /***********************************/	
+	public static String macheWhereKlausel(String praefix,String test,String[] suchein){
+		//paraefix = wenn der eine fixe Bedinung vorangestellt wird z.B. "(name='steinhilber') AND " bzw. "" fals keine notwendig
+		//test = der suchbegriff bzw. die durch Leerzeichen getrennte suchbegriffe
+		//suchein[] sind die spalten bzw. die spalte die durchsucht werden soll
+		//werden mehrere suchbegriffe eingegeben, bezogen auf die Begriffe -> AND-Suche
+		//innerhalb der spalten, bezogen auf die Spalten -> OR-Suche
+		String ret = praefix;
+		String cmd = test;
+		//zun�chst versuchen da� immer nur ein Leerzeichen zwischen den Begriffen existiert 
+		cmd = cmd.replaceAll("   ", " ");
+		cmd = cmd.replaceAll("  ", " ");
+		// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daß er nix finder!!!
+		String[] felder = suchein;
+		String[] split = cmd.split(" ");
+		if(split.length==1){
+			ret = ret +" (";
+			for(int i = 0; i < felder.length;i++){
+				if(i==0){
+					ret = ret+felder[i]+" like '%"+cmd+"%'";	
+				}else{
+					ret = ret+felder[i]+" like '%"+toRTF(cmd)+"%'";
+				}
+				
+				if(i < felder.length-1){
+					ret = ret+ " OR ";
+				}
+			}
+			ret = ret +") ";
+			return ret;
+		}
+		
+		
+		ret = ret +"( ";
+		for(int i = 0; i < split.length;i++){
+			if(! split[i].equals("")){
+				ret = ret +" (";
+				for(int i2 = 0; i2 < felder.length;i2++){
+					if(i2==0){
+						ret = ret+felder[i2]+" like '%"+split[i]+"%'";	
+					}else{
+						ret = ret+felder[i2]+" like '%"+toRTF(split[i])+"%'";
+					}
+					
+					if(i2 < felder.length-1){
+						ret = ret+ " OR ";
+					}
+				}
+				ret = ret +") ";
+				if(i < split.length-1){
+					ret = ret+ " AND ";
+				}
+			}
+			
+		}
+		ret = ret +") ";
+		return ret;
+		
+	}
+	
+	
 	public static boolean gibtsSchon(String sstmt){
 		boolean gibtsschon = false;
 		Statement stmt = null;
