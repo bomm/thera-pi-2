@@ -881,28 +881,28 @@ public class BenutzerRechte extends JXPanel{
     	/**
     	 * 
     	 */
-    	public JComboBox component =null;
+    	public JComboBox<?> component =null;
     	
     	ImageIcon[] img = {SystemConfig.hmSysIcons.get("zuzahlnichtok"),SystemConfig.hmSysIcons.get("zuzahlok")};
     	public MyRechteComboBox(){
     		component = new JComboBox(new Object[] { SystemConfig.hmSysIcons.get("zuzahlnichtok"), 
     				SystemConfig.hmSysIcons.get("zuzahlok")});
 
-    		((JComboBox)component).setRenderer(new RechteComboBoxRenderer() );
+    		((JComboBox<?>)component).setRenderer(new RechteComboBoxRenderer() );
     		
     	}
 		@Override
 		public Component getTableCellEditorComponent(JTable table,
 				Object value, boolean isSelected, int row, int column) {
 			if(isSelected){
-				((JComboBox)component).requestFocus();
+				((JComboBox<?>)component).requestFocus();
 				if(value instanceof ImageIcon){
 					if( ((ImageIcon)value).equals(img[0])){
-						((JComboBox)component).setSelectedIndex(0);					
+						((JComboBox<?>)component).setSelectedIndex(0);					
 					}else if( ((ImageIcon)value).equals(img[1])){
-						((JComboBox)component).setSelectedIndex(1);
+						((JComboBox<?>)component).setSelectedIndex(1);
 					}else{
-						((JComboBox)component).setSelectedIndex(0);
+						((JComboBox<?>)component).setSelectedIndex(0);
 					}
 				}
 			}else{
@@ -913,7 +913,7 @@ public class BenutzerRechte extends JXPanel{
 
 		@Override
 		public Object getCellEditorValue() {
-			return ((JComboBox)component).getSelectedIndex();
+			return ((JComboBox<?>)component).getSelectedIndex();
 		}
 		
     }

@@ -2072,6 +2072,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				}
 				*/
 				/***/
+				if(Reha.thisClass.patpanel.patDaten.get(23).trim().length() != 5){
+					JOptionPane.showMessageDialog(null, "Die im Patientenstamm zugewiesene Postleitzahl ist fehlerhaft");
+					return;
+				}
 				if(Reha.thisClass.patpanel.patDaten.get(14).trim().equals("")){
 					JOptionPane.showMessageDialog(null, "Die im Patientenstamm zugewiesene Krankenkasse hat keine Kassennummer");
 					return;
@@ -2257,7 +2261,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				if(ktagebreak){
 					System.out.println("Kalendertage zwischen den Behandlungen = "+DatFunk.TageDifferenz(vglalt, vglneu)+"\n"+
 							"erlaubt sind "+fristbreak);
-					if(DatFunk.TageDifferenz(vglalt, vglneu) >  fristbreak){
+					if( (DatFunk.TageDifferenz(vglalt, vglneu) >  fristbreak) && (kommentar.trim().equals("")) ){
 						ret = rezUnterbrechung(true,"",i+1);// Unterbrechungsgrund
 						if(ret.equals("")){
 							return false;

@@ -35,7 +35,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -89,6 +92,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 	Vector<String> titel = new Vector<String>() ;
 	Vector<String> formular = new Vector<String>();
 	int iformular = -1;
+	ArztListSelectionHandler arztselect = new ArztListSelectionHandler();
 	public ArztPanel(JArztInternal jry,String arztid){
 		super();
 		setBorder(null);
@@ -158,6 +162,31 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		});
 
 	}
+	
+	   /************************************/
+    class ArztListSelectionHandler implements ListSelectionListener {
+    	
+        public void valueChanged(ListSelectionEvent e) {
+            ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+            boolean isAdjusting = e.getValueIsAdjusting();
+            if(isAdjusting){
+            	return;
+            }
+            if (lsm.isSelectionEmpty()) {
+
+            } else {
+                int minIndex = lsm.getMinSelectionIndex();
+                int maxIndex = lsm.getMaxSelectionIndex();
+                for (int i = minIndex; i <= maxIndex; i++) {
+                    if (lsm.isSelectedIndex(i)) {
+                    	holeText();
+                        break;
+                    }
+                }
+            }
+
+        }
+    }	
 	private ArztPanel getInstance(){
 		return this;
 	}
@@ -286,7 +315,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 				}
 			}	
 		});
-
+		arzttbl.getSelectionModel().addListSelectionListener(arztselect);
 		arzttbl.addMouseListener(this);
 		arzttbl.validate();
 		arzttbl.setName("ArztVerwaltung");
@@ -366,7 +395,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 				this.atblm.addRow((Vector<String>)vec.get(i));
 			}
 			this.arzttbl.setRowSelectionInterval(0, 0);
-			holeText();
+			//holeText();
 		}else{
 			ta.setText("");
 		}
@@ -390,7 +419,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 				this.atblm.addRow((Vector<String>)vec.get(i));
 			}
 			this.arzttbl.setRowSelectionInterval(0, 0);
-			holeText();
+			//holeText();
 		}
 		suchen.requestFocus();
 	}

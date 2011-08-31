@@ -657,8 +657,9 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 			icons.put("IRENA-Zustimmung des Patienten",SystemConfig.hmSysIcons.get("pdf"));
 			icons.put("IRENA-Beginnmitteilung",SystemConfig.hmSysIcons.get("pdf"));
 			icons.put("BfA - Reha-Verlängerung",SystemConfig.hmSysIcons.get("pdf"));
-			icons.put("LVA - Wiedereingliederung",SystemConfig.hmSysIcons.get("pdf"));
-			icons.put("BfA - Wiedereingliederung",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("DRV-Wiedereingliederung Pat./AG-Infos",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("DRV-Wiedereingliederung",SystemConfig.hmSysIcons.get("pdf"));
+			icons.put("DRV-Wiedereingliederung Beginn > 2 Wo.",SystemConfig.hmSysIcons.get("pdf"));
 			icons.put("BfA - AHB-Aufnahmemitteilung",SystemConfig.hmSysIcons.get("pdf"));
 			icons.put("ASP-Rechnungsformular",SystemConfig.hmSysIcons.get("pdf"));
 			icons.put("IRENA-Rechnungsformular",SystemConfig.hmSysIcons.get("pdf"));
@@ -672,7 +673,8 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 					"ASP-Anwesenheitsliste","ASP-Zustimmung des Patienten",
 					"IRENA-Patienten-Information","IRENA-Verordnung","IRENA-Anwesenheitsliste","IRENA-Zustimmung des Patienten",
 					"IRENA-Beginnmitteilung",
-					"BfA - Reha-Verlängerung","LVA - Wiedereingliederung","BfA - Wiedereingliederung",
+					"BfA - Reha-Verlängerung","DRV-Wiedereingliederung Pat./AG-Infos","DRV-Wiedereingliederung",
+					"DRV-Wiedereingliederung Beginn > 2 Wo.",
 					"BfA - AHB-Aufnahmemitteilung","ASP-Rechnungsformular","IRENA-Rechnungsformular",
 					"Reha-Anwesenheitsbescheinigung","GKV-Verlängerungsantrag","LVA-Entlassmitteilung"});
 					
@@ -733,33 +735,37 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 				doPdfStarten(8);
 				break;
 			case 11:
-				//LVA-Wiedereingliederung
+				//DRV-Wiedereingliederung Pat/AG Info
 				doPdfStarten(9);
 				break;
 			case 12:
-				//BfA-Wiedereingliederung
+				//DRV-Wiedereingliederung
 				doPdfStarten(10);
 				break;
 			case 13:
+				//DRV-Wiedereingliederung Beginn später als 2 Wo.
+				doPdfStarten(16);
+				break;
+			case 14:
 				//BfA-AHB-Aufnahmemitteilung
 				doPdfStarten(11);
 				break;
-			case 14:
+			case 15:
 				//ASP-Rechnung
 				doPdfStarten(12);
 				break;
-			case 15:
+			case 16:
 				//IRENA-Rechnung
 				doPdfStarten(13);
 				break;
-			case 16:
+			case 17:
 				//Reha-Anwesenheitsbescheinigung
 				doPdfStarten(14);
 				break;
-			case 17:
+			case 18:
 				doPdfStarten(15);
 				break;
-			case 18:
+			case 19:
 				//LVA-Entlassmitteilung
 				try{
 					new LadeProg(Reha.proghome+"LVAEntlass.jar "+

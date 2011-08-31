@@ -21,9 +21,11 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
+
 import systemTools.JRtaTextField;
 import systemTools.StringTools;
 
@@ -40,6 +42,7 @@ public class HistorDaten extends JXPanel{
 	public JRtaTextField reznum = null;
 	public JRtaTextField draghandler = null;
 	public ImageIcon hbimg = null; 
+	public ImageIcon hbimg2 = null;
 	public Vector<String> vecaktrez = null;
 	
 	public JLabel[] rezlabs = {null,null,null,null,null,
@@ -62,6 +65,7 @@ public class HistorDaten extends JXPanel{
 		setBorder(null);
 		setLayout(new BorderLayout());
 		hbimg = SystemConfig.hmSysIcons.get("hausbesuch");
+		hbimg2 = SystemConfig.hmSysIcons.get("hbmehrere");
 		//hgicon = SystemConfig.hmSysIcons.get("historie");
 		/*
 		HistorPanel datpan=new HistorPanel();
@@ -101,13 +105,22 @@ public class HistorDaten extends JXPanel{
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
-
+				
 				vecaktrez = SqlInfo.holeSatz("lza", " * ", "id = '"+xsid+"'", Arrays.asList(new String[] {}) );
-				String stest = StringTools.NullTest((String)vecaktrez.get(43));
 				Reha.thisClass.patpanel.vecakthistor = vecaktrez;
+				String stest = StringTools.NullTest((String)vecaktrez.get(43));
+				String einzeln = StringTools.NullTest((String)vecaktrez.get(61));
+
+				String diszi = RezTools.putRezNrGetDisziplin(vecaktrez.get(1));
+				int prgruppe = 0;
+				try{
+					 prgruppe = Integer.parseInt((String)vecaktrez.get(41))-1;
+				}catch(Exception ex){}
+
+				
 				if( stest.equals("T") ){
 					rezlabs[1].setText(StringTools.NullTest((String)vecaktrez.get(64))+" *");
-					rezlabs[1].setIcon(hbimg);
+					rezlabs[1].setIcon((einzeln.equals("T") ? hbimg : hbimg2));
 				}else{
 					rezlabs[1].setText("");
 					rezlabs[1].setIcon(null);
@@ -164,39 +177,30 @@ public class HistorDaten extends JXPanel{
 					rezlabs[7].setText(" ");
 				}
 				Vector<Vector<String>> preisvec = null;
-				int prgruppe = 0;
-				try{
-					 prgruppe = Integer.parseInt((String)vecaktrez.get(41))-1;
-				}catch(Exception ex){
-					
-				}
 				/*
-				int prgruppe = 0;
-				try{
-					 prgruppe = Integer.parseInt((String)vecaktrez.get(41));
-				}catch(Exception ex){
-					
-				}
-				*/
 				if(xreznummer.contains("KG")){
 					//preisvec = ParameterLaden.vKGPreise;
-					preisvec = SystemPreislisten.hmPreise.get("Physio").get(prgruppe);
+					preisvec = SystemPreislisten.hmPreise.get(diszi).get(prgruppe);
 				}else if(xreznummer.contains("MA")){
 					//preisvec = ParameterLaden.vMAPreise;
-					preisvec = SystemPreislisten.hmPreise.get("Massage").get(prgruppe);					
+					preisvec = SystemPreislisten.hmPreise.get(diszi).get(prgruppe);					
 				}else if(xreznummer.contains("ER")){
 					//preisvec = ParameterLaden.vERPreise;
-					preisvec = SystemPreislisten.hmPreise.get("Ergo").get(prgruppe);
+					preisvec = SystemPreislisten.hmPreise.get(diszi).get(prgruppe);
 				}else if(xreznummer.contains("LO")){
 					//preisvec = ParameterLaden.vLOPreise;
-					preisvec = SystemPreislisten.hmPreise.get("Logo").get(prgruppe);
+					preisvec = SystemPreislisten.hmPreise.get(diszi).get(prgruppe);
 				}else if(xreznummer.contains("RH")){
 					//preisvec = ParameterLaden.vRHPreise;
-					preisvec = SystemPreislisten.hmPreise.get("Reha").get(prgruppe);
+					preisvec = SystemPreislisten.hmPreise.get(diszi).get(prgruppe);
 				}else if(xreznummer.contains("PO")){
 					//preisvec = ParameterLaden.vRHPreise;
-					preisvec = SystemPreislisten.hmPreise.get("Podo").get(prgruppe);
+					preisvec = SystemPreislisten.hmPreise.get(diszi).get(prgruppe);
 				}
+				*/
+				preisvec = SystemPreislisten.hmPreise.get(diszi).get(prgruppe);
+				
+
 				rezlabs[8].setText( leistungTesten(0,preisvec,StringTools.ZahlTest((String)vecaktrez.get(8))) );
 
 				stest = StringTools.NullTest((String)vecaktrez.get(52));
@@ -310,6 +314,7 @@ public class HistorDaten extends JXPanel{
 
 		
 		rezlabs[1] = new JLabel(" ");
+		rezlabs[1].setHorizontalTextPosition(JLabel.LEFT);
 		rezlabs[1].setName("hausbesuch");
 		rezlabs[1].setIcon(hbimg);
 

@@ -1223,7 +1223,37 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 	    }
 	}
 	
+	/********************************************/
+	/*****************************************************/
+	/*
+	class KassenListSelectionHandler implements KassenSelectionListener {
+		
+	    public void valueChanged(ListSelectionEvent e) {
+	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+	        boolean isAdjusting = e.getValueIsAdjusting();
+	        if(isAdjusting){
+	        	return;
+	        }
+	        if (lsm.isSelectionEmpty()) {
 
+	        } else {
+	            int minIndex = lsm.getMinSelectionIndex();
+	            int maxIndex = lsm.getMaxSelectionIndex();
+	            for (int i = minIndex; i <= maxIndex; i++) {
+	                if (lsm.isSelectedIndex(i)) {
+	                	x
+	                	break;
+	                }
+	            }
+	        }
+
+	    }
+	}
+	*/
+	
+	
+	
+	/********************************************/
 }
 /*********************************************************/
 class HoleKassen{

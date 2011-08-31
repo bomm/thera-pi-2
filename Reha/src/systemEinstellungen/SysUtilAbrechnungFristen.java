@@ -132,7 +132,7 @@ public class SysUtilAbrechnungFristen extends JXPanel implements KeyListener, Ac
 		builder.addSeparator("Einstellungen je nach Rahmenvertrag und/oder gültiger HMR");
 		builder.addLabel("Disziplin auswählen", cc.xy(1, 3));
 		builder.add(cmbdiszi = new JRtaComboBox(xdisziplin),cc.xyw(3,3,5));
-		
+		cmbdiszi.setActionCommand("neuedisziplin");
 		builder.addLabel("Tarif-/Preisgruppe auswählen", cc.xy(1, 5));
 		builder.add(cmbtarife = new JRtaComboBox(SystemPreislisten.hmPreisGruppen.get(xdisziplin[cmbdiszi.getSelectedIndex()])), cc.xyw(3, 5,5));
 
@@ -176,6 +176,7 @@ public class SysUtilAbrechnungFristen extends JXPanel implements KeyListener, Ac
 	private void werteEinlesen(){
 		lastdiszi = cmbdiszi.getSelectedItem().toString();
 		lasttarif = cmbtarife.getSelectedIndex();
+		
 		tage1.setText( Integer.toString( (Integer)((Vector<?>)hmFristen.get(lastdiszi).get(0)).get(lasttarif) ) );
 		if( (Boolean) ((Vector<?>)hmFristen.get(lastdiszi).get(1)).get(lasttarif) ){
 			rads[0].setSelected(true);
@@ -275,6 +276,14 @@ public class SysUtilAbrechnungFristen extends JXPanel implements KeyListener, Ac
 			int frage = JOptionPane.showConfirmDialog(null,"Sie haben die Werte verändert!\n"+
 					"Sollen die Änderungen jetzt abgespeichert werden","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 			if(frage == JOptionPane.YES_OPTION){doSpeichern();}
+		}
+		if(e.getActionCommand().equals("neuedisziplin")){
+			if(lasttarif >= 0){
+				cmbtarife.removeActionListener(getInstance());
+				cmbtarife.setDataVector(SystemPreislisten.hmPreisGruppen.get(xdisziplin[cmbdiszi.getSelectedIndex()]));
+				cmbtarife.setSelectedIndex(lasttarif);
+				cmbtarife.addActionListener(getInstance());
+			}
 		}
 		werteEinlesen();
 	}
