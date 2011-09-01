@@ -978,7 +978,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							inEinzelTermine = true;
 							try{
 								if(aktTerminBuffer.size() > row){
-									holeEinzelTermineAusRezept("",aktTerminBuffer.get(row));		
+									holeEinzelTermineAusRezept("",aktTerminBuffer.get(row));	
 								}else{
 									termineInTabelle( null);
 								}
@@ -1127,6 +1127,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		String[] tlines = terms.split("\n");
 		int lines = tlines.length;
 		Vector<String> tvec = new Vector<String>();
+		String stage ="";
+		
 		for(int i = 0;i<lines;i++){
 			tvec.clear();
 			String[] terdat = tlines[i].split("@");
@@ -1134,6 +1136,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			for(int y = 0; y < ieinzel;y++){
 				if(y==0){
 					tvec.add(String.valueOf((terdat[y].trim().equals("") ? "  .  .    " : terdat[y])));
+					stage=stage+(i>0 ? ", " : "")+(terdat[y].trim().equals("") ? "  .  .    " : terdat[y]);
 				}else{
 					tvec.add(String.valueOf(terdat[y]));					
 				}
@@ -1141,6 +1144,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			retvec.add((Vector<String>)tvec.clone());
 
 		}
+		SystemConfig.hmAdrRDaten.put("<Rtage>", String.valueOf(stage));
 		Comparator<Vector> comparator = new Comparator<Vector>() {
 			@Override
 			public int compare(Vector o1, Vector o2) {
