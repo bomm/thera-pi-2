@@ -90,12 +90,9 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import krankenKasse.KassenPanel;
-import kvKarte.KVKWrapper;
 import menus.TerminMenu;
 import oOorgTools.OOTools;
-
 import ocf.OcKVK;
-
 import opencard.core.service.CardServiceException;
 import opencard.core.terminal.CardTerminalException;
 
@@ -129,7 +126,6 @@ import systemTools.TestePatStamm;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
-
 import urlaubBeteiligung.Beteiligung;
 import urlaubBeteiligung.Urlaub;
 import verkauf.Verkauf;
@@ -310,7 +306,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-08-30-DB=";
+	public static String aktuelleVersion = "V=2011-09-01-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
