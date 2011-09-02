@@ -328,6 +328,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static int divider1 = -1;
 	public static int divider2 = -1;
 	
+	public static int zugabex = 20;
+	public static int zugabey = 20;
+	
 	public OcKVK ocKVK = null;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -492,15 +495,25 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		UIManager.put("ComboBox.disabledForeground", Color.RED);
 		
 		/***********************/		
- 
+
 		javax.swing.plaf.FontUIResource fontUIDresource = new FontUIResource("Tahoma", Font.PLAIN, 11);
+		/*
+		Font fon= new Font("Tahoma", Font.PLAIN, 11);
+		Attribute[] attr = (Attribute[]) fontUIDresource.getAvailableAttributes();
+		Map attrMap = fontUIDresource.getAttributes();
+		for(int i2 = 0; i2 < attr.length;i2++){
+			System.out.println("Key  = "+attr[i2]);	
+			System.out.println("Wert = "+attrMap.get(attr[i2]));
+		}
+		*/
+
 		//String name = "Tahoma";
 		//int size = 10;
 		//PLAIN=0, BOLD=1, ITALIC=2
 		//Font[] fonts = {new Font(name, 0, size), new Font(name, 1, size),
 		//new Font(name, 2, size), new Font(name, 3, size)}; 
 		UIDefaults defs = (UIDefaults) UIManager.getLookAndFeelDefaults().clone();
-       
+
 		for(Iterator ii = new HashSet(defs.keySet()).iterator(); ii.hasNext(); ) {   
 			Object key = ii.next();
 			if(key.equals("FormattedTextField.font")){
