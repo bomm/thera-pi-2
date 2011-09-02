@@ -2602,7 +2602,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage");
 		}
 		neuRez.setSize(480,768);
-		neuRez.setPreferredSize(new Dimension(480,630));
+		neuRez.setPreferredSize(new Dimension(480+Reha.zugabex,630+Reha.zugabey));
 		neuRez.getSmartTitledPanel().setPreferredSize(new Dimension (480,630));
 		neuRez.setPinPanel(pinPanel);
 		if(lneu){
