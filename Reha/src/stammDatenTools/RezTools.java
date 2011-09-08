@@ -1877,6 +1877,18 @@ public class RezTools {
 		return ret;
 	}
 	/***************************************************/
+	public static void loescheRezAusVolleTabelle(final String reznr){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				SqlInfo.sqlAusfuehren("delete from volle where rez_nr='"+reznr+"'");
+				return null;
+			}
+			
+		}.execute();
+		
+	}
+	/***************************************************/
 	
 	public static void fuelleVolleTabelle(final String reznr,final String rezbehandler){
 		new SwingWorker<Void,Void>(){

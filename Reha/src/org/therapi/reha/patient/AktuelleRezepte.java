@@ -1728,7 +1728,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				SqlInfo.sqlAusfuehren(sqlcmd);
 				sqlcmd = "delete from fertige where id='"+rezid+"'";
 				new ExUndHop().setzeStatement(sqlcmd);
-				
+				RezTools.loescheRezAusVolleTabelle(reznr);
 				aktTerminBuffer.remove(currow);
 				
 				currow = TableTool.loescheRow(tabaktrez, Integer.valueOf(currow));
@@ -2702,6 +2702,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				public void run(){
 					Reha.thisClass.patpanel.historie.holeRezepte(Reha.thisClass.patpanel.patDaten.get(29), "");
 					SqlInfo.sqlAusfuehren("delete from fertige where rez_nr='"+xrez_nr+"'");
+					RezTools.loescheRezAusVolleTabelle(xrez_nr);
 					if(Reha.thisClass.abrechnungpanel != null){
 						String[] diszis = {"Physio","Massage","Ergo","Logo","Podo"};
 						String aktDisziplin = diszis[Reha.thisClass.abrechnungpanel.cmbDiszi.getSelectedIndex()];

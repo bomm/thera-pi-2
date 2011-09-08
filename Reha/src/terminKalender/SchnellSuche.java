@@ -2,6 +2,7 @@ package terminKalender;
 
 
 import hauptFenster.Reha;
+import hauptFenster.ReverseSocket;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,11 +20,16 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXHeader;
@@ -33,11 +39,14 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
 //import org.jdesktop.swingx.decorator.SortOrder;
 
+
+
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import rehaContainer.RehaTP;
 import systemTools.JRtaTextField;
+import systemTools.RezeptFahnder;
 import systemTools.Verschluesseln;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
@@ -72,6 +81,7 @@ public class SchnellSuche extends RehaSmartDialog implements ActionListener, Key
 	private String aktDatum = "";
 	private Vector vTdata = new Vector();
 	public static SchnellSuche thisClass = null;
+	SchnellSucheListSelectionHandler ssucheselect = new SchnellSucheListSelectionHandler();
 	public SchnellSuche(JXFrame owner){
 		//super(frame, titlePanel());
 		super(owner,"SchnellSuche");
@@ -122,7 +132,7 @@ public class SchnellSuche extends RehaSmartDialog implements ActionListener, Key
 		ttbl.getColumn(2).setMaxWidth(60);
 		ttbl.getColumn(6).setMinWidth(0);
 		ttbl.getColumn(6).setMaxWidth(0); //Datenvector				
-
+		ttbl.getSelectionModel().addListSelectionListener(ssucheselect);
 		jscr.setViewportView(ttbl);
 		
 		
@@ -149,6 +159,55 @@ public class SchnellSuche extends RehaSmartDialog implements ActionListener, Key
 	}		    
 /*******************************************************/			
 /*********************************************************/
+    class SchnellSucheListSelectionHandler implements ListSelectionListener {
+    	
+        public void valueChanged(ListSelectionEvent e) {
+            ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+            boolean isAdjusting = e.getValueIsAdjusting();
+            if(isAdjusting){
+            	return;
+            }
+            if (lsm.isSelectionEmpty()) {
+
+            } else {
+                int minIndex = lsm.getMinSelectionIndex();
+                int maxIndex = lsm.getMaxSelectionIndex();
+                for (int i = minIndex; i <= maxIndex; i++) {
+                    if (lsm.isSelectedIndex(i)) {
+                		int row = ttbl.getSelectedRow();
+                		if(row < 0){return;}
+                		final String reznr = (String)ttbl.getValueAt(row, 4);
+                		if(reznr.trim().length()>=2){
+                			if("KGMAERLORHPO".indexOf(reznr.substring(0,2)) >= 0){
+                				new SwingWorker<Void,Void>(){
+									@Override
+									protected Void doInBackground()
+											throws Exception {
+										//todo = "Farbsignale mit \XY  vor der Suche abtrennen
+										int index = reznr.indexOf("\\");
+										if(index >= 0){
+											new RezeptFahnder(false).doFahndung(reznr.substring(0,index));	
+										}else{
+											new RezeptFahnder(false).doFahndung(reznr);
+										}
+		                				
+		                				//in Spalte 1 des TK den Behandler aufrufen 
+		                				//und den markierten Termin auf den angewählten Termin setzen.
+
+										return null;
+									}
+                				}.execute();
+
+                			}
+                		}
+
+                        break;
+                    }
+                }
+            }
+
+        }
+    }	
 	
 public void FensterSchliessen(String welches){
 	////System.out.println("Eltern-->"+this.getParent().getParent().getParent().getParent().getParent());

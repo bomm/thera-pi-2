@@ -15,15 +15,17 @@ import events.PatStammEventClass;
 import sqlTools.SqlInfo;
 
 public class RezeptFahnder {
-	public RezeptFahnder(){
-		Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die Rezeptnummer ein", "");
-		if(ret == null){
-			return;
+	public RezeptFahnder(boolean showDialog){
+		if(showDialog){
+			Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die Rezeptnummer ein", "");
+			if(ret == null){
+				return;
+			}
+			doFahndung(ret.toString().trim());
 		}
-		doFahndung(ret.toString().trim());
 	}
 	
-	private void doFahndung(String rez_nr){
+	public void doFahndung(String rez_nr){
 		boolean inhistorie = false;
 		String pat_intern = SqlInfo.holeEinzelFeld("select pat_intern from verordn where rez_nr = '"+rez_nr+"' LIMIT 1");
 		if(pat_intern.equals("")){

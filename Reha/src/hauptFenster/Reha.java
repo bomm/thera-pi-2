@@ -306,7 +306,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-09-01-DB=";
+	public static String aktuelleVersion = "V=2011-09-08-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1984,7 +1984,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                     }
                     if(keyEvent.isAltDown() && keyEvent.getID()== KeyEvent.KEY_PRESSED 
                     		&& keyEvent.getKeyCode() ==	KeyEvent.VK_R){
-                    	new RezeptFahnder();
+                    	new RezeptFahnder(true);
                     	return;
                     	
                     }
@@ -2607,7 +2607,7 @@ public void actionPerformed(ActionEvent arg0) {
 	}
 	/*****************************/
 	if(cmd.equals("rezeptfahnder")){
-		new RezeptFahnder();
+		new RezeptFahnder(true);
 		return;
 	}
 	/*****************************/
