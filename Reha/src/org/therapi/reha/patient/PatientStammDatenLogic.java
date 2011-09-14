@@ -10,10 +10,11 @@ public class PatientStammDatenLogic {
 		this. patientStammDatenPanel = patStammPanel; 
 	}
 	public void reactOnHyperlink(HyperlinkEvent arg0){
-		if( extractFieldName(arg0.getURL().toString()).equals("FOTO") ){
-			return;
-		}
 	    if (arg0.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+			if( extractFieldName(arg0.getURL().toString()).equals("FOTO") ){
+				patHauptPanel.getLogic().doPatFoto();
+				return;
+			}
 	    	if(!patHauptPanel.getLogic().neuDlgOffen){
 		    	patHauptPanel.getLogic().editFeld(extractFieldName(arg0.getURL().toString()));	    		
 	    	}

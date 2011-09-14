@@ -3,12 +3,14 @@ package org.therapi.reha.patient;
 import hauptFenster.Reha;
 import hauptFenster.SuchenDialog;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,7 +18,9 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -25,6 +29,7 @@ import krankenKasse.KassenFormulare;
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
+import org.jdesktop.swingx.JXPanel;
 
 import patientenFenster.PatNeuanlage;
 import rechteTools.Rechte;
@@ -426,6 +431,77 @@ public class PatientHauptLogic {
 		
 		
 	}
+	
+	class PatFotoDlg extends RehaSmartDialog implements RehaTPEventListener,WindowListener{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7706110755275876905L;
+		private RehaTPEventClass rtp = null;
+		public PatFotoDlg(){
+			super(null,"PatientenFoto");
+			this.setName("PatientenFoto");
+			rtp = new RehaTPEventClass();
+			rtp.addRehaTPEventListener((RehaTPEventListener) this);
+		}
+		public void rehaTPEventOccurred(RehaTPEvent evt) {
+			try{
+				if(evt.getDetails()[0] != null){
+					if(evt.getDetails()[0].equals(this.getName())){
+						this.setVisible(false);
+						rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+						rtp = null;
+						this.dispose();
+						super.dispose();
+					}
+				}
+			}catch(NullPointerException ne){
+
+			}
+		}
+		public void windowClosed(WindowEvent arg0) {
+			if(rtp != null){
+				this.setVisible(false);			
+				rtp.removeRehaTPEventListener((RehaTPEventListener) this);		
+				rtp = null;
+				dispose();
+				super.dispose();
+			}
+		}
+	}
+	public void doPatFoto(){
+		BufferedImage buf = PatNeuanlage.holePatBild(Reha.thisClass.patpanel.aktPatID);
+		if(buf==null){
+			JOptionPane.showMessageDialog(patientHauptPanel.getStammDaten(), "Kein Patientenfoto verfügbar!");
+			return;
+		}
+		PatFotoDlg foto = new PatFotoDlg();
+		PinPanel pinPanel = new PinPanel();
+		pinPanel.setName("PatientenFoto");
+		pinPanel.getGruen().setVisible(false);
+		foto.setPinPanel(pinPanel);
+		foto.setPinPanel(pinPanel);
+		JXPanel pan = new JXPanel(new BorderLayout());
+		
+		JLabel lab = new JLabel();
+		lab.setIcon(new ImageIcon(buf));
+		pan.add(lab);
+		pan.setPreferredSize(new Dimension(buf.getWidth(),buf.getHeight()));
+		foto.getSmartTitledPanel().setContentContainer(pan);
+		foto.getSmartTitledPanel().getContentContainer().setName("PatientenFoto");
+		foto.getSmartTitledPanel().setTitle("Patienten-Foto");
+		foto.setName("PatientenFoto");
+		foto.setLocation(patientHauptPanel.getStammDaten().getLocationOnScreen().x+50,
+				patientHauptPanel.getStammDaten().getLocationOnScreen().y+50);
+		foto.pack();
+		foto.setModal(true);
+		//neuPat.setAlwaysOnTop(true);
+		foto.setVisible(true);
+		foto = null;
+		
+	}
+
+	
 	public void arztListeSpeichernVector(Vector<?> vec, boolean inNeu, String xpatintern){
 		String aliste = "";
 		for(int i = 0;i < vec.size();i++){
