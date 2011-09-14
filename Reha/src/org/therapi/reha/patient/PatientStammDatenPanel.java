@@ -172,7 +172,9 @@ public class PatientStammDatenPanel extends JXPanel{
 			buf1.append("<table>");
 			/*****Rezept****/
 			/*******/
-			buf1.append("<tr><td class=\"spalte1\" align=\"left\">"+"<img src='file:///"+Reha.proghome+"icons/kontact_contacts.png' width=36 height=36 border=0>");
+			String linktext = "<img src='file:///"+Reha.proghome+"icons/kontact_contacts.png' width=36 height=36 border=0>";
+			buf1.append("<tr><td class=\"spalte1\" align=\"left\">"+makeLink(linktext,"FOTO"));;
+			//buf1.append("<tr><td class=\"spalte1\" align=\"left\">"+"<img src='file:///"+Reha.proghome+"icons/kontact_contacts.png' width=36 height=36 border=0>");
 			buf1.append("</td></tr>" );
 			buf1.append("<tr><td class=\"spalte1\" align=\"left\">");
 			buf1.append(makeLink(StringTools.EGross(patientHauptPanel.patDaten.get(0).trim()),"ANREDE")+" "+

@@ -200,6 +200,9 @@ public class SystemConfig {
 	public static boolean timerprogressbar = true;
 	
 	public static Vector<String> vFeiertage;
+	
+	public static String sWebCamActive = null;
+	public static int[] sWebCamSize = {320,240};
 	                     
 	public SystemConfig(){
 	
@@ -1191,7 +1194,23 @@ public class SystemConfig {
 			}
 			string2[i] = inif.getStringProperty("KartenLeserListe", "CTAPILib"+(i+1));
 		}
+		sWebCamActive = inif.getStringProperty("WebCam", "WebCamActive");
+		if(sWebCamActive == null){
+			speichern = true;
+			sWebCamActive = "0";
+			inif.setStringProperty("WebCam", "WebCamActive","0",null);
+		}
+		String dummy = inif.getStringProperty("WebCam", "WebCamX");
+		if(dummy == null){
+			speichern = true;
+			inif.setIntegerProperty("WebCam", "WebCamX",sWebCamSize[0],null);
+			inif.setIntegerProperty("WebCam", "WebCamY",sWebCamSize[1],null);
+		}
+		//sWebCamActive
 		if(speichern){inif.save();}
+		sWebCamSize[0] = inif.getIntegerProperty("WebCam", "WebCamX");
+		sWebCamSize[1] = inif.getIntegerProperty("WebCam", "WebCamY");
+
 		
 		hmGeraete.put("Kartenleser", string.clone());
 		hmGeraete.put("CTApi", string2.clone());

@@ -174,6 +174,9 @@ private JRtaTextField formularid = new JRtaTextField("NIX",false);
 
 private KVKWrapper kvw;
 
+boolean startMitBild = false;
+boolean updateBild = false;
+
 	public PatNeuanlage(Vector<String> vec,boolean neu,String sfeldname){
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		new SwingWorker<Void,Void>(){
@@ -606,8 +609,18 @@ private KVKWrapper kvw;
 		}
 		SqlInfo.sqlAusfuehren(buf.toString());
 		//new ExUndHop().setzeStatement(buf.toString());
+		if(updateBild){
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					speichernPatBild( ( ((inNeu) || (!startMitBild)) ? true : false ),(ImageIcon)lblbild.getIcon(),globPat_intern);
+					return null;
+				}
+				
+			}.execute();
+			
+		}
 
-		
 		((JXDialog)this.getParent().getParent().getParent().getParent().getParent()).setVisible(false);
 		//final PatNeuanlage xthis = this;
 
@@ -1143,6 +1156,11 @@ private KVKWrapper kvw;
 		pat22.validate();
 		return pat22;
 	}	
+	public void setNewPic(ImageIcon img){
+		lblbild.setText("");
+		lblbild.setIcon(img);
+		updateBild = true;
+	}
 	
 	private JXPanel getDatenPanel31(){
 		JXPanel pat31 = new JXPanel(new BorderLayout());
@@ -1157,16 +1175,16 @@ private KVKWrapper kvw;
 		pic0.addActionListener(this);		
 		pic0.setActionCommand("delpic");
 		pic0.addKeyListener(this);
-		pic1 = new JButton("aufnahme");
+		pic1 = new JButton("Aufnahme");
 		pic1.setPreferredSize(new Dimension(70, 20));
 		pic1.addActionListener(this);		
 		pic1.setActionCommand("addpic");
 		pic1.addKeyListener(this);
 		 
 		
-		FormLayout lay31 = new FormLayout("right:max(80dlu;p), 4dlu, 150px,right:max(60dlu;p), 4dlu, 60dlu",
+		FormLayout lay31 = new FormLayout("right:max(80dlu;p), 4dlu, 175px,right:max(60dlu;p), 4dlu, 60dlu",
 			       //1.   2.   3.   4.  5.   6   7   8     9   10   11      12   13  14    15   16  17  18   19   20  21  22   23  24   25  26   27  28  29   30   31   32  33  34   35  36   37  38   39    40  41  42  43   44   45  46  47  48    49   50   51 52   53  54   55  56  57   58   59   60  61   62  63  64   65   66   67
-					"p, 10dlu, 200px, 2dlu, p");
+					"p, 10dlu, 220px, 2dlu, p");
 		
 					PanelBuilder builder31 = new PanelBuilder(lay31);
 					builder31.setDefaultDialogBorder();
@@ -1174,7 +1192,7 @@ private KVKWrapper kvw;
 					CellConstraints cc31 = new CellConstraints();
 					builder31.getPanel().setDoubleBuffered(true);
 					 
-					builder31.addSeparator("Kundenfoto", cc31.xyw(1, 1, 6));
+					builder31.addSeparator("Patientenfoto", cc31.xyw(1, 1, 6));
 					lblbild = new JLabel();
 					builder31.add(lblbild, cc31.xy(3, 3));
 					builder31.addLabel("Bild aufnehmen", cc31.xy(1,5));
@@ -1192,6 +1210,7 @@ private KVKWrapper kvw;
 								}else{
 									lblbild.setText("");
 									lblbild.setIcon(new ImageIcon(img));
+									startMitBild = true;
 								}
 							}else{
 								lblbild.setText("Kein Bild des Patienten vorhanden");
@@ -1511,13 +1530,27 @@ private KVKWrapper kvw;
 		    	jtf[35].setText(SystemConfig.vorJahr);
 		    }
 		}else if(com.equals("delpic")){
-			JOptionPane.showMessageDialog(null, "Wo nichts ist kann auch nichts gelöscht werden");
+			if( lblbild.getIcon()!=null && !inNeu){
+				int frage = JOptionPane.showConfirmDialog(null,"Wollen Sie das Patientenfoto wirklich löschen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+				if(frage==JOptionPane.YES_OPTION){
+					SqlInfo.sqlAusfuehren("delete from patbild where pat_intern = '"+
+							Reha.thisClass.patpanel.aktPatID+"' LIMIT 1");
+				}else{
+					return;
+				}
+			}
+			lblbild.setIcon(null);
+			lblbild.setText("Kein Bild des Patienten vorhanden");
+			startMitBild = false;
+			updateBild = false;
 			return;
 		}else if(com.equals("addpic")){
-			String cmd ="Tja, wenn wir uns im Forum endlich im Klaren darüber wären, welches Aufnahmegerät\n"+
-			"wir einsetzen wollen, dann könnten wir auch diese Funktion programmieren.\n\n"+
-			"Vorher wird's etwas schwierig!\nMan kann ja schließlich nichts porgrammieren von dem man nicht weiß was es ist....\n";
-			JOptionPane.showMessageDialog(null, cmd);
+			PatientenFoto foto = new PatientenFoto(null,"patBild",this);
+			foto.setModal(true);
+			foto.setLocationRelativeTo(null);
+			foto.pack();
+			foto.setVisible(true);
+			foto = null;
 			return;
 			
 		}
@@ -1853,7 +1886,7 @@ private KVKWrapper kvw;
 		}
 		return false;
 	}
-	@SuppressWarnings("unused")
+
 	private void speichernPatBild(boolean neu,ImageIcon ico,String pat_intern){
 		Statement stmt = null;;
 		ResultSet rs = null;
@@ -1863,20 +1896,32 @@ private KVKWrapper kvw;
 	
 		//piTool.app.conn.setAutoCommit(true);
 		try {
-			stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE );
+			//stmt = (Statement) Reha.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+            //        ResultSet.CONCUR_UPDATABLE );
 			if(neu){
-				String select = "Insert into patbild set bild = ? , pat_intern = ?";
+				String select = "Insert into patbild set bild = ? , pat_intern = ?, vorschau = ?";
 				  ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
 				  ps.setBytes(1, bufferedImageToByteArray( (BufferedImage) ico.getImage()));
 				  ps.setString(2, pat_intern);
+				  BufferedImage buf = new BufferedImage(35,40,BufferedImage.TYPE_INT_RGB);
+				  Graphics2D g = buf.createGraphics();
+				    g.drawImage(ico.getImage().getScaledInstance(35, 44, Image.SCALE_SMOOTH), null, null);
+					g.dispose();
+				  ps.setBytes(3, bufferedImageToByteArray( (BufferedImage) buf));
 				  ps.execute();
+				  buf = null;
 			}else{
-				String select = "Update patbild set bild = ? where pat_intern = ?";
+				String select = "Update patbild set bild = ? , vorschau = ?  where pat_intern = ?";
 				  ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
 				  ps.setBytes(1, bufferedImageToByteArray( (BufferedImage) ico.getImage()));
-				  ps.setString(2, pat_intern);
+				  BufferedImage buf = new BufferedImage(35,40,BufferedImage.TYPE_INT_RGB);
+				  Graphics2D g = buf.createGraphics();
+				    g.drawImage(ico.getImage().getScaledInstance(35, 44, Image.SCALE_SMOOTH), null, null);
+					g.dispose();
+				  ps.setBytes(2, bufferedImageToByteArray( (BufferedImage) buf));
+				  ps.setString(3, pat_intern);
 				  ps.execute();
+				  buf = null;
 			}
 			  
 		} catch (SQLException e) {
@@ -1884,6 +1929,8 @@ private KVKWrapper kvw;
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ImageFormatException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		finally {

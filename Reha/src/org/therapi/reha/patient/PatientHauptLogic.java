@@ -359,6 +359,7 @@ public class PatientHauptLogic {
 		if(lneu){
 			neuPat.getSmartTitledPanel().setTitle("Patient Neuanlage");	
 		}else{
+			neuPat.getSmartTitledPanel().setTitle("Patient ändern");
 			//neuPat.getSmartTitledPanel().setTitle("editieren ---> "+ptfield[2].getText().trim()+", "+ptfield[3].getText().trim()+", geboren am: "+ptfield[4].getText().trim());		
 		}
 		neuPat.setSize(960,600);

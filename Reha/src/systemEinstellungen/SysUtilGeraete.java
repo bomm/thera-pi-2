@@ -42,13 +42,16 @@ public class SysUtilGeraete extends JXPanel implements KeyListener, ActionListen
 	JCheckBox docscanakt = null;
 	JCheckBox barcodeakt = null;
 	JCheckBox ecakt = null;
+	JCheckBox webcam = null;
 	JComboBox kvkgeraet = null;
+	
 	//JComboBox kvkan = null;
 	JComboBox docscangeraet = null;
 	JComboBox barcodegeraet = null;
 	JComboBox barcodean = null;
 	JComboBox ecgeraet = null;
 	JComboBox ecan = null;
+	JComboBox webcamsize = null;
 	JButton kvktest = null;
 	JButton knopf1 = null;
 	JButton knopf2 = null;
@@ -77,7 +80,7 @@ public class SysUtilGeraete extends JXPanel implements KeyListener, ActionListen
 	     add(getKnopfPanel(),BorderLayout.SOUTH);
 		return;
 	}
-	/************** Beginn der Methode f�r die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	
 private JPanel getKnopfPanel(){
 		
@@ -171,11 +174,16 @@ private JPanel getKnopfPanel(){
 		ecan = new JComboBox(anschluesse);
 		ecan.setEnabled(false);
 		
+		webcam = new JCheckBox(); 
+		webcam.setSelected((SystemConfig.sWebCamActive.equals("1") ? true : false));
 		
+		webcamsize = new JComboBox(new String[] {"640 x 480","320 x 240"});
+		webcamsize.setSelectedIndex( (SystemConfig.sWebCamSize[0]==640 ? 0 : 1) );
+
         //                                      1.            2.    3.      4.    5.     6.                   7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(100dlu;p), 10dlu, 80dlu, 10dlu, right:max(100dlu;p)",
-				   //1.    2. 3.   4.  5.   6.   7.  8.    9.   10. 11.  12. 13. 14.   15. 16.  17. 18.  19. 20.   21.  22.  23.  24.  25   26  27  28   29  30    31   32  33    34  35  36     37
-					"p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p ,10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p");
+				   //1.    2. 3.   4.  5.   6.   7.  8.    9.   10. 11.  12. 13. 14.   15. 16.  17. 18.  19. 20.   21.  22.  23.  24.  25   26  27  28   29  30    31   32    33    34  35  36     37
+					"p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p ,10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 10dlu ,p, 10dlu ,p,   2dlu, p ");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -209,8 +217,11 @@ private JPanel getKnopfPanel(){
 		builder.add(ecgeraet, cc.xyw(4,27,2));
 		builder.addLabel("Anschluss", cc.xy(3,29));
 		builder.add(ecan, cc.xyw(4,29,2));
-		
-		
+		builder.addSeparator("Patienten-Fotos (JM-Studio muß installiert sein)",cc.xyw(1,31,5));		
+		builder.addLabel("Web-Cam aktivieren",cc.xy(3,33));
+		builder.add(webcam,cc.xy(5,33));
+		builder.addLabel("Videoauflösung",cc.xy(3,35));
+		builder.add(webcamsize,cc.xyw(4,35,2));
 		return builder.getPanel();
 	}
 
@@ -336,9 +347,20 @@ private JPanel getKnopfPanel(){
 		inif.setStringProperty("DokumentenScanner", "DokumentenScannerAktivieren",(docscanakt.isSelected() ? "1" : "0") , null);
 
 		SystemConfig.sDokuScanner = (docscangeraet.getSelectedItem()==null ? "" : (String)docscangeraet.getSelectedItem());
-		inif.setStringProperty("DokumentenScanner", "DokumentenScannerName",SystemConfig.sDokuScanner , null);		
+		inif.setStringProperty("DokumentenScanner", "DokumentenScannerName",SystemConfig.sDokuScanner , null);
+		
+		/***************************/
+		SystemConfig.sWebCamActive = (webcam.isSelected() ? "1" : "0");
+		inif.setStringProperty("WebCam", "WebCamActive",SystemConfig.sWebCamActive , null);
+		
+		SystemConfig.sWebCamSize[0] = (webcamsize.getSelectedIndex() == 0 ? 640 : 320);
+		inif.setIntegerProperty("WebCam", "WebCamX",SystemConfig.sWebCamSize[0] , null);
+
+		SystemConfig.sWebCamSize[1] = (webcamsize.getSelectedIndex() == 0 ? 480 : 240);
+		inif.setIntegerProperty("WebCam", "WebCamY",SystemConfig.sWebCamSize[1] , null);
 
 		inif.save();
+		
 		JOptionPane.showMessageDialog(null, "Gerätekonfiguration wurde erfolgrich gespeichert und steht nach dem nächsten\nStart der Software zur Verfügung");
 	}
 }

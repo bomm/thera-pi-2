@@ -64,6 +64,14 @@ import java.util.TimerTask;
 import java.util.TooManyListenersException;
 import java.util.Vector;
 
+import javax.media.CannotRealizeException;
+import javax.media.CaptureDeviceInfo;
+import javax.media.Manager;
+import javax.media.MediaLocator;
+import javax.media.NoPlayerException;
+import javax.media.Player;
+import javax.media.cdm.CaptureDeviceManager;
+import javax.media.format.YUVFormat;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -332,6 +340,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static int zugabey = 20;
 	
 	public OcKVK ocKVK = null;
+	
+	public CaptureDeviceInfo device = null;
+	public MediaLocator ml = null;
+	public Player player = null;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -2692,7 +2704,51 @@ public void actionPerformed(ActionEvent arg0) {
 	
 	
 }
-
+/***************/
+public void activateWebCam(){
+	
+	new SwingWorker<Void,Void>(){
+		@Override
+		protected Void doInBackground() throws java.lang.Exception {
+	
+			try{
+				try{
+		            Class c = Class.forName("javax.media.Manager");
+		        }catch (ClassNotFoundException e){
+		        	SystemConfig.sWebCamActive = "0";
+		        	JOptionPane.showMessageDialog(null, "Java Media Framework (JMF) ist nicht installiert"+
+		        			"\nWebCam kann nicht gestartet werden");
+		           
+		        }
+				Vector<CaptureDeviceInfo> deviceList = (Vector<CaptureDeviceInfo>)javax.media.cdm.CaptureDeviceManager.getDeviceList(new YUVFormat());
+				if(deviceList == null){
+					JOptionPane.showMessageDialog(null,"Keine WebCam verfügbar!!");
+					SystemConfig.sWebCamActive = "0";
+					return null;
+				}
+				device = (CaptureDeviceInfo) deviceList.firstElement();
+				ml = device.getLocator();
+				Manager.setHint(Manager.LIGHTWEIGHT_RENDERER, new Boolean(true));
+				player = Manager.createRealizedPlayer(ml);
+			}catch(NullPointerException ex){
+				ex.printStackTrace();
+				SystemConfig.sWebCamActive = "0";
+			}catch (NoPlayerException e) {
+				e.printStackTrace();
+				SystemConfig.sWebCamActive = "0";
+			} catch (CannotRealizeException e) {
+				e.printStackTrace();
+				SystemConfig.sWebCamActive = "0";
+			} catch (IOException e) {
+				e.printStackTrace();
+				SystemConfig.sWebCamActive = "0";
+			}
+			System.out.println("Web-Cam erfolgreich gestartet");
+			return null;
+			
+		}
+	}.execute();
+}
 
 /*********************************************/
 }
@@ -2897,8 +2953,13 @@ final class DatenbankStarten implements Runnable{
 				SystemConfig.JahresUmstellung();
 				
 				SystemConfig.Feiertage();
-
+				
 				new Thread(new PreisListenLaden()).start();
+				
+				if(SystemConfig.sWebCamActive.equals("1")){
+					Reha.thisClass.activateWebCam();
+				}
+
 				
 			}catch (InterruptedException e1) {
 					e1.printStackTrace();
