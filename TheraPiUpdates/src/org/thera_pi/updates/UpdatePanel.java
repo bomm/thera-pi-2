@@ -119,11 +119,15 @@ public class UpdatePanel extends JXPanel{
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				icokeinupdate = new ImageIcon(imgkeinupdate);
-				icoupdate = new ImageIcon(imgupdate);
-				doHoleUpdateConf();
-				updateCheck(UpdateConfig.getProghome() + "update.files");
-				doFtpTest();
+				try{
+					icokeinupdate = new ImageIcon(imgkeinupdate);
+					icoupdate = new ImageIcon(imgupdate);
+					doHoleUpdateConf();
+					updateCheck(UpdateConfig.getProghome() + "update.files");
+					doFtpTest();
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				return null;
 			}
 		}.execute();
@@ -363,6 +367,7 @@ public class UpdatePanel extends JXPanel{
 			if(updatefiles.get(i).get(0).equals(datei)){
 				f = new File(updatefiles.get(i).get(1));
 				if(!f.exists()){
+					testeDirectory(f);
 					return true;
 				}
 				System.out.println("\nDatei: -----> "+f.getName().toString()+"\n       Dateidatum lokal: "+
@@ -384,6 +389,21 @@ public class UpdatePanel extends JXPanel{
 			ex.printStackTrace();
 		}
 		return false;
+	}
+	private void testeDirectory(File f){
+		String abspfad = f.getAbsolutePath().replace("\\", "/");
+		String dir = abspfad.substring(0,abspfad.lastIndexOf("/"));
+		File d = new File(dir);
+		if(! d.exists()){
+			System.out.println("Erstelle Verzeichnis "+d.getAbsolutePath());
+			try{
+				d.mkdir();
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Verzeichnis "+d.getAbsolutePath()+" konnte nicht erstellt werden\n"+
+						"Bitte erstellen die das Verzeichnis von Hand und starten danach den Update-Explorer erneut");
+			}
+		}
+
 	}
 	/*
 	private String usingDateFormatter(long input){  
