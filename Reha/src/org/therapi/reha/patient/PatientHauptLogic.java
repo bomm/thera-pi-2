@@ -265,6 +265,23 @@ public class PatientHauptLogic {
 	    	}
 			String stmt = "delete from pat5 where pat_intern='"+patientHauptPanel.aktPatID+"'";
 			SqlInfo.sqlAusfuehren(stmt);
+			stmt = "delete from patbild where pat_intern='"+patientHauptPanel.aktPatID+"' LIMIT 1";
+			SqlInfo.sqlAusfuehren(stmt);
+			stmt = "delete from verordn where pat_intern='"+patientHauptPanel.aktPatID+"'";
+			SqlInfo.sqlAusfuehren(stmt);
+			stmt = "delete from lza where pat_intern='"+patientHauptPanel.aktPatID+"'";
+			SqlInfo.sqlAusfuehren(stmt);
+			stmt = "delete from doku1 where pat_intern='"+patientHauptPanel.aktPatID+"'";
+			SqlInfo.sqlAusfuehren(stmt);
+			stmt = "delete from bericht1 where pat_intern='"+patientHauptPanel.aktPatID+"'";
+			SqlInfo.sqlAusfuehren(stmt);
+			stmt = "delete from bericht2 where pat_intern='"+patientHauptPanel.aktPatID+"'";
+			SqlInfo.sqlAusfuehren(stmt);
+			stmt = "delete from bericht2ktl where pat_intern='"+patientHauptPanel.aktPatID+"'";
+			SqlInfo.sqlAusfuehren(stmt);
+			stmt = "delete from berhist where pat_intern='"+patientHauptPanel.aktPatID+"'";
+			SqlInfo.sqlAusfuehren(stmt);
+
 			allesAufNull();
 			setzeFocus();
 		}else{
@@ -472,7 +489,7 @@ public class PatientHauptLogic {
 	public void doPatFoto(){
 		BufferedImage buf = PatNeuanlage.holePatBild(Reha.thisClass.patpanel.aktPatID);
 		if(buf==null){
-			JOptionPane.showMessageDialog(patientHauptPanel.getStammDaten(), "Kein Patientenfoto verfügbar!");
+			JOptionPane.showMessageDialog(patientHauptPanel.getToolBar(), "Kein Patientenfoto verfügbar!");
 			return;
 		}
 		PatFotoDlg foto = new PatFotoDlg();
@@ -491,13 +508,15 @@ public class PatientHauptLogic {
 		foto.getSmartTitledPanel().getContentContainer().setName("PatientenFoto");
 		foto.getSmartTitledPanel().setTitle("Patienten-Foto");
 		foto.setName("PatientenFoto");
-		foto.setLocation(patientHauptPanel.getStammDaten().getLocationOnScreen().x+50,
-				patientHauptPanel.getStammDaten().getLocationOnScreen().y+50);
+		foto.setLocation(patientHauptPanel.getStammDaten().getLocationOnScreen().x+10,
+				patientHauptPanel.getStammDaten().getLocationOnScreen().y+25);
 		foto.pack();
 		foto.setModal(true);
 		//neuPat.setAlwaysOnTop(true);
 		foto.setVisible(true);
+		buf = null;
 		foto = null;
+		
 		
 	}
 
