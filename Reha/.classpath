@@ -37,6 +37,6 @@
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Nebraska"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/TheraPiUpdates"/>
-	<classpathentry kind="lib" path="/Libraries/lib/serial/comm.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/ocf/OpenCard.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

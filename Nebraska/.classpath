@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/unoloader.jar"/>
-	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/bootstrapconnector.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/java_uno.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/java_uno_accessbridge.jar"/>
@@ -23,5 +22,7 @@
 	<classpathentry kind="lib" path="/Libraries/lib/bcmail-jdk16-145.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/iText-2.1.6.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/pdf-renderer-1.0.5.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/swingx/swing-worker.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
