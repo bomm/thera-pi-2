@@ -1914,7 +1914,7 @@ boolean updateBild = false;
 				String select = "Update patbild set bild = ? , vorschau = ?  where pat_intern = ?";
 				  ps = (PreparedStatement) Reha.thisClass.conn.prepareStatement(select);
 				  ps.setBytes(1, bufferedImageToByteArray( (BufferedImage) ico.getImage()));
-				  BufferedImage buf = new BufferedImage(35,40,BufferedImage.TYPE_INT_RGB);
+				  BufferedImage buf = new BufferedImage(35,44,BufferedImage.TYPE_INT_RGB);
 				  Graphics2D g = buf.createGraphics();
 				    g.drawImage(ico.getImage().getScaledInstance(35, 44, Image.SCALE_SMOOTH), null, null);
 					g.dispose();

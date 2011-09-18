@@ -217,7 +217,7 @@ private JPanel getKnopfPanel(){
 		builder.add(ecgeraet, cc.xyw(4,27,2));
 		builder.addLabel("Anschluss", cc.xy(3,29));
 		builder.add(ecan, cc.xyw(4,29,2));
-		builder.addSeparator("Patienten-Fotos (JM-Studio muß installiert sein)",cc.xyw(1,31,5));		
+		builder.addSeparator("Patienten-Fotos (JMF muß installiert sein)",cc.xyw(1,31,5));		
 		builder.addLabel("Web-Cam aktivieren",cc.xy(3,33));
 		builder.add(webcam,cc.xy(5,33));
 		builder.addLabel("Videoauflösung",cc.xy(3,35));

@@ -3,6 +3,7 @@ package reha301;
 
 
 import java.awt.Cursor;
+import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.jdesktop.swingworker.SwingWorker;
 
 import reha301Panels.RehaIOMessages;
+
 
 import Tools.INIFile;
 import Tools.Verschluesseln;
@@ -276,6 +278,7 @@ public class Reha301 implements WindowListener  {
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
 		jFrame.getContentPane().add (new Reha301Tab());
+		jFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( Reha301.progHome+"icons/abr301.png" ) );
 		jFrame.setVisible(true);
 		thisFrame = jFrame;
 		new SwingWorker<Void,Void>(){

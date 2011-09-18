@@ -263,25 +263,29 @@ public class PatientHauptLogic {
 	    	if(frage != JOptionPane.YES_OPTION){
 	    		return;
 	    	}
-			String stmt = "delete from pat5 where pat_intern='"+patientHauptPanel.aktPatID+"'";
-			SqlInfo.sqlAusfuehren(stmt);
-			stmt = "delete from patbild where pat_intern='"+patientHauptPanel.aktPatID+"' LIMIT 1";
-			SqlInfo.sqlAusfuehren(stmt);
-			stmt = "delete from verordn where pat_intern='"+patientHauptPanel.aktPatID+"'";
-			SqlInfo.sqlAusfuehren(stmt);
-			stmt = "delete from lza where pat_intern='"+patientHauptPanel.aktPatID+"'";
-			SqlInfo.sqlAusfuehren(stmt);
-			stmt = "delete from doku1 where pat_intern='"+patientHauptPanel.aktPatID+"'";
-			SqlInfo.sqlAusfuehren(stmt);
-			stmt = "delete from bericht1 where pat_intern='"+patientHauptPanel.aktPatID+"'";
-			SqlInfo.sqlAusfuehren(stmt);
-			stmt = "delete from bericht2 where pat_intern='"+patientHauptPanel.aktPatID+"'";
-			SqlInfo.sqlAusfuehren(stmt);
-			stmt = "delete from bericht2ktl where pat_intern='"+patientHauptPanel.aktPatID+"'";
-			SqlInfo.sqlAusfuehren(stmt);
-			stmt = "delete from berhist where pat_intern='"+patientHauptPanel.aktPatID+"'";
-			SqlInfo.sqlAusfuehren(stmt);
-
+	    	final String spatid = String.valueOf(patientHauptPanel.aktPatID);
+	    	new Thread(){
+	    		public void run(){
+	    			String stmt = "delete from pat5 where pat_intern='"+spatid+"'";
+	    			SqlInfo.sqlAusfuehren(stmt);
+	    			stmt = "delete from patbild where pat_intern='"+spatid+"' LIMIT 1";
+	    			SqlInfo.sqlAusfuehren(stmt);
+	    			stmt = "delete from verordn where pat_intern='"+spatid+"'";
+	    			SqlInfo.sqlAusfuehren(stmt);
+	    			stmt = "delete from lza where pat_intern='"+spatid+"'";
+	    			SqlInfo.sqlAusfuehren(stmt);
+	    			stmt = "delete from doku1 where pat_intern='"+spatid+"'";
+	    			SqlInfo.sqlAusfuehren(stmt);
+	    			stmt = "delete from bericht1 where pat_intern='"+spatid+"'";
+	    			SqlInfo.sqlAusfuehren(stmt);
+	    			stmt = "delete from bericht2 where pat_intern='"+spatid+"'";
+	    			SqlInfo.sqlAusfuehren(stmt);
+	    			stmt = "delete from bericht2ktl where pat_intern='"+spatid+"'";
+	    			SqlInfo.sqlAusfuehren(stmt);
+	    			stmt = "delete from berhist where pat_intern='"+spatid+"'";
+	    			SqlInfo.sqlAusfuehren(stmt);
+	    		}
+	    	}.start();
 			allesAufNull();
 			setzeFocus();
 		}else{
