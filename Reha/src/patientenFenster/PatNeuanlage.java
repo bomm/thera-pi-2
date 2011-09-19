@@ -1545,6 +1545,10 @@ boolean updateBild = false;
 			updateBild = false;
 			return;
 		}else if(com.equals("addpic")){
+			if(SystemConfig.sWebCamActive.equals("0")){
+				JOptionPane.showMessageDialog(null,"WebCam entweder nicht aktiviert (System-Initialisierung)\noder nicht angeschlossen!");
+				return;
+			}
 			PatientenFoto foto = new PatientenFoto(null,"patBild",this);
 			foto.setModal(true);
 			foto.setLocationRelativeTo(null);
