@@ -38,5 +38,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Nebraska"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/TheraPiUpdates"/>
 	<classpathentry kind="lib" path="/Libraries/lib/ocf/OpenCard.jar"/>
+	<classpathentry kind="lib" path="C:/RehaVerwaltung/Libraries/lib/jmf/jmf.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
