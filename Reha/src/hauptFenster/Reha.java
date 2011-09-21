@@ -70,7 +70,6 @@ import javax.media.Manager;
 import javax.media.MediaLocator;
 import javax.media.NoPlayerException;
 import javax.media.Player;
-import javax.media.cdm.CaptureDeviceManager;
 import javax.media.format.YUVFormat;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -2708,18 +2707,21 @@ public void actionPerformed(ActionEvent arg0) {
 public void activateWebCam(){
 	
 	new SwingWorker<Void,Void>(){
+		@SuppressWarnings("rawtypes")
 		@Override
 		protected Void doInBackground() throws java.lang.Exception {
 	
 			try{
 				try{
-		            Class c = Class.forName("javax.media.Manager");
+		            @SuppressWarnings("unused")
+					Class c = Class.forName("javax.media.Manager");
 		        }catch (ClassNotFoundException e){
 		        	SystemConfig.sWebCamActive = "0";
 		        	JOptionPane.showMessageDialog(null, "Java Media Framework (JMF) ist nicht installiert"+
 		        			"\nWebCam kann nicht gestartet werden");
 		           
 		        }
+				@SuppressWarnings("unchecked")
 				Vector<CaptureDeviceInfo> deviceList = (Vector<CaptureDeviceInfo>)javax.media.cdm.CaptureDeviceManager.getDeviceList(new YUVFormat());
 				if(deviceList == null){
 					JOptionPane.showMessageDialog(null,"Keine WebCam verfügbar!!");
