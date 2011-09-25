@@ -48,8 +48,8 @@
         <ant dir="${dir.reha.urlaub}" target="${build.target}"/>
         <ant dir="${dir.reha.xswing}" target="${build.target}"/>
         <ant dir="${dir.text.baustein}" target="${build.target}"/>
-        <ant dir="${dir.reha}" target="${build.target}"/>
         <ant dir="${dir.therapi}" target="${build.target}"/>
+        <ant dir="${dir.reha}" target="${build.target}"/>
     </target>
 
 	<target name="jar"/>
