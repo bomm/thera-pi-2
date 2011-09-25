@@ -28,7 +28,7 @@ public class DateInputVerifier extends InputVerifier {
 	}
     public boolean verify (final JComponent input) {
     ////System.out.println("Input getText = "+((JRtaTextField)input).getText());
-    ////System.out.println("L�nge des Inputs = "+((JRtaTextField)input).getText().length());    
+    ////System.out.println("Länge des Inputs = "+((JRtaTextField)input).getText().length());    
         return this.isAlowedDate((JFormattedTextField)input);
       }
    
