@@ -412,11 +412,11 @@ public class BrowserFenster extends JFrame implements MouseListener,MouseMotionL
 		//System.out.println(meldung);
 	}
 	
-	private boolean WertZwischen(int punkt,int kleinerWert,int großerWert){
+	private boolean WertZwischen(int punkt,int kleinerWert,int grosserWert){
 		if (punkt < kleinerWert){
 			return false;
 		}
-		if (punkt > großerWert){
+		if (punkt > grosserWert){
 			return false;
 		}
 		return true;
@@ -574,7 +574,7 @@ public class BrowserFenster extends JFrame implements MouseListener,MouseMotionL
 		int ind = listSeiten.getSelectedIndex();
 		linkneu = ind;
 		if(linkneu != linkalt){
-			//System.out.println("Indes des gewählten Items = "+ind);
+			//System.out.println("Indes des gewï¿½hlten Items = "+ind);
 			//System.out.println(SystemConfig.InetSeiten.get(ind).get(2));
 			rtaWissen.Navigiere(SystemConfig.InetSeiten.get(ind).get(2));
 			linkalt = linkneu;
@@ -912,7 +912,7 @@ final class MachSuche extends SwingWorker<Void,Void>{
 			
 			String test = new String(BrowserFenster.thisClass.jtf.getText().trim());
 			//String test = "";
-			//System.out.println("Übergebener String = "+test);
+			//System.out.println("ï¿½bergebener String = "+test);
 			//System.out.println("Statement = "+xstmt1);
 	 
 			for(int i = 0; i < 1; i++){
@@ -1034,28 +1034,28 @@ final class MachSuche extends SwingWorker<Void,Void>{
 		private String ersetzeUmlaute1(String str){
 			String ersetzen = new String(str);
 			String neu = "", alt = neu = "";
-			neu = new String(ersetzen.replaceAll("ä","Ã¤")); 
+			neu = new String(ersetzen.replaceAll("ï¿½","Ã¤")); 
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("ö","Ã¶" ));
+			neu = new String(alt.replaceAll("ï¿½","Ã¶" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("ü","Ã¼" ));
+			neu = new String(alt.replaceAll("ï¿½","Ã¼" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("Ä","Ã„" ));
+			neu = new String(alt.replaceAll("ï¿½","Ã„" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("Ö","Ã–" ));
+			neu = new String(alt.replaceAll("ï¿½","Ã–" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("Ü","Ãœ" ));
+			neu = new String(alt.replaceAll("ï¿½","Ãœ" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("ß","ÃŸ" ));
+			neu = new String(alt.replaceAll("ï¿½","ÃŸ" ));
 
 			/*
-			Ã¤ statt ä
-			Ã¶ statt ö
-			Ã¼ statt ü
-			Ã„ statt Ä
-			Ã– statt Ö
-			Ãœ statt Ü
-			ÃŸ statt ß
+			Ã¤ statt ï¿½
+			Ã¶ statt ï¿½
+			Ã¼ statt ï¿½
+			Ã„ statt ï¿½
+			Ã– statt ï¿½
+			Ãœ statt ï¿½
+			ÃŸ statt ï¿½
 			*/
 			//ersetzen
 			return new String(neu);
@@ -1064,28 +1064,28 @@ final class MachSuche extends SwingWorker<Void,Void>{
 		private String ersetzeUmlaute2(String str){
 			String ersetzen = new String(str);
 			String neu = "", alt = neu = "";
-			neu = new String(ersetzen.replaceAll("ä","&auml;")); 
+			neu = new String(ersetzen.replaceAll("ï¿½","&auml;")); 
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("ö","&ouml;" ));
+			neu = new String(alt.replaceAll("ï¿½","&ouml;" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("ü","&uuml;" ));
+			neu = new String(alt.replaceAll("ï¿½","&uuml;" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("Ä","&Auml;" ));
+			neu = new String(alt.replaceAll("ï¿½","&Auml;" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("Ö","&Ouml;" ));
+			neu = new String(alt.replaceAll("ï¿½","&Ouml;" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("Ü","&Uuml;" ));
+			neu = new String(alt.replaceAll("ï¿½","&Uuml;" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("ß","&szlig;" ));
+			neu = new String(alt.replaceAll("ï¿½","&szlig;" ));
 
 			/*
-			Ã¤ statt ä
-			Ã¶ statt ö
-			Ã¼ statt ü
-			Ã„ statt Ä
-			Ã– statt Ö
-			Ãœ statt Ü
-			ÃŸ statt ß
+			Ã¤ statt ï¿½
+			Ã¶ statt ï¿½
+			Ã¼ statt ï¿½
+			Ã„ statt ï¿½
+			Ã– statt ï¿½
+			Ãœ statt ï¿½
+			ÃŸ statt ï¿½
 			*/
 			//ersetzen
 			return new String(neu);
@@ -1111,7 +1111,7 @@ class BrowserSockServer{
 		}
 		
 		Socket client = null;
-		//RehaxSwing.standDerDingelbl.setText("Öffne Socket");
+		//RehaxSwing.standDerDingelbl.setText("ï¿½ffne Socket");
 		while(xlisten){
 			try {
 				//RehaxSwing.socketoffen = true;				
