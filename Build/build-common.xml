@@ -28,7 +28,7 @@
 			<!-- The mapper removes absolute paths and filters out
 			     references to source files -->
 			<mapper>
-				<!-- this should catch all JARs build by other projects
+				<!-- this should catch all JARs built by other projects
 				     (path.classpath.build.project) -->
 				<globmapper from="${basedir}/*.jar" to="*.jar"/>
 				<!-- this should catch all thirdparty JARs -->
