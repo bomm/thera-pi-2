@@ -120,6 +120,7 @@ JButton knopf4 = null;
 JButton knopf5 = null;
 JButton pic0 = null;
 JButton pic1 = null;
+JButton pic2 = null;
 
 JRtaComboBox cbanrede = null;
 
@@ -241,6 +242,7 @@ boolean updateBild = false;
 					doclist.setEnabled(false);
 					pic0.setEnabled(false);
 					pic1.setEnabled(false);
+					pic2.setEnabled(false);
 					knopf0.setEnabled(false);
 					knopf1.setEnabled(false);
 					knopf3.setEnabled(false);
@@ -1180,6 +1182,11 @@ boolean updateBild = false;
 		pic1.addActionListener(this);		
 		pic1.setActionCommand("addpic");
 		pic1.addKeyListener(this);
+		pic2 = new JButton("Bilddatei");
+		pic2.setPreferredSize(new Dimension(70, 20));
+		pic2.addActionListener(this);		
+		pic2.setActionCommand("addjpg");
+		pic2.addKeyListener(this);
 		 
 		
 		FormLayout lay31 = new FormLayout("right:max(80dlu;p), 4dlu, 175px,right:max(60dlu;p), 4dlu, 60dlu",
@@ -1196,7 +1203,17 @@ boolean updateBild = false;
 					lblbild = new JLabel();
 					builder31.add(lblbild, cc31.xy(3, 3));
 					builder31.addLabel("Bild aufnehmen", cc31.xy(1,5));
-					builder31.add(pic1, cc31.xy(3,5));
+					/****/
+					JXPanel pan = new JXPanel();
+					pan.setOpaque(false);
+					FormLayout lay2 = new FormLayout("fill:0:grow(0.5),2px,fill:0:grow(0.5)","p");
+					pan.setLayout(lay2);
+					CellConstraints cc2 = new CellConstraints();
+					pan.add(pic1, cc2.xy(1,1,CellConstraints.FILL,CellConstraints.DEFAULT));
+					pan.add(pic2, cc2.xy(3,1,CellConstraints.FILL,CellConstraints.DEFAULT));
+					builder31.add(pan, cc31.xy(3,5));
+					/****/
+					//builder31.add(pic1, cc31.xy(3,5));
 					builder31.addLabel("Bild verwerfen", cc31.xy(4,5));
 					builder31.add(pic0, cc31.xy(6,5));
 					new SwingWorker<Void,Void>(){
@@ -1557,7 +1574,10 @@ boolean updateBild = false;
 			foto = null;
 			return;
 			
+		}else if(com.equals("addjpg")){
+			JOptionPane.showMessageDialog(null,"Aufnahme von fertigen Bilddateien (noch) nicht implementiert");
 		}
+			
 
 	}
 	@Override
