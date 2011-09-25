@@ -1,5 +1,5 @@
 package terminKalender;
-/* MyPrintableObject.java: Printable-Hilfsklasse für J2SE-Programmierbeispiele */
+/* MyPrintableObject.java: Printable-Hilfsklasse fÃ¼r J2SE-Programmierbeispiele */
 
 import java.awt.*;
 import java.awt.print.*;
@@ -59,7 +59,7 @@ public class MyPrintableObject implements Printable
                      + dbldgt( pf.getImageableX() * PNT_MM ) + " / "
                      + dbldgt( pf.getImageableY() * PNT_MM ) + " mm",
                      iPosX, iPosY+=iAddY );
-      g2.drawString( "versuchte Druckauflösung: "
+      g2.drawString( "versuchte DruckauflÃ¶sung: "
                      + 72 * iResMul + " dpi", iPosX, iPosY+=iAddY );
     } catch( Exception ex ) {
       throw new PrinterException( ex.getMessage() );
