@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="TheraPiHilfe">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../eclipse"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <import file="build-user.xml"/>
+    <path id="TheraPiHilfe.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="../Libraries/lib/jgoodies/looks-2.3.1.jar"/>
+        <pathelement location="../Libraries/lib/jgoodies/forms-1.3.0.jar"/>
+        <pathelement location="../Libraries/lib/jgoodies/jgoodies-common-0.9.9.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/bootstrapconnector.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/java_uno.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/java_uno_accessbridge.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/juh.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/junit-3.8.1.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/jurt.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/jut.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/officebean.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/registry-3.1.3.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/ridl.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/sandbox.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/unoil.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/unoloader.jar"/>
+        <pathelement location="../Libraries/lib/sql/mysql-connector-java-5.1.5-bin.jar"/>
+        <pathelement location="../Libraries/lib/swingx/swingx-1.6.jar"/>
+        <pathelement location="../Libraries/lib/swingx/swing-worker.jar"/>
+        <pathelement location="../Libraries/lib/apachecommons/commons-net-2.0.jar"/>
+        <pathelement location="../Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
+        <pathelement location="../Libraries/lib/sql/jpmdbc.jar"/>
+    </path>
+    <path id="run.piHelp.classpath">
+        <path refid="TheraPiHilfe.classpath"/>
+    </path>
+    <path id="run.piHelp.bootclasspath"/>
+    <path id="run.SimpleApp.classpath">
+        <path refid="TheraPiHilfe.classpath"/>
+    </path>
+    <path id="run.SimpleApp.bootclasspath"/>
+    <path id="run.UnitsExample.classpath">
+        <path refid="TheraPiHilfe.classpath"/>
+    </path>
+    <path id="run.UnitsExample.bootclasspath"/>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="TheraPiHilfe.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="piHelp">
+        <java classname="therapiHilfe.piHelp" failonerror="true" fork="yes">
+            <classpath refid="run.piHelp.classpath"/>
+            <bootclasspath>
+                <path refid="run.piHelp.bootclasspath"/>
+            </bootclasspath>
+        </java>
+    </target>
+    <target name="SimpleApp">
+        <java classname="therapiHilfe.SimpleApp" failonerror="true" fork="yes">
+            <classpath refid="run.SimpleApp.classpath"/>
+            <bootclasspath>
+                <path refid="run.SimpleApp.bootclasspath"/>
+            </bootclasspath>
+        </java>
+    </target>
+    <target name="UnitsExample">
+        <java classname="wartenFenster.UnitsExample" failonerror="true" fork="yes">
+            <classpath refid="run.UnitsExample.classpath"/>
+            <bootclasspath>
+                <path refid="run.UnitsExample.bootclasspath"/>
+            </bootclasspath>
+        </java>
+    </target>
+</project>

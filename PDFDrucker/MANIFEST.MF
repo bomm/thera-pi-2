@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Sealed: true
+Main-Class: pdfDrucker.PDFDrucker
+Class-Path: Libraries/lib/swingx/pdf-renderer-1.0.5.jar 
+
+

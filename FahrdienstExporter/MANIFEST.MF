@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Sealed: true
+Main-Class: fahrdienstExporter.FahrdienstExporter
+Class-Path: Libraries/lib/dbf/jdbf.jar 
+  
+
+ 

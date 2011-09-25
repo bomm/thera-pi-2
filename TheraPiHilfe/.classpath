@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/Libraries/lib/jgoodies/looks-2.3.1.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/jgoodies/forms-1.3.0.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/jgoodies/jgoodies-common-0.9.9.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/bootstrapconnector.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/java_uno.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/java_uno_accessbridge.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/juh.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/jurt.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/jut.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/officebean.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/registry-3.1.3.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/ridl.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/sandbox.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/unoil.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/unoloader.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/sql/mysql-connector-java-5.1.5-bin.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/swingx/swingx-1.6.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/swingx/swing-worker.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/apachecommons/commons-net-2.0.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
+	<classpathentry kind="lib" path="/Libraries/lib/sql/jpmdbc.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
