@@ -292,7 +292,7 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		String smtphost = SMTPhost.getText().trim();
 		//String pophost = POPhost.getText().trim();
 		String authent = ( Authent.isSelected() ? "1" : "0");
-		String text = "Herzlichen Glückwunsch Ihr Postfach ist perferkt konfiguriert\n\n"+
+		String text = "Herzlichen Glückwunsch Ihr Postfach ist perfekt konfiguriert\n\n"+
 				"Sie können diese Konfiguration nun abspeichern";
 		boolean authx = (authent.equals("0") ? false : true);
 		boolean bestaetigen = (bestaetigung.equals("0") ? false : true);
