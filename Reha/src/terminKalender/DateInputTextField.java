@@ -1,6 +1,6 @@
 package terminKalender;
 /**
- * Copyright Â© 2006 Bastie - Sebastian Ritter
+ * Copyright © 2006 Bastie - Sebastian Ritter
  */
 
 import java.text.DateFormat;
