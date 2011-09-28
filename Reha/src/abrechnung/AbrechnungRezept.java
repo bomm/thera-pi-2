@@ -1478,6 +1478,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			anzahlkm = Double.parseDouble("0.00");
 		}
 		
+		
 		/*********Jetzt geht's los ***********/
 		////System.out.println("HB-Regeln = "+SystemConfig.vHBRegeln);
 		if(maxanzahl < insgesamthb){
@@ -1529,6 +1530,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				}
 				if(kilometerbesser && (!kilometerpos.trim().equals(""))){
 				//if(anzahlkm > 7 && (!kilometerpos.trim().equals(""))){
+					if(anzahlkm <= 0){
+						JOptionPane.showMessageDialog(null,"Achtung Sie rechnen HB-Kilometer ab dem Pat wurden aber 0 km zugewiesen,\ndieses Rezept bitte aus der Abrechnung nehmen bis im Pat.Stamm die Kilometeranzahl korrigiert wurde");
+					}
 					abrfallAnhaengen(    i+1,   node,  tag,   kilometerpos,    anzahlkm ,immerfrei);
 					//Kilometer im Patientenstamm auf 0 gesetzt und es existiert eine Pauschalenziffer
 				}else if((!kilometerbesser) && (!pauschalepos.trim().equals(""))){	
@@ -1643,6 +1647,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			}else{
 				int pos = vec_poskuerzel.indexOf(vec_tabelle.get(i).get(1) );
 				int anzahl = vec_posanzahl.get(pos);
+				if(anzahl <= 0){
+					JOptionPane.showMessageDialog(null,"Achtung Sie rechnen eine Position mit Anzahl 0 ab,\ndieses Rezept bitte aus der Abrechnung nehmen bis das Problem behoben wurde");
+				}				
 				vec_posanzahl.set(pos, anzahl+1);
 			}
 		}
