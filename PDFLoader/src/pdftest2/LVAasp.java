@@ -52,12 +52,12 @@ public class LVAasp {
 		if(ergebnis.get(0).get(4).trim().length()==10){
 			hashMap.put("Geburtsdatum",DatFunk.sDatInDeutsch(ergebnis.get(0).get(4)).replace(".", ""));			
 		}
-		hashMap.put("Straﬂe",ergebnis.get(0).get(5));
+		hashMap.put("Stra√üe",ergebnis.get(0).get(5));
 		hashMap.put("PLZ",ergebnis.get(0).get(6));
 		hashMap.put("Ort",ergebnis.get(0).get(7));
-		hashMap.put("Kontrollk‰stchen40","ambulant");
-		hashMap.put("Kontrollk‰stchen41",(ergebnis.get(0).get(18).equals("3") ? "Ja" : "nein" ));
-		hashMap.put("Kontrollk‰stchen35","Ja");
+		hashMap.put("Kontrollk√§stchen40","ambulant");
+		hashMap.put("Kontrollk√§stchen41",(ergebnis.get(0).get(18).equals("3") ? "Ja" : "nein" ));
+		hashMap.put("Kontrollk√§stchen35","Ja");
 		
 		hashMap.put("Text7",DatFunk.sDatInDeutsch(ergebnis.get(0).get(15)).replace(".", ""));
 		hashMap.put("Text8",DatFunk.sDatInDeutsch(ergebnis.get(0).get(16)).replace(".", ""));
@@ -103,16 +103,16 @@ public class LVAasp {
 		hashMap.put("Versicherungsnummer","");
 		hashMap.put("Name","");
 		hashMap.put("Geburtsdatum","");
-		hashMap.put("Straﬂe","");
+		hashMap.put("Stra√üe","");
 		hashMap.put("PLZ","");
 		hashMap.put("Ort","");
-		hashMap.put("Kontrollk‰stchen35","");
-		hashMap.put("Kontrollk‰stchen36","");
-		hashMap.put("Kontrollk‰stchen37","");
-		hashMap.put("Kontrollk‰stchen38","");
-		hashMap.put("Kontrollk‰stchen39","");
-		hashMap.put("Kontrollk‰stchen40","");
-		hashMap.put("Kontrollk‰stchen41","");
+		hashMap.put("Kontrollk√§stchen35","");
+		hashMap.put("Kontrollk√§stchen36","");
+		hashMap.put("Kontrollk√§stchen37","");
+		hashMap.put("Kontrollk√§stchen38","");
+		hashMap.put("Kontrollk√§stchen39","");
+		hashMap.put("Kontrollk√§stchen40","");
+		hashMap.put("Kontrollk√§stchen41","");
 		hashMap.put("Text7","");
 		hashMap.put("Text8","");
 		hashMap.put("Text49","");

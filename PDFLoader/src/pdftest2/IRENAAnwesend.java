@@ -67,7 +67,7 @@ public class IRENAAnwesend {
 		try {
 			fw.write(
 					"</fields>"+System.getProperty("line.separator")+
-					"<f href='"+formularpfad+"\\Anwesenheitsliste für IRENA_NoRestriction.pdf'/>"+System.getProperty("line.separator")+
+					"<f href='"+formularpfad+"\\Anwesenheitsliste fÃ¼r IRENA_NoRestriction.pdf'/>"+System.getProperty("line.separator")+
 					"</xfdf>"
 					);
 			fw.close();

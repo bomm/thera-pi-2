@@ -86,9 +86,9 @@ public class REHAbescheinigung {
 		hashMap.put("Derdie Patientin","");
 		hashMap.put("geb am","");
 		hashMap.put("seitab dem","");
-		hashMap.put("für den","");
-		hashMap.put("Die Maßnahme für og Patienten wurde aus medizinischen Gründen um","");
-		hashMap.put("verlängert Der Abschluß der Maßnahme ist nunmehr für den","");
+		hashMap.put("fÃ¼r den","");
+		hashMap.put("Die MaÃŸnahme fÃ¼r og Patienten wurde aus medizinischen GrÃ¼nden um","");
+		hashMap.put("verlÃ¼ngert Der AbschluÃŸ der MaÃŸnahme ist nunmehr fÃ¼r den","");
 	}
 	private void macheKopf(FileWriter fw){
 	    try {

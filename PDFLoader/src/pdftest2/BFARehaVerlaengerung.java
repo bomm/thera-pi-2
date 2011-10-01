@@ -72,7 +72,7 @@ public class BFARehaVerlaengerung {
 		try {
 			fw.write(
 					"</fields>"+System.getProperty("line.separator")+
-					"<f href='"+formularpfad+"\\BfA-Rehaverlängerung_neu.pdf'/>"+System.getProperty("line.separator")+
+					"<f href='"+formularpfad+"\\BfA-RehaverlÃ¤ngerung_neu.pdf'/>"+System.getProperty("line.separator")+
 					"</xfdf>"
 					);
 			fw.close();

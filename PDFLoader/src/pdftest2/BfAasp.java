@@ -84,7 +84,7 @@ public class BfAasp  {
 		hashMap.put("AW_ART1","985");
 		//hashMap.put("AW_ART2",ergebnis.get(0).get(23));
 		//hashMap.put("AW_ART3",ergebnis.get(0).get(23));
-		//hashMap.put("frühs._Beginn",ergebnis.get(0).get());
+		//hashMap.put("frÃ¼hs._Beginn",ergebnis.get(0).get());
 		
 		hashMap.put("ORT_1","Reutlinger Therapie- und Analysezentrum GmbH");
 		hashMap.put("STR_HA_PLZ_ORT2","Marie-Curie-Str.1, 72760 Reutlingen");
@@ -146,7 +146,7 @@ public class BfAasp  {
 		hashMap.put("AW_ART1","");
 		hashMap.put("AW_ART2","");
 		hashMap.put("AW_ART3","");
-		hashMap.put("frühs._Beginn","");
+		hashMap.put("frÃ¼hs._Beginn","");
 		hashMap.put("ORT_1","");
 		hashMap.put("STR_HA_PLZ_ORT2","");
 		hashMap.put("ORT_DAT_1","");
@@ -168,7 +168,7 @@ public class BfAasp  {
 		try {
 			fw.write(
 					"</fields>"+System.getProperty("line.separator")+
-					"<f href='"+formularpfad+"\\Empfehlung für IRENA_NoRestriction.pdf'/>"+System.getProperty("line.separator")+
+					"<f href='"+formularpfad+"\\Empfehlung fÃ¼r IRENA_NoRestriction.pdf'/>"+System.getProperty("line.separator")+
 					"</xfdf>"
 					);
 			fw.close();

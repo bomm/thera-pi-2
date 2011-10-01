@@ -127,12 +127,12 @@ public class BfAAufnahmemitteilung {
 		/*
 		initHashMap();
 		hashMap.put("Versicherungsnummer","12123456S012");
-		hashMap.put("VERS_N_VN_1","Steinhilber, Jürgen");
+		hashMap.put("VERS_N_VN_1","Steinhilber, JÃ¼rgen");
 		hashMap.put("14_BKZ","02051962");
 		hashMap.put("MSNR","Theodor-Fontane-Str.4");
 		hashMap.put("REHA_1","72760");		
 		hashMap.put("INST_KENNZ_1","Reutlingen");
-		hashMap.put("ABT_1","stationär");
+		hashMap.put("ABT_1","stationÃ¤r");
 		hashMap.put("VERS_N_VN_1","Ja");
 		hashMap.put("INST_KENNZ_1","Reutlingen");
 		*/
