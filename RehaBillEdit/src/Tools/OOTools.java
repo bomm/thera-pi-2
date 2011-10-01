@@ -54,8 +54,6 @@ import com.sun.star.uno.Exception;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
 import com.sun.star.view.XLineCursor;
-import com.sun.xml.internal.bind.v2.runtime.property.Property;
-
 
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.desktop.IFrame;

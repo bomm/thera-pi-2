@@ -100,7 +100,6 @@ import com.sun.star.uno.Any;
 import com.sun.star.uno.Exception;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.view.DocumentZoomType;
-import com.sun.xml.internal.ws.util.ByteArrayBuffer;
 
 public class ooPanel{
 	

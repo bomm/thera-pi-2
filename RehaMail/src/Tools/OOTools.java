@@ -61,8 +61,6 @@ import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
 import com.sun.star.util.XNumberFormats;
 import com.sun.star.view.XLineCursor;
-import com.sun.xml.internal.bind.v2.runtime.property.Property;
-
 
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.desktop.IFrame;
@@ -129,7 +127,7 @@ public class OOTools{
 				if(stext.substring(start+i,start+(i+1)).equals("^")){
 					dummy = stext.substring(start,start+(i+1));
 					String sanweisung = dummy.toString().replace("^", "");
-					Object ret = JOptionPane.showInputDialog(null,"<html>Bitte Wert eingeben für: --\u003E<b> "+sanweisung+" </b> &nbsp; </html>","Platzhalter gefunden", 1);
+					Object ret = JOptionPane.showInputDialog(null,"<html>Bitte Wert eingeben fÃ¼r: --\u003E<b> "+sanweisung+" </b> &nbsp; </html>","Platzhalter gefunden", 1);
 					if(ret==null){
 						return true;
 							//sucheErsetze(dummy,"");
@@ -143,8 +141,8 @@ public class OOTools{
 				}
 			}
 			if(noendfound){
-				JOptionPane.showMessageDialog(null,"Der Baustein ist fehlerhaft, eine Übernahme deshalb nicht möglich"+
-						"\n\nVermutete Ursache des Fehlers: es wurde ein Start-/Endezeichen '^' für Variable vergessen\n");
+				JOptionPane.showMessageDialog(null,"Der Baustein ist fehlerhaft, eine Ãbernahme deshalb nicht mÃ¶glich"+
+						"\n\nVermutete Ursache des Fehlers: es wurde ein Start-/Endezeichen '^' fÃ¼r Variable vergessen\n");
 				return false;
 			}
 		}
@@ -309,7 +307,7 @@ public class OOTools{
 		+ xStyleProps.getPropertyValue(props[i].Name));
 		}
 		*/
-		//z.B. f�r A5
+		//z.B. für A5
 		 
 		
 		xStyleProps.setPropertyValue("Height", hoch);
@@ -367,7 +365,7 @@ public class OOTools{
 		XTopWindow topWindow = (XTopWindow)
 		UnoRuntime.queryInterface(XTopWindow.class,
 		xFrame. getContainerWindow());
-		//hier beide methoden, beide sind nötig
+		//hier beide methoden, beide sind nÃ¶tig
 		xFrame.activate();
 		topWindow.toFront();
 
@@ -419,7 +417,7 @@ public class OOTools{
 			} catch (NOAException e) {
 				e.printStackTrace();
 			}
-			//Wenn nicht gleich wie im Übergebenen Parameter angegeben -> Drucker wechseln
+			//Wenn nicht gleich wie im Ãbergebenen Parameter angegeben -> Drucker wechseln
 			IPrinter iprint = null;
 			if(! druckerName.equals(drucker)){
 				try {
@@ -564,7 +562,7 @@ public class OOTools{
 		xPropSet = (com.sun.star.beans.XPropertySet)
 		UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);        
 		xPropSet.setPropertyValue( "CharWeight",com.sun.star.awt.FontWeight.BOLD );
-		/* Beispiele für Fonthandling
+		/* Beispiele fÃ¼r Fonthandling
 		xPropSet.setPropertyValue("CharFontStyleName", new String("Times New Roman"));
 		xPropSet.setPropertyValue("CharWeight", new Float(com.sun.star.awt.FontWeight.NORMAL));
 		xPropSet.setPropertyValue("CharHeight", new Float(12));
@@ -588,7 +586,7 @@ public class OOTools{
 		UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);    
 		xPropSet.setPropertyValue("CharHeight", size);
 		xPropSet.setPropertyValue( "CharWeight",com.sun.star.awt.FontWeight.NORMAL );
-		/* Beispiele für Fonthandling
+		/* Beispiele fÃ¼r Fonthandling
 		xPropSet.setPropertyValue("CharFontStyleName", new String("Times New Roman"));
 		xPropSet.setPropertyValue("CharWeight", new Float(com.sun.star.awt.FontWeight.NORMAL));
 		xPropSet.setPropertyValue("CharHeight", new Float(12));
@@ -602,7 +600,7 @@ public class OOTools{
 		UnoRuntime.queryInterface(com.sun.star.beans.XPropertySet.class, cell);    
 		xPropSet.setPropertyValue("CharFontName", fontname);
 		//PropSet.setPropertyValue( "CharWeight",com.sun.star.awt.FontWeight.NORMAL );
-		/* Beispiele für Fonthandling
+		/* Beispiele fÃ¼r Fonthandling
 		xPropSet.setPropertyValue("CharFontStyleName", new String("Times New Roman"));
 		xPropSet.setPropertyValue("CharWeight", new Float(com.sun.star.awt.FontWeight.NORMAL));
 		xPropSet.setPropertyValue("CharHeight", new Float(12));
