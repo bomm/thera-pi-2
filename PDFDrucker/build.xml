@@ -6,14 +6,15 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="PDFDrucker">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../eclipse"/>
+    <property name="Libraries.location" value="../Libraries"/>
+    <property name="ECLIPSE_HOME" value="../../../../usr/lib/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <import file="build-user.xml"/>
     <path id="PDFDrucker.classpath">
         <pathelement location="bin"/>
-        <pathelement location="../Libraries/lib/swingx/pdf-renderer-1.0.5.jar"/>
+        <pathelement location="${Libraries.location}/lib/swingx/pdf-renderer-1.0.5.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>

@@ -6,143 +6,22 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="Libraries">
     <property environment="env"/>
-    <property name="ArztBaustein.location" value="../ArztBaustein"/>
-    <property name="BMIRechner.location" value="../BMIRechner"/>
-    <property name="LVAEntlassmitteilung.location" value="../LVAEntlassmitteilung"/>
-    <property name="Nebraska.location" value="../Nebraska"/>
-    <property name="OffenePosten.location" value="../OffenePosten"/>
-    <property name="OpRgaf.location" value="../OpRgaf"/>
-    <property name="Reha301.location" value="../Reha301"/>
-    <property name="RehaBillEdit.location" value="../RehaBillEdit"/>
-    <property name="RehaKassenbuch.location" value="../RehaKassenbuch"/>
-    <property name="RehaMail.location" value="../RehaMail"/>
-    <property name="RehaSql.location" value="../RehaSql"/>
-    <property name="RehaStatistik.location" value="../RehaStatistik"/>
-    <property name="RehaUrlaub.location" value="../RehaUrlaub"/>
-    <property name="TextB.location" value="../TextB"/>
-    <property name="TheraPi.location" value="../TheraPi"/>
     <property name="TheraPiUpdates.location" value="../TheraPiUpdates"/>
     <property name="ECLIPSE_HOME" value="../../../../usr/lib/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <import file="build-user.xml"/>
-    <path id="Libraries.classpath">
-        <pathelement location="bin"/>
-    </path>
-    <target name="init">
-        <mkdir dir="bin"/>
-        <copy includeemptydirs="false" todir="bin">
-            <fileset dir="src">
-                <exclude name="**/*.launch"/>
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
-    </target>
-    <target name="clean">
-        <delete dir="bin"/>
-    </target>
+    <path id="Libraries.classpath"/>
+    <target name="init"/>
+    <target name="clean"/>
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build"/>
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
-            <src path="src"/>
-            <classpath refid="Libraries.classpath"/>
-        </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
-        <ant antfile="${ArztBaustein.location}/build.xml" dir="${ArztBaustein.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${ArztBaustein.location}/build.xml" dir="${ArztBaustein.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${BMIRechner.location}/build.xml" dir="${BMIRechner.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${BMIRechner.location}/build.xml" dir="${BMIRechner.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${LVAEntlassmitteilung.location}/build.xml" dir="${LVAEntlassmitteilung.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${LVAEntlassmitteilung.location}/build.xml" dir="${LVAEntlassmitteilung.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${Nebraska.location}/build.xml" dir="${Nebraska.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${Nebraska.location}/build.xml" dir="${Nebraska.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${OffenePosten.location}/build.xml" dir="${OffenePosten.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${OffenePosten.location}/build.xml" dir="${OffenePosten.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${OpRgaf.location}/build.xml" dir="${OpRgaf.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${OpRgaf.location}/build.xml" dir="${OpRgaf.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${Reha301.location}/build.xml" dir="${Reha301.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${Reha301.location}/build.xml" dir="${Reha301.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${RehaBillEdit.location}/build.xml" dir="${RehaBillEdit.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${RehaBillEdit.location}/build.xml" dir="${RehaBillEdit.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${RehaKassenbuch.location}/build.xml" dir="${RehaKassenbuch.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${RehaKassenbuch.location}/build.xml" dir="${RehaKassenbuch.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${RehaMail.location}/build.xml" dir="${RehaMail.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${RehaMail.location}/build.xml" dir="${RehaMail.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${RehaSql.location}/build.xml" dir="${RehaSql.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${RehaSql.location}/build.xml" dir="${RehaSql.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${RehaStatistik.location}/build.xml" dir="${RehaStatistik.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${RehaStatistik.location}/build.xml" dir="${RehaStatistik.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${RehaUrlaub.location}/build.xml" dir="${RehaUrlaub.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${RehaUrlaub.location}/build.xml" dir="${RehaUrlaub.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${TextB.location}/build.xml" dir="${TextB.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${TextB.location}/build.xml" dir="${TextB.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-        <ant antfile="${TheraPi.location}/build.xml" dir="${TheraPi.location}" inheritAll="false" target="clean"/>
-        <ant antfile="${TheraPi.location}/build.xml" dir="${TheraPi.location}" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
         <ant antfile="${TheraPiUpdates.location}/build.xml" dir="${TheraPiUpdates.location}" inheritAll="false" target="clean"/>
         <ant antfile="${TheraPiUpdates.location}/build.xml" dir="${TheraPiUpdates.location}" inheritAll="false" target="build">
             <propertyset>

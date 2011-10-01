@@ -14,13 +14,9 @@
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <import file="build-user.xml"/>
-    <path id="Libraries.classpath">
-        <pathelement location="${Libraries.location}/bin"/>
-    </path>
     <path id="Nebraska.classpath">
         <pathelement location="bin"/>
         <pathelement location="${Libraries.location}/lib/openofficeorg/unoloader.jar"/>
-        <pathelement location="${Libraries.location}/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
         <pathelement location="${Libraries.location}/lib/openofficeorg/bootstrapconnector.jar"/>
         <pathelement location="${Libraries.location}/lib/openofficeorg/java_uno.jar"/>
         <pathelement location="${Libraries.location}/lib/openofficeorg/java_uno_accessbridge.jar"/>
@@ -40,7 +36,8 @@
         <pathelement location="${Libraries.location}/lib/bcmail-jdk16-145.jar"/>
         <pathelement location="${Libraries.location}/lib/iText-2.1.6.jar"/>
         <pathelement location="${Libraries.location}/lib/pdf-renderer-1.0.5.jar"/>
-        <path refid="Libraries.classpath"/>
+        <pathelement location="${Libraries.location}/lib/swingx/swing-worker.jar"/>
+        <pathelement location="${Libraries.location}/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -54,17 +51,9 @@
     <target name="clean">
         <delete dir="bin"/>
     </target>
-    <target depends="clean" name="cleanall">
-        <ant antfile="${Libraries.location}/build.xml" dir="${Libraries.location}" inheritAll="false" target="clean"/>
-    </target>
+    <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build"/>
-    <target name="build-subprojects">
-        <ant antfile="${Libraries.location}/build.xml" dir="${Libraries.location}" inheritAll="false" target="build-project">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-    </target>
+    <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
