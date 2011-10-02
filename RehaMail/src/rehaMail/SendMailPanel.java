@@ -449,7 +449,7 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 		return jtb;
 	}
 	
-	/********OO.org-Ged�nse*******
+	/********OO.org-Gedönse*******
 	 * 
 	 * 
 	 * 
@@ -572,9 +572,9 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 		Vector<Object> vec = new Vector<Object>();
 		int durchlauf = 0;
 
-		//Saudummerweise entspricht der R�ckgabewert von getColumnTypeName() oder
+		//Saudummerweise entspricht der Rückgabewert von getColumnTypeName() oder
 		//getColumnType() nicht der Abfrag von describe tabelle
-		//so werden alle Integer-Typen unter INT zusammengefa�t
+		//so werden alle Integer-Typen unter INT zusammengefaßt
 		//Longtext, Mediumtext, Varchar = alles VARCHAR
 		//CHAR kann sowohl ein einzelnes Zeichen als auch enum('T','F') also boolean sein...
 		//eigentlich ein Riesenmist!
@@ -866,8 +866,8 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 /***********************************/
 	private static String toRTF(String toConvert){
 		String convertet = "";
-		convertet = toConvert.replace("Ö", "\\''d6").replace("ö", "\\''f6");
-		convertet = convertet.replace("Ä", "\\''c4").replace("ä", "\\''e6");
+		convertet = toConvert.replace("Ä", "\\''d6").replace("ä", "\\''f6");
+		convertet = convertet.replace("Ö", "\\''c4").replace("ö", "\\''e6");
 		convertet = convertet.replace("Ü", "\\''dc").replace("ü", "\\''fc");
 		convertet = convertet.replace("ß", "\\''df");
 		return String.valueOf(convertet);

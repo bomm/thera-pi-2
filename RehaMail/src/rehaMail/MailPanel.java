@@ -92,7 +92,7 @@ public class MailPanel extends JXPanel implements TableModelListener, KeyListene
 	 * 
 	 */
 	private static final long serialVersionUID = -4946342165531610888L;
-	/**********f�r die Tabelle**************/
+	/**********für die Tabelle**************/
 	JXTable eintab = null;
 	EinTableModel einmod = null;
 	Vector<String> colName = new Vector<String>();
@@ -241,12 +241,12 @@ public class MailPanel extends JXPanel implements TableModelListener, KeyListene
 				if(cmd.equals("replyMail")){
 					if(!gelesen){
 						JOptionPane.showMessageDialog(null,"Sie haben die Mail ja noch nicht einmal gelesen!\n"+
-								"Wie bittesch�n wollen Sie dann darauf antworten?");
+								"Wie bitteschön wollen Sie dann darauf antworten?");
 						return;
 					}
 					if(SqlInfo.holeEinzelFeld("select id from pimail where id ='"+
 							aktId+"' LIMIT 1").equals("")){
-						JOptionPane.showMessageDialog(null,"Diese Nachricht existiert nicht mehr!\nAntwort nicht m�glich!");
+						JOptionPane.showMessageDialog(null,"Diese Nachricht existiert nicht mehr!\nAntwort nicht möglich!");
 						checkForNewMail(true);
 						return;
 					}
@@ -278,7 +278,7 @@ public class MailPanel extends JXPanel implements TableModelListener, KeyListene
 				}
 				if(cmd.equals("loeschen")){
 					if(! Rechte.hatRecht(RehaMail.Sonstiges_NachrichtenLoeschen, false)){
-						JOptionPane.showMessageDialog(null, "Keine Berechtigung zum L�schen der Nachricht");
+						JOptionPane.showMessageDialog(null, "Keine Berechtigung zum Löschen der Nachricht");
 						return;
 					}
 					if(! Rechte.hatRecht(RehaMail.Sonstiges_NachrichtenLoeschen, false)){
@@ -436,7 +436,7 @@ public class MailPanel extends JXPanel implements TableModelListener, KeyListene
 		listenerAusschalten();
 		System.out.println("einlesen text");
 		int[] rows = eintab.getSelectedRows();
-		int frage = JOptionPane.showConfirmDialog(null,"Die ausgew�hlten Emails wirklich l�schen",
+		int frage = JOptionPane.showConfirmDialog(null,"Die ausgewählten Emails wirklich löschen",
 				"Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 		if(frage != JOptionPane.YES_OPTION){return;}
 		for(int i = 0; i < rows.length;i++){
@@ -525,7 +525,7 @@ public class MailPanel extends JXPanel implements TableModelListener, KeyListene
 		einmod.setValueAt(Boolean.TRUE,eintab.convertRowIndexToModel(eintab.getSelectedRow()),1 );
 		gelesen = true;
 		if(RehaMail.testcase){
-			JOptionPane.showMessageDialog(null,"Zeitstempel f�r gelesen gesetzt!");
+			JOptionPane.showMessageDialog(null,"Zeitstempel für gelesen gesetzt!");
 		}
 	}
 	public void allesAufNull(){
@@ -798,9 +798,9 @@ public class MailPanel extends JXPanel implements TableModelListener, KeyListene
 		Vector<Object> vec = new Vector<Object>();
 		int durchlauf = 0;
 
-		//Saudummerweise entspricht der R�ckgabewert von getColumnTypeName() oder
+		//Saudummerweise entspricht der Rückgabewert von getColumnTypeName() oder
 		//getColumnType() nicht der Abfrag von describe tabelle
-		//so werden alle Integer-Typen unter INT zusammengefa�t
+		//so werden alle Integer-Typen unter INT zusammengefaßt
 		//Longtext, Mediumtext, Varchar = alles VARCHAR
 		//CHAR kann sowohl ein einzelnes Zeichen als auch enum('T','F') also boolean sein...
 		//eigentlich ein Riesenmist!
@@ -1115,7 +1115,7 @@ private String[] dateiDialog(String pfad){
 	//String sret = "";
 	String[] sret ={null,null};
 	System.out.println("Speichern in "+pfad);
-	final JFileChooser chooser = new JFileChooser("Verzeichnis auswählen");
+	final JFileChooser chooser = new JFileChooser("Verzeichnis auswÃ¤hlen");
     chooser.setDialogType(JFileChooser.SAVE_DIALOG);
     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 

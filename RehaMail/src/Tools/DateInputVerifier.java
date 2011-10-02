@@ -28,7 +28,7 @@ public class DateInputVerifier extends InputVerifier {
 	}
     public boolean verify (final JComponent input) {
     ////System.out.println("Input getText = "+((JRtaTextField)input).getText());
-    ////System.out.println("L�nge des Inputs = "+((JRtaTextField)input).getText().length());    
+    ////System.out.println("Länge des Inputs = "+((JRtaTextField)input).getText().length());    
         return this.isAlowedDate((JFormattedTextField)input);
       }
    
@@ -75,7 +75,7 @@ public class DateInputVerifier extends InputVerifier {
     		////System.out.println("Datum = "+jahrtausend);
     	}
     	if(inhalt.length() >= 8){
-    		////System.out.println("L�nge des Strings = "+input.getText().length());
+    		////System.out.println("Länge des Strings = "+input.getText().length());
     		if(inhalt.substring(6,7).equals("0")){
     			String korrekt = inhalt.substring(0,6);
     			korrekt = korrekt+"20"+inhalt.substring(6,8);
@@ -112,7 +112,7 @@ public class DateInputVerifier extends InputVerifier {
           return true;
         }
         */
-    	  //System.out.println("Unzul�ssige Datumseingabe");
+    	  //System.out.println("Unzulässige Datumseingabe");
         JOptionPane.showMessageDialog(null,"Unzulässige Datumseingabe");
         
         return false;

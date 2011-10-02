@@ -255,7 +255,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
 	    
         } else { //text is invalid
         	//System.out.println("Verify = "+ftf.getInputVerifier().verify(ftf));
-        	//System.out.println("Ung�ltige Eingabe ---------> "+ftf.getText());
+        	//System.out.println("Ungültige Eingabe ---------> "+ftf.getText());
             if (!userSaysRevert()) { //user wants to edit
             	return false; //don't let the editor go away
             } 
@@ -267,7 +267,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         }else if(DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) >= 120 ||
         		DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) <= -120){
         	JOptionPane.showMessageDialog(null,"Der eingebene Datumswert ist zwar ein kalendarisch korrektes Datum,\n"+
-        			"trotzdem würde ich an Ihrer Stelle das Datum noch einmal prüen.....");
+        			"trotzdem würde ich an Ihrer Stelle das Datum noch einmal prüfen.....");
         }
         fireEditingStopped();
         return super.stopCellEditing();

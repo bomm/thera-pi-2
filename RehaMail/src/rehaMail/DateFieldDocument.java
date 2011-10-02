@@ -24,7 +24,7 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	 private Calendar initDate = new GregorianCalendar(); // Calender fuers init
 	 private String initString;                 // Voreingestellter String
 	 private static int trenner1 = 2, trenner2 = 5;  // Position vor dem Trenner
-	 private JTextField textComponent;      // F�r Referenz auf das TextFeld
+	 private JTextField textComponent;      // Für Referenz auf das TextFeld
 	 private int newOffset;                     // Caret Position bei Trennern
 	 private boolean init = false;
 	 SimpleDateFormat datumsFormat = new SimpleDateFormat ("dd.MM.yyyy"); //Konv.
@@ -62,7 +62,7 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	 }
 	 // **** Konstruktor 2 Ende
 
-	 // **** �berschreiben Insert-Methode
+	 // **** Überschreiben Insert-Methode
 	 public void insertString(int offset, String zeichen, 
 	       AttributeSet attributeSet) 
 	       throws BadLocationException {
@@ -102,7 +102,7 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   catch(Exception NumEx) {                 // Kein Integer?
 	    return;                                 // Keine Verarbeitung!
 	   }
-	   if(offset==0) {                          // Tage auf 10 20 30 pr�fen
+	   if(offset==0) {                          // Tage auf 10 20 30 prüfen
 	    if( DREI.indexOf( String.valueOf(zeichen.charAt(0) ) ) == -1 ) {
 	     //Toolkit.getDefaultToolkit().beep();
 	     return;
@@ -126,14 +126,14 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	     }
 	    }
 	   }
-	   if(offset==2) {                         // Monate auf 0x-1x pr�fen
+	   if(offset==2) {                         // Monate auf 0x-1x prüfen
 	                                           // (Caret links vom Trenner)
 	    if( MONAT.indexOf( String.valueOf(zeichen.charAt(0) ) ) == -1 ) {
 	     //Toolkit.getDefaultToolkit().beep();
 	     return;
 	    }
 	   }
-	   if(offset==3) {                         // Monate auf 0x-1x pr�fen
+	   if(offset==3) {                         // Monate auf 0x-1x prüfen
 	                                           // (Caret rechts vom Trenner)
 	    if( MONAT.indexOf( String.valueOf(zeichen.charAt(0) ) ) == -1 ) {
 	     //Toolkit.getDefaultToolkit().beep();
@@ -163,16 +163,16 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 
 	   newOffset = offset;
 	   if(atSeparator(offset)) {             // Wenn am trenner, dann den offset
-	    newOffset++;                         // vor dem einf�gen um 1 verschieben
+	    newOffset++;                         // vor dem einfügen um 1 verschieben
 	    textComponent.setCaretPosition(newOffset);
 	   }
 	   super.remove(newOffset, 1);           // Aktuelles zeichen entfernen
-	   super.insertString(newOffset, zeichen, attributeSet);    // Neues einf�gen
+	   super.insertString(newOffset, zeichen, attributeSet);    // Neues einfügen
 	  }
 	 }
-	 // **** �berschreiben Insert Ende
+	 // **** Überschreiben Insert Ende
 
-	 // **** �berschreiben Remove
+	 // **** Überschreiben Remove
 	 public void remove(int offset, int length) 
 	       throws BadLocationException {
 	  if(atSeparator(offset)) 
@@ -180,9 +180,9 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	  else
 	   textComponent.setCaretPosition(offset);
 	 }
-	 // **** �berschreiben Remove Ende
+	 // **** Überschreiben Remove Ende
 
-	 // **** Hilfsmethode f�r die Punkte zwischen den Feldern
+	 // **** Hilfsmethode für die Punkte zwischen den Feldern
 	 private boolean atSeparator(int offset) {
 	  return offset == trenner1 || offset == trenner2;
 	 }

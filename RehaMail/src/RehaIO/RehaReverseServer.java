@@ -61,12 +61,12 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 					serv = new ServerSocket(RehaMail.xport);
 					break;
 				} catch (Exception e) {
-					//System.out.println("In Exception währen der Portsuche - 1");
+					//System.out.println("In Exception während der Portsuche - 1");
 					if(serv != null){
 						try {
 							serv.close();
 						} catch (IOException e1) {
-							//System.out.println("In Exception währen der Portsuche - 2");
+							//System.out.println("In Exception während der Portsuche - 2");
 							e1.printStackTrace();
 						}
 						serv = null;
@@ -103,7 +103,7 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					System.out.println("In Exception w�hrend der while input.read()-Schleife");
+					System.out.println("In Exception während der while input.read()-Schleife");
 				}
 				/***************************/
 				

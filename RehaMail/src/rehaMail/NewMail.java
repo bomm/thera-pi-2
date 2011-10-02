@@ -779,7 +779,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 	private String[] dateiDialog(String pfad){
 		//String sret = "";
 		String[] sret ={null,null};
-		final JFileChooser chooser = new JFileChooser("Dateianhang auswählen");
+		final JFileChooser chooser = new JFileChooser("Dateianhang auswÃ¤hlen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         final File file = new File(pfad);

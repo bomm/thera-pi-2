@@ -21,8 +21,8 @@ import rehaMail.RehaMail;
 public class SqlInfo {
 	private static String toRTF(String toConvert){
 		String convertet = "";
-		convertet = toConvert.replace("Ö", "\\\\\\\\\\'d6").replace("ö", "\\\\\\\\\\'f6");
-		convertet = convertet.replace("Ä", "\\\\\\\\\\'c4").replace("ä", "\\\\\\\\\\'e4");
+		convertet = toConvert.replace("Ä", "\\\\\\\\\\'d6").replace("ä", "\\\\\\\\\\'f6");
+		convertet = convertet.replace("Ö", "\\\\\\\\\\'c4").replace("ö", "\\\\\\\\\\'e4");
 		convertet = convertet.replace("Ü", "\\\\\\\\\\'dc").replace("ü", "\\\\\\\\\\'fc");
 		convertet = convertet.replace("ß", "\\\\\\\\\\'df");
 		return String.valueOf(convertet);
@@ -36,10 +36,10 @@ public class SqlInfo {
 		//innerhalb der spalten, bezogen auf die Spalten -> OR-Suche
 		String ret = praefix;
 		String cmd = test;
-		//zun�chst versuchen da� immer nur ein Leerzeichen zwischen den Begriffen existiert 
+		//zunächst versuchen daß immer nur ein Leerzeichen zwischen den Begriffen existiert 
 		cmd = cmd.replaceAll("   ", " ");
 		cmd = cmd.replaceAll("  ", " ");
-		// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daß er nix finder!!!
+		// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daß er nix findet!!!
 		String[] felder = suchein;
 		String[] split = cmd.split(" ");
 		if(split.length==1){
