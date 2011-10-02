@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="common" default="default">
 
-	<!-- add compiler argument to use UTF-8 encoding for all source files -->
+	<!-- add compiler argument to use UTF-8 encoding for all source files 
+	     and add default argument to remove stupid Ant warning -->
 	<presetdef name="javac">
-		<javac encoding="UTF-8" />
+		<javac encoding="UTF-8" includeantruntime="false" />
 	</presetdef>
 
     <target name="default">
