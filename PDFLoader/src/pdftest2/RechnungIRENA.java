@@ -111,7 +111,7 @@ public class RechnungIRENA {
 		try {
 			fw.write(
 					"</fields>"+System.getProperty("line.separator")+
-					"<f href='"+formularpfad+"\\Abrechnungsbogen für IRENA_NoRestriction.pdf'/>"+System.getProperty("line.separator")+
+					"<f href='"+formularpfad+"\\Abrechnungsbogen fÃ¼r IRENA_NoRestriction.pdf'/>"+System.getProperty("line.separator")+
 					"</xfdf>"
 					);
 			fw.close();

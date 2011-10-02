@@ -50,7 +50,7 @@ public class RechnungASP {
 		hashMap.put("Versicherungsnummer","");
 		hashMap.put("Name","");
 		hashMap.put("Geburtsdatum","");
-		hashMap.put("Straﬂe","");
+		hashMap.put("Stra√üe","");
 		hashMap.put("PLZ","");
 		hashMap.put("Wohnort","");
 		hashMap.put("von","");
@@ -73,7 +73,7 @@ public class RechnungASP {
 		if(ergebnis.get(0).get(2).trim().length()==10){
 			hashMap.put("Geburtsdatum",DatFunk.sDatInDeutsch(ergebnis.get(0).get(2)).replace(".", ""));
 		}
-		hashMap.put("Straﬂe",ergebnis.get(0).get(3));
+		hashMap.put("Stra√üe",ergebnis.get(0).get(3));
 		hashMap.put("PLZ",ergebnis.get(0).get(4));
 		hashMap.put("Wohnort",ergebnis.get(0).get(5));
 		if(ergebnis.get(0).get(6).trim().length()==10){

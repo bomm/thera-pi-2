@@ -86,10 +86,10 @@ public class Rahmen extends JApplet{
 				System.exit(0);
 			}
 			if(args[0].equals("90")){
-				new LadeProg(args[2]+"\\ASP-Information für Patienten_NoRestriction.pdf");
+				new LadeProg(args[2]+"\\ASP-Information fÃ¼r Patienten_NoRestriction.pdf");
 			}
 			if(args[0].equals("91")){
-				new LadeProg(args[2]+"\\Patienteninformation für IRENA_NoRestriction.pdf");
+				new LadeProg(args[2]+"\\Patienteninformation fÃ¼r IRENA_NoRestriction.pdf");
 			}
 			
 			if(args[0].equals("1")){

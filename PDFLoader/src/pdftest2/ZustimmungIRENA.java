@@ -105,7 +105,7 @@ public class ZustimmungIRENA {
 		try {
 			fw.write(
 					"</fields>"+System.getProperty("line.separator")+
-					"<f href='"+formularpfad+"\\Erklärung des Patienten für IRENA_NoRestriction.pdf'/>"+System.getProperty("line.separator")+
+					"<f href='"+formularpfad+"\\ErklÃ¤rung des Patienten fÃ¼r IRENA_NoRestriction.pdf'/>"+System.getProperty("line.separator")+
 					"</xfdf>"
 					);
 			fw.close();

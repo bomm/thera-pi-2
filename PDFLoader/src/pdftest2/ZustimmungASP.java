@@ -69,7 +69,7 @@ public class ZustimmungASP {
 		if(ergebnis.get(0).get(2).trim().length()==10){
 			hashMap.put("Geburtsdatum",DatFunk.sDatInDeutsch(ergebnis.get(0).get(2)).replace(".", ""));			
 		}
-		hashMap.put("Straﬂe",ergebnis.get(0).get(3));
+		hashMap.put("Stra√üe",ergebnis.get(0).get(3));
 		hashMap.put("PLZ",ergebnis.get(0).get(4));
 		hashMap.put("Ort",ergebnis.get(0).get(5));
 		hashMap.put("Ort, Datum","Reutlingen,den " + DatFunk.sHeute());
@@ -85,7 +85,7 @@ public class ZustimmungASP {
 		hashMap.put("Versicherungsnummer","");
 		hashMap.put("Name","");
 		hashMap.put("Geburtsdatum","");
-		hashMap.put("Straﬂe","");
+		hashMap.put("Stra√üe","");
 		hashMap.put("PLZ","");
 		hashMap.put("ORT","");
 		hashMap.put("Ort/Datum","");
@@ -107,7 +107,7 @@ public class ZustimmungASP {
 		try {
 			fw.write(
 					"</fields>"+System.getProperty("line.separator")+
-					"<f href='"+formularpfad+"\\ASP Zustimmungserkl‰rung des Patienten_NoRestriction.pdf'/>"+System.getProperty("line.separator")+
+					"<f href='"+formularpfad+"\\ASP Zustimmungserkl√§rung des Patienten_NoRestriction.pdf'/>"+System.getProperty("line.separator")+
 					"</xfdf>"
 					);
 			fw.close();

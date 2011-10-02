@@ -73,7 +73,7 @@ public class WiedereingliederungBfA   {
 		//hashMap.put("AW_1",ergebnis.get(0).get(3));
 		hashMap.put("GEBDAT_1",ergebnis.get(0).get(4));
 		hashMap.put("STR_HA_PLZ_ORT1",ergebnis.get(0).get(5));
-		//hashMap.put("TÄTIG_1",ergebnis.get(0).get(3));
+		//hashMap.put("TÃ„TIG_1",ergebnis.get(0).get(3));
 		//hashMap.put("AZEIT_1",ergebnis.get(0).get(3));
 		//hashMap.put("VON_1",ergebnis.get(0).get(3));
 		//hashMap.put("VON_2",ergebnis.get(0).get(3));
@@ -115,7 +115,7 @@ public class WiedereingliederungBfA   {
 		hashMap.put("UNT_1","");
 		hashMap.put("DATUM_1","");
 		hashMap.put("DATUM_2","");
-		hashMap.put("TÄTIG_1","");
+		hashMap.put("TÃ„TIG_1","");
 		hashMap.put("AZEIT_1","");
 		hashMap.put("VON_1","");
 		hashMap.put("VON_2","");
@@ -169,12 +169,12 @@ public class WiedereingliederungBfA   {
 		/*
 		initHashMap();
 		hashMap.put("Versicherungsnummer","12123456S012");
-		hashMap.put("VERS_N_VN_1","Steinhilber, Jürgen");
+		hashMap.put("VERS_N_VN_1","Steinhilber, JÃ¼rgen");
 		hashMap.put("14_BKZ","02051962");
 		hashMap.put("MSNR","Theodor-Fontane-Str.4");
 		hashMap.put("REHA_1","72760");		
 		hashMap.put("INST_KENNZ_1","Reutlingen");
-		hashMap.put("ABT_1","stationär");
+		hashMap.put("ABT_1","stationÃ¤r");
 		hashMap.put("VERS_N_VN_1","Ja");
 		hashMap.put("INST_KENNZ_1","Reutlingen");
 		*/
