@@ -141,7 +141,7 @@ static JLabel lblinfo;
 public Connection conn = null;
 public boolean dbok = false;
 
-//Scrollpane für jroller
+//Scrollpane fÃ¼r jroller
 public JScrollPane vroller = null;
 //hier werden die kleinen Grafiken dargestellt
 public JPanel jroller = null;
@@ -296,7 +296,7 @@ public String gimpCommand = "C:/Programme/GIMP-2.0/bin/gimp-2.6.exe";
 		knopf.setPreferredSize(new Dimension(160,0));
 
 		FormLayout lay = new FormLayout("5px,140px,15px",
-//           clipb        vorlab      vorsch           titlab       edit       rad1      rad2        speich    progr       vscroll       lade      inet       lösch   email
+//           clipb        vorlab      vorsch           titlab       edit       rad1      rad2        speich    progr       vscroll       lade      inet       lÃ¶sch   email
 //		 1    2      3     4     5    	6        7      8     	9    10    11   12   13   14    5     16    17   18    19    	20        21   22   23    24   25  26  27   28
 		"5px,20px,  4px , 20px, 4px,  15px, 2px,  100px   , 5px,   15px,   5px, 20px, 12px, 17px ,3px,17px  ,10px, 20px ,5px, 15px, 2px,  120dlu:g ,  5px, 5px, 20px ,5px,20px,8px,20px,8px");
 		knopf.setLayout(lay);
@@ -329,7 +329,7 @@ public String gimpCommand = "C:/Programme/GIMP-2.0/bin/gimp-2.6.exe";
 		knopf.add(titel,cc.xy(2,12));
 
 	
-		jrb[0] = new JRadioButton("im I-Net veröffentlichen");
+		jrb[0] = new JRadioButton("im I-Net verÃ¶ffentlichen");
 		jrb[0].setPreferredSize(new Dimension(0,10));
 		jrb[1] = new JRadioButton("lokal als JPG speichern");
 		jrb[0].setPreferredSize(new Dimension(0,10));		
@@ -367,7 +367,7 @@ public String gimpCommand = "C:/Programme/GIMP-2.0/bin/gimp-2.6.exe";
 		laden.addActionListener(this);
 		knopf.add(laden,cc.xy(2,23));
 
-		loeschen = new JButton("Im I-Net löschen");
+		loeschen = new JButton("Im I-Net lÃ¶schen");
 		loeschen.setSize(new Dimension(120,20));
 		loeschen.setActionCommand("loeschen");
 		loeschen.addActionListener(this);
@@ -454,7 +454,7 @@ public String gimpCommand = "C:/Programme/GIMP-2.0/bin/gimp-2.6.exe";
             if (t != null && t.isDataFlavorSupported(DataFlavor.imageFlavor)) {
                 img = (Image)t.getTransferData(DataFlavor.imageFlavor);
                 img2 = new BufferedImage(img.getWidth(jFrame), img.getHeight(jFrame),
-                	      BufferedImage.TYPE_INT_RGB);//ARGB für Transparenz!
+                	      BufferedImage.TYPE_INT_RGB);//ARGB fÃ¼r Transparenz!
                 	Graphics g = img2.getGraphics();
                 	Graphics2D g2 = (Graphics2D) g;
                 	g2.drawImage(img, 0, 0, null);
@@ -677,11 +677,11 @@ public String gimpCommand = "C:/Programme/GIMP-2.0/bin/gimp-2.6.exe";
 		if(arg0.getActionCommand().equals("speichern")){
 			String stitel = titel.getText().trim();
 			if(stitel.equals("")){
-				JOptionPane.showMessageDialog(null,"Bitte Titel für den ScreenShot eingeben!");
+				JOptionPane.showMessageDialog(null,"Bitte Titel fÃ¼r den ScreenShot eingeben!");
 				return;
 			}
 			if((img==null) || (img2==null) || (vos==null)){
-				JOptionPane.showMessageDialog(null,"Ein erforderliches Objekt ist null. Speichern nicht möglich");
+				JOptionPane.showMessageDialog(null,"Ein erforderliches Objekt ist null. Speichern nicht mÃ¶glich");
 				return;
 			}
 			if(gibtsSchon(stitel) > 0){
@@ -714,7 +714,7 @@ public String gimpCommand = "C:/Programme/GIMP-2.0/bin/gimp-2.6.exe";
 
 			        	 }
 			         }.start();
-			         JOptionPane.showMessageDialog(null, "Die Grafiken wurde im Internet veröffentlichtund\nzusätzlich lokal auf Ihrer Festplatte gespeichert\n"+
+			         JOptionPane.showMessageDialog(null, "Die Grafiken wurde im Internet verÃ¶ffentlichtund\nzusÃ¤tzlich lokal auf Ihrer Festplatte gespeichert\n"+
 			        		 		"Verzeichnis: "+piTool.proghome+"/ScreenShots");
 		         }else{
 			         JOptionPane.showMessageDialog(null, "Die Grafiken wurde auf Ihrer Festplatte gespeichert\n"+
@@ -741,9 +741,9 @@ public String gimpCommand = "C:/Programme/GIMP-2.0/bin/gimp-2.6.exe";
 		if(arg0.getActionCommand().equals("loeschen")){
 			if((!aktbild.equals("")) && (iaktbild >= 0)){
 				loescheImInet();
-				JOptionPane.showMessageDialog(null,"Die Grafik wurd im Internet gelöscht!");
+				JOptionPane.showMessageDialog(null,"Die Grafik wurd im Internet gelÃ¶scht!");
 			}else{
-				JOptionPane.showMessageDialog(null,"Es wurde keine Grafik ausgewählt!");				
+				JOptionPane.showMessageDialog(null,"Es wurde keine Grafik ausgewÃ¤hlt!");				
 			}
 		}
 		if(arg0.getActionCommand().equals("senden")){
@@ -759,7 +759,7 @@ public String gimpCommand = "C:/Programme/GIMP-2.0/bin/gimp-2.6.exe";
 					//e.printStackTrace();
 				//}
 			}else{
-				JOptionPane.showMessageDialog(null,"Es ist kein ScreenShot für Email verfügbar!");
+				JOptionPane.showMessageDialog(null,"Es ist kein ScreenShot fÃ¼r Email verfÃ¼gbar!");
 			}
 		}
 
@@ -795,7 +795,7 @@ public String gimpCommand = "C:/Programme/GIMP-2.0/bin/gimp-2.6.exe";
 							JComponent com = (JComponent) jroller.getComponent(i);
 							jroller.remove(com);
 							jroller.revalidate();
-							System.out.println("Jetzt den Satz mit id = "+iaktbild+" löschen");
+							System.out.println("Jetzt den Satz mit id = "+iaktbild+" lÃ¶schen");
 							String stmt = "delete from sshots where id='"+iaktbild+"'";
 							final String xstmt = stmt;
 							new Thread(){
@@ -815,7 +815,7 @@ public String gimpCommand = "C:/Programme/GIMP-2.0/bin/gimp-2.6.exe";
 		}
 /******************************/
 		private void macheGrafikLaden(){
-			final JFileChooser chooser = new JFileChooser("Verzeichnis wÃhlen");
+			final JFileChooser chooser = new JFileChooser("Verzeichnis wÃƒhlen");
 	        chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 	        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 	        final File file = new File(piTool.proghome+"ScreenShots/");
@@ -979,7 +979,7 @@ public String gimpCommand = "C:/Programme/GIMP-2.0/bin/gimp-2.6.exe";
 					while(rs.next()){
 						pBarAkt(lauf);
 						piTool.vbilder[lauf] = ImageIO.read( new ByteArrayInputStream(rs.getBytes("vorschau")) );
-						System.out.println("Länge des Bildes ist "+rs.getBytes("vorschau").length);
+						System.out.println("LÃ¤nge des Bildes ist "+rs.getBytes("vorschau").length);
 						Vector ar = new Vector();
 						ar.add(rs.getInt("id"));
 						ar.add(rs.getString("titel"));
@@ -1196,7 +1196,7 @@ public void windowClosed(WindowEvent arg0) {
 	// TODO Auto-generated method stub
 	try {
 		piTool.app.conn.close();
-		JOptionPane.showMessageDialog(null,"Datenverbindung wurde gelöst");
+		JOptionPane.showMessageDialog(null,"Datenverbindung wurde gelÃ¶st");
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -1252,7 +1252,7 @@ public static void SystemStart(){
 		hmEmailExtern.put("SenderAdresse",new String(ini.getStringProperty("EmailExtern","SenderAdresse")));			
 
 		if(pw.trim().equals("")){
-			passwortEncrypt pe = new passwortEncrypt("Passwort für Externe-Email");
+			passwortEncrypt pe = new passwortEncrypt("Passwort fÃ¼r Externe-Email");
 			pe.setLocationRelativeTo(jFrame);
 			pe.setVisible(true);
 			pw = new String(ini.getStringProperty("EmailExtern","Password"));
@@ -1275,7 +1275,7 @@ public static void SystemStart(){
 
 		pw = new String(ini.getStringProperty("EmailIntern","Password"));
 		if(pw.trim().equals("")){
-			passwortEncrypt pe = new passwortEncrypt("Passwort für Interne-Email");
+			passwortEncrypt pe = new passwortEncrypt("Passwort fÃ¼r Interne-Email");
 			pe.setLocationRelativeTo(jFrame);
 			pe.setVisible(true);
 			pw = new String(ini.getStringProperty("EmailIntern","Password"));
@@ -1326,7 +1326,7 @@ public void skaliereBild(){
 	if(ShotBereich.label.getIcon() == null){
 		ShotBereich.label.setText("Oh Herr sieh Dein Volk an - aber verzage nicht.....");
 		String stext = "Was um Gottes Willen wollen Sie denn skalieren?\n\n"+
-		"Etwa die die weiße Fläche - oder den Hammer unter Ihrem Helm?";
+		"Etwa die die weiÃŸe FlÃ¤che - oder den Hammer unter Ihrem Helm?";
 		JOptionPane.showMessageDialog(null,stext);
     	lblinfo.setText("");
 		jsl.setValue(0);
@@ -1372,7 +1372,7 @@ public void skaliereBild(){
 	int iyzoom = (int) Math.round(zy1);
 	
 	if(ixzoom<= 0 || iyzoom <=0){
-		JOptionPane.showMessageDialog(null, "Die gewählte Skalierung ergäbe ein Bild mit einer Größe < NULL.\nSkalierung nicht möglich");
+		JOptionPane.showMessageDialog(null, "Die gewÃ¤hlte Skalierung ergÃ¤be ein Bild mit einer GrÃ¶ÃŸe < NULL.\nSkalierung nicht mÃ¶glich");
 		piTool.jFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		lblinfo.setText("  Bildinfo - Pixel: X="+ixzoom+" Y="+iyzoom);
 		return null;
@@ -1433,7 +1433,7 @@ class holeShots extends SwingWorker<Void,Void>{
 					piTool.app.pBarAkt(lauf+1);
 					Thread.sleep(20);
 					piTool.vbilder[lauf] = ImageIO.read( new ByteArrayInputStream(rs.getBytes("vorschau")) );
-					System.out.println("Länge des Bildes ist "+rs.getBytes("vorschau").length);
+					System.out.println("LÃ¤nge des Bildes ist "+rs.getBytes("vorschau").length);
 					Vector ar = new Vector();
 					ar.add(rs.getInt("id"));
 					ar.add(rs.getString("titel"));
@@ -1628,7 +1628,7 @@ class passwortEncrypt extends JDialog{
 		man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 		String encrypted = man.encrypt(pw);
 		String gruppe = null;
-		if(getTitle().equals("Passwort für Interne-Email" )){
+		if(getTitle().equals("Passwort fÃ¼r Interne-Email" )){
 			gruppe = "EmailIntern";
 		}else{
 			gruppe = "EmailExtern";			
@@ -1650,7 +1650,7 @@ class passwortEncrypt extends JDialog{
 
 class ShotSenden extends JDialog{
 	JTextField tf = new JTextField();
-	JLabel lbl = new JLabel("Empfängeradresse: ");
+	JLabel lbl = new JLabel("EmpfÃ¤ngeradresse: ");
 	JTextPane ta = new JTextPane();
 
 	JComboBox comb = new JComboBox(new String[]{piTool.app.hmEmailIntern.get("SenderAdresse"),piTool.app.hmEmailExtern.get("SenderAdresse")});
@@ -1696,7 +1696,7 @@ class ShotSenden extends JDialog{
 		    }); 
 		JPanel jcom = new JPanel(new FlowLayout());
 		jcom.setBackground(Color.WHITE);
-		jcom.add(new JLabel("sende über Account: "));
+		jcom.add(new JLabel("sende Ã¼ber Account: "));
 		jcom.add(comb);
 
 		add(jcom,BorderLayout.NORTH);
@@ -1759,7 +1759,7 @@ class ShotSenden extends JDialog{
 		String username = SystemConfig.hmEmailExtern.get("Username");
 		String password = SystemConfig.hmEmailExtern.get("Password");
 		String senderAddress =SystemConfig.hmEmailExtern.get("SenderAdresse");
-		System.out.println("Empfängeradresse = "+emailaddy);
+		System.out.println("EmpfÃ¤ngeradresse = "+emailaddy);
 		String recipientsAddress = emailaddy;
 		String subject = "Ihre Behandlungstermine";
 		String text = "";
@@ -1767,8 +1767,8 @@ class ShotSenden extends JDialog{
 		/*********/
 		/*
     	  text = "Sehr geehrte Damen und Herren,\n"+
-					"im Dateianhang finden Sie die von Ihnen gewünschten Behandlungstermine.\n\n"+
-					"Termine die Sie nicht einhalten bzw. wahrnehmen können, müßen 24 Stunden vorher\n"+
+					"im Dateianhang finden Sie die von Ihnen gewÃ¼nschten Behandlungstermine.\n\n"+
+					"Termine die Sie nicht einhalten bzw. wahrnehmen kÃ¶nnen, mÃ¼ÃŸen 24 Stunden vorher\n"+
 					"abgesagt werden.\n\nIhr Planungs-Team vom RTA";
 	      }
 		String smtpHost = SystemConfig.hmEmailExtern.get("SmtpHost");

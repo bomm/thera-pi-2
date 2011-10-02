@@ -226,7 +226,7 @@ public class LVAoberflaeche extends JXPanel implements ListSelectionListener, Ac
 		JLabel lbl8 = new JLabel("mm");
 		pabschnitt2.add(lbl8, ca2.xy(12,10));
 		
-		JLabel lbl9 = new JLabel("L‰nge der einzelnen\nDatumslinien:",null, SwingConstants.LEFT);
+		JLabel lbl9 = new JLabel("L√§nge der einzelnen\nDatumslinien:",null, SwingConstants.LEFT);
 		lbl9.setHorizontalTextPosition( SwingConstants.LEFT );
 		lbl9.setUI( new MultiLineLabelUI() );
 		pabschnitt2.add(lbl9, ca2.xy(2,12));
@@ -484,7 +484,7 @@ public class LVAoberflaeche extends JXPanel implements ListSelectionListener, Ac
 		DBFReader dbfreader;
 		try {
 			dbfreader = new DBFReader(datei);
-		////System.out.println("÷ffne Datei "+datei);
+		////System.out.println("√ñffne Datei "+datei);
 		String ganzerString = "";
 		String datum;
 		DateFormat df = DateFormat.getDateInstance();
@@ -513,7 +513,7 @@ public class LVAoberflaeche extends JXPanel implements ListSelectionListener, Ac
         combobox1.setDataVector((Vector<String>)vec.clone());
         combobox1.setMaximumRowCount(25);
         combobox1.validate();
-		//System.out.println("Vectorl‰nge = "+vec.size());
+		//System.out.println("Vectorl√§nge = "+vec.size());
 		} catch (JDBFException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

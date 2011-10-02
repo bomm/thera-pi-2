@@ -80,7 +80,7 @@ public class RtaWissen extends JXPanel implements KeyListener,ComponentListener,
 				//NativeInterface.open();
 
 
-		   		//System.out.println("NativeInterface = geöffnet");
+		   		//System.out.println("NativeInterface = geÃ¶ffnet");
         		
 				        		
        			//final JWebBrowser webBrowser = new JWebBrowser(JWebBrowser.useXULRunnerRuntime());

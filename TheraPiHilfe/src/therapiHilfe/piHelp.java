@@ -92,7 +92,7 @@ public static IOfficeApplication officeapplication;
 		}
 
 		//System.out.println("ProgHome = "+proghome);
-		/************Für die Entwicklung dieses Teil benutzen********/
+		/************FÃ¼r die Entwicklung dieses Teil benutzen********/
 		//INIFile inif = new INIFile(piHelp.proghome+"pihelp.ini");
 		
 
@@ -354,7 +354,7 @@ final class DatenbankStarten implements Runnable{
 			Class.forName("de.root1.jpmdbc.Driver");
     	}
     	catch ( final Exception e ){
-    		JOptionPane.showMessageDialog(null,"Fehler beim Laden des Datenbanktreibers für Preislisten-Server");
+    		JOptionPane.showMessageDialog(null,"Fehler beim Laden des Datenbanktreibers fÃ¼r Preislisten-Server");
     		return;
         }
     	try {

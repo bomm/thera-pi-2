@@ -221,7 +221,7 @@ final class HilfeDatenbankStarten implements Runnable{
 			Class.forName("de.root1.jpmdbc.Driver");
     	}
     	catch ( final Exception e ){
-    		JOptionPane.showMessageDialog(null,"Fehler beim Laden des Datenbanktreibers für Preislisten-Server");
+    		JOptionPane.showMessageDialog(null,"Fehler beim Laden des Datenbanktreibers fÃ¼r Preislisten-Server");
     		return;
         }
     	try {

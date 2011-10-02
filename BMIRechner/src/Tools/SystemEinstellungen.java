@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class SystemEinstellungen {
-	static String[] disziplinen = {"Physio","Massage","Ergotherapie","Logop‰die","Reha"};
+	static String[] disziplinen = {"Physio","Massage","Ergotherapie","Logop√§die","Reha"};
 	public static HashMap<String,Vector<String>> hmGelenke = new HashMap<String,Vector<String>>();
 
 

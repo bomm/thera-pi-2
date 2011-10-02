@@ -574,7 +574,7 @@ public class BrowserFenster extends JFrame implements MouseListener,MouseMotionL
 		int ind = listSeiten.getSelectedIndex();
 		linkneu = ind;
 		if(linkneu != linkalt){
-			//System.out.println("Indes des gew�hlten Items = "+ind);
+			//System.out.println("Indes des gewï¿½hlten Items = "+ind);
 			//System.out.println(SystemConfig.InetSeiten.get(ind).get(2));
 			rtaWissen.Navigiere(SystemConfig.InetSeiten.get(ind).get(2));
 			linkalt = linkneu;
@@ -912,7 +912,7 @@ final class MachSuche extends SwingWorker<Void,Void>{
 			
 			String test = new String(BrowserFenster.thisClass.jtf.getText().trim());
 			//String test = "";
-			//System.out.println("�bergebener String = "+test);
+			//System.out.println("ï¿½bergebener String = "+test);
 			//System.out.println("Statement = "+xstmt1);
 	 
 			for(int i = 0; i < 1; i++){
@@ -1034,28 +1034,28 @@ final class MachSuche extends SwingWorker<Void,Void>{
 		private String ersetzeUmlaute1(String str){
 			String ersetzen = new String(str);
 			String neu = "", alt = neu = "";
-			neu = new String(ersetzen.replaceAll("�","ä")); 
+			neu = new String(ersetzen.replaceAll("ï¿½","Ã¤")); 
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","ö" ));
+			neu = new String(alt.replaceAll("ï¿½","Ã¶" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","ü" ));
+			neu = new String(alt.replaceAll("ï¿½","Ã¼" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","Ä" ));
+			neu = new String(alt.replaceAll("ï¿½","Ã" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","Ö" ));
+			neu = new String(alt.replaceAll("ï¿½","Ã" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","Ü" ));
+			neu = new String(alt.replaceAll("ï¿½","Ã" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","ß" ));
+			neu = new String(alt.replaceAll("ï¿½","Ã" ));
 
 			/*
-			ä statt �
-			ö statt �
-			ü statt �
-			Ä statt �
-			Ö statt �
-			Ü statt �
-			ß statt �
+			Ã¤ statt ï¿½
+			Ã¶ statt ï¿½
+			Ã¼ statt ï¿½
+			Ã statt ï¿½
+			Ã statt ï¿½
+			Ã statt ï¿½
+			Ã statt ï¿½
 			*/
 			//ersetzen
 			return new String(neu);
@@ -1064,28 +1064,28 @@ final class MachSuche extends SwingWorker<Void,Void>{
 		private String ersetzeUmlaute2(String str){
 			String ersetzen = new String(str);
 			String neu = "", alt = neu = "";
-			neu = new String(ersetzen.replaceAll("�","&auml;")); 
+			neu = new String(ersetzen.replaceAll("ï¿½","&auml;")); 
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","&ouml;" ));
+			neu = new String(alt.replaceAll("ï¿½","&ouml;" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","&uuml;" ));
+			neu = new String(alt.replaceAll("ï¿½","&uuml;" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","&Auml;" ));
+			neu = new String(alt.replaceAll("ï¿½","&Auml;" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","&Ouml;" ));
+			neu = new String(alt.replaceAll("ï¿½","&Ouml;" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","&Uuml;" ));
+			neu = new String(alt.replaceAll("ï¿½","&Uuml;" ));
 			alt = new String(neu);
-			neu = new String(alt.replaceAll("�","&szlig;" ));
+			neu = new String(alt.replaceAll("ï¿½","&szlig;" ));
 
 			/*
-			ä statt �
-			ö statt �
-			ü statt �
-			Ä statt �
-			Ö statt �
-			Ü statt �
-			ß statt �
+			Ã¤ statt ï¿½
+			Ã¶ statt ï¿½
+			Ã¼ statt ï¿½
+			Ã statt ï¿½
+			Ã statt ï¿½
+			Ã statt ï¿½
+			Ã statt ï¿½
 			*/
 			//ersetzen
 			return new String(neu);
@@ -1111,7 +1111,7 @@ class BrowserSockServer{
 		}
 		
 		Socket client = null;
-		//RehaxSwing.standDerDingelbl.setText("�ffne Socket");
+		//RehaxSwing.standDerDingelbl.setText("ï¿½ffne Socket");
 		while(xlisten){
 			try {
 				//RehaxSwing.socketoffen = true;				

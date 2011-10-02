@@ -262,7 +262,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
   protected static class DateInputVerifier extends InputVerifier {
     public boolean verify (final JComponent input) {
     //System.out.println("Input getText = "+((JRtaTextField)input).getText());
-    //System.out.println("Länge des Inputs = "+((JRtaTextField)input).getText().length());    
+    //System.out.println("LÃ¤nge des Inputs = "+((JRtaTextField)input).getText().length());    
       if (input instanceof JRtaTextField) {
         return this.isAlowedDate((JRtaTextField)input);
       }
@@ -318,7 +318,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
           }
           return true;
         }
-        JOptionPane.showMessageDialog(null,"Unzulässige Datumseingabe");
+        JOptionPane.showMessageDialog(null,"UnzulÃ¤ssige Datumseingabe");
         
         return false;
       }
@@ -721,7 +721,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	 private Calendar initDate = new GregorianCalendar(); // Calender fuers init
 	 private String initString;                 // Voreingestellter String
 	 private static int trenner1 = 2, trenner2 = 5;  // Position vor dem Trenner
-	 private JRtaTextField textComponent;      // Für Referenz auf das TextFeld
+	 private JRtaTextField textComponent;      // FÃ¼r Referenz auf das TextFeld
 	 private int newOffset;                     // Caret Position bei Trennern
 	 private boolean init = false;
 	 SimpleDateFormat datumsFormat = new SimpleDateFormat ("dd.MM.yyyy"); //Konv.
@@ -759,7 +759,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	 }
 	 // **** Konstruktor 2 Ende
 
-	 // **** Überschreiben Insert-Methode
+	 // **** Ãœberschreiben Insert-Methode
 	 public void insertString(int offset, String zeichen, 
 	       AttributeSet attributeSet) 
 	       throws BadLocationException {
@@ -799,7 +799,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	   catch(Exception NumEx) {                 // Kein Integer?
 	    return;                                 // Keine Verarbeitung!
 	   }
-	   if(offset==0) {                          // Tage auf 10 20 30 prüfen
+	   if(offset==0) {                          // Tage auf 10 20 30 prÃ¼fen
 	    if( DREI.indexOf( zeichen.valueOf(zeichen.charAt(0) ) ) == -1 ) {
 	     //Toolkit.getDefaultToolkit().beep();
 	     return;
@@ -823,14 +823,14 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	     }
 	    }
 	   }
-	   if(offset==2) {                         // Monate auf 0x-1x prüfen
+	   if(offset==2) {                         // Monate auf 0x-1x prÃ¼fen
 	                                           // (Caret links vom Trenner)
 	    if( MONAT.indexOf( zeichen.valueOf(zeichen.charAt(0) ) ) == -1 ) {
 	     //Toolkit.getDefaultToolkit().beep();
 	     return;
 	    }
 	   }
-	   if(offset==3) {                         // Monate auf 0x-1x prüfen
+	   if(offset==3) {                         // Monate auf 0x-1x prÃ¼fen
 	                                           // (Caret rechts vom Trenner)
 	    if( MONAT.indexOf( zeichen.valueOf(zeichen.charAt(0) ) ) == -1 ) {
 	     //Toolkit.getDefaultToolkit().beep();
@@ -860,16 +860,16 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 
 	   newOffset = offset;
 	   if(atSeparator(offset)) {             // Wenn am trenner, dann den offset
-	    newOffset++;                         // vor dem einfügen um 1 verschieben
+	    newOffset++;                         // vor dem einfÃ¼gen um 1 verschieben
 	    textComponent.setCaretPosition(newOffset);
 	   }
 	   super.remove(newOffset, 1);           // Aktuelles zeichen entfernen
-	   super.insertString(newOffset, zeichen, attributeSet);    // Neues einfügen
+	   super.insertString(newOffset, zeichen, attributeSet);    // Neues einfÃ¼gen
 	  }
 	 }
-	 // **** Überschreiben Insert Ende
+	 // **** Ãœberschreiben Insert Ende
 
-	 // **** Überschreiben Remove
+	 // **** Ãœberschreiben Remove
 	 public void remove(int offset, int length) 
 	       throws BadLocationException {
 	  if(atSeparator(offset)) 
@@ -877,9 +877,9 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	  else
 	   textComponent.setCaretPosition(offset);
 	 }
-	 // **** Überschreiben Remove Ende
+	 // **** Ãœberschreiben Remove Ende
 
-	 // **** Hilfsmethode für die Punkte zwischen den Feldern
+	 // **** Hilfsmethode fÃ¼r die Punkte zwischen den Feldern
 	 private boolean atSeparator(int offset) {
 	  return offset == trenner1 || offset == trenner2;
 	 }

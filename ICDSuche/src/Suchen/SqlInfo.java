@@ -688,10 +688,10 @@ public class SqlInfo {
 		//innerhalb der spalten, bezogen auf die Spalten -> OR-Suche
 		String ret = praefix;
 		String cmd = test;
-		//zun‰chst versuchen daﬂ immer nur ein Leerzeichen zwischen den Begriffen existiert 
+		//zun√§chst versuchen da√ü immer nur ein Leerzeichen zwischen den Begriffen existiert 
 		cmd = new String(cmd.replaceAll("   ", " "));
 		cmd = new String(cmd.replaceAll("  ", " "));
-		// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld daﬂ er nix finder!!!
+		// wer jetzt immer noch Leerzeichen in der Suchbedingung hat ist selbst schuld da√ü er nix finder!!!
 		/*
 		String[] felder = suchein;
 		String[] split = cmd.split(" ");

@@ -36,7 +36,7 @@ public class plusdatum extends JDialog implements ActionListener{
 	public plusdatum( LVAoberflaeche xeltern){
 		super();
 		this.eltern = xeltern;
-		this.setTitle("Datum hinzufügen");
+		this.setTitle("Datum hinzufÃ¼gen");
 		this.setPreferredSize(new Dimension(220,250));
 		this.setContentPane(getoberflaeche());
 		

@@ -74,7 +74,7 @@ public class FTPTools {
 				//ftpClient.setBufferSize(BUFFER_SIZE);
 				/*
 				if(helpFenster.thisClass.wf != null){
-					helpFenster.thisClass.wf.setStand("Überprüfe Dateien");
+					helpFenster.thisClass.wf.setStand("ÃœberprÃ¼fe Dateien");
 				}
 				*/
 
@@ -187,7 +187,7 @@ public class FTPTools {
 						break;
 					}
 				}
-				//System.out.println("Dateigröße in Bytes = "+dgroesse);
+				//System.out.println("DateigrÃ¶ÃŸe in Bytes = "+dgroesse);
 			}
 			boolean gefunden = false;
 			for(int i = 0; i< files.length;i++){
@@ -320,10 +320,10 @@ public class FTPTools {
 			////System.out.println(ftpClient.getReplyString());
 
 			System.out.println(ftpClient.getReplyString());
-			//System.out.println("Öffne Datei: "+piHelp.tempvz+URLDecoder.decode(datnah,"UTF-8"));
+			//System.out.println("Ã–ffne Datei: "+piHelp.tempvz+URLDecoder.decode(datnah,"UTF-8"));
 			File src = new File(piHelp.tempvz+URLDecoder.decode(datnah,"UTF-8"));
 			InputStream ins = new FileInputStream(src);
-			//System.out.println("Ungefähr verfügbare Bytes: "+ins.available());
+			//System.out.println("UngefÃ¤hr verfÃ¼gbare Bytes: "+ins.available());
 
 			ftpClient.enterLocalPassiveMode();
 			////System.out.println(ftpClient.getReplyString());
@@ -349,7 +349,7 @@ public class FTPTools {
      			//fos.close();
      			//ftpClient.logout();
      			//ftpClient.disconnect();
-     			//System.err.println("Scheiß-Transfer fehlgeschlagen");
+     			//System.err.println("ScheiÃŸ-Transfer fehlgeschlagen");
      			System.out.println("Datei = "+datfern);
      			
  			}
@@ -409,7 +409,7 @@ public class FTPTools {
 			if(!ftpClient.completePendingCommand()) {
 				ftpClient.logout();
 				ftpClient.disconnect();
-				System.err.println("Die Puffer des belämmerten FTP's konnten nicht vollständig geschrieben werden!!!!(Ich krieg die Krise)");
+				System.err.println("Die Puffer des belÃ¤mmerten FTP's konnten nicht vollstÃ¤ndig geschrieben werden!!!!(Ich krieg die Krise)");
 			 }
 			System.out.println(ftpClient.getReplyString());			
 			
@@ -492,7 +492,7 @@ public class FTPTools {
      			//fos.close();
      			//ftpClient.logout();
      			//ftpClient.disconnect();
-     			//System.err.println("Scheiß-Transfer fehlgeschlagen");
+     			//System.err.println("ScheiÃŸ-Transfer fehlgeschlagen");
      			System.out.println("Datei = "+quelldat);
      			
  			}
@@ -549,7 +549,7 @@ public class FTPTools {
 			if(!ftpClient.completePendingCommand()) {
 				ftpClient.logout();
 				ftpClient.disconnect();
-				System.err.println("Die Puffer des belämmerten FTP's konnten nicht vollständig geschrieben werden!!!!(Ich krieg die Krise)");
+				System.err.println("Die Puffer des belÃ¤mmerten FTP's konnten nicht vollstÃ¤ndig geschrieben werden!!!!(Ich krieg die Krise)");
 			 }
 			System.out.println(ftpClient.getReplyString());			
 			ins = null;

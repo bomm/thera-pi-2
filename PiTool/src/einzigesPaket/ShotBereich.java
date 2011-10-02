@@ -94,8 +94,8 @@ public class ShotBereich extends JPanel implements MouseListener,MouseMotionList
 			float result = new Float ( (orig-faktory)/2 );
 			faktory = faktory+result;
 			
-			System.out.println("Original Verhältnis y/x = "+faktory);
-			System.out.println("Vorschau Verhältnis y/x = "+orig);
+			System.out.println("Original VerhÃ¤ltnis y/x = "+faktory);
+			System.out.println("Vorschau VerhÃ¤ltnis y/x = "+orig);
 
 			
 			
@@ -119,7 +119,7 @@ public class ShotBereich extends JPanel implements MouseListener,MouseMotionList
 				hoch = new Float(100);
 			}
 			System.out.println("Vorschaufaktor - Bildfaktor = "+(orig-faktory));
-			 System.out.println("Höhe = "+hoch);
+			 System.out.println("HÃ¶he = "+hoch);
 	         Image scaled = piTool.img.getScaledInstance(140,  (int) Math.abs(hoch), Image.SCALE_SMOOTH );
 	         BufferedImage outImg = new BufferedImage(140, 100, BufferedImage.TYPE_INT_RGB);
 	         Graphics g = outImg.getGraphics();
@@ -247,7 +247,7 @@ public class ShotBereich extends JPanel implements MouseListener,MouseMotionList
 	}
 	private JPopupMenu getTerminPopupMenu() {
 		JPopupMenu jPopupMenu = new JPopupMenu();
-		JMenuItem men1 = new JMenuItem("Bildausschnitt in Zwischenablage (Clipboard) übertragen");
+		JMenuItem men1 = new JMenuItem("Bildausschnitt in Zwischenablage (Clipboard) Ã¼bertragen");
 		men1.setIcon(new ImageIcon("C:/RehaVerwaltung/icons/help.gif"));
 		men1.setRolloverEnabled(true);
 		men1.setEnabled(true);
@@ -366,7 +366,7 @@ public class ShotBereich extends JPanel implements MouseListener,MouseMotionList
     	
 */    	
 		/*
-		System.out.println("Größe des Ausschnitts = x:"+w+" / h:"+h );
+		System.out.println("GrÃ¶ÃŸe des Ausschnitts = x:"+w+" / h:"+h );
 		BufferedImage bufi = (BufferedImage) ShotBereich.label.getIcon();
         File file = new File("C:\\ScreenShots\\test.jpg");
         try {
@@ -409,7 +409,7 @@ public class ShotBereich extends JPanel implements MouseListener,MouseMotionList
 	/*
     img = (Image)t.getTransferData(DataFlavor.imageFlavor);
     img2 = new BufferedImage(img.getWidth(jFrame), img.getHeight(jFrame),
-    	      BufferedImage.TYPE_INT_RGB);//ARGB für Transparenz!
+    	      BufferedImage.TYPE_INT_RGB);//ARGB fÃ¼r Transparenz!
     	Graphics g = img2.getGraphics();
     	g.drawImage(img, 0, 0, null);
     	g.dispose();
@@ -421,7 +421,7 @@ public class ShotBereich extends JPanel implements MouseListener,MouseMotionList
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		if(arg0.getActionCommand().equals("inclipboard")){
-			System.out.println("Es wird in Clipboard übertragen");
+			System.out.println("Es wird in Clipboard Ã¼bertragen");
 			TransferableImage ti = new TransferableImage( (ImageIcon)label.getIcon() );
 			Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
 			cb.setContents(ti, ti);
@@ -446,7 +446,7 @@ class TransferableImage implements Transferable, ClipboardOwner
 
    public TransferableImage(Image img)
    {
-      int w = img.getWidth(null); // es muß keinen ImageObserver geben
+      int w = img.getWidth(null); // es muÃŸ keinen ImageObserver geben
       int h = img.getHeight(null);
 
       bufImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);

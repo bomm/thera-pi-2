@@ -38,7 +38,7 @@ public class BrowserPanel extends JXPanel implements HyperlinkListener{
 	        scrollPane = new JScrollPane(htmlPane);
 	        
 	    } catch(IOException ioe) {
-	       warnUser("Kann keine HTML-Pane machen für die Adresse: " + url 
+	       warnUser("Kann keine HTML-Pane machen fÃ¼r die Adresse: " + url 
 	                + ": " + ioe);
 	    }
 

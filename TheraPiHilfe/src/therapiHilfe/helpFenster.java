@@ -221,7 +221,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 		jpan.add(buts[5],cc.xyw(2,10,3));
 		*/
 		/*
-		chkweb = new JCheckBox("als Webdokument öffnen");
+		chkweb = new JCheckBox("als Webdokument Ã¶ffnen");
 		chkweb.setOpaque(false);
 		jpan.add(chkweb,cc.xy(4,8));
 		*/
@@ -260,7 +260,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 		jpan.add(gruppenbox,cc.xy(2, 2));
 		
 		themenDtblm = new MyDefaultTableModel();
-		String[] column = 	{"Titel","HTML-Datei","letzte Änderung","ID"};
+		String[] column = 	{"Titel","HTML-Datei","letzte Ã„nderung","ID"};
 		themenDtblm.setColumnIdentifiers(column);
 		themenDtblm.addTableModelListener(this);
 		
@@ -284,7 +284,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 		themenScroll.setViewportView(tblThemen);
 		jpan.add(themenScroll,cc.xyw(2,4,3));
 		
-		buts[4] = new JButton("Thema löschen");
+		buts[4] = new JButton("Thema lÃ¶schen");
 		buts[4].setActionCommand("loeschen");
 		buts[4].addActionListener(this);
 		jpan.add(buts[4],cc.xy(4,2));
@@ -452,15 +452,15 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 			doAbbrechen();
 		}
 		if(command.equals("loeschen")){
-			String stext = "\nDie Löschen-Funktion ist passwortgeschützt!\n\n"+
-			"Wenn Sie über kein Passwort für diesen Vorgang verfügen, senden Sie\n"+
+			String stext = "\nDie LÃ¶schen-Funktion ist passwortgeschÃ¼tzt!\n\n"+
+			"Wenn Sie Ã¼ber kein Passwort fÃ¼r diesen Vorgang verfÃ¼gen, senden Sie\n"+
 			"Bitte eine Email an -> j.steinhilber@rta.de <- und geben Sie bitte\n"+
-			"Die 'ID' des Beitrages an den Sie löschen wollen\n"+
+			"Die 'ID' des Beitrages an den Sie lÃ¶schen wollen\n"+
 			"(Die 'ID' des Beitrages steht in der Liste oben ganz rechts)\n\n";
 			String s = (String)JOptionPane.showInputDialog(
 			                    this,
 			                    stext,
-			                    "Hilfe-Thema löschen",
+			                    "Hilfe-Thema lÃ¶schen",
 			                    JOptionPane.OK_CANCEL_OPTION);
 			
 			if ((s != null) && (s.length() >= 0)) {
@@ -474,7 +474,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 					sqlAusfuehren(cmd);
 					this.themenDtblm.removeRow(tblThemen.convertRowIndexToModel(row));
 				}else{
-				    JOptionPane.showMessageDialog(null,"Passwort für Löschvorgang wurde nicht akzeptiert!");					
+				    JOptionPane.showMessageDialog(null,"Passwort fÃ¼r LÃ¶schvorgang wurde nicht akzeptiert!");					
 				}
 
 			    return;
@@ -537,7 +537,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 			stmt =  piHelp.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Fehler bei der Ausführung des Statements\nMethode:sqlAusfuehren("+sstmt+")");
+			JOptionPane.showMessageDialog(null, "Fehler bei der AusfÃ¼hrung des Statements\nMethode:sqlAusfuehren("+sstmt+")");
 		}
 		try{
 			stmt.execute(sstmt);
@@ -560,7 +560,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 	private String[] transferiereDatei(){
 		String[] sret = {};
         piHelp.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
+		final JFileChooser chooser = new JFileChooser("Verzeichnis wÃ¤hlen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         //final File file = new File(piHelp.proghome+"ScreenShots/");
@@ -663,7 +663,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 		//System.out.println("Und jetzt schreiben***************************************************");
 		for(int i = 0; i < arbild.size();i+= 3){
 			//System.out.println("Hole Datei -> "+arbild.get(i));
-			//System.out.println("Hole Grösse -> "+arbild.get(i+2));
+			//System.out.println("Hole GrÃ¶sse -> "+arbild.get(i+2));
 			lblstand.setText("Schreibe Datei:"+arbild.get(i));
 			ret = ftpt.schreibeDatei(arbild.get(i), arbild.get(i), new Long(arbild.get(i+2)),jprogress);
 			try {
@@ -686,7 +686,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 		wf = new WartenFenster();
 		wf.setLocationRelativeTo(null);
 		wf.setVisible(true);
-		wf.setStand("Überprüfe Dateien");
+		wf.setStand("ÃœberprÃ¼fe Dateien");
 		
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -756,12 +756,12 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 
 		ooPanel.schliesseText();
 		
-		/************** Einheit gehört zusammen************/
+		/************** Einheit gehÃ¶rt zusammen************/
 		Vector altbilder = new Vector();
 		altbilder = (Vector) ((Vector)helpFenster.thisClass.bilder).clone();
 		extrahiereBilder(helpFenster.hilfeDatei);
 		//System.out.println(helpFenster.thisClass.bilder);
-		/************** Einheit gehört zusammen************/
+		/************** Einheit gehÃ¶rt zusammen************/
 		
 		ooPanel.neuesNoaPanel();
 
@@ -792,7 +792,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 				for(int i = 0; i < helpFenster.thisClass.bilder.size(); i++){
 					if(!ar.contains(helpFenster.thisClass.bilder.get(i))){
 						//System.out.println("jetzt wird der FTP zum speichern angeschmissen");
-						wf.setStand("Übertrage Grafik: "+helpFenster.thisClass.bilder.get(i));
+						wf.setStand("Ãœbertrage Grafik: "+helpFenster.thisClass.bilder.get(i));
 						long gross = new File(piHelp.tempvz+helpFenster.thisClass.bilder.get(i)).length();
 						System.out.println("Scheibe Bild "+helpFenster.thisClass.bilder.get(i)+" "+gross+" Bytes");
 						lblstand.setText(helpFenster.thisClass.bilder.get(i));
@@ -801,7 +801,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 
 					}
 				}
-				wf.setStand("Übertrage Datei: "+helpFenster.absolutDatei);
+				wf.setStand("Ãœbertrage Datei: "+helpFenster.absolutDatei);
 				String htmldat = helpFenster.absolutDatei;
 				long gross = new File(helpFenster.hilfeDatei).length();
 				System.out.println("Scheibe HTML-Datei "+helpFenster.hilfeDatei+" "+gross+" Bytes");
@@ -874,11 +874,11 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
    
         if(!neuertext){
         	htmlDaten.add(  tblThemen.getValueAt(tblThemen.getSelectedRow(),3) );
-        	//System.out.println("Id für Update = "+tblThemen.getValueAt(tblThemen.getSelectedRow(),3) );
+        	//System.out.println("Id fÃ¼r Update = "+tblThemen.getValueAt(tblThemen.getSelectedRow(),3) );
         }
         try{
             if(wf != null){
-            	wf.setStand("Übertrage Dateien in Datenbank......");
+            	wf.setStand("Ãœbertrage Dateien in Datenbank......");
             }
         	sqlfertig = doHtmlSpeichern((Vector)htmlDaten.clone());
         	/*
@@ -891,7 +891,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 
 		System.out.println("Ist FTP-Fertig -> "+ftpfertig);
 		System.out.println("Ist Sql-Fertig -> "+sqlfertig);
-		System.out.println("Übertrag in DB -> "+sqlfertig);
+		System.out.println("Ãœbertrag in DB -> "+sqlfertig);
 		sqlfertig = true;
 
 
@@ -1133,8 +1133,8 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 						
 						if(htmlvec.size() < 6){
 							//System.out.println("In neuem Text speichern");
-							System.out.println("Neuer Text wird eingefügt");
-							helpFenster.thisClass.wf.setStand("Übertrage Internetseite");
+							System.out.println("Neuer Text wird eingefÃ¼gt");
+							helpFenster.thisClass.wf.setStand("Ãœbertrage Internetseite");
 							
 
 							stmt = (Statement) piHelp.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -1168,7 +1168,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 						}else{
 							System.out.println("Bestehender Text wird Updated");
 							
-							helpFenster.thisClass.wf.setStand("Übertrage Internetseite");
+							helpFenster.thisClass.wf.setStand("Ãœbertrage Internetseite");
 							/*
 							stmt = (Statement) piHelp.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 				                    ResultSet.CONCUR_UPDATABLE );
@@ -1225,7 +1225,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 						}
 
 						//System.out.println("FTP = fertig");
-						//System.out.println("Die Größe des Arrays = "+htmlvec.size());
+						//System.out.println("Die GrÃ¶ÃŸe des Arrays = "+htmlvec.size());
 			
 			return true;
 		 
@@ -1365,7 +1365,7 @@ final class HtmlSpeichern extends SwingWorker<Void,Void>{
 		boolean ret = false;
 		int bilder = 0;
 				System.out.println("In Speichern Titel - Neuer Titel ="+(htmlvec.size() < 5 ? true : false));
-				System.out.println("Die Größe des Arrays = "+htmlvec.size());
+				System.out.println("Die GrÃ¶ÃŸe des Arrays = "+htmlvec.size());
 				/*
 				WartenFenster wf = new WartenFenster();
 				wf.setLocationRelativeTo(null);
@@ -1375,8 +1375,8 @@ final class HtmlSpeichern extends SwingWorker<Void,Void>{
 					
 					if(htmlvec.size() < 6){
 						//System.out.println("In neuem Text speichern");
-						System.out.println("Neuer Text wird eingefügt");
-						helpFenster.thisClass.wf.setStand("Übertrage Internetseite");
+						System.out.println("Neuer Text wird eingefÃ¼gt");
+						helpFenster.thisClass.wf.setStand("Ãœbertrage Internetseite");
 						/*
 						stmt = (Statement) piHelp.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			                    ResultSet.CONCUR_UPDATABLE );
@@ -1408,7 +1408,7 @@ final class HtmlSpeichern extends SwingWorker<Void,Void>{
 								  helpFenster.thisClass.tblThemen.getRowCount()-1);
 					}else{
 						System.out.println("Bestehender Text wird Updated");
-						helpFenster.thisClass.wf.setStand("Übertrage Internetseite");
+						helpFenster.thisClass.wf.setStand("Ãœbertrage Internetseite");
 						/*
 						stmt = (Statement) piHelp.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			                    ResultSet.CONCUR_UPDATABLE );
@@ -1466,7 +1466,7 @@ final class HtmlSpeichern extends SwingWorker<Void,Void>{
 					}
 
 					//System.out.println("FTP = fertig");
-					//System.out.println("Die Größe des Arrays = "+htmlvec.size());
+					//System.out.println("Die GrÃ¶ÃŸe des Arrays = "+htmlvec.size());
 		
 		return null;
 			

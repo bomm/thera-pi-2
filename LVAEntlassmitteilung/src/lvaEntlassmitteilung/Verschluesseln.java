@@ -38,7 +38,7 @@ public class Verschluesseln {
   private String charset = "UTF16";
 
   /**
-   * Initialisiert den Verschl�sselungsmechanismus
+   * Initialisiert den Verschlï¿½sselungsmechanismus
    * @param pass char[]
    * @param salt byte[]
    * @param iterations int
@@ -61,7 +61,7 @@ public class Verschluesseln {
   }
 
   /**
-   * Verschl�sselt eine Zeichenkette
+   * Verschlï¿½sselt eine Zeichenkette
    *
    * @param str Description of the Parameter
    * @return String the encrypted string.
@@ -80,8 +80,8 @@ public class Verschluesseln {
   }
 
   /**
-   * Entschl�sselt eine Zeichenkette, welche mit der Methode encrypt
-   * verschl�sselt wurde.
+   * Entschlï¿½sselt eine Zeichenkette, welche mit der Methode encrypt
+   * verschlï¿½sselt wurde.
    *
    * @param str Description of the Parameter
    * @return String the encrypted string.
@@ -102,9 +102,9 @@ public class Verschluesseln {
     Verschluesseln man = Verschluesseln.getInstance();
     man.init(man.password.toCharArray(), man.salt, man.iterations);
     final String encrypted = man.encrypt("Bastie");
-    System.out.println ("Verschl�sselt :"+encrypted);
+    System.out.println ("Verschlï¿½sselt :"+encrypted);
     final String decrypted = man.decrypt (encrypted);
-    System.out.println("Entschl�sselt :"+decrypted);
+    System.out.println("Entschlï¿½sselt :"+decrypted);
   }
   */
 

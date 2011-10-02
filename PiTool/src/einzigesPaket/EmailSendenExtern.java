@@ -27,7 +27,7 @@ public class EmailSendenExtern {
 
         MailAuthenticator auth = new MailAuthenticator(username, password);
         Properties properties = new Properties();
-        // Den Properties wird die ServerAdresse hinzugefügt
+        // Den Properties wird die ServerAdresse hinzugefÃ¼gt
         properties.put("mail.smtp.host", smtpHost);
         // !!Wichtig!! Falls der SMTP-Server eine Authentifizierung
         // verlangt
@@ -53,7 +53,7 @@ public class EmailSendenExtern {
         try {
             // Eine neue Message erzeugen
             Message msg = new MimeMessage(session);
-            // Hier werden die Absender- und Empfängeradressen gesetzt
+            // Hier werden die Absender- und EmpfÃ¤ngeradressen gesetzt
             msg.setFrom(new InternetAddress(senderAddress));
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
                     recipientsAddress, false));
@@ -80,10 +80,10 @@ public class EmailSendenExtern {
             }
             msg.setContent(multipart);
 /*********************/            
-            // Hier lassen sich HEADER-Informationen hinzufügen
+            // Hier lassen sich HEADER-Informationen hinzufÃ¼gen
             msg.setHeader("Test", "Test");
             msg.setSentDate(new Date( ));
-            // Zum Schluss wird die Mail natürlich noch verschickt
+            // Zum Schluss wird die Mail natÃ¼rlich noch verschickt
             Transport.send(msg);
         }
         catch (Exception e) {

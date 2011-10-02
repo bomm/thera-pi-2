@@ -58,7 +58,7 @@ public class PDFDummy {
 				zeilen++;
 			}
 		}
-		System.out.println("Benötigte Zeilen = "+zeilen);
+		System.out.println("BenÃ¶tigte Zeilen = "+zeilen);
 		
  
 		int pos = 0;

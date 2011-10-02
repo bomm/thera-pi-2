@@ -171,7 +171,7 @@ public class ICDoberflaeche extends JXPanel implements ListSelectionListener, Ac
 	            if(text.get(0).size() > 0){
 	            	jtbf.setText(text.get(0).get(0));
 	            }else{
-	            	jtbf.setText("Kein Text f�r diesen ICD-10 Code vorhanden");
+	            	jtbf.setText("Kein Text fï¿½r diesen ICD-10 Code vorhanden");
 	            }
 	        }    
 
@@ -184,7 +184,7 @@ public class ICDoberflaeche extends JXPanel implements ListSelectionListener, Ac
 		jtbf = new JTextArea();
 		jtbf.setFont(new Font("Courier",Font.PLAIN,11));
 		jtbf.setLineWrap(true);
-		jtbf.setName("s�tze");
+		jtbf.setName("sï¿½tze");
 		jtbf.setWrapStyleWord(true);
 		jtbf.setEditable(true);
 		jtbf.setBackground(Color.WHITE);

@@ -63,12 +63,12 @@ public class BMIoberflaeche extends JXPanel implements ListSelectionListener, Ac
 					CellConstraints c1 = new CellConstraints();
 					setLayout(layob1);
 					
-					JLabel lblkg = new JLabel("K�rpergewicht in kg");
+					JLabel lblkg = new JLabel("KÃ¶rpergewicht in kg");
 					add(lblkg, c1.xy(2,2));	
 					masse = new JRtaTextField("FL", true,"6.2","RECHTS");
 					masse.setText("0,00");
 					add(masse,c1.xy(4,2));
-					JLabel lblcm = new JLabel("K�rpergr��e in cm");
+					JLabel lblcm = new JLabel("KÃ¶rpergrÃ¶Ãe in cm");
 					add(lblcm, c1.xy(2,4));	
 					cm = new JRtaTextField("ZAHLEN",true);
 					cm.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -115,7 +115,7 @@ public class BMIoberflaeche extends JXPanel implements ListSelectionListener, Ac
 		
 		teil2[1] = new JLabel("Normalgewicht");
 		t2area.add(teil2[1], ct2.xy(2,3));	
-		teil2[2] = new JLabel("�bergewicht");
+		teil2[2] = new JLabel("Ãbergewicht");
 		t2area.add(teil2[2], ct2.xy(2,5));	
 		teil2[3] = new JLabel("Adipositas Grad 1");
 		t2area.add(teil2[3], ct2.xy(2,7));	
@@ -179,7 +179,7 @@ public class BMIoberflaeche extends JXPanel implements ListSelectionListener, Ac
 			return;
 		}
 		if( (ddbmi >= dvergleich[2][0]) && (ddbmi <= dvergleich[2][1])){
-			gruppe.setText("�bergewicht");
+			gruppe.setText("Ãbergewicht");
 			doClipBoard(gruppe.getText(),dcf.format(dbmi));
 			return;
 		}
