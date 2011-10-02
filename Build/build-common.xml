@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="common" default="default">
+
+	<!-- add compiler argument to use UTF-8 encoding for all source files -->
+	<presetdef name="javac">
+		<javac encoding="UTF-8" />
+	</presetdef>
+
     <target name="default">
     	<echo level="error" message="This buildfile should not be called directly."/>
     </target>
