@@ -74,7 +74,7 @@ public class SplashInhalt extends JXPanel implements ActionListener{
 			if(i==1){
 
 				Thread.sleep(10000);
-				System.out.println("Rückgabewert = 1");						
+				System.out.println("RÃ¼ckgabewert = 1");						
 				System.exit(0);
 			}
 		} catch (InterruptedException e) {

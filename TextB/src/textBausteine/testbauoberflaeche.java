@@ -298,7 +298,7 @@ public class testbauoberflaeche extends JXPanel implements ActionListener,ListSe
 	                			setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	                			//String id = (String) tbtab.getValueAt(ix, 3);
 	                				//System.out.println(tbtab.getValueAt(ix, 4));
-	                				//System.out.println("Ausgewähle Reihe = "+ix);
+	                				//System.out.println("Ausgewählte Reihe = "+ix);
             					ladeText(ix);
 	                			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 								}catch(Exception ex){
