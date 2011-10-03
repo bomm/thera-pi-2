@@ -7,13 +7,13 @@
     <target name="clean">
     	<property name="build.target" value="clean"/>
     	<ant target="subprojects"/>
-        <delete>
-            <fileset dir="${dir.dist}" includes="**/*"/>
-        </delete>
+        <delete dir="${dir.dist}"/>
     </target>
 	<target name="dist" depends="jars,copyfiles"/>
+	
 	<target name="copyfiles">
 		<ant antfile="${dir.therapi.common}/build.xml" dir="${dir.therapi.common}" inheritAll="false" target="copylibs"/>
+		<ant antfile="${dir.files}/build.xml" dir="${dir.files}" inheritAll="false" target="copyfiles"/>
 	</target>
 
     <target description="Build all JARs in dist directory." name="jars" depends="buildnumber">
@@ -50,6 +50,7 @@
         <ant dir="${dir.text.baustein}" target="${build.target}"/>
         <ant dir="${dir.therapi}" target="${build.target}"/>
         <ant dir="${dir.reha}" target="${build.target}"/>
+        <ant dir="${dir.files}" target="${build.target}"/>
     </target>
 
 	<target name="jar"/>

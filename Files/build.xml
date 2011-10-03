@@ -1,0 +1,117 @@
+<?eclipse.ant.import?>
+<!-- 
+  The line above must be the first line to make Eclipse add
+  an import tag to the exported Ant buildfile.
+  
+  This import file can be used in all projects (hopefully) without change.
+  For project specific settings use project.properties.
+ -->
+
+<project basedir="." default="dist" name="Files">
+	<!-- common settings for all projects -->	
+	<property file="../Build/build-common.properties"/>
+
+	<!-- project specific settings -->
+	<property file="project.properties"/>
+
+	<!-- common targets for all projects -->
+	<import file="../Build/build-common.xml"/>
+	
+	<target name="dist" depends="copyfiles,distdirs"/>
+	
+	<target name="distdirs">
+		<mkdir dir="${dir.dist}"/>
+		<mkdir dir="${dir.dist.defaults}"/>
+		<mkdir dir="${dir.dist.defaults.commonini}"/>
+		<mkdir dir="${dir.dist.defaults.ini}"/>
+		<mkdir dir="${dir.dist.defaults.templates}"/>
+		<mkdir dir="${dir.dist.howto}"/>
+		<mkdir dir="${dir.dist.icons}"/>
+		<mkdir dir="${dir.dist.ini}"/>
+		<mkdir dir="${dir.dist.ini.iknone}"/>
+		<mkdir dir="${dir.dist.ini.ikdefault}"/>
+		<mkdir dir="${dir.dist.sounds}"/>
+		<mkdir dir="${dir.dist.sql}"/>
+		<mkdir dir="${dir.dist.javascript}"/>
+		<mkdir dir="${dir.dist.templates}"/>
+		<mkdir dir="${dir.dist.templates.iknone}"/>
+		<mkdir dir="${dir.dist.templates.ikdefault}"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${dir.dist.defaults.commonini}"/>
+		<delete dir="${dir.dist.defaults.ini}"/>
+		<delete dir="${dir.dist.defaults.templates}"/>
+		<delete dir="${dir.dist.defaults}"/>
+		<delete dir="${dir.dist.howto}"/>
+		<delete dir="${dir.dist.icons}"/>
+		<delete dir="${dir.dist.ini}"/>
+		<delete dir="${dir.dist.ini.iknone}"/>
+		<delete dir="${dir.dist.ini.ikdefault}"/>
+		<delete dir="${dir.dist.sounds}"/>
+		<delete dir="${dir.dist.sql}"/>
+		<delete dir="${dir.dist.javascript}"/>
+		<delete dir="${dir.dist.templates.iknone}"/>
+		<delete dir="${dir.dist.templates.ikdefault}"/>
+		<delete dir="${dir.dist.templates}"/>
+	</target>
+
+	<target name="copyfiles" depends="distdirs">
+		<!-- no files in defaults
+		<copy todir="${dir.dist.defaults}">
+			<fileset dir="${dir.src.defaults}" includes="*"/>
+		</copy>
+		-->
+		<copy todir="${dir.dist.defaults.commonini}">
+			<fileset dir="${dir.src.defaults.commonini}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.defaults.ini}">
+			<fileset dir="${dir.src.defaults.ini}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.defaults.templates}">
+			<fileset dir="${dir.src.defaults.templates}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.howto}">
+			<fileset dir="${dir.src.howto}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.icons}">
+			<fileset dir="${dir.src.icons}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.ini}">
+			<fileset dir="${dir.src.ini}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.ini.iknone}">
+			<fileset dir="${dir.src.ini.iknone}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.ini.ikdefault}">
+			<fileset dir="${dir.src.ini.ikdefault}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.sounds}">
+			<fileset dir="${dir.src.sounds}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.sql}">
+			<fileset dir="${dir.src.sql}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.javascript}">
+			<fileset dir="${dir.src.javascript}" includes="*"/>
+		</copy>
+		<!-- no files in templates dir
+		<copy todir="${dir.dist.templates}">
+			<fileset dir="${dir.src.templates}" includes="*"/>
+		</copy>
+		-->
+		<copy todir="${dir.dist.templates.iknone}">
+			<fileset dir="${dir.src.templates.iknone}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.templates.ikdefault}">
+			<fileset dir="${dir.src.templates.ikdefault}" includes="*"/>
+		</copy>
+		<copy todir="${dir.dist.updateconf}">
+			<fileset dir="${dir.src.updateconf}" includes="*"/>
+		</copy>
+	</target>
+	
+	<target name="jar">
+		<echo>nothing to do for target jar</echo>
+	</target>
+</project>
