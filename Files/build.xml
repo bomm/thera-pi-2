@@ -109,6 +109,9 @@
 		<copy todir="${dir.dist.updateconf}">
 			<fileset dir="${dir.src.updateconf}" includes="*"/>
 		</copy>
+		<copy todir="${dir.dist.scripts}">
+			<fileset dir="${dir.src.scripts.windows}" includes="*"/>
+		</copy>
 	</target>
 	
 	<target name="jar">
