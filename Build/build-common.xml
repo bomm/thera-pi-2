@@ -39,7 +39,7 @@
 				     (path.classpath.build.project) -->
 				<globmapper from="${basedir}/*.jar" to="*.jar"/>
 				<!-- this should catch all thirdparty JARs -->
-				<globmapper from="${dir.libraries.basedir}/*" to="Libraries/lib/*"/>
+				<globmapper from="${dir.libraries.basedir}/*" to="Libraries/*"/>
 			</mapper>
 		</pathconvert>
 					
