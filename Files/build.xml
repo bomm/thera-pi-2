@@ -22,35 +22,62 @@
 	<target name="distdirs">
 		<mkdir dir="${dir.dist}"/>
 		<mkdir dir="${dir.dist.defaults}"/>
-		<mkdir dir="${dir.dist.defaults.commonini}"/>
 		<mkdir dir="${dir.dist.defaults.ini}"/>
+		<mkdir dir="${dir.dist.defaults.edifact}"/>
+		<mkdir dir="${dir.dist.defaults.keystore}"/>
+		<mkdir dir="${dir.dist.defaults.temp}"/>
+		<mkdir dir="${dir.dist.defaults.urlaub}"/>
 		<mkdir dir="${dir.dist.defaults.templates}"/>
 		<mkdir dir="${dir.dist.howto}"/>
 		<mkdir dir="${dir.dist.icons}"/>
 		<mkdir dir="${dir.dist.ini}"/>
 		<mkdir dir="${dir.dist.ini.iknone}"/>
 		<mkdir dir="${dir.dist.ini.ikdefault}"/>
+		<mkdir dir="${dir.dist.keystore}"/>
+		<mkdir dir="${dir.dist.keystore.ikdefault}"/>
+		
+		<mkdir dir="${dir.dist.screenshots}"/>
 		<mkdir dir="${dir.dist.sounds}"/>
 		<mkdir dir="${dir.dist.sql}"/>
+		<mkdir dir="${dir.dist.temp}"/>
+		<mkdir dir="${dir.dist.temp.ikdefault}"/>
+		<mkdir dir="${dir.dist.temp.iknone}"/>
+		
 		<mkdir dir="${dir.dist.javascript}"/>
+		<mkdir dir="${dir.dist.urlaub}"/>
+		<mkdir dir="${dir.dist.urlaub.ikdefault}"/>
+		<mkdir dir="${dir.dist.urlaub.iknone}"/>
+
 		<mkdir dir="${dir.dist.templates}"/>
 		<mkdir dir="${dir.dist.templates.iknone}"/>
 		<mkdir dir="${dir.dist.templates.ikdefault}"/>
 	</target>
 
 	<target name="clean">
-		<delete dir="${dir.dist.defaults.commonini}"/>
 		<delete dir="${dir.dist.defaults.ini}"/>
+		<delete dir="${dir.dist.defaults.edifact}"/>
+		<delete dir="${dir.dist.defaults.keystore}"/>
+		<delete dir="${dir.dist.defaults.temp}"/>
+		<delete dir="${dir.dist.defaults.urlaub}"/>
 		<delete dir="${dir.dist.defaults.templates}"/>
 		<delete dir="${dir.dist.defaults}"/>
 		<delete dir="${dir.dist.howto}"/>
 		<delete dir="${dir.dist.icons}"/>
-		<delete dir="${dir.dist.ini}"/>
 		<delete dir="${dir.dist.ini.iknone}"/>
 		<delete dir="${dir.dist.ini.ikdefault}"/>
+		<delete dir="${dir.dist.ini}"/>
+		<delete dir="${dir.dist.keystore.ikdefault}"/>
+		<delete dir="${dir.dist.keystore}"/>
+		<delete dir="${dir.dist.screenshots}"/>
 		<delete dir="${dir.dist.sounds}"/>
 		<delete dir="${dir.dist.sql}"/>
+		<delete dir="${dir.dist.temp.ikdefault}"/>
+		<delete dir="${dir.dist.temp.iknone}"/>
+		<delete dir="${dir.dist.temp}"/>
 		<delete dir="${dir.dist.javascript}"/>
+		<delete dir="${dir.dist.urlaub.ikdefault}"/>
+		<delete dir="${dir.dist.urlaub.iknone}"/>
+		<delete dir="${dir.dist.urlaub}"/>
 		<delete dir="${dir.dist.templates.iknone}"/>
 		<delete dir="${dir.dist.templates.ikdefault}"/>
 		<delete dir="${dir.dist.templates}"/>
@@ -62,55 +89,61 @@
 			<fileset dir="${dir.src.defaults}" includes="*"/>
 		</copy>
 		-->
-		<copy todir="${dir.dist.defaults.commonini}">
-			<fileset dir="${dir.src.defaults.commonini}" includes="*"/>
+		<copy todir="${dir.dist}">
+			<fileset dir="${dir.src.defaults.commonini}" includes="nebraska*"/>
+		</copy>
+		<copy todir="${dir.dist.icons}">
+			<fileset dir="${dir.src.icons}"/>
+		</copy>
+		<copy todir="${dir.dist.ini.ikdefault}">
+			<fileset dir="${dir.src.defaults.commonini}" includes="tpupdate.ini"/>
+			<fileset dir="${dir.src.defaults.ini}" includes="arzt.ini bedienung.ini company.ini dta301.ini email.ini firmen.ini fremdprog.ini fristen.ini geraete.ini icons.ini kalender.ini kasse.ini ktraeger.ini nachrichten.ini oprgaf.ini patient.ini
+ preisgruppen.ini rehajava.ini rezept.ini terminkalender.ini thbericht.ini"/>
+			<fileset dir="${dir.src.ini.ikdefault}"/>
+		</copy>
+		<copy todir="${dir.dist.ini.iknone}">
+			<fileset dir="${dir.src.defaults.commonini}" includes="tpupdate.ini"/>
+			<fileset dir="${dir.src.defaults.ini}" includes="arzt.ini bedienung.ini company.ini dta301.ini email.ini firmen.ini fremdprog.ini fristen.ini geraete.ini icons.ini kalender.ini kasse.ini ktraeger.ini nachrichten.ini oprgaf.ini patient.ini
+ preisgruppen.ini rehajava.ini rezept.ini terminkalender.ini thbericht.ini"/>
+			<fileset dir="${dir.src.ini.ikdefault}" includes="color.ini gruppen.ini terminliste.ini"/>
+			<fileset dir="${dir.src.ini.iknone}" includes="abrechnung.ini gutachten.ini sqlmodul.ini"/>
+		</copy>
+		<copy todir="${dir.dist.templates.ikdefault}">
+			<fileset dir="${dir.src.defaults.templates}" includes="AusfallRechnung.ott AusfallRechnung.ott.Kopie.ott RehaAufnahmeAnschreiben.ott rezeptgebuehrHB.ott rezeptgebuehr.ott Rezeptgebuehr.ott.Kopie.ott RezeptgebuehrRechnung.ott.Kopie.ott StandardArzt1.ott terminshot_.ott TherapieBericht.ott"/>
+			<fileset dir="${dir.src.templates.ikdefault}" includes="BarKasse.ott DinA4BG.ott DinA4RH.ott DinA6.ott EBericht-Seite1-Variante2.pdf EBericht-Seite2-Variante2.pdf EBericht-Seite3-Variante2.pdf EBericht-Seite4-Variante2.pdf EmailTerminliste.txt EmptyCalcDoku.ots EmptyWriterDoku.ott GBEFA.ott GBEFN.ott GBEHA.ott GBEHN.ott GBEKA.ott GBEKN.ott GenehmigungAdR.ott GKVArztbericht2.ott GKVBericht-Seite1-Variante2.pdf GKVBericht-Seite2-Variante2.pdf HMBegleitzettelGKV.ott HMBegleitzettelGKV.ott.Kopie.ott HMRechnungBG.ott HMRechnungBG.ott.Kopie.ott HMRechnungGKV.ott HMRechnungGKV.ott.Kopie.ott HMRechnungPrivat.ott HMRechnungPrivat.ott.Kopie.ott KGBrief1.ott Muster1318.ott Muster14.ott Nachsorge1-Variante2.pdf Nachsorge2-Variante2.pdf RBeginn.ott RehaRechnung.ott REntlass.ott RezeptgebuehrRechnung.ott RV-EBericht-Seite1.pdf RV-EBericht-Seite1-Variante2.pdf TaxierungA4.ott TaxierungA5.ott terminliste4.ott"/>
+		</copy>
+		<copy todir="${dir.dist.templates.ikdefault}">
+			<fileset dir="${dir.src.defaults.templates}" includes="AusfallRechnung.ott AusfallRechnung.ott.Kopie.ott rezeptgebuehrHB.ott rezeptgebuehr.ott Rezeptgebuehr.ott.Kopie.ott RezeptgebuehrRechnung.ott.Kopie.ott StandardArzt1.ott terminshot_.ott TherapieBericht.ott"/>
+			<fileset dir="${dir.src.templates.iknone}" includes="EmailTerminliste.txt terminliste4.ott"/>
+			<fileset dir="${dir.src.templates.ikdefault}" includes="BarKasse.ott DinA4BG.ott DinA4RH.ott DinA6.ott EBericht-Seite1-Variante2.pdf EBericht-Seite2-Variante2.pdf EBericht-Seite3-Variante2.pdf EBericht-Seite4-Variante2.pdf EmptyCalcDoku.ots EmptyWriterDoku.ott GenehmigungAdR.ott GKVArztbericht2.ott GKVBericht-Seite1-Variante2.pdf GKVBericht-Seite2-Variante2.pdf HMBegleitzettelGKV.ott HMBegleitzettelGKV.ott.Kopie.ott HMRechnungBG.ott HMRechnungBG.ott.Kopie.ott HMRechnungGKV.ott HMRechnungGKV.ott.Kopie.ott HMRechnungPrivat.ott HMRechnungPrivat.ott.Kopie.ott KGBrief1.ott Muster1318.ott Muster14.ott Nachsorge1-Variante2.pdf Nachsorge2-Variante2.pdf RBeginn.ott RehaRechnung.ott REntlass.ott RezeptgebuehrRechnung.ott RV-EBericht-Seite1.pdf RV-EBericht-Seite1-Variante2.pdf TaxierungA4.ott TaxierungA5.ott"/>
+		</copy>
+		<copy todir="${dir.dist.ini}">
+			<fileset dir="${dir.src.defaults.commonini}" includes="dbtypen.ini mandanten.ini pihelp.ini pitool.ini rehabrowser.ini textbaustein.ini tpupdate.ini"/>
+			<fileset dir="${dir.src.ini}" includes="dir.src.ini"/>
 		</copy>
 		<copy todir="${dir.dist.defaults.ini}">
-			<fileset dir="${dir.src.defaults.ini}" includes="*"/>
+			<fileset dir="${dir.src.defaults.commonini}" includes="tpupdate.ini"/>
+			<fileset dir="${dir.src.defaults.ini}" includes="defaults/ini/arzt.ini bedienung.ini color.ini company.ini dta301.ini email.ini firmen.ini fremdprog.ini fristen.ini geraete.ini gruppen.ini icons.ini kalender.ini kasse.ini ktraeger.ini nachrichten.ini oprgaf.ini patient.ini preisgruppen.ini rehajava.ini rezept.ini terminkalender.ini terminliste.ini thbericht.ini"/>
+			<fileset dir="${dir.src.ini.ikdefault}" includes="abrechnung.ini gutachten.ini offeneposten.ini sqlmodul.ini"/>
 		</copy>
 		<copy todir="${dir.dist.defaults.templates}">
-			<fileset dir="${dir.src.defaults.templates}" includes="*"/>
+			<fileset dir="${dir.src.defaults.templates}" includes="AusfallRechnung.ott AusfallRechnung.ott.Kopie.ott DinA4BG.ott DinA4RH.ott DinA6.ott EmailTerminliste.txt Muster1318.ott Muster14.ott RehaAufnahmeAnschreiben.ott rezeptgebuehrHB.ott rezeptgebuehr.ott Rezeptgebuehr.ott.Kopie.ott RezeptgebuehrRechnung.ott.Kopie.ott StandardArzt1.ott terminliste4.ott terminshot_.ott TherapieBericht.ott"/>
+			<fileset dir="${dir.src.templates.ikdefault}" includes="BarKasse.ott EBericht-Seite1-Variante2.pdf EBericht-Seite2-Variante2.pdf EBericht-Seite3-Variante2.pdf EBericht-Seite4-Variante2.pdf EmptyCalcDoku.ots EmptyWriterDoku.ott GBEFA.ott GBEFN.ott GBEHA.ott GBEHN.ott GBEKA.ott GBEKN.ott GenehmigungAdR.ott GKVArztbericht2.ott GKVBericht-Seite1-Variante2.pdf GKVBericht-Seite2-Variante2.pdf HMBegleitzettelGKV.ott HMBegleitzettelGKV.ott.Kopie.ott HMRechnungBG.ott HMRechnungBG.ott.Kopie.ott HMRechnungGKV.ott HMRechnungGKV.ott.Kopie.ott HMRechnungPrivat.ott HMRechnungPrivat.ott.Kopie.ott jst.png KGBrief1.ott Mahnung1.ott Mahnung2.ott Nachsorge1-Variante2.pdf Nachsorge2-Variante2.pdf RBeginn.ott RehaRechnung.ott REntlass.ott RezeptgebuehrRechnung.ott RV-EBericht-Seite1.pdf RV-EBericht-Seite1-Variante2.pdf TaxierungA4.ott TaxierungA5.ott ZertBegleitzettel.ott Zertifizierungsantrag.pdf"/>
 		</copy>
 		<copy todir="${dir.dist.howto}">
 			<fileset dir="${dir.src.howto}" includes="*"/>
 		</copy>
-		<copy todir="${dir.dist.icons}">
-			<fileset dir="${dir.src.icons}" includes="*"/>
+		<copy todir="${dir.dist.javascript}">
+			<fileset dir="${dir.src.javascript}" includes="*"/>
 		</copy>
-		<copy todir="${dir.dist.ini}">
-			<fileset dir="${dir.src.ini}" includes="*"/>
-		</copy>
-		<copy todir="${dir.dist.ini.iknone}">
-			<fileset dir="${dir.src.ini.iknone}" includes="*"/>
-		</copy>
-		<copy todir="${dir.dist.ini.ikdefault}">
-			<fileset dir="${dir.src.ini.ikdefault}" includes="*"/>
+		<copy todir="${dir.dist.screenshots}">
+			<fileset dir="${dir.src.screenshots}" includes="*"/>
 		</copy>
 		<copy todir="${dir.dist.sounds}">
 			<fileset dir="${dir.src.sounds}" includes="*"/>
 		</copy>
 		<copy todir="${dir.dist.sql}">
 			<fileset dir="${dir.src.sql}" includes="*"/>
-		</copy>
-		<copy todir="${dir.dist.javascript}">
-			<fileset dir="${dir.src.javascript}" includes="*"/>
-		</copy>
-		<!-- no files in templates dir
-		<copy todir="${dir.dist.templates}">
-			<fileset dir="${dir.src.templates}" includes="*"/>
-		</copy>
-		-->
-		<copy todir="${dir.dist.templates.iknone}">
-			<fileset dir="${dir.src.templates.iknone}" includes="*"/>
-		</copy>
-		<copy todir="${dir.dist.templates.ikdefault}">
-			<fileset dir="${dir.src.templates.ikdefault}" includes="*"/>
-		</copy>
-		<copy todir="${dir.dist.updateconf}">
-			<fileset dir="${dir.src.updateconf}" includes="*"/>
-		</copy>
-		<copy todir="${dir.dist.scripts}">
-			<fileset dir="${dir.src.scripts.windows}" includes="*"/>
 		</copy>
 	</target>
 	
