@@ -35,6 +35,8 @@
 		<mkdir dir="${dir.dist.ini.ikdefault}"/>
 		<mkdir dir="${dir.dist.keystore}"/>
 		<mkdir dir="${dir.dist.keystore.ikdefault}"/>
+		<mkdir dir="${dir.dist.edifact}"/>
+		<mkdir dir="${dir.dist.edifact.ikdefault}"/>
 		
 		<mkdir dir="${dir.dist.screenshots}"/>
 		<mkdir dir="${dir.dist.sounds}"/>
@@ -68,6 +70,8 @@
 		<delete dir="${dir.dist.ini}"/>
 		<delete dir="${dir.dist.keystore.ikdefault}"/>
 		<delete dir="${dir.dist.keystore}"/>
+		<delete dir="${dir.dist.edifact.ikdefault}"/>
+		<delete dir="${dir.dist.edifact}"/>
 		<delete dir="${dir.dist.screenshots}"/>
 		<delete dir="${dir.dist.sounds}"/>
 		<delete dir="${dir.dist.sql}"/>
