@@ -96,6 +96,12 @@
 		<copy todir="${dir.dist}">
 			<fileset dir="${dir.src.defaults.commonini}" includes="nebraska*"/>
 		</copy>
+		<copy todir="${dir.dist}">
+			<fileset dir="${dir.src.config}" includes="update.conf"/>
+		</copy>
+		<copy todir="${dir.dist}">
+			<fileset dir="${dir.src.scripts.windows}" includes="config.bat"/>
+		</copy>
 		<copy todir="${dir.dist.icons}">
 			<fileset dir="${dir.src.icons}"/>
 		</copy>
@@ -116,7 +122,7 @@
 			<fileset dir="${dir.src.defaults.templates}" includes="AusfallRechnung.ott AusfallRechnung.ott.Kopie.ott RehaAufnahmeAnschreiben.ott rezeptgebuehrHB.ott rezeptgebuehr.ott Rezeptgebuehr.ott.Kopie.ott RezeptgebuehrRechnung.ott.Kopie.ott StandardArzt1.ott terminshot_.ott TherapieBericht.ott"/>
 			<fileset dir="${dir.src.templates.ikdefault}" includes="BarKasse.ott DinA4BG.ott DinA4RH.ott DinA6.ott EBericht-Seite1-Variante2.pdf EBericht-Seite2-Variante2.pdf EBericht-Seite3-Variante2.pdf EBericht-Seite4-Variante2.pdf EmailTerminliste.txt EmptyCalcDoku.ots EmptyWriterDoku.ott GBEFA.ott GBEFN.ott GBEHA.ott GBEHN.ott GBEKA.ott GBEKN.ott GenehmigungAdR.ott GKVArztbericht2.ott GKVBericht-Seite1-Variante2.pdf GKVBericht-Seite2-Variante2.pdf HMBegleitzettelGKV.ott HMBegleitzettelGKV.ott.Kopie.ott HMRechnungBG.ott HMRechnungBG.ott.Kopie.ott HMRechnungGKV.ott HMRechnungGKV.ott.Kopie.ott HMRechnungPrivat.ott HMRechnungPrivat.ott.Kopie.ott KGBrief1.ott Muster1318.ott Muster14.ott Nachsorge1-Variante2.pdf Nachsorge2-Variante2.pdf RBeginn.ott RehaRechnung.ott REntlass.ott RezeptgebuehrRechnung.ott RV-EBericht-Seite1.pdf RV-EBericht-Seite1-Variante2.pdf TaxierungA4.ott TaxierungA5.ott terminliste4.ott"/>
 		</copy>
-		<copy todir="${dir.dist.templates.ikdefault}">
+		<copy todir="${dir.dist.templates.iknone}">
 			<fileset dir="${dir.src.defaults.templates}" includes="AusfallRechnung.ott AusfallRechnung.ott.Kopie.ott rezeptgebuehrHB.ott rezeptgebuehr.ott Rezeptgebuehr.ott.Kopie.ott RezeptgebuehrRechnung.ott.Kopie.ott StandardArzt1.ott terminshot_.ott TherapieBericht.ott"/>
 			<fileset dir="${dir.src.templates.iknone}" includes="EmailTerminliste.txt terminliste4.ott"/>
 			<fileset dir="${dir.src.templates.ikdefault}" includes="BarKasse.ott DinA4BG.ott DinA4RH.ott DinA6.ott EBericht-Seite1-Variante2.pdf EBericht-Seite2-Variante2.pdf EBericht-Seite3-Variante2.pdf EBericht-Seite4-Variante2.pdf EmptyCalcDoku.ots EmptyWriterDoku.ott GenehmigungAdR.ott GKVArztbericht2.ott GKVBericht-Seite1-Variante2.pdf GKVBericht-Seite2-Variante2.pdf HMBegleitzettelGKV.ott HMBegleitzettelGKV.ott.Kopie.ott HMRechnungBG.ott HMRechnungBG.ott.Kopie.ott HMRechnungGKV.ott HMRechnungGKV.ott.Kopie.ott HMRechnungPrivat.ott HMRechnungPrivat.ott.Kopie.ott KGBrief1.ott Muster1318.ott Muster14.ott Nachsorge1-Variante2.pdf Nachsorge2-Variante2.pdf RBeginn.ott RehaRechnung.ott REntlass.ott RezeptgebuehrRechnung.ott RV-EBericht-Seite1.pdf RV-EBericht-Seite1-Variante2.pdf TaxierungA4.ott TaxierungA5.ott"/>
@@ -127,7 +133,7 @@
 		</copy>
 		<copy todir="${dir.dist.defaults.ini}">
 			<fileset dir="${dir.src.defaults.commonini}" includes="tpupdate.ini"/>
-			<fileset dir="${dir.src.defaults.ini}" includes="defaults/ini/arzt.ini bedienung.ini color.ini company.ini dta301.ini email.ini firmen.ini fremdprog.ini fristen.ini geraete.ini gruppen.ini icons.ini kalender.ini kasse.ini ktraeger.ini nachrichten.ini oprgaf.ini patient.ini preisgruppen.ini rehajava.ini rezept.ini terminkalender.ini terminliste.ini thbericht.ini"/>
+			<fileset dir="${dir.src.defaults.ini}" includes="arzt.ini bedienung.ini color.ini company.ini dta301.ini email.ini firmen.ini fremdprog.ini fristen.ini geraete.ini gruppen.ini icons.ini kalender.ini kasse.ini ktraeger.ini nachrichten.ini oprgaf.ini patient.ini preisgruppen.ini rehajava.ini rezept.ini terminkalender.ini terminliste.ini thbericht.ini"/>
 			<fileset dir="${dir.src.ini.ikdefault}" includes="abrechnung.ini gutachten.ini offeneposten.ini sqlmodul.ini"/>
 		</copy>
 		<copy todir="${dir.dist.defaults.templates}">
