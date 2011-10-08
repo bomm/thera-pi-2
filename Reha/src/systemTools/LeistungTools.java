@@ -42,7 +42,7 @@ public class LeistungTools {
 				break;
 			}
 
-			// wenn jetzt noch nicht abgebrochen wurde gib null,null zur�ck
+			// wenn jetzt noch nicht abgebrochen wurde gib null,null zurück
 			return ret;
 			
 		}

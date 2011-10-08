@@ -252,7 +252,7 @@ public class VorBerichte extends RehaSmartDialog implements RehaTPEventListener,
 				this.dispose();
 			}
 
-			//System.out.println("Return Gedr�ckt");
+			//System.out.println("Return Gedrückt");
 		}
 	}
 	public void doUebernahme(){

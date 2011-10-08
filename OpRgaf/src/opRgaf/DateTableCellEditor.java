@@ -242,7 +242,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
 	    
         } else { //text is invalid
         	//System.out.println("Verify = "+ftf.getInputVerifier().verify(ftf));
-        	//System.out.println("Ung�ltige Eingabe ---------> "+ftf.getText());
+        	//System.out.println("Ungültige Eingabe ---------> "+ftf.getText());
             if (!userSaysRevert()) { //user wants to edit
             	return false; //don't let the editor go away
             } 

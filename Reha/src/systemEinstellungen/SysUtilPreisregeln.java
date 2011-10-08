@@ -36,7 +36,7 @@ public class SysUtilPreisregeln extends JXPanel implements KeyListener, ActionLi
 	     add(getVorlagenSeite(),BorderLayout.CENTER);
 		return;
 	}
-	/************** Beginn der Methode f�r die Objekterstellung und -platzierung *********/
+	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu",

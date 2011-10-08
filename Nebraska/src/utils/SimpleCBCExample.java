@@ -37,7 +37,7 @@ public static void main(String[] args) throws Exception
 			Cipher cipher = Cipher.getInstance(Constants.CIPHER_AND_PADDING_OLD, Constants.SECURITY_PROVIDER);
 			
 			input = BCStatics.BytesFromFile(new File(pfad+datei));
-			System.out.println("L�nge des OriginalFiles = "+input.length);
+			System.out.println("Länge des OriginalFiles = "+input.length);
 			BCStatics.BytesToFile(input,new File(pfad+datei+".orig2"));
 			System.out.println("input : \n" + NUtils.toHex(input));
 			System.out.println(new String(input));

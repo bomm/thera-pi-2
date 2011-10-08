@@ -155,13 +155,13 @@ public class NeuerMandant implements KeyListener, ActionListener, FocusListener{
 				return false;
 			}
 			if(SystemConfig.Mandanten.get(i)[0].trim().equals(sret2)){
-				JOptionPane.showMessageDialog(null,"F�r dieses IK wurde bereits ein Mandant angelegt");
+				JOptionPane.showMessageDialog(null,"Für dieses IK wurde bereits ein Mandant angelegt");
 				jrtaf[1].requestFocus();
 				return false;
 			}
 		}
 		if(sret2.equals("") || sret2.length() != 9){
-			JOptionPane.showMessageDialog(null,"Angabe des IK ist ung�ltig (9-stellig?)");
+			JOptionPane.showMessageDialog(null,"Angabe des IK ist ungültig (9-stellig?)");
 			jrtaf[1].requestFocus();
 			return false;
 		}

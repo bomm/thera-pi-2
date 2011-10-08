@@ -197,7 +197,7 @@ public class SetWahlNeu extends JDialog implements  MouseListener, FocusListener
 			}	
 		}
 		if (arg0.getKeyCode()==27){
-			////System.out.println("ESC gedr�ckt");			
+			////System.out.println("ESC gedrückt");			
 			eltern.swSetWahl = -1;
 			DialogBeenden(-1);
 			return;
