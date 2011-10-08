@@ -21,7 +21,7 @@
 
 	<target name="jar-prepare">
 		<path id="path.classpath.build.thirdparty" refid="${ant.project.name}.classpath"/>
-
+		
 		<pathconvert property="dir.libraries.basedir">
 			<path>
 				<pathelement location="${Libraries.location}"/>
@@ -29,8 +29,6 @@
 		</pathconvert>
 
 		<pathconvert property="path.classpath.jar" pathsep=" ">
-			<!-- <path refid="path.classpath.build.project"/> -->
-			<filelist files="${jar.classpath.jars}"/> 
 			<path refid="path.classpath.build.thirdparty"/>
 			<!-- The mapper removes absolute paths and filters out
 			     references to source files -->
@@ -50,7 +48,7 @@
         <jar destfile="${dir.dist.jar}/${file.output.jar}" basedir="${classdir}">
         	<manifest>
         		<attribute name="Main-Class" value="${jar.main.class}"/>
-        		<attribute name="Class-Path" value="${path.classpath.jar}"/>
+        		<attribute name="Class-Path" value="${jar.classpath.jars} ${path.classpath.jar}"/>
         		<attribute name="Sealed" value="true"/>
                 <attribute name="Implementation-Version" 
                              value="${version.number}-b${build.number}"/> 
@@ -61,7 +59,7 @@
 	<target name="jar-nomain" unless="jar.main.class">
         <jar destfile="${dir.dist.jar}/${file.output.jar}" basedir="${classdir}">
         	<manifest>
-        		<attribute name="Class-Path" value="${path.classpath.jar}"/>
+        		<attribute name="Class-Path" value="${jar.classpath.jars} ${path.classpath.jar}"/>
         		<attribute name="Sealed" value="true"/>
                 <attribute name="Implementation-Version" 
                              value="${version.number}-b${build.number}"/> 
