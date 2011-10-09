@@ -69,7 +69,7 @@ public class BCStatics {
 	public static void readMultiple(String datei){
 		String pfad = Nebraska.keystoredir;
 		String sret = "";
-		final JFileChooser chooser = new JFileChooser("Verzeichnis w�hlen");
+		final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         final File file = new File(pfad);
@@ -107,7 +107,7 @@ public class BCStatics {
             byteArray = BytesFromFile(new File(pfad+sret));
             ByteArrayInputStream byteArrayInputStream = new 
             ByteArrayInputStream(byteArray);
-            System.out.println("Gr��e der Datei = "+byteArray.length+" Bytes");
+            System.out.println("Größe der Datei = "+byteArray.length+" Bytes");
             
             //while(byteArrayInputStream.read()!=-1)
             //	  System.out.println(byteArrayInputStream.read());
@@ -120,7 +120,7 @@ public class BCStatics {
 	            Collection<X509Certificate> collection = new ArrayList<X509Certificate>();
 	            while( (x509Cert = (X509Certificate)fact.generateCertificate(byteArrayInputStream)) != null){
 	            	collection.add(x509Cert);
-	            	System.out.println("Zertifikat hinzugef�gt");
+	            	System.out.println("Zertifikat hinzugefügt");
 	            }
 	            Iterator<X509Certificate> it = collection.iterator();
 	            while(it.hasNext()){
@@ -184,7 +184,7 @@ public class BCStatics {
 		final String zertende = "-----END CERTIFICATE-----";
 		String pfad = Nebraska.keystoredir; // FIXME warum nicht der Parameter keystoreDir
 		String sret = "";
-		final JFileChooser chooser = new JFileChooser("Verzeichnis w�hlen");
+		final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         final File file = new File(pfad);
@@ -347,7 +347,7 @@ public class BCStatics {
 					System.out.println( "alias         = "+alias+"");
 					X509Certificate cert = (X509Certificate)store.getCertificate(alias);
 					System.out.println( "Subject        = "+cert.getSubjectDN());
-					System.out.println( "G�ltig bis     = "+cert.getNotAfter());
+					System.out.println( "Gültig bis     = "+cert.getNotAfter());
 					try{
 						cert.checkValidity();	
 					}catch(Exception ex){
@@ -419,11 +419,11 @@ public class BCStatics {
 					//System.out.println("Exponent:\n"+pue_bi);
 					//System.out.println("Hex Exponent:\n"+HexString.hexify(pub_exp));
 					//System.out.println("Bouncy Exponent:\n"+pub.getPublicExponent());
-					System.out.println("Schl�sselformat: "+pub.getFormat());
+					System.out.println("Schlüsselformat: "+pub.getFormat());
 					System.out.println("Public-Key SerienNr. "+RSAPublicKey.serialVersionUID);
 					MessageDigest messageDigest = MessageDigest.getInstance(Constants.HASH_ALGORITHM_MD5,Constants.SECURITY_PROVIDER);
 					 messageDigest.update(pub.getModulus().toByteArray());
-				        System.out.println( "MD5-Digest-L�nge: "+messageDigest.getDigestLength());
+				        System.out.println( "MD5-Digest-Länge: "+messageDigest.getDigestLength());
 				        byte[] dig = messageDigest.digest();
 				        String hex = "";
 				        for(int i = 0; i < messageDigest.getDigestLength();i++){
@@ -439,7 +439,7 @@ public class BCStatics {
 
 				        messageDigest = MessageDigest.getInstance(Constants.HASH_ALGORITHM_SHA_1,Constants.SECURITY_PROVIDER);
 						 messageDigest.update(pub.getModulus().toByteArray());
-					        System.out.println( "SHA1-Digest-L�nge: "+messageDigest.getDigestLength());
+					        System.out.println( "SHA1-Digest-Länge: "+messageDigest.getDigestLength());
 					        dig = messageDigest.digest();
 					        hex = "";
 					        for(int i = 0; i < messageDigest.getDigestLength();i++){
@@ -497,7 +497,7 @@ public class BCStatics {
 						//X509Certificate[] chain = (X509Certificate[]) store.getCertificateChain(schain);
 						store.setCertificateEntry(alias, cert);
 						//store.setKeyEntry(alias,cert.getPublicKey(),"196205".toCharArray(),(java.security.cert.Certificate[]) chain);
-						System.out.println("Zertifikat von "+alias+" der Datenbank hinzugef�gt");
+						System.out.println("Zertifikat von "+alias+" der Datenbank hinzugefügt");
 						ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 						store.store(bOut,Constants.KEYSTORE_PASSWORD.toCharArray());
 						System.out.println("fertig gestored....");
@@ -552,7 +552,7 @@ public class BCStatics {
 				if(aliases != null){
 					if(store.isCertificateEntry(aliases)){
 						store.deleteEntry(aliases);
-						System.out.println("Store Entry mit alias "+aliases+" wurde gel�scht!");
+						System.out.println("Store Entry mit alias "+aliases+" wurde gelöscht!");
 					}
 				}
 			}	
@@ -761,7 +761,7 @@ public class BCStatics {
 			 teiler++;
 		 }
 		 //System.out.println(hexstring);
-		 System.out.println("L�nge des tbString = "+(hexstring.length()/2)+"\n");
+		 System.out.println("Länge des tbString = "+(hexstring.length()/2)+"\n");
 		 String zeile = "";
 		 int stelle;
 		 for(int i = 0;i < teiler ;i++){
@@ -780,7 +780,7 @@ public class BCStatics {
 	 public static String chooser(String pfad){
 			//String pfad = "C:/Lost+Found/verschluesselung/";
 			String sret = "";
-			final JFileChooser chooser = new JFileChooser("Verzeichnis w�hlen");
+			final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
 	        chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 	        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 	        final File file = new File(pfad);
