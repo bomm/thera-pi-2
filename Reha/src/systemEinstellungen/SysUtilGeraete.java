@@ -29,6 +29,7 @@ import org.jdesktop.swingx.JXPanel;
 import uk.co.mmscomputing.device.scanner.Scanner;
 import uk.co.mmscomputing.device.scanner.ScannerIOException;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

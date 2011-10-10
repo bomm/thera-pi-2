@@ -22,6 +22,7 @@
 	<classpathentry kind="lib" path="/Libraries/lib/jgoodies/forms-1.3.0.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/jgoodies/jgoodies-common-0.9.9.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Nebraska"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Libraries"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

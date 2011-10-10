@@ -57,7 +57,6 @@ import Tools.ButtonTools;
 import Tools.Colors;
 import Tools.DatFunk;
 import Tools.FileTools;
-import Tools.INIFile;
 import Tools.JCompTools;
 import Tools.JRtaComboBox;
 import Tools.JRtaTextField;
@@ -72,6 +71,7 @@ import Tools.WartenAufDB;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.TextException;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 

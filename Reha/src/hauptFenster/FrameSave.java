@@ -5,7 +5,8 @@ import java.awt.Point;
 
 import org.jdesktop.swingworker.SwingWorker;
 
-import systemEinstellungen.INIFile;
+import com.freeware.inifiles.INIFile;
+
 import systemEinstellungen.SystemConfig;
 
 public class FrameSave {

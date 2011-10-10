@@ -3,6 +3,8 @@ package Tools;
 import java.util.HashMap;
 import java.util.Vector;
 
+import com.freeware.inifiles.INIFile;
+
 public class SystemEinstellungen {
 	static String[] disziplinen = {"Physio","Massage","Ergotherapie","Logopädie","Reha"};
 	public static HashMap<String,Vector<String>> hmGelenke = new HashMap<String,Vector<String>>();

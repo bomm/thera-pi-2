@@ -87,7 +87,6 @@ import sqlTools.SqlInfo;
 import stammDatenTools.KasseTools;
 import stammDatenTools.RezTools;
 import stammDatenTools.ZuzahlTools;
-import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.Colors;
@@ -101,6 +100,7 @@ import abrechnung.AbrechnungPrivat;
 import abrechnung.AbrechnungRezept;
 import abrechnung.RezeptGebuehrRechnung;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

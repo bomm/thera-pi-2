@@ -35,7 +35,8 @@ import org.jdesktop.swingx.JXTitledPanel;
 import org.thera_pi.nebraska.gui.utils.JCompTools;
 import org.therapi.reha.patient.PatientMemoPanel;
 
-import systemEinstellungen.INIFile;
+import com.freeware.inifiles.INIFile;
+
 import systemEinstellungen.SystemConfig;
 
 import dialoge.DragWin;

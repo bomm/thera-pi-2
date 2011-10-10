@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
+import com.freeware.inifiles.INIFile;
+
 import emailHandling.EmailSendenExtern;
-import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import hauptFenster.Reha;
 

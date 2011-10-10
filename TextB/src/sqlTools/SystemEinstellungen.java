@@ -3,6 +3,8 @@ package sqlTools;
 import java.util.HashMap;
 import java.util.Vector;
 
+import com.freeware.inifiles.INIFile;
+
 public class SystemEinstellungen {
 	static String[] disziplinen = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 	public static HashMap<String,Vector<String>> hmThema = new HashMap<String,Vector<String>>();

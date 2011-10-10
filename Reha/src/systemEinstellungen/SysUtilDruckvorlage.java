@@ -48,6 +48,7 @@ import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.printing.IPrinter;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

@@ -43,6 +43,7 @@ import org.jdesktop.swingx.JXTable;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

@@ -4,6 +4,8 @@ import hauptFenster.Reha;
 
 import java.util.Vector;
 
+import com.freeware.inifiles.INIFile;
+
 import terminKalender.DatFunk;
 import terminKalender.ZeitFunk;
 

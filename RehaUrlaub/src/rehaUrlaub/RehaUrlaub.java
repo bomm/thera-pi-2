@@ -21,7 +21,6 @@ import org.jdesktop.swingworker.SwingWorker;
 
 import Tools.DatFunk;
 import Tools.FileTools;
-import Tools.INIFile;
 import Tools.Verschluesseln;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
@@ -31,6 +30,8 @@ import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.event.ITerminateEvent;
 import ag.ion.bion.officelayer.event.VetoTerminateListener;
 import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
+
+import com.freeware.inifiles.INIFile;
 
 public class RehaUrlaub implements WindowListener {
 

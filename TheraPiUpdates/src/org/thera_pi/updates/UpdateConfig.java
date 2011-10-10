@@ -1,5 +1,7 @@
 package org.thera_pi.updates;
 
+import com.freeware.inifiles.INIFile;
+
 public class UpdateConfig {
 	private String updateDir = "";
 	private String updateHost = "";

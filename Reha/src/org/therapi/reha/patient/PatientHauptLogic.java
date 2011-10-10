@@ -31,13 +31,14 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+import com.freeware.inifiles.INIFile;
+
 import patientenFenster.PatNeuanlage;
 import rechteTools.Rechte;
 import sqlTools.SqlInfo;
 import stammDatenTools.ArztTools;
 import stammDatenTools.KasseTools;
 import stammDatenTools.PatTools;
-import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
 import systemTools.StringTools;

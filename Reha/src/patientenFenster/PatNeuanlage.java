@@ -67,7 +67,6 @@ import sqlTools.SqlInfo;
 import stammDatenTools.ArztTools;
 import stammDatenTools.ZuzahlTools;
 import sun.awt.image.ImageFormatException;
-import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
@@ -77,6 +76,7 @@ import systemTools.ListenerTools;
 import systemTools.StringTools;
 import terminKalender.DatFunk;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.CellConstraints;
