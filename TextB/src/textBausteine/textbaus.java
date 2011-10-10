@@ -14,9 +14,9 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import sqlTools.SystemEinstellungen;
-import sqlTools.Verschluesseln;
+import org.thera_pi.tools.crypto.Verschluesseln;
 
+import sqlTools.SystemEinstellungen;
 import com.freeware.inifiles.INIFile;
 
 

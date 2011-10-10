@@ -76,6 +76,8 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.thera_pi.tools.crypto.Verschluesseln;
+
 import sun.awt.image.ImageFormatException;
 import sun.awt.image.ToolkitImage;
 

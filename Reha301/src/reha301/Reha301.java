@@ -20,12 +20,12 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
+import org.thera_pi.tools.crypto.Verschluesseln;
 
 import com.freeware.inifiles.INIFile;
 
 import reha301Panels.RehaIOMessages;
 
-import Tools.Verschluesseln;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;

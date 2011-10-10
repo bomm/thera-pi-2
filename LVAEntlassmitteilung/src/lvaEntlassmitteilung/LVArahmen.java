@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.thera_pi.tools.crypto.Verschluesseln;
+
 import com.freeware.inifiles.INIFile;
 
 

@@ -8,9 +8,9 @@ import java.sql.SQLException;
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 
-import com.freeware.inifiles.INIFile;
+import org.thera_pi.tools.crypto.Verschluesseln;
 
-import Tools.Verschluesseln;
+import com.freeware.inifiles.INIFile;
 
 
 

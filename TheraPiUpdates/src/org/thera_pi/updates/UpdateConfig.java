@@ -1,5 +1,7 @@
 package org.thera_pi.updates;
 
+import org.thera_pi.tools.crypto.Verschluesseln;
+
 import com.freeware.inifiles.INIFile;
 
 public class UpdateConfig {
