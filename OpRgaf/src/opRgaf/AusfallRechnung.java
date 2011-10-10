@@ -3,11 +3,9 @@ package opRgaf;
 
 
 import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.List;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +14,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,10 +27,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-
-
 import org.jdesktop.swingworker.SwingWorker;
-import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 
 import Tools.DatFunk;

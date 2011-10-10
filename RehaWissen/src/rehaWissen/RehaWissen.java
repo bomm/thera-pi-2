@@ -2,24 +2,16 @@ package rehaWissen;
 
 
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,10 +22,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 
+import rtaWissen.BrowserFenster;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
-
-import rtaWissen.BrowserFenster;
 
 
 

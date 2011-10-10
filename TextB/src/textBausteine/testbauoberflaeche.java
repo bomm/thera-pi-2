@@ -19,14 +19,12 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -35,7 +33,6 @@ import org.jdesktop.swingx.JXTable;
 
 import sqlTools.SqlInfo;
 import sqlTools.SystemEinstellungen;
-
 import Tools.JCompTools;
 import Tools.JRtaRadioButton;
 import Tools.JRtaTextField;

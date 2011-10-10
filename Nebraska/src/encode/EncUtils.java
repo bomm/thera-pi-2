@@ -8,29 +8,20 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.Key;
-import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.cert.CertStore;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.security.cert.CollectionCertStoreParameters;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import nebraska.BCStatics;
 import nebraska.BCStatics2;
@@ -40,27 +31,15 @@ import nebraska.FileStatics;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OutputStream;
-import org.bouncycastle.asn1.ASN1TaggedObject;
-import org.bouncycastle.asn1.BERSequence;
 import org.bouncycastle.asn1.DEREncodable;
 import org.bouncycastle.asn1.DERObject;
-import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.cms.CMSEnvelopedData;
 import org.bouncycastle.cms.CMSEnvelopedDataGenerator;
 import org.bouncycastle.cms.CMSProcessable;
 import org.bouncycastle.cms.CMSProcessableByteArray;
-import org.bouncycastle.cms.CMSProcessableFile;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.RecipientId;
 import org.bouncycastle.cms.RecipientInformation;
 import org.bouncycastle.cms.RecipientInformationStore;
-import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.cms.SignerInformationStore;
-import org.bouncycastle.jce.PKCS7SignedData;
-
-import sun.security.pkcs.ContentInfo;
-import utils.NUtils;
 
 public class EncUtils {
 	

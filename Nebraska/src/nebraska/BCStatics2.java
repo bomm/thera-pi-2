@@ -78,13 +78,11 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
-import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
-import sun.rmi.runtime.Log;
 import utils.DatFunk;
 import utils.NUtils;
 

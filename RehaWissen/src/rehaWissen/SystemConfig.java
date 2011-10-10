@@ -7,18 +7,9 @@ package rehaWissen;
 
 
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import com.freeware.inifiles.INIFile;
 

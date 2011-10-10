@@ -6,12 +6,10 @@ import hauptFenster.Reha;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,32 +17,27 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import javax.swing.table.AbstractTableModel;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
-//import org.jdesktop.swingx.decorator.SortOrder;
-
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 import rehaContainer.RehaTP;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
-import systemTools.Verschluesseln;
 import systemTools.WinNum;
+
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import events.RehaTPEvent;

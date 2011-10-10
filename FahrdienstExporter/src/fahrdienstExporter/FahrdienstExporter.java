@@ -4,18 +4,15 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-
-
 import java.util.Date;
 import java.util.Vector;
+
+import tools.DatFunk;
 
 import com.freeware.inifiles.INIFile;
 import com.hexiong.jdbf.DBFWriter;
 import com.hexiong.jdbf.JDBFException;
 import com.hexiong.jdbf.JDBField;
-
-import tools.DatFunk;
 
 public class FahrdienstExporter {
 

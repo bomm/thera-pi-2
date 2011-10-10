@@ -9,7 +9,6 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 
 

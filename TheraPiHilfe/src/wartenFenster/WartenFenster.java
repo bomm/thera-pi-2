@@ -7,7 +7,6 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;

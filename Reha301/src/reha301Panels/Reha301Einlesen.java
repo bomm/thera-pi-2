@@ -2,7 +2,6 @@ package reha301Panels;
 
 
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -31,21 +30,16 @@ import org.thera_pi.nebraska.crypto.NebraskaDecryptor;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
-import org.thera_pi.nebraska.gui.NebraskaMain;
 
 import reha301.Reha301;
 import reha301.Reha301Tab;
-
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.IntegerTools;
 import Tools.JCompTools;
-import Tools.OOTools;
 import Tools.SqlInfo;
 import Tools.StringTools;
 import Tools.Verschluesseln;
-
-import ag.ion.bion.officelayer.text.ITextDocument;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;

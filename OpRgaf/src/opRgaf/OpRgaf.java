@@ -14,13 +14,10 @@ import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
-
-import com.freeware.inifiles.INIFile;
 
 import RehaIO.RehaIOMessages;
 import RehaIO.RehaReverseServer;
@@ -33,6 +30,8 @@ import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.event.ITerminateEvent;
 import ag.ion.bion.officelayer.event.VetoTerminateListener;
+
+import com.freeware.inifiles.INIFile;
 
 
 

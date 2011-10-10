@@ -5,14 +5,12 @@ import hauptFenster.Reha;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -23,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
@@ -33,17 +30,9 @@ import jxTableTools.ColorEditor;
 import jxTableTools.ColorRenderer;
 import jxTableTools.JLabelRenderer;
 
-import org.jdesktop.swingx.JXButton;
-import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-import org.jdesktop.swingx.renderer.DefaultTableRenderer;
-import org.jdesktop.swingx.renderer.LabelProvider;
-import org.jdesktop.swingx.renderer.StringValue;
 
-import rechteTools.Rechte;
 import terminKalender.TerminFenster;
 
 import com.freeware.inifiles.INIFile;

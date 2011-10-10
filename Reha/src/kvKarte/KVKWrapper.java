@@ -1,7 +1,6 @@
 package kvKarte;
 
 import systemEinstellungen.SystemConfig;
-import hauptFenster.Reha;
 
 public class KVKWrapper {
 	public String sReaderName = "";

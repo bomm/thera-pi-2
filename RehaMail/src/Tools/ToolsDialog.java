@@ -25,7 +25,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import org.jdesktop.swingx.JXDialog;
-import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 

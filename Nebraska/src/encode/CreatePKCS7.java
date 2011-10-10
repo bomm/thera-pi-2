@@ -1,14 +1,11 @@
 package encode;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.PrivateKey;
-import java.security.Security;
 import java.security.cert.CertStore;
 import java.security.cert.Certificate;
 import java.security.cert.CollectionCertStoreParameters;
@@ -19,15 +16,11 @@ import nebraska.BCStatics;
 import nebraska.BCStatics3;
 import nebraska.Constants;
 
-import org.bouncycastle.cms.CMSEnvelopedDataGenerator;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessable;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import sun.misc.IOUtils;
 
 public class CreatePKCS7 {
 	PrivateKey privateKey;

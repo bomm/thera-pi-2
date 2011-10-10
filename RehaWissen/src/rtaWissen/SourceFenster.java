@@ -5,16 +5,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.TextArea;
 
-import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXPanel;
 
-import chrriis.common.UIUtils;
 import chrriis.common.Utils;
-import chrriis.dj.nativeswing.swtimpl.NativeInterface;
-import chrriis.dj.nativeswing.swtimpl.components.JSyntaxHighlighter;
 
 public class SourceFenster extends JXPanel {
    

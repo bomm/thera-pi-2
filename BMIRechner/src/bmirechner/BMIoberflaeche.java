@@ -1,32 +1,24 @@
 package bmirechner;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableModel;
 
 import org.jdesktop.swingx.JXPanel;
 
-import Tools.JCompTools;
 import Tools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;

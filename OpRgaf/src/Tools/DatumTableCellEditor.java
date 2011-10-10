@@ -1,32 +1,21 @@
 package Tools;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.EventObject;
-import java.util.Formatter;
 
 import javax.swing.AbstractAction;
-import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultCellEditor;
-import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
-import javax.swing.event.CellEditorListener;
-import javax.swing.table.TableCellEditor;
 import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
 
 

@@ -7,7 +7,6 @@ import java.awt.geom.Point2D;
 
 import javax.swing.BorderFactory;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;

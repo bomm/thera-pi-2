@@ -1,20 +1,19 @@
 package pdfDrucker;
 
-import com.sun.pdfview.PDFFile;
-import com.sun.pdfview.PDFPage;
-import com.sun.pdfview.PagePanel;
-
-import java.awt.Graphics;
 import java.awt.print.Book;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
-import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import javax.swing.*;
+
+import javax.swing.SwingUtilities;
+
+import com.sun.pdfview.PDFFile;
 
 public class PDFDrucker {
 
