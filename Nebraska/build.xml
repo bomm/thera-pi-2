@@ -9,13 +9,14 @@
     <property name="Libraries.location" value="../Libraries"/>
     <property name="Reha.location" value="../Reha"/>
     <property name="Reha301.location" value="../Reha301"/>
-    <property name="ECLIPSE_HOME" value="../../../../usr/lib/eclipse"/>
+    <property name="ECLIPSE_HOME" value="../../../../../usr/lib/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <import file="build-user.xml"/>
     <path id="Libraries.classpath">
         <pathelement location="${Libraries.location}/bin"/>
+        <pathelement location="${Libraries.location}/lib/apachecommons/commons-codec-1.3.jar"/>
     </path>
     <path id="Nebraska.classpath">
         <pathelement location="bin"/>

@@ -7,7 +7,7 @@
 <project basedir="." default="build" name="RehaxSwing">
     <property environment="env"/>
     <property name="Libraries.location" value="../Libraries"/>
-    <property name="ECLIPSE_HOME" value="../../../../usr/lib/eclipse"/>
+    <property name="ECLIPSE_HOME" value="../../../../../usr/lib/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
