@@ -1,7 +1,12 @@
 package org.thera_pi.updates;
 
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
+
 import javax.crypto.*;
 import javax.crypto.spec.*;
+import org.apache.commons.codec.binary.Base64;
 
 public class Verschluesseln {
 
@@ -31,8 +36,6 @@ public class Verschluesseln {
   /** Notwendige Instanczen */
   private Cipher encryptCipher;
   private Cipher decryptCipher;
-  private sun.misc.BASE64Encoder encoder = new sun.misc.BASE64Encoder();
-  private sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();
 
   /** Verwendete Zeichendecodierung */
   private String charset = "UTF16";
@@ -71,7 +74,7 @@ public class Verschluesseln {
     try {
       byte[] b = str.getBytes(this.charset);
       byte[] enc = encryptCipher.doFinal(b);
-      return encoder.encode(enc);
+      return new String(Base64.encodeBase64(enc), "UTF8");
     }
     catch (Exception e){
       throw new SecurityException("Could not encrypt: " + e.getMessage());
@@ -89,7 +92,7 @@ public class Verschluesseln {
    */
   public synchronized String decrypt(String str) throws SecurityException  {
     try {
-      byte[] dec = decoder.decodeBuffer(str);
+      byte[] dec = Base64.decodeBase64(str.getBytes("UTF8"));
       byte[] b = decryptCipher.doFinal(dec);
       return new String(b, this.charset);
     }
