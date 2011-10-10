@@ -700,7 +700,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jta.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.5f)));
 		jta.setFont(new Font("Courier",Font.PLAIN,11));
 		jta.setLineWrap(true);
-		jta.setName("notitzen");
+		jta.setName("notizen");
 		jta.setWrapStyleWord(true);
 		jta.setEditable(true);
 		jta.setBackground(Color.WHITE);

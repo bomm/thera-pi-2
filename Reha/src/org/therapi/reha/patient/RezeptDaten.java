@@ -409,7 +409,7 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 		eltern.rezdiag.setFont(new Font("Courier",Font.PLAIN,11));
 		eltern.rezdiag.setForeground(Color.BLUE);
 		eltern.rezdiag.setLineWrap(true);
-		eltern.rezdiag.setName("notitzen");
+		eltern.rezdiag.setName("notizen");
 		eltern.rezdiag.setWrapStyleWord(true);
 		eltern.rezdiag.setEditable(false);
 

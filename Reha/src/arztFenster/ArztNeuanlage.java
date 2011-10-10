@@ -251,7 +251,7 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 		tfs[14].setName("id");
 
 		/*
-		jpan.add(new JLabel("Notitzen"),cc.xy(1, 32));
+		jpan.add(new JLabel("Notizen"),cc.xy(1, 32));
 		jta = new JTextArea();
 		jta.setFont(new Font("Courier",Font.PLAIN,11));
 		jta.setLineWrap(true);

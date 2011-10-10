@@ -461,7 +461,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			
 			// Lemmi 20101212: Erweitert um "Patienten mit aktuellen Rezepten"
 			String kriterium[]={"Nachname Vorname","Patienten-ID","Vorname Nachname",
-					"Telefon privat","Telefon geschäftl.","Notitzen", "Nur Patienten mit aktuellen Rezepten"};
+					"Telefon privat","Telefon geschäftl.","Notizen", "Nur Patienten mit aktuellen Rezepten"};
 			
 			jXTitledPanel.setTitle("Suche Patient..."+this.fname+" nach "+kriterium[suchart]);
 			jXTitledPanel.setTitleForeground(Color.WHITE);
@@ -798,7 +798,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			sstmt = "select n_name,v_name,concat(DATE_FORMAT(geboren,'%d.%m.%Y'),'-',telefonp) as geboren,pat_intern from pat5 where telefonp LIKE '%"+jTextField.getText().trim()+"%' ORDER BY n_name,v_name,geboren";
 		}else if(suchart==4){// Telefon geschäftilich
 			sstmt = "select n_name,v_name,concat(DATE_FORMAT(geboren,'%d.%m.%Y'),'-',telefonp) as geboren,pat_intern from pat5 where telefong LIKE '%"+jTextField.getText().trim()+"%' ORDER BY n_name,v_name,geboren";
-		}else if(suchart==5){ // In Notitzen
+		}else if(suchart==5){ // In Notizen
 			sstmt = "select n_name,v_name,DATE_FORMAT(geboren,'%d.%m.%Y') as geboren,pat_intern from pat5 where anamnese LIKE '%"+jTextField.getText().trim()+"%' ORDER BY n_name,v_name,geboren";
 		}else if(suchart==6){    		// Lemmi 20101212: Erweitert um "Nur Patienten mit aktuellen Rezepten"
 //			sstmt = "select p.n_name, p.v_name, DATE_FORMAT(p.geboren,'%d.%m.%Y') AS geboren, p.pat_intern, r.rez_nr from pat5 as p INNER JOIN verordn as r ON p.pat_intern = r.pat_intern ORDER BY p.n_name asc, r.rez_nr asc";

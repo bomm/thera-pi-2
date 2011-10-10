@@ -454,7 +454,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		ueditpan.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		ueditpan.setFont(new Font("Courier",Font.PLAIN,11));
 		ueditpan.setLineWrap(true);
-		ueditpan.setName("notitzen");
+		ueditpan.setName("notizen");
 		ueditpan.setToolTipText("Sofern erforderlich kurze Notiz für den Empfänger eingeben");
 		ueditpan.setWrapStyleWord(true);
 		ueditpan.setEditable(true);
@@ -521,7 +521,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		veditpan.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		veditpan.setFont(new Font("Courier",Font.PLAIN,11));
 		veditpan.setLineWrap(true);
-		veditpan.setName("notitzen");
+		veditpan.setName("notizen");
 		veditpan.setToolTipText("Sofern erforderlich kurze Notiz für den Empfänger eingeben");
 		veditpan.setWrapStyleWord(true);
 		veditpan.setEditable(true);
@@ -619,7 +619,7 @@ public class Dta301 extends JXPanel implements FocusListener {
 		entlasstpan.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		entlasstpan.setFont(new Font("Courier",Font.PLAIN,11));
 		entlasstpan.setLineWrap(true);
-		entlasstpan.setName("notitzen");
+		entlasstpan.setName("notizen");
 		entlasstpan.setToolTipText("Sofern erforderlich kurze Notiz für den Empfänger eingeben");
 		entlasstpan.setWrapStyleWord(true);
 		entlasstpan.setEditable(true);

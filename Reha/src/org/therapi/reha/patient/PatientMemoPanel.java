@@ -308,7 +308,7 @@ public class PatientMemoPanel extends JXPanel{
 		patientHauptPanel.pmemo[0] = new JTextArea();
 		patientHauptPanel.pmemo[0].setFont(new Font("Courier",Font.PLAIN,11));
 		patientHauptPanel.pmemo[0].setLineWrap(true);
-		patientHauptPanel.pmemo[0].setName("notitzen");
+		patientHauptPanel.pmemo[0].setName("notizen");
 		patientHauptPanel.pmemo[0].setWrapStyleWord(true);
 		patientHauptPanel.pmemo[0].setEditable(false);
 		patientHauptPanel.pmemo[0].setBackground(Color.WHITE);
@@ -359,7 +359,7 @@ public class PatientMemoPanel extends JXPanel{
 		patientHauptPanel.pmemo[1] = new JTextArea();
 		patientHauptPanel.pmemo[1].setFont(new Font("Courier",Font.PLAIN,11));
 		patientHauptPanel.pmemo[1].setLineWrap(true);
-		patientHauptPanel.pmemo[1].setName("notitzen");
+		patientHauptPanel.pmemo[1].setName("notizen");
 		patientHauptPanel.pmemo[1].setWrapStyleWord(true);
 		patientHauptPanel.pmemo[1].setEditable(false);
 		patientHauptPanel.pmemo[1].setBackground(Color.WHITE);
