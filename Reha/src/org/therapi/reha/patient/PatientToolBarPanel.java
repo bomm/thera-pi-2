@@ -54,7 +54,7 @@ public class PatientToolBarPanel extends JXPanel{
 		// Lemmi 20101212: Erweitert um "Nur Patienten mit aktuellen Rezepten"
 		patientHauptPanel.jcom = new JComboBox(new String[] {"Name Vorname","Patienten-ID",
 				"Vorname Name","Telefon privat",
-				"Telefon geschäftlich","Text enthalten in Notitzen",
+				"Telefon geschäftlich","Text enthalten in Notizen",
 				"Nur Patienten mit aktuellen Rezepten"});
 			
 		// Lemmi 20101212: Die letzte benutzte Suchart aus der INI-Datei holen und wieder setzen

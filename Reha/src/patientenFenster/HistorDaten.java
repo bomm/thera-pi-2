@@ -367,7 +367,7 @@ public class HistorDaten extends JXPanel{
 		rezdiag.setFont(new Font("Courier",Font.PLAIN,11));
 		rezdiag.setForeground(Color.BLUE);
 		rezdiag.setLineWrap(true);
-		rezdiag.setName("notitzen");
+		rezdiag.setName("notizen");
 		rezdiag.setWrapStyleWord(true);
 		rezdiag.setEditable(false);
 
