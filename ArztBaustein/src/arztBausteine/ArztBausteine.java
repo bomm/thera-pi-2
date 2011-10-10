@@ -22,6 +22,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXFrame;
 
+import com.freeware.inifiles.INIFile;
 import com.sun.star.uno.Exception;
 
 import ag.ion.bion.officelayer.application.IOfficeApplication;

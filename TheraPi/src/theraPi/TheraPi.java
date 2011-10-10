@@ -35,6 +35,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+import com.freeware.inifiles.INIFile;
+
 
 
 

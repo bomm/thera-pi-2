@@ -114,7 +114,6 @@ import pdfDrucker.PDFDrucker;
 
 import sun.security.krb5.EncryptionKey;
 import utils.DatFunk;
-import utils.INIFile;
 import utils.JCompTools;
 import utils.JLabelRenderer;
 import utils.MitteRenderer;
@@ -131,6 +130,8 @@ import com.lowagie.text.pdf.PdfStamper;
 import encode.BodosDecryptor;
 import encode.CreatePKCS7;
 import encode.EncUtils;
+
+import com.freeware.inifiles.INIFile;
 
 public class NebraskaTestPanel  extends JPanel implements ActionListener{
 	/**

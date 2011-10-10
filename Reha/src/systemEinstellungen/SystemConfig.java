@@ -15,6 +15,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import com.freeware.inifiles.INIFile;
+
 
 
 import sqlTools.SqlInfo;

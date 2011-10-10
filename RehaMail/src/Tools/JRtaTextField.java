@@ -941,7 +941,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 	    textComponent.setCaretPosition(newOffset);
 	   }
 	   super.remove(newOffset, 1);           // Aktuelles zeichen entfernen
-	   super.insertString(newOffset, zeichen, attributeSet);    // Neues einfï¿½gen
+	   super.insertString(newOffset, zeichen, attributeSet);    // Neues einfügen
 	  }
 	 }
 	 // **** Überschreiben Insert Ende

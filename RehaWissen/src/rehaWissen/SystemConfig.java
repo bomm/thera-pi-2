@@ -20,6 +20,8 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import com.freeware.inifiles.INIFile;
+
 
 
 public class SystemConfig {

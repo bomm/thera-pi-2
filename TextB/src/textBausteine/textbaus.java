@@ -16,9 +16,10 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import sqlTools.INIFile;
 import sqlTools.SystemEinstellungen;
 import sqlTools.Verschluesseln;
+
+import com.freeware.inifiles.INIFile;
 
 
 

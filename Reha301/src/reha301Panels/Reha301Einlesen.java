@@ -38,7 +38,6 @@ import reha301.Reha301Tab;
 
 import Tools.ButtonTools;
 import Tools.DatFunk;
-import Tools.INIFile;
 import Tools.IntegerTools;
 import Tools.JCompTools;
 import Tools.OOTools;
@@ -48,6 +47,7 @@ import Tools.Verschluesseln;
 
 import ag.ion.bion.officelayer.text.ITextDocument;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 

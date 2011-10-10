@@ -1,7 +1,6 @@
 package pdftest2;
 
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,13 +8,9 @@ import java.sql.SQLException;
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 
+import com.freeware.inifiles.INIFile;
 
-
-import Tools.INIFile;
 import Tools.Verschluesseln;
-
-
-
 
 
 

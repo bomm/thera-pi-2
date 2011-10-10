@@ -19,10 +19,10 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
 import systemTools.JRtaTextField;
-import utils.INIFile;
 import verkauf.model.Artikel;
 import verkauf.model.Lieferant;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 

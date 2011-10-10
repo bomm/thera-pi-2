@@ -128,7 +128,6 @@ import rehaInternalFrame.OOODesktopManager;
 import roogle.RoogleFenster;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
-import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemInit;
 import systemEinstellungen.SystemPreislisten;
@@ -162,6 +161,7 @@ import arztFenster.ArztPanel;
 import barKasse.Barkasse;
 import benutzerVerwaltung.BenutzerRechte;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.looks.HeaderStyle;

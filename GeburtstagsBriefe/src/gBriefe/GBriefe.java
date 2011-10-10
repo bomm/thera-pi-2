@@ -33,6 +33,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 
+import com.freeware.inifiles.INIFile;
+
 
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;

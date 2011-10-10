@@ -32,7 +32,6 @@ import org.thera_pi.nebraska.gui.utils.JCompTools;
 import org.thera_pi.nebraska.gui.utils.StringTools;
 
 import sqlTools.SqlInfo;
-import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
@@ -53,6 +52,7 @@ import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.internal.printing.PrintProperties;
 import ag.ion.noa.printing.IPrinter;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.sun.star.awt.Size;

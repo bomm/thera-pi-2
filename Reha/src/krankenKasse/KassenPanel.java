@@ -68,13 +68,13 @@ import rehaInternalFrame.JKasseInternal;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import stammDatenTools.KasseTools;
-import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.FileTools;
 import systemTools.JCompTools;
 import systemTools.JRtaTextField;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 

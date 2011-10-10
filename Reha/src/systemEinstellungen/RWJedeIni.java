@@ -1,5 +1,7 @@
 package systemEinstellungen;
 
+import com.freeware.inifiles.INIFile;
+
 public class RWJedeIni {
 private static INIFile ini = null; 
 

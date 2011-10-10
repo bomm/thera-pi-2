@@ -36,8 +36,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-
-
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -49,7 +47,6 @@ import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.DblCellEditor;
 import Tools.DoubleTableCellRenderer;
-import Tools.INIFile;
 import Tools.JCompTools;
 import Tools.JRtaCheckBox;
 import Tools.JRtaComboBox;
@@ -65,6 +62,8 @@ import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.noa.NOAException;
+
+import com.freeware.inifiles.INIFile;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

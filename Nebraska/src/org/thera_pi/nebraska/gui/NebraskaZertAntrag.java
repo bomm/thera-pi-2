@@ -42,12 +42,12 @@ import org.jdesktop.swingx.JXPanel;
 import pdfDrucker.PDFDrucker;
 
 import org.thera_pi.nebraska.gui.utils.DatFunk;
-import org.thera_pi.nebraska.gui.utils.INIFile;
 import org.thera_pi.nebraska.gui.utils.JCompTools;
 import org.thera_pi.nebraska.gui.utils.JRtaCheckBox;
 import org.thera_pi.nebraska.gui.utils.JRtaRadioButton;
 import org.thera_pi.nebraska.gui.utils.JRtaTextField;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

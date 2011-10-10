@@ -13,11 +13,11 @@ import javax.swing.JOptionPane;
 import org.jdesktop.swingx.JXPanel;
 
 import Tools.DatFunk;
-import Tools.INIFile;
 import Tools.JRtaCheckBox;
 import Tools.JRtaComboBox;
 import Tools.JRtaTextField;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 

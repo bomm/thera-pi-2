@@ -28,6 +28,7 @@ import org.jdesktop.swingx.JXPanel;
 import systemTools.JRtaTextField;
 import terminKalender.ParameterLaden;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

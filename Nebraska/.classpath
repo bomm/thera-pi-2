@@ -24,5 +24,6 @@
 	<classpathentry kind="lib" path="/Libraries/lib/pdf-renderer-1.0.5.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/swingx/swing-worker.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Libraries"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

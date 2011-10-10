@@ -24,6 +24,7 @@ import org.jdesktop.swingx.painter.MattePainter;
 
 import systemTools.JRtaTextField;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

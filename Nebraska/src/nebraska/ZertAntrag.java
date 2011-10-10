@@ -38,12 +38,12 @@ import org.jdesktop.swingx.JXPanel;
 import pdfDrucker.PDFDrucker;
 
 import utils.DatFunk;
-import utils.INIFile;
 import utils.JCompTools;
 import utils.JRtaCheckBox;
 import utils.JRtaRadioButton;
 import utils.JRtaTextField;
 
+import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

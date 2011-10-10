@@ -27,7 +27,7 @@ import ag.ion.bion.officelayer.event.VetoTerminateListener;
 
 import com.sun.star.uno.Exception;
 
-import Tools.INIFile;
+import com.freeware.inifiles.INIFile;
 import Tools.SystemPreislisten;
 import Tools.Verschluesseln;
 

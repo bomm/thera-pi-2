@@ -10,13 +10,12 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Vector;
 
+import com.freeware.inifiles.INIFile;
 import com.hexiong.jdbf.DBFWriter;
 import com.hexiong.jdbf.JDBFException;
 import com.hexiong.jdbf.JDBField;
 
 import tools.DatFunk;
-import tools.INIFile;
-
 
 public class FahrdienstExporter {
 

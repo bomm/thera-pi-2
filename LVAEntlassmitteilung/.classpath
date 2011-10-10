@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="/Libraries/lib/itext/iText-2.1.6.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/sql/mysql-connector-java-5.1.5-bin.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/swingx/swingx-1.6.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Libraries"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -24,5 +24,6 @@
 	<classpathentry kind="lib" path="/Libraries/lib/apachecommons/commons-net-2.0.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/sql/jpmdbc.jar"/>
+	<classpathentry kind="src" path="/Libraries"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
