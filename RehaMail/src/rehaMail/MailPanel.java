@@ -80,8 +80,6 @@ import Tools.SqlInfo;
 import Tools.ToolsDialog;
 import Tools.UIFSplitPane;
 
-import ag.ion.bion.officelayer.text.ITextDocument;
-
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 

@@ -15,15 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXFrame;
-
-import com.freeware.inifiles.INIFile;
-import com.sun.star.uno.Exception;
 
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
@@ -32,6 +28,9 @@ import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.event.ITerminateEvent;
 import ag.ion.bion.officelayer.event.VetoTerminateListener;
+
+import com.freeware.inifiles.INIFile;
+import com.sun.star.uno.Exception;
 
 public class ArztBausteine implements WindowListener, WindowStateListener {
 

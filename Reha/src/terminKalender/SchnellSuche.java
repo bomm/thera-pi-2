@@ -2,12 +2,10 @@ package terminKalender;
 
 
 import hauptFenster.Reha;
-import hauptFenster.ReverseSocket;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -19,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
@@ -37,17 +33,14 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
-//import org.jdesktop.swingx.decorator.SortOrder;
-
-
-
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 import rehaContainer.RehaTP;
 import systemTools.JRtaTextField;
 import systemTools.RezeptFahnder;
-import systemTools.Verschluesseln;
+
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import events.RehaTPEvent;

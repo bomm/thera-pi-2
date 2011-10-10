@@ -17,9 +17,6 @@ import java.util.zip.GZIPInputStream;
 
 import javax.swing.JOptionPane;
 
-import org.jdesktop.swingworker.SwingWorker;
-
-import opencard.core.OpenCardException;
 import opencard.core.event.CTListener;
 import opencard.core.event.CardTerminalEvent;
 import opencard.core.event.EventGenerator;
@@ -33,6 +30,9 @@ import opencard.core.terminal.CardTerminalRegistry;
 import opencard.core.terminal.CommandAPDU;
 import opencard.core.terminal.ResponseAPDU;
 import opencard.opt.util.PassThruCardService;
+
+import org.jdesktop.swingworker.SwingWorker;
+
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
 

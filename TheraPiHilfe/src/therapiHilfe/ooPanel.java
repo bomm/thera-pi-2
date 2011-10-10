@@ -3,47 +3,30 @@ package therapiHilfe;
 
 
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-
-
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTitledPanel;
-
-
-
-import java.awt.Container;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.Vector;
+
+import javax.swing.JLabel;
+
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXPanel;
 
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.application.IApplicationAssistant;
@@ -51,7 +34,6 @@ import ag.ion.bion.officelayer.application.ILazyApplicationInfo;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
-import ag.ion.bion.officelayer.desktop.DesktopException;
 import ag.ion.bion.officelayer.desktop.GlobalCommands;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -63,43 +45,16 @@ import ag.ion.bion.officelayer.event.IDocumentEvent;
 import ag.ion.bion.officelayer.event.IDocumentListener;
 import ag.ion.bion.officelayer.event.IEvent;
 import ag.ion.bion.officelayer.filter.HTMLFilter;
-import ag.ion.bion.officelayer.filter.PDFFilter;
 import ag.ion.bion.officelayer.internal.application.ApplicationAssistant;
-import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.web.IWebDocument;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.frame.ILayoutManager;
 
-import com.sun.star.awt.Key;
-import com.sun.star.awt.KeyEvent;
-import com.sun.star.awt.KeyModifier;
 import com.sun.star.awt.XExtendedToolkit;
-import com.sun.star.awt.XKeyHandler;
-import com.sun.star.awt.XToolkit;
 import com.sun.star.awt.XTopWindow;
-import com.sun.star.awt.XWindow;
-import com.sun.star.awt.XWindowPeer;
-import com.sun.star.beans.UnknownPropertyException;
-import com.sun.star.beans.XPropertySet;
-import com.sun.star.container.NoSuchElementException;
-import com.sun.star.container.XNameAccess;
-import com.sun.star.container.XNameContainer;
-import com.sun.star.frame.XController;
 import com.sun.star.frame.XFrame;
-import com.sun.star.frame.XFrameActionListener;
-import com.sun.star.frame.XFramesSupplier;
-import com.sun.star.lang.EventObject;
-import com.sun.star.lang.WrappedTargetException;
-import com.sun.star.lang.XEventListener;
-import com.sun.star.lang.XMultiServiceFactory;
-import com.sun.star.lang.XServiceInfo;
-import com.sun.star.text.XTextContent;
-import com.sun.star.text.XTextGraphicObjectsSupplier;
-import com.sun.star.uno.Any;
 import com.sun.star.uno.Exception;
-import com.sun.star.uno.UnoRuntime;
-import com.sun.star.view.DocumentZoomType;
 
 public class ooPanel{
 	

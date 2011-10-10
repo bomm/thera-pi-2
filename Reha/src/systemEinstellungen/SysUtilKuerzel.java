@@ -13,8 +13,6 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,16 +24,16 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
+import sqlTools.SqlInfo;
+import systemTools.JCompTools;
+import systemTools.JRtaComboBox;
+import systemTools.JRtaRadioButton;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import dialoge.KuerzelNeu;
-
-import sqlTools.SqlInfo;
-import systemTools.JCompTools;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaRadioButton;
 
 public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 	

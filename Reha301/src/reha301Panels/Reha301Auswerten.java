@@ -52,13 +52,11 @@ import reha301.Dta301Model;
 import reha301.Reha301;
 import reha301.Reha301Tab;
 import reha301.SocketClient;
-
 import Tools.ButtonTools;
 import Tools.Colors;
 import Tools.DatFunk;
 import Tools.FileTools;
 import Tools.JCompTools;
-import Tools.JRtaComboBox;
 import Tools.JRtaTextField;
 import Tools.OOTools;
 import Tools.RezTools;
@@ -66,8 +64,6 @@ import Tools.SqlInfo;
 import Tools.StringTools;
 import Tools.SystemPreislisten;
 import Tools.WartenAufDB;
-
-
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.TextException;
 

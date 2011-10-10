@@ -3,7 +3,6 @@ package textBausteine;
 
 
 
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -12,7 +11,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 

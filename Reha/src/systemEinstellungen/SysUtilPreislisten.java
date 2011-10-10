@@ -3,17 +3,12 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -39,9 +34,6 @@ import jxTableTools.TableTool;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
-
 
 import sqlTools.PLServerAuslesen;
 import sqlTools.SqlInfo;
@@ -51,7 +43,6 @@ import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
-import terminKalender.ParameterLaden;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;

@@ -2,16 +2,12 @@ package rehaMail;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -44,7 +40,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
@@ -59,9 +54,6 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
-import rehaMail.MailPanel.EinListSelectionHandler;
-import rehaMail.MailPanel.ToolsDlgAktuelleRezepte;
-
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.DateTableCellRenderer;
@@ -75,41 +67,15 @@ import Tools.OOTools;
 import Tools.ReaderStart;
 import Tools.Rechte;
 import Tools.SqlInfo;
-import Tools.StringTools;
 import Tools.ToolsDialog;
 import Tools.UIFSplitPane;
 import ag.ion.bion.officelayer.NativeView;
-import ag.ion.bion.officelayer.application.IOfficeApplication;
-import ag.ion.bion.officelayer.desktop.GlobalCommands;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.text.IParagraph;
-import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.IViewCursor;
-import ag.ion.bion.officelayer.text.TextException;
-import ag.ion.noa.NOAException;
-import ag.ion.noa.filter.OpenDocumentFilter;
-import ag.ion.noa.frame.ILayoutManager;
-import ag.ion.noa.internal.frame.LayoutManager;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.sun.star.beans.PropertyVetoException;
-import com.sun.star.beans.UnknownPropertyException;
-import com.sun.star.beans.XPropertySet;
-import com.sun.star.container.XNameAccess;
-import com.sun.star.frame.XLayoutManager;
-import com.sun.star.lang.IllegalArgumentException;
-import com.sun.star.lang.WrappedTargetException;
-import com.sun.star.text.XTextContent;
-import com.sun.star.text.XTextGraphicObjectsSupplier;
-import com.sun.star.ui.XUIElement;
-import com.sun.star.uno.Any;
-import com.sun.star.uno.UnoRuntime;
-import com.sun.star.view.DocumentZoomType;
 
 public class SendMailPanel extends JXPanel implements KeyListener {
 	/**

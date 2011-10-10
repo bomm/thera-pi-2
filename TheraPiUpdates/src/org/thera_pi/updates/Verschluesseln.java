@@ -1,11 +1,11 @@
 package org.thera_pi.updates;
 
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
 
-import javax.crypto.*;
-import javax.crypto.spec.*;
 import org.apache.commons.codec.binary.Base64;
 
 public class Verschluesseln {

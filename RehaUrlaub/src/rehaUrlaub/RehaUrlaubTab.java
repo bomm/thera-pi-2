@@ -5,7 +5,6 @@ package rehaUrlaub;
 import java.awt.BorderLayout;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 

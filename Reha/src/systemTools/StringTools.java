@@ -1,12 +1,5 @@
 package systemTools;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;

@@ -5,7 +5,6 @@ package opRgaf;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -43,11 +42,6 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
-
-
-
-
-
 import RehaIO.RehaIOMessages;
 import RehaIO.SocketClient;
 import Tools.ButtonTools;
@@ -57,7 +51,6 @@ import Tools.JRtaCheckBox;
 import Tools.JRtaComboBox;
 import Tools.JRtaTextField;
 import Tools.SqlInfo;
-
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
@@ -69,7 +62,6 @@ import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
-import ag.ion.noa.internal.printing.PrintProperties;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

@@ -19,16 +19,13 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.ComboBoxEditor;
-import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -37,8 +34,6 @@ import javax.swing.plaf.basic.BasicGraphicsUtils;
 import javax.swing.plaf.basic.BasicLabelUI;
 
 import org.jdesktop.swingx.JXPanel;
-
-
 
 import com.hexiong.jdbf.DBFReader;
 import com.hexiong.jdbf.JDBFException;

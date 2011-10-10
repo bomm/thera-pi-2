@@ -2,7 +2,6 @@ package ftpTools;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +9,6 @@ import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -21,7 +19,6 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
-import therapiHilfe.helpFenster;
 import therapiHilfe.piHelp;
 
 

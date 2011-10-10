@@ -12,7 +12,6 @@ import java.awt.event.KeyListener;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.TimerTask;
 
 import javax.swing.JDialog;
@@ -25,7 +24,6 @@ import javax.swing.event.AncestorListener;
 import org.jdesktop.swingx.JXPanel;
 
 import rehaWissen.RehaWissen;
-import rehaWissen.SystemConfig;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;

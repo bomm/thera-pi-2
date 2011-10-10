@@ -17,14 +17,13 @@ import javax.swing.JOptionPane;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+import Tools.JRtaComboBox;
+import Tools.SqlInfo;
+
 import com.hexiong.jdbf.DBFReader;
 import com.hexiong.jdbf.JDBFException;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
-import Tools.SqlInfo;
 
 public class AltImport extends JXPanel{
 	

@@ -8,10 +8,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.Vector;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
 

@@ -2,15 +2,12 @@ package systemEinstellungen;
 
 import hauptFenster.Reha;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.LinearGradientPaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Point2D;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -19,8 +16,6 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.MattePainter;
 
 import systemTools.JRtaTextField;
 

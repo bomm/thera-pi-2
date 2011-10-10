@@ -8,9 +8,6 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-
 
 import offenePosten.OffenePosten;
 
