@@ -1769,7 +1769,7 @@ class ShotSenden extends JDialog{
 		/*
     	  text = "Sehr geehrte Damen und Herren,\n"+
 					"im Dateianhang finden Sie die von Ihnen gewünschten Behandlungstermine.\n\n"+
-					"Termine die Sie nicht einhalten bzw. wahrnehmen können, müßen 24 Stunden vorher\n"+
+					"Termine die Sie nicht einhalten bzw. wahrnehmen können, müssen 24 Stunden vorher\n"+
 					"abgesagt werden.\n\nIhr Planungs-Team vom RTA";
 	      }
 		String smtpHost = SystemConfig.hmEmailExtern.get("SmtpHost");
