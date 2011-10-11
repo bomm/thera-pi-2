@@ -1951,7 +1951,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		//String akttermine = this.aktTerminBuffer.get(aktuellAngezeigt);
 		Vector<Vector<String>> vec = RezTools.macheTerminVector(this.aktTerminBuffer.get(aktuellAngezeigt));
-		System.out.println(vec);
+		//System.out.println(vec);
 		dtermm.setRowCount(0);
 		for(int i = 0; i < vec.size();i++){
 			vec.get(i).set(3,"");
@@ -1966,7 +1966,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		}
 		//String akttermine = this.aktTerminBuffer.get(aktuellAngezeigt);
 		Vector<Vector<String>> vec = RezTools.macheTerminVector(this.aktTerminBuffer.get(aktuellAngezeigt));
-		System.out.println(vec);
+		//System.out.println(vec);
 		dtermm.setRowCount(0);
 		for(int i = 0; i < vec.size();i++){
 			vec.get(i).set(3, (((String)Reha.thisClass.patpanel.vecaktrez.get(48)).trim().equals("") ? "" : (String)Reha.thisClass.patpanel.vecaktrez.get(48)) +
@@ -2263,8 +2263,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				
 				//Wenn nach Kalendertagen ermittelt werden soll
 				if(ktagebreak){
-					System.out.println("Kalendertage zwischen den Behandlungen = "+DatFunk.TageDifferenz(vglalt, vglneu)+"\n"+
-							"erlaubt sind "+fristbreak);
+					//System.out.println("Kalendertage zwischen den Behandlungen = "+DatFunk.TageDifferenz(vglalt, vglneu)+"\n"+
+							//"erlaubt sind "+fristbreak);
 					if( (DatFunk.TageDifferenz(vglalt, vglneu) >  fristbreak) && (kommentar.trim().equals("")) ){
 						ret = rezUnterbrechung(true,"",i+1);// Unterbrechungsgrund
 						if(ret.equals("")){
@@ -2274,8 +2274,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						}
 					}
 				}else{
-					System.out.println("Differenz zwischen dem letzt möglichen und dem tatsächlichen Zeitaum\n"+
-							HMRCheck.hmrTageDifferenz(vglalt,vglneu,fristbreak,breaksamstag));
+					//System.out.println("Differenz zwischen dem letzt möglichen und dem tatsächlichen Zeitaum\n"+
+							//HMRCheck.hmrTageDifferenz(vglalt,vglneu,fristbreak,breaksamstag));
 					if(HMRCheck.hmrTageDifferenz(vglalt,vglneu,fristbreak,breaksamstag) > 0 && kommentar.trim().equals("")){	
 						ret = rezUnterbrechung(true,"",i+1);// Unterbrechungsgrund
 						if(ret.equals("")){
@@ -3071,7 +3071,7 @@ class RezNeuDlg extends RehaSmartDialog implements RehaTPEventListener,WindowLis
 					//System.out.println("****************Rezept Neu/ändern -> Listener entfernt**************");				
 				}
 			}else{
-				System.out.println("Details == null");
+				//System.out.println("Details == null");
 			}
 		}catch(NullPointerException ne){
 			ne.printStackTrace();

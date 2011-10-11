@@ -1998,7 +1998,7 @@ public class RezTools {
 							//testen ob es sich um eine Doppelposition dreht
 							if(debug){
 								Object[] testobj = (Object[])((ArrayList<?>)((Vector<?>)termine).get(4)).get(i);
-								System.out.println(testobj[0]+"-"+testobj[1]+"-"+testobj[2]);
+								//System.out.println(testobj[0]+"-"+testobj[1]+"-"+testobj[2]);
 							}
 							if(((Object[])((ArrayList<?>)((Vector<?>)termine).get(4)).get(i))[0]==Boolean.valueOf(true)){
 								//testen ob es die 1-te Pos der Doppelbehandlung ist
@@ -2007,16 +2007,16 @@ public class RezTools {
 									//Es ist die 1-te Position die voll ist also Ende-Gelände
 									retObj[0] = String.valueOf(termbuf.toString());
 									retObj[1] = Integer.valueOf(RezTools.REZEPT_IST_BEREITS_VOLL);
-									if(debug){System.out.println("erste Position = voll + Doppelbehandlung");}
-									if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
+									//if(debug){System.out.println("erste Position = voll + Doppelbehandlung");}
+									//if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
 									return retObj;
 								}
 							}else{
 								//nein keine Doppelposition also Ende-Gelände
 								retObj[0] = String.valueOf(termbuf.toString());
 								retObj[1] = Integer.valueOf(RezTools.REZEPT_IST_BEREITS_VOLL);
-								if(debug){System.out.println("erste Position = voll und keine Doppelbehandlung");}
-								if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
+								//if(debug){System.out.println("erste Position = voll und keine Doppelbehandlung");}
+								//if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
 								return retObj;
 							}
 						}else if(!hMPos.get(i).einerOk && (!hMPos.get(i).vorrangig) && j==1){
@@ -2024,19 +2024,19 @@ public class RezTools {
 							//z.B. Ultraschall oder Elektrotherapie
 							retObj[0] = String.valueOf(termbuf.toString());
 							retObj[1] = Integer.valueOf(RezTools.REZEPT_IST_BEREITS_VOLL);
-							if(debug){System.out.println("es geht kein zusätzlicher");}
-							if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
+							//if(debug){System.out.println("es geht kein zusätzlicher");}
+							//if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
 							return retObj;
 						}else if( (!hMPos.get(i).vorrangig) && (j==1) && 
 								(Boolean)((ArrayList<?>)((Vector<?>)termine).get(2)).get(i)){
 							//Ein ergänzendes Heilmittel wurde separat verordent das nicht zulässig ist
 							//könnte man auswerten, dann verbaut man sich aber die Möglichkeit
 							//bei PrivatPat. abzurechnen was geht....
-							if(debug){System.out.println("unerlaubtes Ergänzendes Heilmittel solo verordnet");}
-							if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
+							//if(debug){System.out.println("unerlaubtes Ergänzendes Heilmittel solo verordnet");}
+							//if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
 						}
-						if(debug){System.out.println("Position kann bestätigt werden");}
-						if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
+						//if(debug){System.out.println("Position kann bestätigt werden");}
+						//if(debug){System.out.println(hMPos.get(i).hMPosNr+"-"+hMPos.get(i).vOMenge+"-"+hMPos.get(i).anzBBT);}
 					}
 					//Ende nur wenn Tarifgruppe HMR-Gruppe ist
 				}
@@ -2058,7 +2058,7 @@ public class RezTools {
 				if(count==0){
 					retObj[0] = String.valueOf(termbuf.toString());
 					retObj[1] = Integer.valueOf(RezTools.REZEPT_IST_BEREITS_VOLL);
-					if(debug){System.out.println("Rezept war bereits voll");}
+					//if(debug){System.out.println("Rezept war bereits voll");}
 					return retObj;
 				}
 				//Nur Wenn mehrere Behandlungen im Rezept vermerkt
@@ -2136,10 +2136,10 @@ public class RezTools {
 				retObj[0] = String.valueOf(termbuf.toString());
 				retObj[1] = (jetztVoll ? Integer.valueOf(RezTools.REZEPT_IST_JETZ_VOLL) : Integer.valueOf(RezTools.REZEPT_HAT_LUFT ));
 									
-				if(debug){System.out.println("am ende angekommen");}
+				//if(debug){System.out.println("am ende angekommen");}
 				return retObj;
 			}else{
-				System.out.println("*****************IN ELSE***************************");
+				//System.out.println("*****************IN ELSE***************************");
 			}
 			return retObj;
 		}catch(Exception ex){

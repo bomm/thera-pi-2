@@ -178,6 +178,7 @@ public class Eb3 implements RehaEventListener  {
 					        			ins  = SqlInfo.holeStream("bericht2","freitext","berichtid='"+eltern.berichtid+"'");
 					        			if(ins.available() > 0){
 						        			DocumentDescriptor descript = new DocumentDescriptor();
+						        			descript.setTitle("OpenOffice.org Bericht");
 						        			//descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
 						        			try{
 							        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
@@ -211,7 +212,9 @@ public class Eb3 implements RehaEventListener  {
 						        			}
 					        			}else{
 					        				DocumentDescriptor descript = new DocumentDescriptor();
+						        			descript.setTitle("OpenOffice.org Bericht");
 						        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,descript);
+						        			
 								        	OOTools.setzePapierFormat(eltern.document, Integer.valueOf(25199), Integer.valueOf(19299));
 								        	OOTools.setzeRaender(eltern.document, Integer.valueOf(1000), Integer.valueOf(1000),Integer.valueOf(1000),Integer.valueOf(1000));
 								        	framegetrennt = false;
@@ -544,6 +547,7 @@ public class Eb3 implements RehaEventListener  {
 		    
 		    
 		    officeFrame.updateDispatches();
+
 		    
 		    //officeFrame.getDispatch(".uno:PrintLayout").dispatch();
 	  }

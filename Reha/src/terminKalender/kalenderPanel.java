@@ -588,6 +588,7 @@ public void paintComponent( Graphics g ) {
 
 		////System.out.println("Anzahl = "+anzahl);
 	} 	
+
 	/*******Klammer der paint-Methode**********/
 	public void datenZeichnen(Vector vect,int therapeut){
 		if(vect.size() > 0 && therapeut >= 0){	

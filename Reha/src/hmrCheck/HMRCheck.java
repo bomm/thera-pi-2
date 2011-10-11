@@ -187,7 +187,7 @@ public class HMRCheck {
 					testok = false;
 				}					
 				if( (differenz=DatFunk.TageDifferenz(letztbeginn,DatFunk.sHeute() )) > 0){
-					System.out.println("Differenz 2 = "+differenz);
+					//System.out.println("Differenz 2 = "+differenz);
 					fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Behandlungsbeginn ist kritisch!</font><br><br>Die Differenz zwischen <font color='#ff0000'>spätester Behandlungsbeginn</font> und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
 					Long.toString(differenz)+" Tage </font><br>" +
 					"</b><br><br>";
@@ -206,7 +206,7 @@ public class HMRCheck {
 						testok = false;
 					}					
 					if( (differenz=DatFunk.TageDifferenz(letztbeginn,DatFunk.sHeute() )) > 0){
-						System.out.println("Differenz 2 = "+differenz);
+						//System.out.println("Differenz 2 = "+differenz);
 						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Behandlungsbeginn ist kritisch!</font><br><br>Die Differenz zwischen <font color='#ff0000'>spätester Behandlungsbeginn</font> und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
 						Long.toString(differenz)+" Tage </font><br>" +
 						"</b><br><br>";
@@ -223,7 +223,7 @@ public class HMRCheck {
 						testok = false;
 					}					
 					if( (differenz=DatFunk.TageDifferenz(letztbeginn,erstbehandlung )) > 0){
-						System.out.println("Differenz 2 = "+differenz);
+						//System.out.println("Differenz 2 = "+differenz);
 						fehlertext = fehlertext+(fehlertext.length() <= 0 ? "<html>" : "")+"<br><b><font color='#ff0000'>Behandlungsbeginn ist kritisch!</font><br><br>Die Differenz zwischen <font color='#ff0000'>spätester Behandlungsbeginn</font> und 1.Behandlung<br>beträgt <font color='#ff0000'>"+
 						Long.toString(differenz)+" Tage </font><br>" +
 						"</b><br><br>";
