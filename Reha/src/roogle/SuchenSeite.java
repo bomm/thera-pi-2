@@ -99,6 +99,7 @@ import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.table.TableColumnExt;
+import org.thera_pi.tools.StringTools;
 import org.therapi.reha.patient.LadeProg;
 
 
@@ -107,7 +108,6 @@ import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.IntegerTools;
 import systemTools.JRtaTextField;
-import systemTools.StringTools;
 import terminKalender.ParameterLaden;
 import terminKalender.DatFunk;
 import terminKalender.ZeitFunk;

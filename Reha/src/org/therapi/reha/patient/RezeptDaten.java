@@ -24,6 +24,7 @@ import javax.swing.TransferHandler;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.tools.StringTools;
 
 import rechteTools.Rechte;
 import sqlTools.ExUndHop;
@@ -35,7 +36,6 @@ import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
 import systemTools.JRtaLabel;
 import systemTools.JRtaTextField;
-import systemTools.StringTools;
 import terminKalender.TerminFenster;
 
 import com.jgoodies.forms.builder.PanelBuilder;

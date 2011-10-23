@@ -8,9 +8,10 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import org.thera_pi.tools.StringTools;
+
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.StringTools;
 
 public class KasseTools {
 	public static void constructKasseHMap(String id){

@@ -1,4 +1,4 @@
-package systemTools;
+package org.thera_pi.tools;
 
 import java.util.Vector;
 
@@ -121,6 +121,7 @@ public class StringTools {
 		if(test.indexOf("prof.") > -1){
 			neuString = test.replaceAll("prof.", "Prof.");
 			test = String.valueOf(neuString.trim());
+			/* test = new String(neuString); */
 		}
 		if(test.indexOf("dr.") > -1){
 			neuString = test.replaceAll("dr.", "Dr.");
@@ -488,6 +489,35 @@ public class StringTools {
 		}
 		return string;
 	}
+
+	public static int holeZahlVorneNullen(String zahl){
+		int ret = 0;
+		for(int i = 0; i < zahl.length();i++){
+			try{
+				if("0123456789".contains(zahl.substring(i,i+1))){
+					return Integer.parseInt(zahl.substring(i));
+				}
+			}catch(Exception ex){
+				return 0;
+			}
+		}
+		return ret;
+	}
+	public static int killLeadingZero(String zahl){
+		int ret = 0;
+		for(int i = 0; i < zahl.length();i++){
+			try{
+				if(! "0".contains(zahl.substring(i,i+1))){
+					//System.out.println("Zahl = "+zahl.substring(i));
+					return Integer.parseInt(zahl.substring(i));
+				}
+			}catch(Exception ex){
+				return 0;
+			}
+		}
+		return ret;
+    }
+
 	public static String do301String(String string){
 		String ret = string;
 		ret = ret.replace("?", "??").replace("'","?'").replace(":", "?:").replace("+", "?+");

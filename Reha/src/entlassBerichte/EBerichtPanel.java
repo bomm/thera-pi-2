@@ -50,6 +50,7 @@ import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.tools.StringTools;
 import org.therapi.reha.patient.LadeProg;
 
 import rechteTools.Rechte;
@@ -62,7 +63,6 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
-import systemTools.StringTools;
 import terminKalender.DatFunk;
 import abrechnung.AbrechnungDlg;
 import ag.ion.bion.officelayer.desktop.IFrame;

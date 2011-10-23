@@ -1,7 +1,8 @@
 package preisListenHandling;
 
+import org.thera_pi.tools.StringTools;
+
 import sqlTools.SqlInfo;
-import systemTools.StringTools;
 
 public class MachePreisListe {
 	

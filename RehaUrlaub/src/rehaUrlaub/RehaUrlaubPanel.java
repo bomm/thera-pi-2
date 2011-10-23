@@ -47,6 +47,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.tools.StringTools;
 
 import Tools.DatFunk;
 import Tools.JCompTools;
@@ -54,7 +55,6 @@ import Tools.JRtaComboBox;
 import Tools.JRtaTextField;
 import Tools.MitteRenderer;
 import Tools.SqlInfo;
-import Tools.StringTools;
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.IDocument;

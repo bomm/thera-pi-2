@@ -32,9 +32,9 @@ import opencard.core.terminal.ResponseAPDU;
 import opencard.opt.util.PassThruCardService;
 
 import org.jdesktop.swingworker.SwingWorker;
+import org.thera_pi.tools.StringTools;
 
 import systemEinstellungen.SystemConfig;
-import systemTools.StringTools;
 
 
 public class OcKVK {

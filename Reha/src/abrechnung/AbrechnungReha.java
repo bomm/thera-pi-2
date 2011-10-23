@@ -26,6 +26,7 @@ import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.tools.StringTools;
 
 import patientenFenster.KassenAuswahl;
 import rehaInternalFrame.JRehaabrechnungInternal;
@@ -37,7 +38,6 @@ import systemEinstellungen.SystemPreislisten;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
-import systemTools.StringTools;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;

@@ -29,7 +29,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.thera_pi.nebraska.gui.utils.ButtonTools;
 import org.thera_pi.nebraska.gui.utils.JCompTools;
-import org.thera_pi.nebraska.gui.utils.StringTools;
+import org.thera_pi.tools.StringTools;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;

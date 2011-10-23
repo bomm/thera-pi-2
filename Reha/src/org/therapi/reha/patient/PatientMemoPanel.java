@@ -24,15 +24,13 @@ import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.tools.StringTools;
 
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
-import systemTools.StringTools;
 import terminKalender.DatFunk;
-
-
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 

@@ -19,6 +19,7 @@ import org.thera_pi.nebraska.crypto.NebraskaEncryptor;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
+import org.thera_pi.tools.StringTools;
 
 import emailHandling.EmailSendenExtern;
 import entlassBerichte.EBerichtPanel;
@@ -26,7 +27,6 @@ import entlassBerichte.EBerichtPanel;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.IntegerTools;
-import systemTools.StringTools;
 import terminKalender.DatFunk;
 
 

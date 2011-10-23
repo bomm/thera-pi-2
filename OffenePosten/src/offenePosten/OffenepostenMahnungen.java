@@ -36,6 +36,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.tools.StringTools;
 
 import Tools.ButtonTools;
 import Tools.DatFunk;
@@ -45,7 +46,6 @@ import Tools.JRtaRadioButton;
 import Tools.JRtaTextField;
 import Tools.OOTools;
 import Tools.SqlInfo;
-import Tools.StringTools;
 import Tools.TableTool;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;

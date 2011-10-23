@@ -39,6 +39,7 @@ import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
+import org.thera_pi.tools.StringTools;
 
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
@@ -46,7 +47,6 @@ import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
-import systemTools.StringTools;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;

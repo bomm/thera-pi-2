@@ -3,7 +3,8 @@ package dta301;
 import java.util.Arrays;
 import java.util.List;
 
-import systemTools.StringTools;
+import org.thera_pi.tools.StringTools;
+
 
 public class Dta301CodeListen {
 	private static List<String> fettListe = Arrays.asList(new String[] {

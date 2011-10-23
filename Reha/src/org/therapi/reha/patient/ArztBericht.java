@@ -42,6 +42,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.thera_pi.tools.StringTools;
 
 import patientenFenster.ArztAuswahl;
 
@@ -55,7 +56,6 @@ import systemTools.Colors;
 import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
-import systemTools.StringTools;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import textBlockTherapeuten.ThTextBlock;

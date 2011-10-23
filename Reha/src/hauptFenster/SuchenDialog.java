@@ -35,9 +35,9 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
 import org.therapi.reha.patient.PatientHauptLogic;
+import org.thera_pi.tools.StringTools;
 
 import systemEinstellungen.SystemConfig;
-import systemTools.StringTools;
 import events.PatStammEvent;
 import events.PatStammEventClass;
 import events.RehaEvent;

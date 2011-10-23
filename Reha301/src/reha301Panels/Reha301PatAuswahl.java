@@ -14,13 +14,12 @@ import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.tools.StringTools;
 
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.JRtaComboBox;
 import Tools.SqlInfo;
-import Tools.StringTools;
-
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 

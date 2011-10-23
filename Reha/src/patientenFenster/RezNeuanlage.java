@@ -31,6 +31,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.thera_pi.tools.StringTools;
 
 import rechteTools.Rechte;
 import sqlTools.SqlInfo;
@@ -43,7 +44,6 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
-import systemTools.StringTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;

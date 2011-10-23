@@ -10,9 +10,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.thera_pi.tools.StringTools;
+
 import Tools.DatFunk;
 import Tools.SqlInfo;
-import Tools.StringTools;
 
 
 public class REHAbescheinigung {

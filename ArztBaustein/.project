@@ -3,6 +3,7 @@
 	<name>ArztBaustein</name>
 	<comment></comment>
 	<projects>
+		<project>Libraries</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

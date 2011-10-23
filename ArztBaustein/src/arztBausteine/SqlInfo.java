@@ -11,6 +11,8 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Vector;
 
+import org.thera_pi.tools.StringTools;
+
 
 public class SqlInfo {
 	
