@@ -19,6 +19,7 @@ import javax.swing.TransferHandler;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.tools.StringTools;
 
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
@@ -27,7 +28,6 @@ import systemEinstellungen.SystemPreislisten;
 import systemTools.JCompTools;
 
 import systemTools.JRtaTextField;
-import systemTools.StringTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

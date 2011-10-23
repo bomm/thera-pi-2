@@ -1,5 +1,7 @@
 package systemTools;
 
+import org.thera_pi.tools.StringTools;
+
 public class AdressTools {
 	public static String[] machePrivatAdresse(Object[] oin,boolean egross){
 		//"anrede,titel,nachname,vorname,strasse,plz,ort"

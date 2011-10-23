@@ -15,11 +15,11 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 
 import org.jdesktop.swingworker.SwingWorker;
+import org.thera_pi.tools.StringTools;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.StringTools;
 import terminKalender.BestaetigungsDaten;
 import terminKalender.DatFunk;
 import terminKalender.TerminBestaetigenAuswahlFenster;

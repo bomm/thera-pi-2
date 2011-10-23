@@ -1,6 +1,6 @@
 package opRgaf;
 
-import Tools.StringTools;
+import org.thera_pi.tools.StringTools;
 
 public class AdressTools {
 	public static String[] machePrivatAdresse(Object[] oin,boolean egross){

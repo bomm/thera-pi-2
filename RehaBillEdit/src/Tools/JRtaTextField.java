@@ -31,6 +31,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.MaskFormatter;
 
+import org.thera_pi.tools.StringTools;
+
 
 //import terminKalender.DateInputTextField;
 

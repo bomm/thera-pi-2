@@ -2,9 +2,10 @@ package stammDatenTools;
 
 import javax.swing.JOptionPane;
 
+import org.thera_pi.tools.StringTools;
+
 import hauptFenster.Reha;
 import systemEinstellungen.SystemConfig;
-import systemTools.StringTools;
 import terminKalender.DatFunk;
 
 public class PatTools {

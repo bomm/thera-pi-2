@@ -47,6 +47,7 @@ import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.thera_pi.tools.StringTools;
 
 import reha301.Dta301Model;
 import reha301.Reha301;
@@ -61,7 +62,6 @@ import Tools.JRtaTextField;
 import Tools.OOTools;
 import Tools.RezTools;
 import Tools.SqlInfo;
-import Tools.StringTools;
 import Tools.SystemPreislisten;
 import Tools.WartenAufDB;
 import ag.ion.bion.officelayer.text.ITextDocument;
