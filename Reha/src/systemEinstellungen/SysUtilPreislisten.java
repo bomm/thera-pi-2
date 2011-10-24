@@ -502,6 +502,12 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				protected Void doInBackground() throws Exception {
 					try{
 						doUebernahme();	
+						String msg = "Überprüfen Sie bitte alle Behandlungskürzel (Spalte Kurzbez.).\n"+
+						"Taucht oder tauchen bei Ihnen Kürzel wie 'Neu-99' auf, bedeutet dies\n"+
+						"dieser Position wurde noch kein gültiges Kürzel zugewiesen.\n\n"+
+						"In dem Fall müssen Sie dieser Position ein gültiges Kürzel zuweisen\n\n"+
+						"Die Behandlungskürzel sind von extrem(!!) wichtiger Bedeutung.";
+						JOptionPane.showMessageDialog(null,msg);
 					}catch(Exception ex){
 						ex.printStackTrace();
 					}
@@ -621,7 +627,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				// dummer Spruch			
 				return;
 			}
-			String[] lists = {"Physio","Massage","Ergo","Logo","REHA"};
+			String[] lists = {"Physio","Massage","Ergo","Logo","REHA","Podo"};
 			String msg = "<html><b><font color='#ff0000' size=+2>Bitte sorgfältig lesen!!!!</font></b><br><br><br>"+
 			"Die von Ihnen ausgewählte Disziplin ist: <b><font color='#ff0000'> "+lists[jcmb[0].getSelectedIndex()]+"</font></b><br><br>"+
 			"Die von Ihnen ausgewählte Tarifgruppe ist: <b><font color='#ff0000'> "+(String)jcmb[1].getSelectedItem()+"</font></b><br><br>"+
@@ -726,7 +732,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		String preisgruppe = (String) plserver.getValueAt(row, 1);
 		String bundesland = (String) plserver.getValueAt(row, 2);
 		if(bundesland.equals("bundesweit")){
-			bundesland = "./.";
+			//bundesland = "./.";
+			// gibt's auf dem Preislistenserver nicht mehr
 		}
 		String cmd = null;
 		cmd = "select posnr,preis,gueltigab,langtext from allepreise where disziplin='"+
@@ -735,6 +742,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		PLServerAuslesen plServ = new PLServerAuslesen();
 		Vector<Vector<String>> vec = PLServerAuslesen.holeFelder(cmd);
 		plServ.schliessePLConnection();
+		//System.out.println("Statement = "+cmd);
+		System.out.println("Vector-Größe = "+vec.size());
 		return (Vector<?>) vec.clone();
 		
 	}

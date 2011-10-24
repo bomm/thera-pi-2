@@ -9,7 +9,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -61,6 +63,10 @@ private Font fon = new Font("Tahoma", Font.PLAIN, 10);
 private ImageIcon dragImage = null;
 private Image dragImage2 = null;
 public boolean neuzeichnen;
+SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+float yTimeLine = .0f;
+boolean showTimeLine = false;
+int pfeily;
 //public Composite xoriginal;
 //public AlphaComposite xac1;
 public  kalenderPanel KalenderPanel() {
@@ -101,7 +107,7 @@ public void paintComponent( Graphics g ) {
 
 			float fDifferenz;
 			float fStart;
-			final ZeitFunk zStart = new ZeitFunk();
+			//final ZeitFunk zStart = new ZeitFunk();
 			int i1;
 			g2d.setFont(oCol.fon3);
 
@@ -157,7 +163,7 @@ public void paintComponent( Graphics g ) {
 					sStart = (String)((Vector)dat.get(2)).get(i);
 					sEnde = (String)((Vector)dat.get(2)).get(i);					
 					dauer = Integer.parseInt((String)((Vector)dat.get(3)).get(i));
-					yStartMin = (int) ((int) zStart.MinutenSeitMitternacht(sStart))-zeitSpanneVon  ;
+					yStartMin = (int) ((int) ZeitFunk.MinutenSeitMitternacht(sStart))-zeitSpanneVon  ;
 
 					fStartPix = ((float)yStartMin)*fPixelProMinute;
 					fEndePix  = fStartPix+((float) dauer * fPixelProMinute);
@@ -584,10 +590,32 @@ public void paintComponent( Graphics g ) {
 				g2d.setComposite(original);
 							
 			}
+			/***********************************/
+			if(showTimeLine){
+				yTimeLine =  ((ZeitFunk.MinutenSeitMitternacht(sdf.format(new Date())))-zeitSpanneVon )*fPixelProMinute ;
+				pfeily = Math.round(yTimeLine);
+				//g2d.setColor( Color.BLACK);
+				//g2d.drawLine(0, pfeily, xEnde, pfeily);
 
+				//g2d.drawLine(1, pfeily-4, 1, pfeily+4);
+				//g2d.drawLine(1, pfeily-4, 5, pfeily);
+				//g2d.drawLine(5, pfeily, 1, pfeily+4);
+				
+				int xCoord[] = {1, 1, 6, 1};    //die x-Koordinaten
+				int yCoord[] ={pfeily-5, pfeily+5, pfeily, pfeily-5};    // die y-Koordinaten
+				int anz = xCoord.length;
+				g.setColor(Color.red);
+				g.fillPolygon(xCoord,yCoord,anz );
+				g.setColor(Color.black);
+				g.drawPolygon(xCoord,yCoord,anz );
+			}
+			
 
 		////System.out.println("Anzahl = "+anzahl);
 	} 	
+	public void setShowTimeLine(boolean show) {
+		this.showTimeLine = show;
+	}
 
 	/*******Klammer der paint-Methode**********/
 	public void datenZeichnen(Vector vect,int therapeut){
@@ -678,6 +706,7 @@ public void paintComponent( Graphics g ) {
 		}
 		return (int[]) ret.clone();
 	}
+	
 /********************************/
 	public int[] BlockTestOhneAktivierung(int x,int y){
 		int[] ret = {-1,-1,-1,-1};

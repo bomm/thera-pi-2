@@ -50,6 +50,8 @@ public class SystemConfig {
 	public static boolean[] RoogleTage = {false,false,false,false,false,false,false};
 	public static int RoogleZeitraum;
 	public static HashMap<String,String> RoogleZeiten = null;
+	
+	public static boolean[] taskPaneCollapsed = {false,false,true,true,false,true};
 	/**
 	 * nachfolgende static's sind notwendig f�r den Einsatz des Terminkalenders
 	 */
@@ -62,6 +64,8 @@ public class SystemConfig {
 	public static String KalenderStartWADefaultUser = "./.";
 	public static String KalenderStartNADefaultSet = "./.";
 	public static boolean KalenderZeitLabelZeigen = false;
+	public static boolean KalenderWochenTagZeigen = false;
+	public static boolean KalenderTimeLineZeigen = false;
 	public static String[]  KalenderUmfang =  {null,null};
 	public static long[]  KalenderMilli =  {0,0};
 	public static int UpdateIntervall;
@@ -319,17 +323,35 @@ public class SystemConfig {
 		try{
 			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 			//ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
-
+			boolean mustsave = false;
 			aHauptFenster = new ArrayList<String>();
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","Hintergrundbild"));
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","Bildgroesse"));			
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","FensterFarbeRGB"));
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","FensterTitel"));
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","LookAndFeel"));
+			
 			if ( ini.getStringProperty("HauptFenster", "HorizontalTeilen") != null ){
 				desktopHorizontal = ((Integer)ini.getIntegerProperty("HauptFenster", "HorizontalTeilen") == 1 ? true : false) ;
 			}else{
 				ini.setStringProperty("HauptFenster", "HorizontalTeilen","1",null);
+				mustsave = true;
+				
+			}
+			if ( ini.getStringProperty("HauptFenster", "TP1Offen") != null ){
+				for(int i = 1; i < 7; i++){
+					taskPaneCollapsed[i-1] = (ini.getStringProperty("HauptFenster", "TP"+Integer.toString(i)+"Offen").equals("1") ? true : false);
+				}
+			}else{
+				ini.setStringProperty("HauptFenster", "TP1Offen","0",null);
+				ini.setStringProperty("HauptFenster", "TP2Offen","0",null);
+				ini.setStringProperty("HauptFenster", "TP3Offen","1",null);
+				ini.setStringProperty("HauptFenster", "TP4Offen","1",null);
+				ini.setStringProperty("HauptFenster", "TP5Offen","0",null);
+				ini.setStringProperty("HauptFenster", "TP6Offen","1",null);
+				mustsave = true;
+			}
+			if(mustsave){
 				ini.save();
 			}
 
@@ -413,6 +435,14 @@ public class SystemConfig {
 			KalenderStartWADefaultUser = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[0]);
 			KalenderStartNADefaultSet = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[1]);
 			KalenderZeitLabelZeigen = (ini.getStringProperty("Kalender","ZeitLabelZeigen").trim().equals("0") ? false : true );
+			if(ini.getStringProperty("Kalender", "ZeitLinieZeigen")==null){
+				ini.setStringProperty("Kalender", "ZeitLinieZeigen", "0", null);
+				ini.save();
+				KalenderTimeLineZeigen = false;
+			}else{
+				KalenderTimeLineZeigen = (ini.getStringProperty("Kalender", "ZeitLinieZeigen").trim().equals("0") ? false : true);	
+			}
+			
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}

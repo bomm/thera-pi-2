@@ -233,6 +233,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	public boolean terminBreak = false;
 	public JRehaInternal eltern;
 	
+	public static String[] dayname = {"Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"};
+	public static String[] tooltip = {"","","","","","",""};
 	FinalGlassPane fgp = null;
 	
 	public JXPanel init(int setOben,int ansicht,JRehaInternal eltern) {
@@ -353,7 +355,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 	}
 	public void regleZeitLabel(){
-		if(!SystemConfig.KalenderZeitLabelZeigen){
+		if(!SystemConfig.KalenderZeitLabelZeigen && fgp != null){
 			fgp.setVisible(false);
 			fgp = null;
 		}else if(SystemConfig.KalenderZeitLabelZeigen){
@@ -372,6 +374,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		for(int i = 0; i < 7;i++){
 			ListenerTools.removeListeners(oSpalten[i]);
 			oSpalten[i] = null;
+			ListenerTools.removeListeners(oCombo[i].getParent());
 			ListenerTools.removeListeners(oCombo[i]);
 			oCombo[i] = null;
 			if(ViewPanel != null){
@@ -470,6 +473,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				oCombo[i] = new JComboBox();
 				oCombo[i].setName("Combo"+i);
 				cb.add(oCombo[i],BorderLayout.CENTER);
+				cb.addMouseListener(new comboToolTip(i));
 				ComboFlaeche.add(cb);
 			}
 			ComboFlaeche.revalidate();	
@@ -609,14 +613,27 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				}
 			}
 		});
+		
+		/*
 		oCombo[welche].addItemListener(new ItemListener(){
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				//String arg = ((String) ((JComboBox) e.getSource()).getActionCommand());
-				((JComboBox)e.getSource()).setToolTipText("Kalenderbenutzer: "+oCombo[welche].getSelectedItem());
+				if(ansicht != WOCHEN_ANSICHT){
+					//((JComboBox)e.getSource()).setToolTipText();
+					tooltip[welche] = "Kalenderbenutzer: "+oCombo[welche].getSelectedItem();
+				}else{
+					//((JComboBox)e.getSource()).setToolTipText(dayname[welche]+"\n"+DatFunk.sDatPlusTage(wocheErster,welche));
+					tooltip[welche] = "<html>"+dayname[welche]+"<br>"+DatFunk.sDatPlusTage(wocheErster,welche)+"</html>";					
+					((JComboBox)e.getSource()).setToolTipText(tooltip[welche]);
+				}
+				
 			}
 			
 		});
+		*/
+		
+		/*
 		
 		oCombo[welche].addPopupMenuListener( new PopupMenuListener() {
 			@Override
@@ -625,13 +642,23 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			}
 			@Override
 			public void popupMenuWillBecomeInvisible(PopupMenuEvent arg0) {
-				((JComboBox)arg0.getSource()).setToolTipText("Kalenderbenutzer: "+oCombo[welche].getSelectedItem());				
+				if(ansicht != WOCHEN_ANSICHT){
+					((JComboBox)arg0.getSource()).setToolTipText("Kalenderbenutzer: "+oCombo[welche].getSelectedItem());					
+				}else{
+					
+					tooltip[welche] = "<html>"+dayname[welche]+"<br>"+DatFunk.sDatPlusTage(wocheErster,welche)+"</html>";
+					((JComboBox)arg0.getSource()).setToolTipText(tooltip[welche]);
+				}
+				
 			}
 			@Override
 			public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {
 				((JComboBox)arg0.getSource()).setToolTipText("Become-Invisible Kalenderbenutzer: "+oCombo[welche].getSelectedItem());				
 			}
 	      });
+	      */
+	      
+		
 	}	
 /****
  * die Comboboxen mit Werden füllen
@@ -818,6 +845,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 					iPixelProMinute = ((int) (fPixelProMinute));
 				}
 			});
+			setTimeLine(SystemConfig.KalenderTimeLineZeigen);
 			TerminFlaeche.revalidate();
 		}
 		return TerminFlaeche;
@@ -2597,7 +2625,16 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			return sstate;
 		}
 
-/******************Mache Statement****************/
+	private void setDayForToolTip(){
+		tooltip[0] = "<html>"+dayname[0]+"<br>"+DatFunk.sDatPlusTage(wocheErster,0)+"</html>";
+		tooltip[1] = "<html>"+dayname[1]+"<br>"+DatFunk.sDatPlusTage(wocheErster,1)+"</html>";
+		tooltip[2] = "<html>"+dayname[2]+"<br>"+DatFunk.sDatPlusTage(wocheErster,2)+"</html>";
+		tooltip[3] = "<html>"+dayname[3]+"<br>"+DatFunk.sDatPlusTage(wocheErster,3)+"</html>";
+		tooltip[4] = "<html>"+dayname[4]+"<br>"+DatFunk.sDatPlusTage(wocheErster,4)+"</html>";
+		tooltip[5] = "<html>"+dayname[5]+"<br>"+DatFunk.sDatPlusTage(wocheErster,5)+"</html>";
+		tooltip[6] = "<html>"+dayname[6]+"<br>"+DatFunk.sDatPlusTage(wocheErster,6)+"</html>";
+	}
+	/******************Mache Statement****************/
 	protected void macheStatement(String sstmt,int ansicht) {
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -3788,6 +3825,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				dragLab[aktiveSpalte[2]].setIcon(null);
 				dragLab[aktiveSpalte[2]].setText("");
 	        	String sstmt = 	ansichtStatement(this.ansicht,this.wocheAktuellerTag);
+				setDayForToolTip();
 	        }
     	SetzeLabel();
 	}
@@ -3811,6 +3849,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
         	}
         	this.wocheAktuellerTag = DatFunk.sDatPlusTage(this.wocheAktuellerTag,+(richtung*7));
         	String sstmt = 	ansichtStatement(this.ansicht,this.wocheAktuellerTag);
+			setDayForToolTip();
         }
 	}
 	private void testeObAusmustern(){
@@ -4595,7 +4634,52 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 	}
 	
+	class comboToolTip implements MouseListener{
+		int welche = -1;
+		public comboToolTip(int welche){
+			super();
+			this.welche = welche;
+		}
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
 
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			if(ansicht == WOCHEN_ANSICHT){
+				setDayForToolTip();
+				tooltip[welche] = "<html>"+dayname[welche]+"<br>"+DatFunk.sDatPlusTage(wocheErster,welche)+"</html>";					
+				oCombo[welche].setToolTipText(tooltip[welche]);
+			}
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	public void setTimeLine(boolean zeigen){
+		for(int i = 0; i < 7;i++){
+			oSpalten[i].setShowTimeLine(zeigen);
+		}
+	}
 
 	/********************************************************************************************/
 }	// Ende Klasse
@@ -4898,4 +4982,5 @@ class DragSupport implements DragGestureListener{
 	}
 	
 }
+
 

@@ -71,12 +71,12 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 	private static final long serialVersionUID = 1L;
 	//private Reha eltern;
 	private static JXTaskPaneContainer jxTPcontainer = null; 
-	private static JXTaskPane tp1 = null;
-	private static JXTaskPane tp2 = null;
-	private static JXTaskPane tp3 = null;	
-	private static JXTaskPane tp4 = null;	
-	private static JXTaskPane tp5 = null;
-	private static JXTaskPane tp6 = null;
+	public static JXTaskPane tp1 = null;
+	public static JXTaskPane tp2 = null;
+	public static JXTaskPane tp3 = null;	
+	public static JXTaskPane tp4 = null;	
+	public static JXTaskPane tp5 = null;
+	public static JXTaskPane tp6 = null;
 	private JXHyperlink oo1 = null;
 	private JXHyperlink oo2 = null;
 	public static boolean OOok = true;
@@ -229,7 +229,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));
 		jxLink.addActionListener(this);
 		tp1.add(jxLink);
-		//tp1.setExpanded(true);
+		tp1.setCollapsed(SystemConfig.taskPaneCollapsed[0]);
 		return tp1;
 	}
 	
@@ -367,7 +367,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.setName("Rugl");
 		
 		tp4.add(jxLink);
-		
+		tp4.setCollapsed(SystemConfig.taskPaneCollapsed[1]);
 		//tp4.setExpanded(true);
 		return tp4;
 	}
@@ -401,7 +401,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		oo2.setClickedColor(new Color(0, 0x33, 0xFF));		
 		oo2.addActionListener(this);
 		tp3.add(oo2);
-		tp3.setCollapsed(true);
+		tp3.setCollapsed(SystemConfig.taskPaneCollapsed[2]);
 		return tp3;
 	}
 	
@@ -470,7 +470,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		//jxLink.setEnabled(false);
 		tp5.add(jxLink);
 
-		tp5.setCollapsed(true);
+		tp5.setCollapsed(SystemConfig.taskPaneCollapsed[3]);
 		return tp5;
 	}
 
@@ -507,6 +507,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		jxLink.addActionListener(this);
 		jxLink.setEnabled(false);
 		tp2.add(jxLink);
+		tp2.setCollapsed(SystemConfig.taskPaneCollapsed[4]);
 		return tp2;
 	}
 	
@@ -563,6 +564,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		  monthView.addActionListener(al);
 		  tp6.add(monthView);
 		  tp6.setCollapsed(true);
+		  tp6.setCollapsed(SystemConfig.taskPaneCollapsed[5]);
 		return tp6;
 	}
 

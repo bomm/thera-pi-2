@@ -313,7 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-10-11-DB=";
+	public static String aktuelleVersion = "V=2011-10-18-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -599,6 +599,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
 		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP1Offen",(Object)(LinkeTaskPane.tp1.isCollapsed() ? "1" : "0"),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP2Offen",(Object)(LinkeTaskPane.tp4.isCollapsed() ? "1" : "0"),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP3Offen",(Object)(LinkeTaskPane.tp3.isCollapsed() ? "1" : "0"),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP4Offen",(Object)(LinkeTaskPane.tp5.isCollapsed() ? "1" : "0"),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP5Offen",(Object)(LinkeTaskPane.tp2.isCollapsed() ? "1" : "0"),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP6Offen",(Object)(LinkeTaskPane.tp6.isCollapsed() ? "1" : "0"),null );
 		System.exit(0);
 	}
 	public void beendeSofort(){
@@ -648,6 +654,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
 		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP1Offen",(Object)(LinkeTaskPane.tp1.isCollapsed() ? "1" : "0"),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP2Offen",(Object)(LinkeTaskPane.tp4.isCollapsed() ? "1" : "0"),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP3Offen",(Object)(LinkeTaskPane.tp3.isCollapsed() ? "1" : "0"),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP4Offen",(Object)(LinkeTaskPane.tp5.isCollapsed() ? "1" : "0"),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP5Offen",(Object)(LinkeTaskPane.tp2.isCollapsed() ? "1" : "0"),null );
+		SystemConfig.UpdateIni(inif, "HauptFenster", "TP6Offen",(Object)(LinkeTaskPane.tp6.isCollapsed() ? "1" : "0"),null );
+
 		System.exit(0);
 	}
 	
@@ -1823,6 +1836,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 						SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
 						SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
+						SystemConfig.UpdateIni(inif, "HauptFenster", "TP1Offen",(Object)(LinkeTaskPane.tp1.isCollapsed() ? "1" : "0"),null );
+						SystemConfig.UpdateIni(inif, "HauptFenster", "TP2Offen",(Object)(LinkeTaskPane.tp4.isCollapsed() ? "1" : "0"),null );
+						SystemConfig.UpdateIni(inif, "HauptFenster", "TP3Offen",(Object)(LinkeTaskPane.tp3.isCollapsed() ? "1" : "0"),null );
+						SystemConfig.UpdateIni(inif, "HauptFenster", "TP4Offen",(Object)(LinkeTaskPane.tp5.isCollapsed() ? "1" : "0"),null );
+						SystemConfig.UpdateIni(inif, "HauptFenster", "TP5Offen",(Object)(LinkeTaskPane.tp2.isCollapsed() ? "1" : "0"),null );
+						SystemConfig.UpdateIni(inif, "HauptFenster", "TP6Offen",(Object)(LinkeTaskPane.tp6.isCollapsed() ? "1" : "0"),null );
+
 						System.exit(0);
 					}else{
 						return;
@@ -2429,6 +2449,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 			SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
 			SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
+			SystemConfig.UpdateIni(inif, "HauptFenster", "TP1Offen",(Object)(LinkeTaskPane.tp1.isCollapsed() ? "1" : "0"),null );
+			SystemConfig.UpdateIni(inif, "HauptFenster", "TP2Offen",(Object)(LinkeTaskPane.tp4.isCollapsed() ? "1" : "0"),null );
+			SystemConfig.UpdateIni(inif, "HauptFenster", "TP3Offen",(Object)(LinkeTaskPane.tp3.isCollapsed() ? "1" : "0"),null );
+			SystemConfig.UpdateIni(inif, "HauptFenster", "TP4Offen",(Object)(LinkeTaskPane.tp5.isCollapsed() ? "1" : "0"),null );
+			SystemConfig.UpdateIni(inif, "HauptFenster", "TP5Offen",(Object)(LinkeTaskPane.tp2.isCollapsed() ? "1" : "0"),null );
+			SystemConfig.UpdateIni(inif, "HauptFenster", "TP6Offen",(Object)(LinkeTaskPane.tp6.isCollapsed() ? "1" : "0"),null );
+
 			System.exit(0);
 		}else{
 			return;

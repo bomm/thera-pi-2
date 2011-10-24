@@ -1756,6 +1756,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				JOptionPane.showMessageDialog(null, "<html>Achtung eine der Rezeptpositionen z.B. <b>"+posnr+"</b> konnte nicht gefunden werden.<br>Wurde evtl. eine Preislistenposition gelöscht oder verändert?</html>");
 			}
 		}else{
+			
 			for(int i = 0; i < anzahlbehandlungen;i++){
 				abrfall[i] = RezTools.getKurzformFromID(
 						vec_rez.get(0).get(i+8),preisvec).toString();
