@@ -2,8 +2,8 @@ package verkauf.model;
 
 public class ArtikelVerkauf extends Artikel{
 
-	int anzahl, position;
-	double preis, rabatt = 0;
+	int position;
+	double preis, rabatt = 0, anzahl = 1;
 	String beschreibung;
 	
 	public ArtikelVerkauf(long ean) {
@@ -23,20 +23,22 @@ public class ArtikelVerkauf extends Artikel{
 	}
 	
 	public void gewaehreRabatt(double rabatt) {
-		this.rabatt = rabatt;
-		this.preis = super.getPreis();
-		this.preis = this.preis * (1 - (rabatt / 100));
+		if(rabatt != 0) {
+			this.rabatt = rabatt;
+			this.preis = super.getPreis();
+			this.preis = this.preis * (1 - (rabatt / 100));
+		}
 	}
 	
-	public void setAnzahl(int n) {
-		this.anzahl = n;
+	public void setAnzahl(double d) {
+		this.anzahl = d;
 	}
 	
 	public void setPosition(int n) {
 		this.position = n;
 	}
 	
-	public int getAnzahl() {
+	public double getAnzahl() {
 		return this.anzahl;
 	}
 	
@@ -54,7 +56,7 @@ public class ArtikelVerkauf extends Artikel{
 	}
 	
 	@Override
-	public void verkaufeArtikel(int n) {
+	public void verkaufeArtikel(double n) {
 		super.verkaufeArtikel(this.anzahl);
 	}
 	

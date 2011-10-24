@@ -9,23 +9,24 @@ public class Artikel {
 	private double preis;
 	private double mwst;
 	private long ean;
-	private int lagerstand;
-	private String beschreibung;
+	private double lagerstand;
+	private String beschreibung, einheit;
 	
-	public Artikel(long ean, String beschreibung, double preis, double mwst, int lagerstand) {
+	public Artikel(long ean, String beschreibung, String einheit, double preis, double mwst, double lagerstand) {
 		this.preis = preis;
+		this.einheit = einheit;
 		this.mwst = mwst;
 		this.lagerstand = lagerstand;
 		this.ean = ean;
 		this.beschreibung = beschreibung;
-		SqlInfo.sqlAusfuehren("INSERT INTO `verkartikel` (`ean`, `beschreibung`, `preis`, `mwst`, `lagerstand`) " +
-				"VALUES('"+ this.ean +"', '"+ this.beschreibung +"', '"+ this.preis +"', '"+ this.mwst +"', '"+ this.lagerstand +"' );");
+		SqlInfo.sqlAusfuehren("INSERT INTO `verkartikel` (`ean`, `beschreibung`, `preis`, `mwst`, `lagerstand`, `einheit`) " +
+				"VALUES('"+ this.ean +"', '"+ this.beschreibung +"', '"+ this.preis +"', '"+ this.mwst +"', '"+ this.lagerstand +"', '"+ this.einheit +"' );");
 	}
 	
 	public Artikel(long ean) {
 		// Abfragen aus der Datenbank
 		this.ean = ean;
-		String sql = "SELECT beschreibung, preis, mwst, lagerstand FROM verkartikel WHERE ean = "+ this.ean;
+		String sql = "SELECT beschreibung, preis, mwst, lagerstand, einheit FROM verkartikel WHERE ean = "+ this.ean;
 		
 		Vector<Vector<String>> felder = SqlInfo.holeFelder(sql);
 		Vector<String> datensatz = felder.get(0);
@@ -34,21 +35,11 @@ public class Artikel {
 			this.preis = Double.parseDouble(datensatz.get(1));
 			this.mwst = Double.parseDouble(datensatz.get(2));
 			this.lagerstand = Integer.parseInt(datensatz.get(3));
+			this.einheit = datensatz.get(4);
 		}
 	}
 	
-	void verkaufeArtikel(int anzahl) {
-		if(this.lagerstand != -1) {
-			if(anzahl <= this.lagerstand) {
-				this.lagerstand -= anzahl;
-			} else {
-				if(this.lagerstand > 0) {
-					anzahl -= this.lagerstand;
-				}
-				this.lagerstand = -101;
-				this.lagerstand -= anzahl;
-			}
-		}
+	void verkaufeArtikel(double anzahl) {
 		this.lagerstand = this.lagerstand - anzahl;
 		this.update();
 	}
@@ -74,7 +65,7 @@ public class Artikel {
 		return mwst;
 	}
 
-	public int getLagerstand() {
+	public double getLagerstand() {
 		return lagerstand;
 	}
 
@@ -96,7 +87,7 @@ public class Artikel {
 		this.update();
 	}
 
-	public void setLagerstand(int lagerstand) {
+	public void setLagerstand(double lagerstand) {
 		this.lagerstand = lagerstand;
 		this.update();
 	}
@@ -110,6 +101,15 @@ public class Artikel {
 	public void setBeschreibung(String beschreibung) {
 		this.beschreibung = beschreibung;
 		this.update();
+	}
+	
+	public void setEinheit(String einheit) {
+		this.einheit = einheit;
+		this.update();
+	}
+	
+	public String getEinheit() {
+		return this.einheit;
 	}
 	
 	public static boolean artikelExistiert(long ean) {
@@ -132,7 +132,7 @@ public class Artikel {
 			artikelliste[i][1] = artikel.getBeschreibung();
 			artikelliste[i][2] = df.format(artikel.getPreis());
 			artikelliste[i][3] = df2.format(artikel.mwst);
-			artikelliste[i][4] = String.valueOf(artikel.getLagerstand());
+			artikelliste[i][4] = df.format(artikel.getLagerstand()) + " " + artikel.getEinheit();
 			artikelliste[i][5] = "0";
 			i++;
 		}

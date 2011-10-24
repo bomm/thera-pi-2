@@ -1,11 +1,13 @@
 package verkauf.model;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Verkauf {
 	private double betrag7 = 0, betrag19 = 0,  betragBrutto = 0, rabatt = 0;
 	//private Date datum;
 	private ArrayList<ArtikelVerkauf> artikel;
+	DecimalFormat df = new DecimalFormat("0.00");
 		
 	public Verkauf() {
 		this.artikel = new ArrayList<ArtikelVerkauf>();
@@ -66,14 +68,15 @@ public class Verkauf {
 	public String[][] liefereTabDaten() {
 		ArtikelVerkauf[] positionen = new ArtikelVerkauf[this.artikel.size()];
 		positionen = this.artikel.toArray(positionen);
-		String[][] returns = new String[positionen.length][6];
+		String[][] returns = new String[positionen.length][7];
 		for(int i = 0; i < positionen.length; i++) {
 			returns[i][0] = String.valueOf(positionen[i].getEan());
 			returns[i][1] = positionen[i].getBeschreibung();
-			returns[i][2] = String.valueOf(positionen[i].getPreis());
-			returns[i][3] = String.valueOf(positionen[i].getAnzahl());
-			returns[i][4] = String.valueOf(positionen[i].getPreis() * positionen[i].getAnzahl());
-			returns[i][5] = String.valueOf(positionen[i].getPosition());
+			returns[i][2] = df.format(positionen[i].getPreis());
+			returns[i][3] = df.format(positionen[i].getAnzahl());
+			returns[i][4] = df.format(positionen[i].getPreis() * positionen[i].getAnzahl());
+			returns[i][5] = df.format(positionen[i].getMwst());
+			returns[i][6] = String.valueOf(positionen[i].getPosition());
 		}
 		
 		return returns;

@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -54,6 +55,7 @@ public class ArtikelSuchenDialog extends JXDialog {
 	ActionListener al = null;
 	FocusListener fl = null;
 	KeyListener kl = null;
+	MouseListener ml = null;
 	
 	public ArtikelSuchenDialog(Frame owner, UebergabeTool ean, Point position) {
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
@@ -165,7 +167,7 @@ public class ArtikelSuchenDialog extends JXDialog {
 
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				if(arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+				if(arg0.getKeyCode() == KeyEvent.VK_ENTER || arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					schliessen();
 				}
 				
@@ -191,6 +193,42 @@ public class ArtikelSuchenDialog extends JXDialog {
 				if(arg0.getActionCommand().equals("schliessen")) {
 					schliessen();
 				}
+				
+			}
+			
+		};
+		
+		ml = new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if(arg0.getClickCount() == 2) {
+					schliessen();
+				}
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
 				
 			}
 			
