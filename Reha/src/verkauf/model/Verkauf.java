@@ -88,9 +88,9 @@ public class Verkauf {
 		return positionen;
 	}
 	
-	public void fuehreVerkaufdurch() {
+	public void fuehreVerkaufdurch(int patid, String vnummer) {
 		for(int n = 0; n < artikel.size(); n++) {
-			artikel.get(n).verkaufeArtikel(0);
+			artikel.get(n).verkaufeArtikel(0, vnummer, 0d, patid);
 		}
 	}
 }

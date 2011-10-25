@@ -34,14 +34,17 @@ public class Artikel {
 			this.beschreibung = datensatz.get(0);
 			this.preis = Double.parseDouble(datensatz.get(1));
 			this.mwst = Double.parseDouble(datensatz.get(2));
-			this.lagerstand = Integer.parseInt(datensatz.get(3));
+			this.lagerstand = Double.parseDouble(datensatz.get(3));
 			this.einheit = datensatz.get(4);
 		}
 	}
 	
-	void verkaufeArtikel(double anzahl) {
+	void verkaufeArtikel(double anzahl, String vnummer, Double vpreis, int patid) {
 		this.lagerstand = this.lagerstand - anzahl;
 		this.update();
+		String sql = "INSERT INTO `verkfaktura` (`verkfakturaID`, `v_nummer`, `art_id`, `art_beschreibung`, `art_einzelpreis`, `art_mwst`, `anzahl`, `pat_id`) " +
+				"VALUES (NULL, '"+ vnummer +"', '"+ this.ean +"', '"+ this.getBeschreibung() +"', '"+ vpreis +"', '"+ this.mwst +"', '"+ anzahl +"', '"+ patid +"')";
+		SqlInfo.sqlAusfuehren(sql);
 	}
 
 	

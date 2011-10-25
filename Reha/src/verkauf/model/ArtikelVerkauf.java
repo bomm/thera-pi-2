@@ -56,8 +56,8 @@ public class ArtikelVerkauf extends Artikel{
 	}
 	
 	@Override
-	public void verkaufeArtikel(double n) {
-		super.verkaufeArtikel(this.anzahl);
+	public void verkaufeArtikel(double anzahl, String vnummer, Double vpreis, int patid) {
+		super.verkaufeArtikel(this.anzahl, vnummer, this.preis, patid);
 	}
 	
 	public double getRabatt() {

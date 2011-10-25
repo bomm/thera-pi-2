@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.Date;
 import java.text.DecimalFormat;
 
 import javax.swing.JButton;
@@ -29,7 +30,7 @@ import org.thera_pi.nebraska.gui.utils.ButtonTools;
 import org.thera_pi.nebraska.gui.utils.JCompTools;
 import org.thera_pi.nebraska.gui.utils.StringTools;
 
-import rehaInternalFrame.JVerkaufInternal;
+import sqlTools.SqlInfo;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
@@ -76,11 +77,9 @@ public class VerkaufGUI extends JXPanel{
 	verkauf.model.Verkauf verkauf = null;
 	DecimalFormat df = null;
 	INIFile settings = null;
-	public JVerkaufInternal eltern;
 	
-	public VerkaufGUI(JVerkaufInternal vki){
+	public VerkaufGUI(){
 		super();
-		eltern = vki;
 		this.activateListener();
 		this.setLayout(new BorderLayout());
 		this.setOpaque(false);
@@ -126,7 +125,7 @@ public class VerkaufGUI extends JXPanel{
 		pan.add(lab,cc.xyw(8,2,3));
 		einheitAnzahlLabel = new JLabel("Anzahl / Einheit");
 		pan.add(einheitAnzahlLabel,cc.xy(4, 2));
-		lab = new JLabel("Preis");
+		lab = new JLabel("Gesamtpreis");
 		pan.add(lab,cc.xy(12, 2));
 		lab = new JLabel("Rabatt");
 		pan.add(lab,cc.xy(6, 2));
@@ -165,7 +164,6 @@ public class VerkaufGUI extends JXPanel{
 		buts[3].setMnemonic(KeyEvent.VK_MINUS);
 		
 		/******Tabelle********/
-		System.out.println(column.length);
 		vkmod.setColumnIdentifiers(column);
 		vktab = new JXTable(vkmod);
 		vktab.setEditable(false);
@@ -232,25 +230,21 @@ public class VerkaufGUI extends JXPanel{
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				// TODO Auto-generated method stub
 				
 			}
 
 			@Override
 			public void mouseExited(MouseEvent arg0) {
-				// TODO Auto-generated method stub
 				
 			}
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				// TODO Auto-generated method stub
 				
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				// TODO Auto-generated method stub
 				
 			}
 			
@@ -264,7 +258,7 @@ public class VerkaufGUI extends JXPanel{
 					aktuellerArtikel.setAnzahl(Double.parseDouble(edits[1].getText().replace(",", ".")));
 					aktuellerArtikel.gewaehreRabatt(Double.parseDouble(edits[2].getText().replace(",", ".")));
 					aktuellerArtikel.setBeschreibung(edits[3].getText());
-					aktuellerArtikel.setPreis(Double.parseDouble(edits[4].getText().replace(",", ".")));
+					aktuellerArtikel.setPreis(Double.parseDouble(edits[4].getText().replace(",", ".")) / Double.parseDouble(edits[1].getText().replace(",", ".")));
 					
 					verkauf.fügeArtikelHinzu(aktuellerArtikel);
 					aktuellerArtikel = null;
@@ -283,7 +277,7 @@ public class VerkaufGUI extends JXPanel{
 				}
 				else if(cmd.equals("loesche")){
 					if(vkmod.getRowCount() > 0) {
-						verkauf.loescheArtikel((Integer.parseInt((String)vkmod.getValueAt(vktab.getSelectedRow(), 5))));
+						verkauf.loescheArtikel((Integer.parseInt((String)vkmod.getValueAt(vktab.getSelectedRow(), 6))));
 						vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 						vktab.getColumn(lastcol).setMinWidth(0);
 						vktab.getColumn(lastcol).setMaxWidth(0);
@@ -350,8 +344,8 @@ public class VerkaufGUI extends JXPanel{
 				try {
 				if( ((JComponent)arg0.getSource()).getName().equals("artikelid")){
 					Long ean = Long.parseLong(edits[0].getText());
-					if(Artikel.artikelExistiert(ean) && ean > 0) {
-						aktuellerArtikel = new ArtikelVerkauf(Long.parseLong(edits[0].getText()));	
+					if(Artikel.artikelExistiert(ean)) {
+						aktuellerArtikel = new ArtikelVerkauf(ean);	
 						edits[3].setText(aktuellerArtikel.getBeschreibung());
 						edits[4].setText(df.format(aktuellerArtikel.getPreis()));
 						einheitAnzahlLabel.setText("Anzahl / " + aktuellerArtikel.getEinheit());
@@ -361,12 +355,12 @@ public class VerkaufGUI extends JXPanel{
 					}
 				} else if(((JComponent)arg0.getSource()).getName().equals("anzahl")) {
 					if(aktuellerArtikel != null) {
-						aktuellerArtikel.setAnzahl(Integer.parseInt(edits[1].getText()));
+						aktuellerArtikel.setAnzahl(Double.parseDouble(edits[1].getText().replace(",", ".")));
 						edits[4].setText(df.format(aktuellerArtikel.getPreis() * aktuellerArtikel.getAnzahl()));
 					}
 				} else if(((JComponent)arg0.getSource()).getName().equals("artikelRabatt")) {
 					if(aktuellerArtikel != null) {
-						aktuellerArtikel.gewaehreRabatt(Double.parseDouble(edits[2].getText()));
+						aktuellerArtikel.gewaehreRabatt(Double.parseDouble(edits[2].getText().replace(",", ".")));
 						edits[4].setText(df.format(aktuellerArtikel.getPreis() * aktuellerArtikel.getAnzahl()));
 					}
 				} else if(((JComponent)arg0.getSource()).getName().equals("beschreibung")) {
@@ -398,6 +392,7 @@ public class VerkaufGUI extends JXPanel{
 		new WechselgeldDialog(null, position, verkauf.getBetragBrutto());
 		
 		String propSection = "Bon";
+		String nummernkreis = "VB-"+ SqlInfo.erzeugeNummer("vbon");
 		
 		
 		IOfficeApplication application = Reha.officeapplication;
@@ -421,7 +416,7 @@ public class VerkaufGUI extends JXPanel{
 				if(felder[i].getDisplayText().equals("<Rrabatt>")) {
 					felder[i].getTextRange().setText(df.format(verkauf.getRabatt()));
 				} else if(felder[i].getDisplayText().equals("<Rnummer>")) {
-					felder[i].getTextRange().setText("");
+					felder[i].getTextRange().setText(nummernkreis);
 				} else if(felder[i].getDisplayText().equals("<Rbrutto>")) {
 					felder[i].getTextRange().setText(df.format(verkauf.getBetragBrutto()));
 				} else if(felder[i].getDisplayText().equals("<Rmwst7>")) {
@@ -452,8 +447,8 @@ public class VerkaufGUI extends JXPanel{
 			JOptionPane.showMessageDialog(null, "Fehler: "+ e.getMessage() +"!");
 			e.printStackTrace();
 		}
-		// wohin mit den daten?
-		verkauf.fuehreVerkaufdurch();
+		schreibeUmsatzDaten(nummernkreis, 0.00, -100);
+		verkauf.fuehreVerkaufdurch(-100, nummernkreis);
 		verkauf = new Verkauf();
 		vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 		edits[0].requestFocus();
@@ -471,6 +466,8 @@ public class VerkaufGUI extends JXPanel{
 					adresse = Reha.thisClass.patpanel.patDaten.get(21), plz = Reha.thisClass.patpanel.patDaten.get(23), 
 					ort = Reha.thisClass.patpanel.patDaten.get(24), anrede = Reha.thisClass.patpanel.patDaten.get(0);
 			String propSection = "Rechnung";
+			String nummernkreis = "VR-"+ SqlInfo.erzeugeNummer("vrechnung");
+			int patid = Integer.parseInt(Reha.thisClass.patpanel.patDaten.get(29));
 			
 			
 			IOfficeApplication application = Reha.officeapplication;
@@ -514,7 +511,7 @@ public class VerkaufGUI extends JXPanel{
 					} else if(felder[i].getDisplayText().equals("<Rrabatt>")) {
 						felder[i].getTextRange().setText(df.format(verkauf.getRabatt()));
 					} else if(felder[i].getDisplayText().equals("<Rnummer>")) {
-						felder[i].getTextRange().setText("");
+						felder[i].getTextRange().setText(nummernkreis);
 					}	
 				}
 				TextTableService tservice = (TextTableService) doc.getTextTableService();
@@ -537,8 +534,8 @@ public class VerkaufGUI extends JXPanel{
 				JOptionPane.showMessageDialog(null, "Fehler: "+ e.getMessage() +"!");
 				e.printStackTrace();
 			}
-			// wohin mit den daten?
-			verkauf.fuehreVerkaufdurch();
+			verkauf.fuehreVerkaufdurch(patid, nummernkreis);
+			schreibeUmsatzDaten(nummernkreis, verkauf.getBetragBrutto(), patid);
 			verkauf = new Verkauf();
 			vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 			edits[0].requestFocus();
@@ -601,6 +598,13 @@ public class VerkaufGUI extends JXPanel{
 		edits[2].setText("0,00");
 		edits[3].setText("");
 		edits[4].setText("");
+	}
+	
+	private void schreibeUmsatzDaten(String vnummer, double offen, int patid) {
+		Date date = new Date(System.currentTimeMillis());
+		String sql ="INSERT INTO `therapi_entwicklung`.`verkliste` (`verklisteID`, `v_nummer`, `v_datum`, `v_betrag`, `r_mwst7`, `r_mwst19`, `v_offen`, `v_bezahldatum`, `mahndat1`, `mahndat2`, `mahndat3`, `mahnsperre`, `pat_id`) " +
+				"VALUES (NULL, '"+ vnummer +"', '"+ date.toString() +"', '"+ verkauf.getBetragBrutto() +"', '"+ verkauf.getBetrag7() +"', '"+ verkauf.getBetrag19() +"', '"+ offen +"', NULL, NULL, NULL, NULL, '0', '"+ patid +"');";
+		SqlInfo.sqlAusfuehren(sql);
 	}
 	
 }

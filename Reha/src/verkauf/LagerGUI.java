@@ -23,7 +23,6 @@ import org.jdesktop.swingx.JXTable;
 import org.thera_pi.nebraska.gui.utils.ButtonTools;
 import org.thera_pi.nebraska.gui.utils.JCompTools;
 
-import rehaInternalFrame.JVerkaufInternal;
 import systemEinstellungen.INIFile;
 import systemTools.JRtaTextField;
 import verkauf.model.Artikel;
@@ -47,14 +46,12 @@ public class LagerGUI extends JPanel{
 	JXTable lgtab = null;
 	JScrollPane jscr = null;
 	int lastcol = 5;
-	public JVerkaufInternal eltern;
 	int lastSelected = -1;
 	
 	Artikel aktuellerArtikel = null;
 
-	public LagerGUI(JVerkaufInternal vki) {
+	public LagerGUI() {
 		super();
-		eltern = vki;
 		this.activateListener();
 		this.setOpaque(false);
 		this.setLayout(new BorderLayout());
