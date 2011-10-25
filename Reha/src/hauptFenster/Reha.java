@@ -135,7 +135,7 @@ import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
 import urlaubBeteiligung.Beteiligung;
 import urlaubBeteiligung.Urlaub;
-import verkauf.Verkauf;
+import verkauf.VerkaufTab;
 import wecker.Wecker;
 import abrechnung.AbrechnungGKV;
 import abrechnung.AbrechnungReha;
@@ -183,7 +183,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public Umsaetze umsaetzepanel = null;
 	public Beteiligung beteiligungpanel = null;
 	public Urlaub urlaubpanel = null;
-	public Verkauf verkaufpanel = null;
+	public VerkaufTab verkaufpanel = null;
 	public Barkasse barkassenpanel = null;
 	public AbrechnungReha rehaabrechnungpanel = null;
 	public BenutzerRechte benutzerrechtepanel = null;
@@ -1739,7 +1739,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			verkaufMenu = new JMenu();
 			verkaufMenu.setFont(new Font("Dialog", Font.PLAIN, 12));			
 			verkaufMenu.setText("Verkauf");
-			JMenuItem men = new JMenuItem("Verkäufe tätigen");
+			JMenuItem men = new JMenuItem("Verkaufsmodul starten");
 			men.setActionCommand("verkauf");
 			men.addActionListener(this);
 			verkaufMenu.add(men);
