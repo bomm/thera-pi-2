@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -17,6 +18,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.jdesktop.swingworker.SwingWorker;
+import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -26,6 +28,7 @@ import org.thera_pi.nebraska.gui.utils.JCompTools;
 import systemEinstellungen.INIFile;
 import systemTools.JRtaTextField;
 import verkauf.model.Artikel;
+import verkauf.model.Lieferant;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -40,8 +43,11 @@ public class LagerGUI extends JPanel{
 	ActionListener al = null;
 	ListSelectionListener ll = null;
 	JRtaTextField[] edits = {null, null, null, null,null};
+	JRtaTextField einkaufspreis;
 	JButton[] buts = {null, null, null};
 	JComboBox[] combo = {null, null};
+	JComboBox lieferant;
+	JButton lieferantEdit, lieferantNeu;
 	MyLagerTableModel lgmod = new MyLagerTableModel();
 	JXTable lgtab = null;
 	JScrollPane jscr = null;
@@ -63,8 +69,8 @@ public class LagerGUI extends JPanel{
 		JXLabel lab = new JXLabel();
 		 //                1     2      3     4        5     6      7     8      9    10     11    12      13
 		String xwerte = "5dlu, 60dlu, 5dlu, 120dlu:g, 5dlu, 60dlu, 5dlu, 60dlu, 5dlu, 60dlu, 5dlu, 60dlu, 5dlu";
-		//					1		2		3  4  5   6    7   8
-		String ywerte = "5dlu, 160dlu:g, 5dlu, p, p, 5dlu, p, 5dlu";
+		//					1		2		3  4  5   6    7   8    9  10  11
+		String ywerte = "5dlu, 160dlu:g, 5dlu, p, p, 5dlu, p, p, 5dlu, p, 5dlu";
 		FormLayout lay = new FormLayout(xwerte, ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
@@ -99,6 +105,10 @@ public class LagerGUI extends JPanel{
 		pan.add(lab, cc.xy(10, 4));
 		lab = new JXLabel("Lager");
 		pan.add(lab, cc.xy(12, 4));
+		lab = new JXLabel("Lieferant");
+		pan.add(lab, cc.xy(4, 7));
+		lab = new JXLabel("Einkaufspreis");
+		pan.add(lab, cc.xy(8, 7));
 		
 		/**5 Edits, 1 Combo, 3 Buts **/
 		pan.add( (edits[0] = new JRtaTextField("ZAHLEN",true)),cc.xy(2,5)); // artikelID
@@ -119,9 +129,23 @@ public class LagerGUI extends JPanel{
 		
 		pan.add(combo[0],cc.xy(10,5)); // mwst - ausklappmenü?
 		pan.add( (edits[4] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xy(12,5));
-		pan.add( (buts[0] = ButtonTools.macheBut("speichern", "speicher", al)),cc.xy(8,7));
-		pan.add( (buts[1] = ButtonTools.macheBut("löschen", "loesche", al)),cc.xy(10,7));
-		pan.add( (buts[2] = ButtonTools.macheBut("neu", "neu", al)),cc.xy(12,7));
+		
+		
+		lieferant = new JComboBox(Lieferant.liefereLieferanten());
+		pan.add(lieferant, cc.xyw(4,8,3));
+		
+		pan.add( (einkaufspreis = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xy(8, 8)); // preis
+		
+		pan.add((lieferantEdit = new JXButton("L. bearbeiten")), cc.xy(10, 8)); 
+		lieferantEdit.setActionCommand("lieferantEdit");
+		lieferantEdit.addActionListener(al);
+		pan.add((lieferantNeu = new JXButton("L. neu")), cc.xy(12, 8));
+		lieferantNeu.setActionCommand("lieferantNeu");
+		lieferantNeu.addActionListener(al);
+		
+		pan.add( (buts[0] = ButtonTools.macheBut("speichern", "speicher", al)),cc.xy(8,10));
+		pan.add( (buts[1] = ButtonTools.macheBut("löschen", "loesche", al)),cc.xy(10,10));
+		pan.add( (buts[2] = ButtonTools.macheBut("neu", "neu", al)),cc.xy(12,10));
 		
 		pan.validate();
 		return pan;
@@ -153,7 +177,11 @@ public class LagerGUI extends JPanel{
 							double preis = Double.parseDouble(edits[2].getText().replace(",", "."));
 							double mwst = (Integer) combo[0].getSelectedItem();
 							double lagerstand = Double.parseDouble(edits[4].getText().replace(",", "."));
-							aktuellerArtikel = new Artikel(ean, beschreibung, einheit, preis, mwst, lagerstand);
+							double ek = Double.parseDouble(einkaufspreis.getText().replace(",", "."));
+							
+							int lieferantenID = ((Lieferant) lieferant.getSelectedItem()).getID();
+							
+							aktuellerArtikel = new Artikel(ean, beschreibung, einheit, preis, mwst, lagerstand, ek, lieferantenID);
 							lgmod.update(Artikel.artikelListe());
 							leereFelder();
 						} else {
@@ -166,6 +194,9 @@ public class LagerGUI extends JPanel{
 						aktuellerArtikel.setMwst((Integer) combo[0].getSelectedItem());
 						aktuellerArtikel.setEinheit((String) combo[1].getSelectedItem());
 						aktuellerArtikel.setLagerstand(Double.parseDouble((edits[4].getText().replace(",", "."))));
+						aktuellerArtikel.setEinkaufspreis(Double.parseDouble(einkaufspreis.getText().replace(",", ".")));
+						aktuellerArtikel.setLieferant(((Lieferant) lieferant.getSelectedItem()).getID());
+						
 						lgmod.update(Artikel.artikelListe());
 						leereFelder();
 					}
@@ -176,7 +207,20 @@ public class LagerGUI extends JPanel{
 						lgmod.update(Artikel.artikelListe());
 						leereFelder();
 					}
+				} else if(cmd.equals("lieferantEdit")) {
+					new LieferantDialog(((Lieferant)lieferant.getSelectedItem()).getID());
+					DefaultComboBoxModel model = new DefaultComboBoxModel(Lieferant.liefereLieferanten());
+					lieferant.setModel(model);
+					if(aktuellerArtikel != null) {
+						lieferant.setSelectedItem(new Lieferant(aktuellerArtikel.getLieferant()));
+					}
+				} else if(cmd.equals("lieferantNeu")) {
+					new LieferantDialog(-1);
+					DefaultComboBoxModel model = new DefaultComboBoxModel(Lieferant.liefereLieferanten());
+					lieferant.setModel(model);
 				}
+				
+				
 				selectRow(lastSelected);
 				
 			}
@@ -197,6 +241,8 @@ public class LagerGUI extends JPanel{
 					combo[0].setSelectedItem((int)aktuellerArtikel.getMwst());
 					combo[1].setSelectedItem(aktuellerArtikel.getEinheit());
 					edits[4].setText(df.format(aktuellerArtikel.getLagerstand()));
+					einkaufspreis.setText(df.format(aktuellerArtikel.getEinkaufspreis()));
+					lieferant.setSelectedItem(new Lieferant(aktuellerArtikel.getLieferant()));
 				}
 			}	
 			
@@ -204,9 +250,8 @@ public class LagerGUI extends JPanel{
 	}
 	
 	private void selectRow(int n) {
-		if(lgmod.getRowCount() < n) {
-			n = lgmod.getRowCount() - 1;
+		if(n != -1) {
+			lgtab.setRowSelectionInterval(n, n);
 		}
-		lgtab.setRowSelectionInterval(n, n);
 	}
 }

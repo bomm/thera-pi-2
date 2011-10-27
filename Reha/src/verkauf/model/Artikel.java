@@ -8,25 +8,30 @@ import sqlTools.SqlInfo;
 public class Artikel {
 	private double preis;
 	private double mwst;
+	private double einkaufspreis;
 	private long ean;
 	private double lagerstand;
+	private int lieferantenID;
 	private String beschreibung, einheit;
 	
-	public Artikel(long ean, String beschreibung, String einheit, double preis, double mwst, double lagerstand) {
+	public Artikel(long ean, String beschreibung, String einheit, double preis, double mwst, double lagerstand, double ek, int lieferantenID) {
 		this.preis = preis;
 		this.einheit = einheit;
 		this.mwst = mwst;
 		this.lagerstand = lagerstand;
 		this.ean = ean;
 		this.beschreibung = beschreibung;
-		SqlInfo.sqlAusfuehren("INSERT INTO `verkartikel` (`ean`, `beschreibung`, `preis`, `mwst`, `lagerstand`, `einheit`) " +
-				"VALUES('"+ this.ean +"', '"+ this.beschreibung +"', '"+ this.preis +"', '"+ this.mwst +"', '"+ this.lagerstand +"', '"+ this.einheit +"' );");
+		this.lieferantenID = lieferantenID;
+		this.einkaufspreis = ek;
+		
+		SqlInfo.sqlAusfuehren("INSERT INTO `verkartikel` (`ean`, `beschreibung`, `preis`, `mwst`, `lagerstand`, `einheit`, `verklieferantID`, `einkaufspreis`) " +
+				"VALUES('"+ this.ean +"', '"+ this.beschreibung +"', '"+ this.preis +"', '"+ this.mwst +"', '"+ this.lagerstand +"', '"+ this.einheit +"', '"+ this.lieferantenID +"', '"+ this.einkaufspreis +"'  );");
 	}
 	
 	public Artikel(long ean) {
 		// Abfragen aus der Datenbank
 		this.ean = ean;
-		String sql = "SELECT beschreibung, preis, mwst, lagerstand, einheit FROM verkartikel WHERE ean = "+ this.ean;
+		String sql = "SELECT beschreibung, preis, mwst, lagerstand, einheit, einkaufspreis, verklieferantID FROM verkartikel WHERE ean = "+ this.ean;
 		
 		Vector<Vector<String>> felder = SqlInfo.holeFelder(sql);
 		Vector<String> datensatz = felder.get(0);
@@ -36,6 +41,8 @@ public class Artikel {
 			this.mwst = Double.parseDouble(datensatz.get(2));
 			this.lagerstand = Double.parseDouble(datensatz.get(3));
 			this.einheit = datensatz.get(4);
+			this.einkaufspreis = Double.parseDouble(datensatz.get(5));
+			this.lieferantenID = Integer.parseInt(datensatz.get(6));
 		}
 	}
 	
@@ -55,7 +62,8 @@ public class Artikel {
 
 	void update() {
 		String sql = "UPDATE verkartikel SET `beschreibung` = '"+ this.beschreibung +"', `preis` = '"+ this.preis +"'," +
-				"`mwst` = '"+ this.mwst +"' , `lagerstand` = '"+ this.lagerstand +"'  WHERE ean = "+ this.ean +";";
+				"`mwst` = '"+ this.mwst +"' , `lagerstand` = '"+ this.lagerstand +"', `einkaufspreis` = '"+ this.einkaufspreis +"'" +
+						", `verklieferantID` = '"+ this.lieferantenID +"'  WHERE ean = "+ this.ean +";";
 		//System.out.println(sql);
 		SqlInfo.sqlAusfuehren(sql);
 	}
@@ -113,6 +121,24 @@ public class Artikel {
 	
 	public String getEinheit() {
 		return this.einheit;
+	}
+	
+	public int getLieferant() {
+		return this.lieferantenID;
+	}
+	
+	public void setLieferant(int id) {
+		this.lieferantenID = id;
+		this.update();
+	}
+	
+	public double getEinkaufspreis() {
+		return this.einkaufspreis;
+	}
+	
+	public void setEinkaufspreis(double ek) {
+		this.einkaufspreis = ek;
+		this.update();
 	}
 	
 	public static boolean artikelExistiert(long ean) {
