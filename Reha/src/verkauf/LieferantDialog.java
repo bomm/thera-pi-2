@@ -3,6 +3,7 @@ package verkauf;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,6 +19,7 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
+import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
 import verkauf.model.Lieferant;
 
@@ -38,14 +40,14 @@ public class LieferantDialog extends JDialog {
 	
 	private Lieferant lieferant;
 	
-	public LieferantDialog(int id) {
+	public LieferantDialog(int id, Point position) {
 		super();
 		this.activateListener();
 		this.setLayout(new BorderLayout());
 		this.setSize(300, 300);
 		this.setUndecorated(true);
 		this.add(getJXTitledPanel(), BorderLayout.NORTH);
-		
+		this.setLocation((int) (position.getX() - (this.getWidth() / 2)), (int) (position.getY() + 20));
 		this.add(getContent(), BorderLayout.CENTER);
 		if(id != -1) {
 			lieferant = new Lieferant(id);
@@ -121,9 +123,10 @@ public class LieferantDialog extends JDialog {
 	private JXTitledPanel getJXTitledPanel() {
 		JXTitledPanel panel = new JXTitledPanel();
 		
-		JXButton close = new JXButton("x");
+		JXButton close = new JXButton();
 		close.setBorder(null);
 		close.setOpaque(false);
+		close.setIcon(SystemConfig.hmSysIcons.get("rot"));
 		close.setPreferredSize(new Dimension(16, 16));
 		close.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e) {
@@ -177,18 +180,19 @@ public class LieferantDialog extends JDialog {
 	
 	private void speicher() {
 		//name, ansprechpartner, anschrift, plz, ort, telefon, telefax
-		
-		if(this.lieferant == null) {
-			this.lieferant = new Lieferant(name.getText(), ansprechpartner.getText(), 
+		if(this.name.getText().equals("")) {
+			if(this.lieferant == null) {
+				this.lieferant = new Lieferant(name.getText(), ansprechpartner.getText(), 
 					anschrift.getText(), plz.getText(), ort.getText(), telefon.getText(), telefax.getText());
-		} else {
-			this.lieferant.setName(name.getText());
-			this.lieferant.setAnsprechpartner(ansprechpartner.getText());
-			this.lieferant.setAnschrift(anschrift.getText());
-			this.lieferant.setPlz(plz.getText());
-			this.lieferant.setOrt(ort.getText());
-			this.lieferant.setTelefon(telefon.getText());
-			this.lieferant.setTelefax(telefax.getText());
+			} else {
+				this.lieferant.setName(name.getText());
+				this.lieferant.setAnsprechpartner(ansprechpartner.getText());
+				this.lieferant.setAnschrift(anschrift.getText());
+				this.lieferant.setPlz(plz.getText());
+				this.lieferant.setOrt(ort.getText());
+				this.lieferant.setTelefon(telefon.getText());
+				this.lieferant.setTelefax(telefax.getText());
+			}
 		}
 		schliessen();
 	}
