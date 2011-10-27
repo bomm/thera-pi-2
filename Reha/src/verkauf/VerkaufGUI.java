@@ -602,7 +602,7 @@ public class VerkaufGUI extends JXPanel{
 	
 	private void schreibeUmsatzDaten(String vnummer, double offen, int patid) {
 		Date date = new Date(System.currentTimeMillis());
-		String sql ="INSERT INTO `therapi_entwicklung`.`verkliste` (`verklisteID`, `v_nummer`, `v_datum`, `v_betrag`, `r_mwst7`, `r_mwst19`, `v_offen`, `v_bezahldatum`, `mahndat1`, `mahndat2`, `mahndat3`, `mahnsperre`, `pat_id`) " +
+		String sql ="INSERT INTO `therapi_entwicklung`.`verkliste` (`verklisteID`, `v_nummer`, `v_datum`, `v_betrag`, `v_mwst7`, `v_mwst19`, `v_offen`, `v_bezahldatum`, `mahndat1`, `mahndat2`, `mahndat3`, `mahnsperre`, `pat_id`) " +
 				"VALUES (NULL, '"+ vnummer +"', '"+ date.toString() +"', '"+ verkauf.getBetragBrutto() +"', '"+ verkauf.getBetrag7() +"', '"+ verkauf.getBetrag19() +"', '"+ offen +"', NULL, NULL, NULL, NULL, '0', '"+ patid +"');";
 		SqlInfo.sqlAusfuehren(sql);
 	}
