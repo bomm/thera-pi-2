@@ -3,6 +3,8 @@ package verkauf;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
@@ -208,14 +210,20 @@ public class LagerGUI extends JPanel{
 						leereFelder();
 					}
 				} else if(cmd.equals("lieferantEdit")) {
-					new LieferantDialog(((Lieferant)lieferant.getSelectedItem()).getID());
+					Point position = getLocation();
+					Dimension dim = getSize();
+					position.setLocation((position.getX() + (dim.getWidth() / 2)), position.getY());
+					new LieferantDialog(((Lieferant)lieferant.getSelectedItem()).getID(), position);
 					DefaultComboBoxModel model = new DefaultComboBoxModel(Lieferant.liefereLieferanten());
 					lieferant.setModel(model);
 					if(aktuellerArtikel != null) {
 						lieferant.setSelectedItem(new Lieferant(aktuellerArtikel.getLieferant()));
 					}
 				} else if(cmd.equals("lieferantNeu")) {
-					new LieferantDialog(-1);
+					Point position = getLocation();
+					Dimension dim = getSize();
+					position.setLocation((position.getX() + (dim.getWidth() / 2)), position.getY());
+					new LieferantDialog(-1, position);
 					DefaultComboBoxModel model = new DefaultComboBoxModel(Lieferant.liefereLieferanten());
 					lieferant.setModel(model);
 				}
