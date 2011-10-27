@@ -289,6 +289,9 @@ private JScrollPane getParameterListe(){
 	// Lemmi 20101225: Bedienung eingebaut
 	treeitem = new DefaultMutableTreeNode( "Bedienung");
 	node.add(treeitem);
+	
+	treeitem = new DefaultMutableTreeNode( "Verkauf" );
+	node.add(treeitem);
 	root.add(node);
 	
 	/***/
@@ -772,6 +775,16 @@ private void auswertenSysUtil(String util){
 			jxInhaltRechts = new SysUtilAbrechnungFristen();
 			jxInhaltRechts.setVisible(true);
 			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxRechts.revalidate();
+			cursorWait(false);
+			break;
+		}
+		if(util.equals("Verkauf")) {
+			jxInhaltRechts = new SysUtilVerkauf();
+			jxInhaltRechts.setVisible(true);
+			jxRechts.add(jxInhaltRechts,BorderLayout.CENTER);
+			jxInhaltRechts.validate();	
+			System.out.println("jxInhaltRechts:"+getWidth()+"/"+getHeight());
 			jxRechts.revalidate();
 			cursorWait(false);
 			break;
