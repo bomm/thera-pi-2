@@ -3,15 +3,16 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterJob;
 import java.io.File;
 
 import javax.print.PrintService;
+import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
@@ -20,9 +21,11 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
+import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaTextField;
 
+import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -42,7 +45,7 @@ public class SysUtilVerkauf extends JXPanel {
 	
 	private JXButton rechnungVorlageB, bonVorlageB, speichern;
 	
-	private JRtaCheckBox bonAnpassen;
+	private JRtaCheckBox bonAnpassen, sofortDrucken;
 	
 	private JRtaTextField rechnungVorlage, bonVorlage, rechnungExemplare, bonSeitenlaenge;
 	
@@ -52,9 +55,13 @@ public class SysUtilVerkauf extends JXPanel {
 	
 
 	SysUtilVerkauf() {
+		super(new GridLayout(1,1));
+		this.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 0));
 		activateListener();
-		this.setLayout(new BorderLayout());
+		
+		
 		this.setOpaque(false);
+		
 		JScrollPane jscr = new JScrollPane();
 	     jscr.setBorder(null);
 	     jscr.setOpaque(false);
@@ -62,25 +69,35 @@ public class SysUtilVerkauf extends JXPanel {
 	     jscr.getVerticalScrollBar().setUnitIncrement(15);
 	     jscr.setViewportView(getContent());
 	     jscr.validate();
-	    inif = new INIFile(Reha.thisClass.proghome + "ini/" + Reha.thisClass.aktIK + "/verkauf.ini" );
-		this.add(jscr, BorderLayout.CENTER);
+	    
+
+		
+		inif = new INIFile(Reha.thisClass.proghome + "ini/" + Reha.thisClass.aktIK + "/verkauf.ini" );
+		//add(getContent(),BorderLayout.CENTER);
 		ladeEinstellungen();
+		this.add(jscr);
+		System.out.println(getWidth()+"/"+getHeight());
 	}
 	
 	private JPanel getContent() {
-		JPanel pane = new JXPanel();
+
 		
 		//                1      2     3      4     5      6
-		String xwerte = "5dlu, 3dlu, 40dlu:g, 5dlu, 40dlu:g, 5dlu";
-		//                 1   2    3    4  5    6  7     8    9   10   11  12   13  14   15  16   17  18  19
+		String xwerte = "15dlu, 3dlu, 60dlu, 5dlu, 40dlu:g, 15dlu";
+		//                 1    2    3    4  5    6  7     8    9   10   11  12   13  14   15  16   17  18  19   20
 		String ywerte = "5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p," +
-		//		"" +
+		//		"" 21  22  23  24   25  26   27  28  29    30  31   32  33  34   35   36  37  38  39   40 
 				"5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p," +
-				"5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p," +
-				"5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p";
+		//        41  42   43   44  45  46  47   48   49
+				"5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu";
 		FormLayout lay = new FormLayout(xwerte, ywerte);
 		CellConstraints cc = new CellConstraints();
-		pane.setLayout(lay);
+		//JXPanel pane = new JXPanel();
+		PanelBuilder pane = new PanelBuilder(lay);
+		pane.setDefaultDialogBorder();
+		pane.getPanel().setOpaque(false);
+				
+		
 		
 		JXLabel lab = new JXLabel("Bon:");
 		pane.add(lab, cc.xyw(2, 2, 2));
@@ -230,12 +247,20 @@ public class SysUtilVerkauf extends JXPanel {
 		rechnungExemplare = new JRtaTextField("ZAHLEN", false);
 		pane.add(rechnungExemplare, cc.xy(5, 46));
 		
+		lab = new JXLabel("Sofort drucken?");
+		pane.add(lab, cc.xy(3, 48));
+		
+		sofortDrucken = new JRtaCheckBox();
+		pane.add(sofortDrucken, cc.xy(5, 48));
+		
 		speichern = new JXButton("speichern");
 		speichern.setActionCommand("speicher");
 		speichern.addActionListener(al);
-		pane.add(speichern, cc.xy(5, 48));
+		pane.add(speichern, cc.xy(5, 50));
 		
-		return pane;
+		pane.getPanel().validate();
+
+		return pane.getPanel();
 	}
 	
 	private String dateiWaehlen() {
@@ -243,7 +268,7 @@ public class SysUtilVerkauf extends JXPanel {
 		JFileChooser explorer = new JFileChooser();
 		explorer.setDialogType(JFileChooser.OPEN_DIALOG);
 		explorer.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		explorer.setCurrentDirectory(new File("C:\\RehaVerwaltung\\vorlagen\\123456789\\"));
+		explorer.setCurrentDirectory(new File(Reha.thisClass.proghome+"/vorlagen"));
 		
 		explorer.setFileFilter(new FileFilter() {
 			public boolean accept(File f) {
@@ -269,6 +294,7 @@ public class SysUtilVerkauf extends JXPanel {
 	
 	private void ladeEinstellungen() {
 		bonAnpassen.setSelected(inif.getBooleanProperty("Bon", "SeitenLaengeAendern"));
+		sofortDrucken.setSelected(inif.getBooleanProperty("Bon", "SofortDrucken"));
 		
 		rechnungSpalte1.setSelectedItem(inif.getStringProperty("Rechnung", "Spalte1"));
 		rechnungSpalte2.setSelectedItem(inif.getStringProperty("Rechnung", "Spalte2"));
@@ -303,6 +329,9 @@ public class SysUtilVerkauf extends JXPanel {
 		
 		inif.setBooleanProperty("Bon", "SeitenLaengeAendern", bonAnpassen.isSelected(), null);
 		
+		inif.setBooleanProperty("Bon", "SofortDrucken", sofortDrucken.isSelected(), null);
+		inif.setBooleanProperty("Rechnung", "SofortDrucken", sofortDrucken.isSelected(), null);
+		
 		inif.setStringProperty("Rechnung", "Spalte1", (String) rechnungSpalte1.getSelectedItem(), null);
 		inif.setStringProperty("Rechnung", "Spalte2", (String) rechnungSpalte2.getSelectedItem(), null);
 		inif.setStringProperty("Rechnung", "Spalte3", (String) rechnungSpalte3.getSelectedItem(), null);
@@ -320,8 +349,8 @@ public class SysUtilVerkauf extends JXPanel {
 		inif.setStringProperty("Rechnung", "Drucker", (String) rechnungDrucker.getSelectedItem(), null);
 		inif.setStringProperty("Bon", "Drucker", (String) bonDrucker.getSelectedItem(), null);
 		
-		inif.setStringProperty("Rechnung", "Spaltenanzahl", (String) rechnungSpalten.getSelectedItem(), null);
-		inif.setStringProperty("Bon", "Spaltenanzahl", (String) bonSpalten.getSelectedItem(), null);
+		inif.setStringProperty("Rechnung", "Spaltenanzahl", String.valueOf(rechnungSpalten.getSelectedItem()), null);
+		inif.setStringProperty("Bon", "Spaltenanzahl", String.valueOf(bonSpalten.getSelectedItem()), null);
 		
 		inif.setStringProperty("Rechnung", "Vorlage", rechnungVorlage.getText(), null);
 		inif.setStringProperty("Bon", "Voralge", bonVorlage.getText(), null);
@@ -330,6 +359,7 @@ public class SysUtilVerkauf extends JXPanel {
 		
 		inif.setStringProperty("Bon", "ProArtikelSeitenLaenge", bonSeitenlaenge.getText(), null);
 		
+		inif.save();
 	}
 
 	private void activateListener() {
