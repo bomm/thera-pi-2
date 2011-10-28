@@ -6,6 +6,8 @@ import javax.swing.JTabbedPane;
 
 import org.jdesktop.swingx.JXPanel;
 
+import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
+
 import rehaInternalFrame.JVerkaufInternal;
 
 
@@ -29,6 +31,8 @@ public class VerkaufTab extends JXPanel {
 	
 	private JTabbedPane getContent() {
 		JTabbedPane pane = new JTabbedPane();
+		//damit das Design gleich ist wie alle anderen TabbedPanes in Thera-Pi
+		pane.setUI(new WindowsTabbedPaneUI());
 		pane.add("Verkäufe tätigen", new VerkaufGUI());
 		pane.add("Lagerverwaltung", new LagerGUI());	
 		return pane;

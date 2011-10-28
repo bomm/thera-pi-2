@@ -210,6 +210,7 @@ public class LagerGUI extends JPanel{
 						leereFelder();
 					}
 				} else if(cmd.equals("lieferantEdit")) {
+					if(lgtab.getSelectedRow() < 0){return;}
 					Point position = getLocation();
 					Dimension dim = getSize();
 					position.setLocation((position.getX() + (dim.getWidth() / 2)), position.getY());
