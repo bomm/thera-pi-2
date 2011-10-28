@@ -143,7 +143,7 @@ public class Rechte {
 	public static int Sonstiges_sqlmodul				= 100;
 	public static int Sonstiges_Reha301					= 101;
 	public static int Sonstiges_NachrichtenLoeschen		= 102;
-	public static int Sonstiges_unbelegt7				= 103;
+	public static int Sonstiges_artikelanlegen			= 103;
 	public static int Sonstiges_unbelegt8				= 104;
 	public static int Sonstiges_unbelegt9				= 105;
 	public static int Sonstiges_unbelegt10				= 106;
@@ -189,7 +189,7 @@ public class Rechte {
 		
 		"Verkaufsmodul benutzen","Rehaformulare verwenden","Textbausteine für Gutachten anlegen/ändern","Rezepte transferieren","im Rezept gespeicherte Behandlungsarten löschen",
 		"Geburtstagsbriefe erstellen","Sql-Modul verwenden","Reha-Fallsteuerung nach §301",
-		"Darf Thera-Pi-Nachrichten löschen","unbelegt-7","unbelegt-8","unbelegt-9","unbelegt-10"
+		"Darf Thera-Pi-Nachrichten löschen","Artikel in Verkaufsmodul-Modul anlegen","unbelegt-8","unbelegt-9","unbelegt-10"
 		
 	};
 }
