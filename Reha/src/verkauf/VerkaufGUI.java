@@ -60,6 +60,9 @@ public class VerkaufGUI extends JXPanel{
 	 * 
 	 */
 	private static final long serialVersionUID = -6537113748627245247L;
+	
+	ArtikelSuchenDialog adlg = null;
+	
 	ActionListener al = null;
 	KeyListener kl = null;
 	FocusListener fl = null;
@@ -209,23 +212,33 @@ public class VerkaufGUI extends JXPanel{
 		edits[0].requestFocus();
 		return pan;
 	}
-	
+	private Point holePosition(){
+		return new Point(edits[0].getLocationOnScreen().x+10,edits[0].getLocationOnScreen().y+10);
+	}
+	private void doArtikelSuche(){
+		UebergabeTool ean = new UebergabeTool("");
+		adlg = new ArtikelSuchenDialog(null, ean, holePosition());
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				adlg.setzeFocus();
+			}
+		});
+		adlg.setVisible(true);
+		
+		edits[0].setText(ean.getString());
+		edits[0].requestFocus();
+		if(!ean.getString().equals("")) {
+			edits[1].requestFocus();
+		}
+		adlg = null;
+		
+	}
 	private void activateListener(){
 		ml = new MouseListener() {
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				UebergabeTool ean = new UebergabeTool("");
-				Point position = getLocation();
-				Dimension dim = getSize();
-				position.setLocation((position.getX() + (dim.getWidth() / 2)), position.getY());
-				
-				new ArtikelSuchenDialog(null, ean, position);
-				edits[0].setText(ean.getString());
-				edits[0].requestFocus();
-				if(!ean.getString().equals("")) {
-					edits[1].requestFocus();
-				}
+				doArtikelSuche();
 			}
 
 			@Override
@@ -319,17 +332,7 @@ public class VerkaufGUI extends JXPanel{
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				if(arg0.getKeyChar() == '?') {
-					UebergabeTool ean = new UebergabeTool("");
-					Point position = getLocation();
-					Dimension dim = getSize();
-					position.setLocation((position.getX() + (dim.getWidth() / 2)), position.getY());
-					
-					new ArtikelSuchenDialog(null, ean, position);
-					edits[0].setText(ean.getString());
-					edits[0].requestFocus();
-					if(!ean.getString().equals("")) {
-						edits[1].requestFocus();
-					}
+					doArtikelSuche();
 				}
 			}
 		};

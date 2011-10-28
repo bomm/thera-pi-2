@@ -40,8 +40,14 @@ import systemTools.JRtaTextField;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import dialoge.PinPanel;
+import dialoge.RehaSmartDialog;
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
 
-public class ArtikelSuchenDialog extends JXDialog {
+
+public class ArtikelSuchenDialog extends RehaSmartDialog {
 
 	/**
 	 * 
@@ -56,24 +62,35 @@ public class ArtikelSuchenDialog extends JXDialog {
 	FocusListener fl = null;
 	KeyListener kl = null;
 	MouseListener ml = null;
+	RehaTPEventClass rtp = null;
 	
 	public ArtikelSuchenDialog(Frame owner, UebergabeTool ean, Point position) {
-		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
+		super(null, "ArtSuchen");
 		this.ean = ean;
 		this.activateListener();
 		this.setSize(300, 400);
-		this.setLocation((int) (position.getX() - (this.getWidth() / 2)), (int) (position.getY() + 20));
+		//this.setLocation((int) (position.getX() - (this.getWidth() / 2)), (int) (position.getY() + 20));
+		this.setLocation( (int)position.getX(), (int)position.getY());
 		this.setUndecorated(true);
-		this.setContentPane(getJContentPane());
+		
+		PinPanel pinPanel = new PinPanel();
+		pinPanel.getGruen().setVisible(false);
+		pinPanel.setName("ArtSuchen");
+		setPinPanel(pinPanel);
+		getSmartTitledPanel().setContentContainer(getJContentPane());
+		getSmartTitledPanel().getContentContainer().setName("ArtSuchen");
+		getSmartTitledPanel().setTitle("Aritkel suchen");
+		
+		
+		//this.setContentPane(getJContentPane());
 		this.setName("ArtSuchen");
 		this.setModal(true);
 		this.setResizable(true);
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		setzeFocus();
-		this.setVisible(true);
+
 	}
 	
-	private void setzeFocus(){
+	public void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				suche.requestFocus();
@@ -97,7 +114,7 @@ public class ArtikelSuchenDialog extends JXDialog {
 			pane.setLayout(lay);
 			pane.setBackground(Color.white);
 			
-			pane.add(getJXTitledPanel(), cc.xyw(1, 1, 5));
+			//pane.add(getJXTitledPanel(), cc.xyw(1, 1, 5));
 			
 			JLabel lab = new JLabel("Suchtext:");
 			pane.add(lab, cc.xy(2, 3));
@@ -105,6 +122,7 @@ public class ArtikelSuchenDialog extends JXDialog {
 			suche = new JRtaTextField("nix",true);
 			suche.setName("suche");
 			suche.addFocusListener(fl);
+			suche.addKeyListener(kl);
 			pane.add(suche, cc.xy(4, 3));
 			
 			String[] spaltenNamen = {"Artikel-ID", "Beschreibung", "Preis"};
@@ -125,7 +143,8 @@ public class ArtikelSuchenDialog extends JXDialog {
 		}
 		return pane;		
 	}
-	
+	//in RehaSmartDialog bereits enthalten
+	/*
 	private JXTitledPanel getJXTitledPanel() {
 		JXTitledPanel panel = new JXTitledPanel();
 		
@@ -146,6 +165,7 @@ public class ArtikelSuchenDialog extends JXDialog {
 		panel.setBorder(null);
 		return panel;
 	}
+	*/
 	
 	private void activateListener() {
 		fl = new FocusListener() {
@@ -233,7 +253,10 @@ public class ArtikelSuchenDialog extends JXDialog {
 			}
 			
 		};
+		rtp = new RehaTPEventClass();
+		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 	}
+	
 	
 	private void holeDaten() {
 		String sql;
@@ -254,10 +277,30 @@ public class ArtikelSuchenDialog extends JXDialog {
 	
 	private void schliessen() {
 		int row = tabelle.getSelectedRow();
+		//ungünstig, da ein Artikel übergeben wird sobald eine Tabellenzeile selektiert ist,
+		//obwohl evtl. der rote Knopf für abbrechen angeklickt wurde
 		if(row != -1) {
 			ean.setString((String)tabellenModel.getValueAt(row, 0));
 		}
+		if(rtp != null){
+			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+			rtp = null;
+			pinPanel = null;
+		}
 		this.setVisible(false);
+		this.dispose();
 	}
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
+		try{
+			if(evt.getDetails()[0].equals("ArtSuchen")){
+				this.setVisible(false);
+				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+				rtp = null;
+				pinPanel = null;
+				this.dispose();
+			}
+		}catch(NullPointerException ne){
+		}
+	}	
 
 }
