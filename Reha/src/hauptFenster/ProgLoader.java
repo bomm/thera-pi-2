@@ -536,7 +536,7 @@ public void Dta301Fenster(int setPos,String sparam) {
 	if(! Reha.DbOk){
 		return;
 	}
-	if(!Rechte.hatRecht(Rechte.Sonstiges_verkaufsmodul, true)){
+	if(!Rechte.hatRecht(Rechte.Sonstiges_Reha301, true)){
 		return;
 	}
 	JComponent vk = AktiveFenster.getFensterAlle("DTA301");

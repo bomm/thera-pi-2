@@ -2,6 +2,7 @@ package verkauf;
 
 import java.awt.BorderLayout;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -51,6 +52,7 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 				SwingUtilities.invokeLater(new Runnable(){
 					public void run(){
 						pane.setSelectedIndex(0);
+						JOptionPane.showMessageDialog(pane,"Keine Berechtigung zum Aufruf der Artikelverwaltung");
 					}
 				});
 				return;
