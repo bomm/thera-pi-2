@@ -63,7 +63,7 @@ public class Artikel {
 	void update() {
 		String sql = "UPDATE verkartikel SET `beschreibung` = '"+ this.beschreibung +"', `preis` = '"+ this.preis +"'," +
 				"`mwst` = '"+ this.mwst +"' , `lagerstand` = '"+ this.lagerstand +"', `einkaufspreis` = '"+ this.einkaufspreis +"'" +
-						", `verklieferantID` = '"+ this.lieferantenID +"'  WHERE ean = "+ this.ean +";";
+						", `verklieferantID` = '"+ this.lieferantenID +"'  WHERE ean = "+ this.ean +" LIMIT 1;";
 		//System.out.println(sql);
 		SqlInfo.sqlAusfuehren(sql);
 	}
@@ -104,7 +104,7 @@ public class Artikel {
 	}
 
 	public void setEan(long ean) {
-		String sql = "UPDATE verkartikel SET `ean` = '"+ ean +"' WHERE ean = "+ this.ean +";";
+		String sql = "UPDATE verkartikel SET `ean` = '"+ ean +"' WHERE ean = "+ this.ean +" LIMIT 1;";
 		SqlInfo.sqlAusfuehren(sql);
 		this.ean = ean;
 	}
@@ -142,7 +142,7 @@ public class Artikel {
 	}
 	
 	public static boolean artikelExistiert(long ean) {
-		String sql = "Select * From verkartikel Where ean = " + ean; 
+		String sql = "Select ean From verkartikel Where ean = " + ean+" LIMIT 1"; 
 		return SqlInfo.gibtsSchon(sql);
 	}
 	
