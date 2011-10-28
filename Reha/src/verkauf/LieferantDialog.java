@@ -1,26 +1,19 @@
 package verkauf;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTitledPanel;
 
-import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
 import verkauf.model.Lieferant;
 
@@ -29,7 +22,6 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
-
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;
@@ -148,7 +140,7 @@ public class LieferantDialog extends RehaSmartDialog {
 		
 		return pane;
 	}
-
+	/*
 	private JXTitledPanel getJXTitledPanel() {
 		JXTitledPanel panel = new JXTitledPanel();
 		
@@ -169,7 +161,7 @@ public class LieferantDialog extends RehaSmartDialog {
 		panel.setBorder(null);
 		return panel;
 	}
-	
+	*/
 	private void activateListener() {
 		al = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
