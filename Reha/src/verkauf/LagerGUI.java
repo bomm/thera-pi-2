@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -41,7 +42,7 @@ public class LagerGUI extends JPanel{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+	LieferantDialog lfdlg = null;	
 	ActionListener al = null;
 	ListSelectionListener ll = null;
 	JRtaTextField[] edits = {null, null, null, null,null};
@@ -220,20 +221,26 @@ public class LagerGUI extends JPanel{
 					}
 				} else if(cmd.equals("lieferantEdit")) {
 					if(lgtab.getSelectedRow() < 0){return;}
+					doLieferantDialog(((Lieferant)lieferant.getSelectedItem()).getID(),holePosition(false));
+					/*
 					Point position = getLocation();
 					Dimension dim = getSize();
 					position.setLocation((position.getX() + (dim.getWidth() / 2)), position.getY());
 					new LieferantDialog(((Lieferant)lieferant.getSelectedItem()).getID(), position);
+					*/
 					DefaultComboBoxModel model = new DefaultComboBoxModel(Lieferant.liefereLieferanten());
 					lieferant.setModel(model);
 					if(aktuellerArtikel != null) {
 						lieferant.setSelectedItem(new Lieferant(aktuellerArtikel.getLieferant()));
 					}
 				} else if(cmd.equals("lieferantNeu")) {
+					doLieferantDialog(-1,holePosition(true));
+					/*
 					Point position = getLocation();
 					Dimension dim = getSize();
 					position.setLocation((position.getX() + (dim.getWidth() / 2)), position.getY());
 					new LieferantDialog(-1, position);
+					*/
 					DefaultComboBoxModel model = new DefaultComboBoxModel(Lieferant.liefereLieferanten());
 					lieferant.setModel(model);
 				}
@@ -266,7 +273,16 @@ public class LagerGUI extends JPanel{
 			
 		};
 	}
-	
+	private void doLieferantDialog(int id,Point pt){
+		lfdlg = new LieferantDialog(id,pt);
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				lfdlg.setzeFocus();		
+			}
+		});
+		lfdlg.setVisible(true);
+		lfdlg = null;
+	}
 	private void selectRow(int n) {
 		if(n != -1) {
 			lgtab.setRowSelectionInterval(n, n);

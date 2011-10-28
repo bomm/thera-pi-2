@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 
 import org.jdesktop.swingx.JXButton;
@@ -26,7 +27,14 @@ import verkauf.model.Lieferant;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
-public class LieferantDialog extends JDialog {
+import dialoge.PinPanel;
+import dialoge.RehaSmartDialog;
+
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
+
+public class LieferantDialog extends RehaSmartDialog {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -38,25 +46,46 @@ public class LieferantDialog extends JDialog {
 	
 	private KeyListener kl;
 	
+	RehaTPEventClass rtp = null;
+	
+	PinPanel pinPanel = null;
+	
 	private Lieferant lieferant;
 	
 	public LieferantDialog(int id, Point position) {
-		super();
+		super(null, "LieferDlg");
 		this.activateListener();
-		this.setLayout(new BorderLayout());
 		this.setSize(300, 300);
 		this.setUndecorated(true);
+		
+		pinPanel = new PinPanel();
+		pinPanel.getGruen().setVisible(false);
+		pinPanel.setName("LieferDlg");
+		setPinPanel(pinPanel);
+		getSmartTitledPanel().setContentContainer(getContent());
+		getSmartTitledPanel().getContentContainer().setName("LieferDlg");
+		getSmartTitledPanel().setTitle("Lieferanten anlegen / bearbeiten");
+		this.setName("LieferDlg");
+		this.setLocation(position);
+		/*
 		this.add(getJXTitledPanel(), BorderLayout.NORTH);
 		this.setLocation((int) (position.getX() - (this.getWidth() / 2)), (int) (position.getY() + 20));
 		this.add(getContent(), BorderLayout.CENTER);
+		*/
 		if(id != -1) {
 			lieferant = new Lieferant(id);
 			this.lade();
 		}
+		//this.setVisible(true);
 		this.setModal(true);
-		this.setVisible(true);
 	}
-	
+	public void setzeFocus(){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				name.requestFocus();
+			}
+		});
+	}
 	private JXPanel getContent() {
 		JXPanel pane = new JXPanel();
 		this.addKeyListener(kl);
@@ -171,9 +200,16 @@ public class LieferantDialog extends JDialog {
 			}
 			
 		};
+		rtp = new RehaTPEventClass();
+		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 	}
 	
 	private void schliessen() {
+		if(rtp != null){
+			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+			rtp = null;
+			pinPanel = null;			
+		}
 		this.setVisible(false);
 		this.dispose();
 	}
@@ -208,6 +244,18 @@ public class LieferantDialog extends JDialog {
 		this.telefax.setText(this.lieferant.getTelefax());
 		
 	}
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
+		try{
+			if(evt.getDetails()[0].equals("LieferDlg")){
+				this.setVisible(false);
+				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+				rtp = null;
+				pinPanel = null;
+				this.dispose();
+			}
+		}catch(NullPointerException ne){
+		}
+	}		
 
 }
 

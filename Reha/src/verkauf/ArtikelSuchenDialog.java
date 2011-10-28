@@ -1,9 +1,6 @@
 package verkauf;
 
-import hauptFenster.Reha;
-
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -12,12 +9,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -27,14 +22,11 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingx.JXButton;
-import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.JXTitledPanel;
 import org.thera_pi.nebraska.gui.utils.JCompTools;
 
 import sqlTools.SqlInfo;
-import systemEinstellungen.SystemConfig;
 import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -63,6 +55,7 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 	KeyListener kl = null;
 	MouseListener ml = null;
 	RehaTPEventClass rtp = null;
+	PinPanel pinPanel = null;
 	
 	public ArtikelSuchenDialog(Frame owner, UebergabeTool ean, Point position) {
 		super(null, "ArtSuchen");
@@ -73,7 +66,7 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 		this.setLocation( (int)position.getX(), (int)position.getY());
 		this.setUndecorated(true);
 		
-		PinPanel pinPanel = new PinPanel();
+		pinPanel = new PinPanel();
 		pinPanel.getGruen().setVisible(false);
 		pinPanel.setName("ArtSuchen");
 		setPinPanel(pinPanel);
