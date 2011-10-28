@@ -152,6 +152,15 @@ public class LagerGUI extends JPanel{
 		pan.validate();
 		return pan;
 	}
+	private Point holePosition(boolean neu){
+		Point point = null;
+		JButton but = (neu ? lieferantNeu : lieferantEdit);
+		point = but.getLocationOnScreen();
+		point.x = point.x+but.getWidth()-150;
+		point.y = point.y-300;
+		return point;
+	}
+
 	
 	private void leereFelder() {
 		edits[0].setText("");

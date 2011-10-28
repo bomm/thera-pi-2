@@ -213,7 +213,10 @@ public class VerkaufGUI extends JXPanel{
 		return pan;
 	}
 	private Point holePosition(){
-		return new Point(edits[0].getLocationOnScreen().x+10,edits[0].getLocationOnScreen().y+10);
+		Point pt = edits[0].getLocationOnScreen();
+		pt.x = pt.x+10;
+		pt.y = pt.y+10;
+		return pt;
 	}
 	private void doArtikelSuche(){
 		UebergabeTool ean = new UebergabeTool("");
