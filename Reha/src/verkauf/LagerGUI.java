@@ -161,7 +161,9 @@ public class LagerGUI extends JPanel{
 		return point;
 	}
 
-	
+	private LagerGUI getInstance(){
+		return this;
+	}
 	private void leereFelder() {
 		edits[0].setText("");
 		edits[1].setText("");
@@ -176,20 +178,29 @@ public class LagerGUI extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String cmd = arg0.getActionCommand();
+				
 				if(cmd.equals("neu")) {
 					leereFelder();
 					aktuellerArtikel = null;
 				} else if(cmd.equals("speicher")) {
+					String dummyparse = "";
 					if(aktuellerArtikel == null) {
-						long ean = Long.parseLong(edits[0].getText());
+						dummyparse = (edits[0].getText().equals("") ? "0" : edits[0].getText());
+						long ean = Long.parseLong(dummyparse);
 						if(!Artikel.artikelExistiert(ean)) {
 							String beschreibung = edits[1].getText();
 							String einheit = (String) combo[1].getSelectedItem();
-							double preis = Double.parseDouble(edits[2].getText().replace(",", "."));
+							dummyparse = (edits[2].getText().equals("") ? "0.00" : edits[2].getText().replace(",", "."));
+							double preis = Double.parseDouble(dummyparse);
 							double mwst = (Integer) combo[0].getSelectedItem();
-							double lagerstand = Double.parseDouble(edits[4].getText().replace(",", "."));
-							double ek = Double.parseDouble(einkaufspreis.getText().replace(",", "."));
-							
+							dummyparse = (edits[4].getText().equals("") ? "0.00" : edits[4].getText().replace(",", "."));
+							double lagerstand = Double.parseDouble(dummyparse);
+							dummyparse = (einkaufspreis.getText().equals("") ? "0.00" : einkaufspreis.getText().replace(",", "."));
+							double ek = Double.parseDouble(dummyparse);
+							if(lieferant.getItemCount() <= 0){
+								JOptionPane.showMessageDialog(getInstance(), "Bitte legen Sie zuerst einen Lieferanten an.\n\nLieferant können auch Sie selbst sein!");
+								return;
+							}
 							int lieferantenID = ((Lieferant) lieferant.getSelectedItem()).getID();
 							
 							aktuellerArtikel = new Artikel(ean, beschreibung, einheit, preis, mwst, lagerstand, ek, lieferantenID);
