@@ -210,15 +210,22 @@ public class LagerGUI extends JPanel{
 							JOptionPane.showMessageDialog(null, "Den Artikel gibt es in deiner Datenbank schon!");
 						}
 					} else {
-						aktuellerArtikel.setEan(Long.parseLong(edits[0].getText()));
+						dummyparse = (edits[0].getText().equals("") ? "0" : edits[0].getText());
+						aktuellerArtikel.setEan(Long.parseLong(dummyparse));
 						aktuellerArtikel.setBeschreibung(edits[1].getText());
-						aktuellerArtikel.setPreis(Double.parseDouble(edits[2].getText().replace(",", ".")));
+						dummyparse = (edits[2].getText().equals("") ? "0.00" : edits[2].getText().replace(",", "."));
+						aktuellerArtikel.setPreis(Double.parseDouble(dummyparse));
 						aktuellerArtikel.setMwst((Integer) combo[0].getSelectedItem());
 						aktuellerArtikel.setEinheit((String) combo[1].getSelectedItem());
-						aktuellerArtikel.setLagerstand(Double.parseDouble((edits[4].getText().replace(",", "."))));
-						aktuellerArtikel.setEinkaufspreis(Double.parseDouble(einkaufspreis.getText().replace(",", ".")));
-						aktuellerArtikel.setLieferant(((Lieferant) lieferant.getSelectedItem()).getID());
-						
+						dummyparse = (edits[4].getText().equals("") ? "0.00" : edits[4].getText().replace(",", "."));
+						aktuellerArtikel.setLagerstand(Double.parseDouble(dummyparse));
+						dummyparse = (einkaufspreis.getText().equals("") ? "0.00" : einkaufspreis.getText().replace(",", "."));
+						aktuellerArtikel.setEinkaufspreis(Double.parseDouble(dummyparse));
+						if(lieferant.getItemCount() <= 0){
+							aktuellerArtikel.setLieferant(-1);
+						}else{
+							aktuellerArtikel.setLieferant(((Lieferant) lieferant.getSelectedItem()).getID());
+						}
 						lgmod.update(Artikel.artikelListe());
 						leereFelder();
 					}
