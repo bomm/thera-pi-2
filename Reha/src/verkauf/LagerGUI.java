@@ -169,6 +169,9 @@ public class LagerGUI extends JPanel{
 		edits[1].setText("");
 		edits[2].setText("");
 		edits[4].setText("");
+		einkaufspreis.setText("");
+		combo[0].setSelectedIndex(0);
+		combo[1].setSelectedIndex(0);
 		edits[0].requestFocus();
 	}
 	
@@ -203,31 +206,36 @@ public class LagerGUI extends JPanel{
 							}
 							int lieferantenID = ((Lieferant) lieferant.getSelectedItem()).getID();
 							
-							aktuellerArtikel = new Artikel(ean, beschreibung, einheit, preis, mwst, lagerstand, ek, lieferantenID);
+							
+							new Artikel(ean, beschreibung, einheit, preis, mwst, lagerstand, ek, lieferantenID);
+							aktuellerArtikel =  null;
 							lgmod.update(Artikel.artikelListe());
 							leereFelder();
 						} else {
 							JOptionPane.showMessageDialog(null, "Den Artikel gibt es in deiner Datenbank schon!");
 						}
 					} else {
-						dummyparse = (edits[0].getText().equals("") ? "0" : edits[0].getText());
-						aktuellerArtikel.setEan(Long.parseLong(dummyparse));
-						aktuellerArtikel.setBeschreibung(edits[1].getText());
-						dummyparse = (edits[2].getText().equals("") ? "0.00" : edits[2].getText().replace(",", "."));
-						aktuellerArtikel.setPreis(Double.parseDouble(dummyparse));
-						aktuellerArtikel.setMwst((Integer) combo[0].getSelectedItem());
-						aktuellerArtikel.setEinheit((String) combo[1].getSelectedItem());
-						dummyparse = (edits[4].getText().equals("") ? "0.00" : edits[4].getText().replace(",", "."));
-						aktuellerArtikel.setLagerstand(Double.parseDouble(dummyparse));
-						dummyparse = (einkaufspreis.getText().equals("") ? "0.00" : einkaufspreis.getText().replace(",", "."));
-						aktuellerArtikel.setEinkaufspreis(Double.parseDouble(dummyparse));
-						if(lieferant.getItemCount() <= 0){
-							aktuellerArtikel.setLieferant(-1);
-						}else{
-							aktuellerArtikel.setLieferant(((Lieferant) lieferant.getSelectedItem()).getID());
+						int option = JOptionPane.showConfirmDialog(null, "Es wird der Artikel " + aktuellerArtikel.getBeschreibung() +" überschrieben!");
+						if( option == JOptionPane.YES_OPTION) {
+							dummyparse = (edits[0].getText().equals("") ? "0" : edits[0].getText());
+							aktuellerArtikel.setEan(Long.parseLong(dummyparse));
+							aktuellerArtikel.setBeschreibung(edits[1].getText());
+							dummyparse = (edits[2].getText().equals("") ? "0.00" : edits[2].getText().replace(",", "."));
+							aktuellerArtikel.setPreis(Double.parseDouble(dummyparse));
+							aktuellerArtikel.setMwst((Integer) combo[0].getSelectedItem());
+							aktuellerArtikel.setEinheit((String) combo[1].getSelectedItem());
+							dummyparse = (edits[4].getText().equals("") ? "0.00" : edits[4].getText().replace(",", "."));
+							aktuellerArtikel.setLagerstand(Double.parseDouble(dummyparse));
+							dummyparse = (einkaufspreis.getText().equals("") ? "0.00" : einkaufspreis.getText().replace(",", "."));
+							aktuellerArtikel.setEinkaufspreis(Double.parseDouble(dummyparse));
+							if(lieferant.getItemCount() <= 0){
+								aktuellerArtikel.setLieferant(-1);
+							}else{
+								aktuellerArtikel.setLieferant(((Lieferant) lieferant.getSelectedItem()).getID());
+							}
+							lgmod.update(Artikel.artikelListe());
+							leereFelder();
 						}
-						lgmod.update(Artikel.artikelListe());
-						leereFelder();
 					}
 				} else if(cmd.equals("loesche")) {
 					if(aktuellerArtikel != null) {
@@ -301,7 +309,7 @@ public class LagerGUI extends JPanel{
 		lfdlg = null;
 	}
 	private void selectRow(int n) {
-		if(n != -1) {
+		if(n != -1 && n < lgtab.getRowCount()) {
 			lgtab.setRowSelectionInterval(n, n);
 		}
 	}

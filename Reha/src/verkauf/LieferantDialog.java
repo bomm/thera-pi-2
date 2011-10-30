@@ -208,7 +208,7 @@ public class LieferantDialog extends RehaSmartDialog {
 	
 	private void speicher() {
 		//name, ansprechpartner, anschrift, plz, ort, telefon, telefax
-		if(this.name.getText().equals("")) {
+		if(!this.name.getText().equals("")) {
 			if(this.lieferant == null) {
 				this.lieferant = new Lieferant(name.getText(), ansprechpartner.getText(), 
 					anschrift.getText(), plz.getText(), ort.getText(), telefon.getText(), telefax.getText());
