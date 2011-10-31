@@ -316,6 +316,9 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 		for(int i = 0; i < size; i++){
 			tabellenModel.addRow(spaltenWerte.get(i));
 		}
+		if(tabellenModel.getRowCount() > 0){
+			tabelle.setRowSelectionInterval(0,0);
+		}
 		tabelle.repaint();
 	}
 	

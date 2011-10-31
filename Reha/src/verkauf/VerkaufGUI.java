@@ -219,6 +219,7 @@ public class VerkaufGUI extends JXPanel{
 		return pt;
 	}
 	private void doArtikelSuche(){
+		edits[0].removeFocusListener(fl);
 		UebergabeTool ean = new UebergabeTool("");
 		adlg = new ArtikelSuchenDialog(null, ean, holePosition());
 		SwingUtilities.invokeLater(new Runnable(){
@@ -233,6 +234,7 @@ public class VerkaufGUI extends JXPanel{
 		if(!ean.getString().equals("")) {
 			edits[1].requestFocus();
 		}
+		edits[0].addFocusListener(fl);
 		adlg = null;
 		
 	}
@@ -343,6 +345,7 @@ public class VerkaufGUI extends JXPanel{
 		fl = new FocusListener(){
 			@Override
 			public void focusGained(FocusEvent arg0) {
+				
 			}
 			
 			@Override
@@ -356,33 +359,41 @@ public class VerkaufGUI extends JXPanel{
 						edits[4].setText(df.format(aktuellerArtikel.getPreis()));
 						einheitAnzahlLabel.setText("Anzahl / " + aktuellerArtikel.getEinheit());
 					} else {
-						//Unstimmigkeit: wird dreimal aufgerufen
-						JOptionPane.showMessageDialog(null, "Und morgen verkaufst du deinen Chef? - den Artikel gibt es nicht vorhanden!");
+						edits[0].removeFocusListener(fl);
 						edits[0].requestFocus();
+						//Unstimmigkeit: wird mit eingeschaltetem FocusListener rekursiv aufgerufen
+						JOptionPane.showMessageDialog(null, "Und morgen verkaufst du deinen Chef? - den Artikel gibt es nicht vorhanden!");
+						edits[0].addFocusListener(fl);
 					}
+					return;
 				} else if(((JComponent)arg0.getSource()).getName().equals("anzahl")) {
 					if(aktuellerArtikel != null) {
 						aktuellerArtikel.setAnzahl(Double.parseDouble(edits[1].getText().replace(",", ".")));
 						edits[4].setText(df.format(aktuellerArtikel.getPreis() * aktuellerArtikel.getAnzahl()));
 					}
+					return;
 				} else if(((JComponent)arg0.getSource()).getName().equals("artikelRabatt")) {
 					if(aktuellerArtikel != null) {
 						aktuellerArtikel.gewaehreRabatt(Double.parseDouble(edits[2].getText().replace(",", ".")));
 						edits[4].setText(df.format(aktuellerArtikel.getPreis() * aktuellerArtikel.getAnzahl()));
 					}
+					return;
 				} else if(((JComponent)arg0.getSource()).getName().equals("beschreibung")) {
 					if(aktuellerArtikel != null) {
 						aktuellerArtikel.setBeschreibung(edits[3].getText());
 					}
+					return;
 				} else if(((JComponent)arg0.getSource()).getName().equals("preis")) {
 					if(aktuellerArtikel != null) {
 						aktuellerArtikel.setPreis(Double.parseDouble(edits[4].getText().replace(",", ".")));
 					}
+					return;
 				}else if(((JComponent)arg0.getSource()).getName().equals("gesamtRabatt")) {
 					verkauf.gewaehreRabatt(Double.parseDouble(edits[5].getText()));
 					edits[6].setText(df.format(verkauf.getBetragBrutto()));
 					edits[7].setText(df.format(verkauf.getBetrag7()));
 					edits[8].setText(df.format(verkauf.getBetrag19()));
+					return;
 				}
 			}
 				catch(Exception e) {}
