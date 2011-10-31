@@ -254,11 +254,11 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 	private void holeDaten() {
 		String sql;
 		if(suche.getText().equals("")) {
-			sql = "SELECT `ean`, `beschreibung`, `preis` FROM verkartikel;";
+			sql = "SELECT ean, beschreibung, preis FROM verkartikel;";
 		} else {
 			String kriterium = suche.getText();
-			sql = "SELECT `ean`, `beschreibung`, `preis` FROM verkartikel WHERE `ean` LIKE '%"+ kriterium +"%'" +
-					" OR `beschreibung` LIKE '%"+ kriterium +"%';";
+			sql = "SELECT ean, beschreibung, preis FROM verkartikel WHERE ean LIKE '%"+ kriterium +"%'" +
+					" OR beschreibung LIKE '%"+ kriterium +"%';";
 		}
 		Vector<String> spaltenNamen = new Vector<String>();
 		spaltenNamen.add("Artikel-ID");

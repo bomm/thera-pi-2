@@ -32,19 +32,19 @@ public class Lieferant {
 		this.telefon = telefon;
 		this.telefax = telefax;
 		
-		String sql = "INSERT INTO `verklieferant` (`verklieferantID`, `name`, `ansprechpartner`, `anschrift`, `plz`, `ort`, `telefon`, `telefax`) " +
+		String sql = "INSERT INTO verklieferant (verklieferantID, name, ansprechpartner, anschrift, plz, ort, telefon, telefax) " +
 				"VALUES (NULL, '"+ this.name +"', '"+ this.ansprechpartner +"', '"+ this.anschrift +"', '"+ this.plz +"', '"+ this.ort +"', '"+ this.telefon +"', '"+ this.telefax +"');";
 		SqlInfo.sqlAusfuehren(sql);
 	}
 	
 	private void update() {
-		String sql ="UPDATE `verklieferant` SET `name` = '"+ this.name +"', "+
-				"`ansprechpartner` = '"+ this.ansprechpartner +"', "+
-				"`anschrift` = '"+ this.anschrift +"', "+
-				"`plz` = '"+ this.plz +"', "+
-				"`ort` = '"+ this.ort +"', "+
-				"`telefon` = '"+ this.telefon +"', "+
-				"`telefax` = '"+ this.telefax +"' WHERE `verklieferantID` = "+ this.id +";";
+		String sql ="UPDATE verklieferant SET name = '"+ this.name +"', "+
+				"ansprechpartner = '"+ this.ansprechpartner +"', "+
+				"anschrift` = '"+ this.anschrift +"', "+
+				"plz = '"+ this.plz +"', "+
+				"ort = '"+ this.ort +"', "+
+				"telefon = '"+ this.telefon +"', "+
+				"telefax = '"+ this.telefax +"' WHERE verklieferantID = "+ this.id +";";
 		SqlInfo.sqlAusfuehren(sql);
 	}
 

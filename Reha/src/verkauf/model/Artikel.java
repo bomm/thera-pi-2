@@ -24,7 +24,7 @@ public class Artikel {
 		this.lieferantenID = lieferantenID;
 		this.einkaufspreis = ek;
 		
-		SqlInfo.sqlAusfuehren("INSERT INTO `verkartikel` (`ean`, `beschreibung`, `preis`, `mwst`, `lagerstand`, `einheit`, `verklieferantID`, `einkaufspreis`) " +
+		SqlInfo.sqlAusfuehren("INSERT INTO verkartikel (ean, beschreibung, preis, mwst, lagerstand, einheit, verklieferantID, einkaufspreis) " +
 				"VALUES('"+ this.ean +"', '"+ this.beschreibung +"', '"+ this.preis +"', '"+ this.mwst +"', '"+ this.lagerstand +"', '"+ this.einheit +"', '"+ this.lieferantenID +"', '"+ this.einkaufspreis +"'  );");
 	}
 	
@@ -49,21 +49,21 @@ public class Artikel {
 	void verkaufeArtikel(double anzahl, String vnummer, Double vpreis, int patid) {
 		this.lagerstand = this.lagerstand - anzahl;
 		this.update();
-		String sql = "INSERT INTO `verkfaktura` (`verkfakturaID`, `v_nummer`, `art_id`, `art_beschreibung`, `art_einzelpreis`, `art_mwst`, `anzahl`, `pat_id`) " +
+		String sql = "INSERT INTO verkfaktura (verkfakturaID, v_nummer, art_id, art_beschreibung, art_einzelpreis, art_mwst, anzahl, pat_id) " +
 				"VALUES (NULL, '"+ vnummer +"', '"+ this.ean +"', '"+ this.getBeschreibung() +"', '"+ vpreis +"', '"+ this.mwst +"', '"+ anzahl +"', '"+ patid +"')";
 		SqlInfo.sqlAusfuehren(sql);
 	}
 
 	
 	public void löscheArtikel() {
-		String sql = "DELETE FROM `verkartikel` WHERE `ean` = "+ this.ean +";";
+		String sql = "DELETE FROM verkartikel WHERE ean = "+ this.ean +";";
 		SqlInfo.sqlAusfuehren(sql);
 	}
 
 	void update() {
-		String sql = "UPDATE verkartikel SET `beschreibung` = '"+ this.beschreibung +"', `preis` = '"+ this.preis +"'," +
-				"`mwst` = '"+ this.mwst +"' , `lagerstand` = '"+ this.lagerstand +"', `einkaufspreis` = '"+ this.einkaufspreis +"'" +
-						", `verklieferantID` = '"+ this.lieferantenID +"'  WHERE ean = "+ this.ean +" LIMIT 1;";
+		String sql = "UPDATE verkartikel SET beschreibung = '"+ this.beschreibung +"', preis = '"+ this.preis +"'," +
+				"mwst = '"+ this.mwst +"' , lagerstand = '"+ this.lagerstand +"', einkaufspreis = '"+ this.einkaufspreis +"'" +
+						", verklieferantID = '"+ this.lieferantenID +"'  WHERE ean = "+ this.ean +" LIMIT 1;";
 		//System.out.println(sql);
 		SqlInfo.sqlAusfuehren(sql);
 	}
