@@ -21,6 +21,8 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
+import jxTableTools.DoubleTableCellRenderer;
+
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -48,7 +50,7 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 	JXPanel pane = null;
 	JRtaTextField suche = null;	
 	JXTable tabelle = null;
-	DefaultTableModel tabellenModel = null;
+	MyArtikelWahlModel tabellenModel = null;
 	UebergabeTool ean = null;
 	ActionListener al = null;
 	FocusListener fl = null;
@@ -119,11 +121,12 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 			pane.add(suche, cc.xy(4, 3));
 			
 			String[] spaltenNamen = {"Artikel-ID", "Beschreibung", "Preis"};
-			tabellenModel = new DefaultTableModel();
+			tabellenModel = new MyArtikelWahlModel();
 			tabellenModel.setColumnIdentifiers(spaltenNamen);
 			tabelle = new JXTable(tabellenModel);
 			tabelle.addKeyListener(kl);
 			tabelle.setEditable(false);
+			tabelle.getColumn(2).setCellRenderer(new DoubleTableCellRenderer());
 			JScrollPane scr = JCompTools.getTransparentScrollPane(tabelle);
 			scr.validate();	
 			pane.add(scr, cc.xyw(2, 5, 3));
@@ -136,6 +139,20 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 			pane.validate();
 		}
 		return pane;		
+	}
+	class MyArtikelWahlModel extends DefaultTableModel{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public Class<?> getColumnClass(int columnIndex) {
+			   if(columnIndex==2 ){
+				   return Double.class;}
+			   else{
+				   return String.class;
+			   }
+	    }
 	}
 	//in RehaSmartDialog bereits enthalten
 	/*
@@ -186,7 +203,15 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 							holeDaten();
 							suche.requestFocus();
 						}else if(arg0.getKeyCode() == KeyEvent.VK_DOWN){
-							tabelle.requestFocus();
+							if(tabelle.getRowCount() <= 0){return;}
+							if( tabelle.getSelectedRow() <= 0){
+								tabelle.setRowSelectionInterval(0,0);
+							}
+							SwingUtilities.invokeLater(new Runnable(){
+								public void run(){
+									tabelle.requestFocus();		
+								}
+							});
 						}else if(arg0.getKeyCode() == KeyEvent.VK_ESCAPE){
 							schliessen(false);
 						}
@@ -270,6 +295,7 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 	
 	private void holeDaten() {
 		String sql;
+		tabellenModel.setRowCount(0);
 		if(suche.getText().equals("")) {
 			sql = "SELECT ean, beschreibung, preis FROM verkartikel;";
 		} else {
@@ -277,12 +303,20 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 			sql = "SELECT ean, beschreibung, preis FROM verkartikel WHERE ean LIKE '%"+ kriterium +"%'" +
 					" OR beschreibung LIKE '%"+ kriterium +"%';";
 		}
+		//Renderer und Editoren gehen offensichtlich nicht mit setDataVector
+		/*
 		Vector<String> spaltenNamen = new Vector<String>();
 		spaltenNamen.add("Artikel-ID");
 		spaltenNamen.add("Beschreibung");
 		spaltenNamen.add("Preis");
-		
 		tabellenModel.setDataVector(SqlInfo.holeFelder(sql), spaltenNamen);
+		*/
+		Vector<Vector<String>> spaltenWerte = SqlInfo.holeFelder(sql);
+		int size = spaltenWerte.size();
+		for(int i = 0; i < size; i++){
+			tabellenModel.addRow(spaltenWerte.get(i));
+		}
+		tabelle.repaint();
 	}
 	
 	private void schliessen(boolean eansetzen) {
