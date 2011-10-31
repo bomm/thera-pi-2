@@ -356,6 +356,7 @@ public class VerkaufGUI extends JXPanel{
 						edits[4].setText(df.format(aktuellerArtikel.getPreis()));
 						einheitAnzahlLabel.setText("Anzahl / " + aktuellerArtikel.getEinheit());
 					} else {
+						//Unstimmigkeit: wird dreimal aufgerufen
 						JOptionPane.showMessageDialog(null, "Und morgen verkaufst du deinen Chef? - den Artikel gibt es nicht vorhanden!");
 						edits[0].requestFocus();
 					}

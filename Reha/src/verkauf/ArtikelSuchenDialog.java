@@ -123,6 +123,7 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 			tabellenModel.setColumnIdentifiers(spaltenNamen);
 			tabelle = new JXTable(tabellenModel);
 			tabelle.addKeyListener(kl);
+			tabelle.setEditable(false);
 			JScrollPane scr = JCompTools.getTransparentScrollPane(tabelle);
 			scr.validate();	
 			pane.add(scr, cc.xyw(2, 5, 3));
@@ -180,9 +181,25 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				if(arg0.getKeyCode() == KeyEvent.VK_ENTER || arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					schliessen();
-				}
+					if(arg0.getSource() instanceof JRtaTextField){
+						if(arg0.getKeyCode() == KeyEvent.VK_ENTER ){
+							holeDaten();
+							suche.requestFocus();
+						}else if(arg0.getKeyCode() == KeyEvent.VK_DOWN){
+							tabelle.requestFocus();
+						}else if(arg0.getKeyCode() == KeyEvent.VK_ESCAPE){
+							schliessen(false);
+						}
+					}else if(arg0.getSource() instanceof JXTable){
+						if(arg0.getKeyCode() == KeyEvent.VK_ENTER ){
+							schliessen(true);							
+						}else if( (arg0.getKeyCode() == KeyEvent.VK_A) &&
+								arg0.isAltDown()){
+							suche.requestFocus();
+						}else if(arg0.getKeyCode() == KeyEvent.VK_ESCAPE){
+							schliessen(false);
+						}
+					}
 				
 			}
 
@@ -204,7 +221,7 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if(arg0.getActionCommand().equals("schliessen")) {
-					schliessen();
+					schliessen(true);
 				}
 				
 			}
@@ -216,7 +233,7 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if(arg0.getClickCount() == 2) {
-					schliessen();
+					schliessen(true);
 				}
 				
 			}
@@ -268,12 +285,14 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 		tabellenModel.setDataVector(SqlInfo.holeFelder(sql), spaltenNamen);
 	}
 	
-	private void schliessen() {
+	private void schliessen(boolean eansetzen) {
 		int row = tabelle.getSelectedRow();
 		//ungünstig, da ein Artikel übergeben wird sobald eine Tabellenzeile selektiert ist,
 		//obwohl evtl. der rote Knopf für abbrechen angeklickt wurde
-		if(row != -1) {
-			ean.setString((String)tabellenModel.getValueAt(row, 0));
+		if(eansetzen){
+			if(row != -1) {
+				ean.setString((String)tabellenModel.getValueAt(row, 0));
+			}
 		}
 		if(rtp != null){
 			rtp.removeRehaTPEventListener((RehaTPEventListener) this);
