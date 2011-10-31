@@ -32,6 +32,7 @@ public class JVerkaufInternal extends JRehaInternal implements RehaEventListener
 	public void internalFrameClosed(InternalFrameEvent arg0) {
 		//System.out.println("Lösche VerkaufInternal von Desktop-Pane = "+Reha.thisClass.desktops[this.desktop]);
 		//JInternalFram von Desktop lösen
+		Reha.thisClass.verkaufpanel.removeListeners();
 		Reha.thisClass.desktops[this.desktop].remove(this);
 		//nächsten JInternalFrame aktivieren
 		Reha.thisClass.aktiviereNaechsten(this.desktop);		
