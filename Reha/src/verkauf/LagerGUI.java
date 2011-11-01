@@ -65,6 +65,9 @@ public class LagerGUI extends JPanel{
 		this.setLayout(new BorderLayout());
 		this.add(getContent(), BorderLayout.CENTER);
 	}
+	public void removeListener(){
+	}
+
 	
 	private JXPanel getContent() {
 		JXPanel pan = new JXPanel();

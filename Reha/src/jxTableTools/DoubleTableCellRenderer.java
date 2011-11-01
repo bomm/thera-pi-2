@@ -22,7 +22,12 @@ public class DoubleTableCellRenderer extends DefaultTableCellRenderer
 				Double d = (Double) value;
 				setText(String.format("%.2f", d));
 			}else{
-				setText(value.toString());
+				try{
+					setText(value.toString());
+				}catch(Exception ex){
+					setText("0,00");	
+				}
+				
 			}
 			return this;
 	}

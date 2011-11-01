@@ -2425,7 +2425,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				   return String.class;
 			   }
 	           //return (columnIndex == 0) ? Boolean.class : String.class;
-	       }
+	    }
 
 		    public boolean isCellEditable(int row, int col) {
 		        //Note that the data/cell address is constant,

@@ -106,6 +106,14 @@ public class VerkaufGUI extends JXPanel{
 			}
 		});
 	}
+	public void removeListener(){
+		for(int i = 0; i < 9;i++){
+			edits[i].removeFocusListener(fl);	
+			edits[i].removeKeyListener(kl);
+		}
+		fl = null;
+		kl = null;
+	}
 	private JXPanel getContent1(){
 		JXPanel pan = new JXPanel();
 		JLabel lab = null;
@@ -362,7 +370,7 @@ public class VerkaufGUI extends JXPanel{
 						edits[0].removeFocusListener(fl);
 						edits[0].requestFocus();
 						//Unstimmigkeit: wird mit eingeschaltetem FocusListener rekursiv aufgerufen
-						JOptionPane.showMessageDialog(null, "Und morgen verkaufst du deinen Chef? - den Artikel gibt es nicht vorhanden!");
+						//JOptionPane.showMessageDialog(null, "Und morgen verkaufst du deinen Chef? - den Artikel gibt es nicht vorhanden!");
 						edits[0].addFocusListener(fl);
 					}
 					return;

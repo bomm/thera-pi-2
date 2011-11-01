@@ -177,6 +177,10 @@ public class JRehaInternal extends JInternalFrame implements ActionListener,Comp
 		if(doNotClose){
 			return;
 		}
+		RehaEvent evt = new RehaEvent(this);
+		evt.setDetails(this.getName(), "#FRAMESCHLIESSEN");
+		evt.setRehaEvent("REHAINTERNAL");
+		RehaEventClass.fireRehaEvent(evt);
 		this.dispose();
 	}
 	public boolean getActive(){

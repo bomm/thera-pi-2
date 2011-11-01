@@ -26,6 +26,7 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 	private static final long serialVersionUID = 1L;
 	public JVerkaufInternal eltern;
 	JTabbedPane pane = null;
+	
 	public VerkaufTab(JVerkaufInternal vki) {
 		super();
 		eltern = vki;
@@ -60,5 +61,9 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
+	}
+	public void removeListeners(){
+		((VerkaufGUI)pane.getComponentAt(0)).removeListener();
+		((LagerGUI)pane.getComponentAt(1)).removeListener();
 	}
 }
