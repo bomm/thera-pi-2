@@ -21,6 +21,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -72,9 +73,9 @@ public class VerkaufGUI extends JXPanel{
 	public JXTable vktab = null;
 	public DefaultTableModel vkmod = new DefaultTableModel();
 	JScrollPane jscr = null;
-	int lastcol = 6;
+	int lastcol = 7;
 	JLabel einheitAnzahlLabel = null;
-	String[] column = {"Artikel-ID", "Beschreibung", "Einzel-Preis", "Anzahl", "Gesamt-Preis", "MwSt.", ""};
+	String[] column = {"Artikel-ID", "Beschreibung", "Einzel-Preis", "Anzahl", "Rabatt", "Gesamt-Preis", "MwSt.", ""};
 	
 	ArtikelVerkauf aktuellerArtikel = null;
 	verkauf.model.Verkauf verkauf = null;
@@ -106,14 +107,7 @@ public class VerkaufGUI extends JXPanel{
 			}
 		});
 	}
-	public void removeListener(){
-		for(int i = 0; i < 9;i++){
-			edits[i].removeFocusListener(fl);	
-			edits[i].removeKeyListener(kl);
-		}
-		fl = null;
-		kl = null;
-	}
+	
 	private JXPanel getContent1(){
 		JXPanel pan = new JXPanel();
 		JLabel lab = null;
@@ -121,7 +115,7 @@ public class VerkaufGUI extends JXPanel{
 		//				  1       2     3       4     5      6     7     8     9     10   11    12      13     14       15   16     17
 		String xwerte = "5dlu,60dlu, 5dlu, 60dlu, 5dlu, 60dlu, 5dlu, 60dlu:g, 5dlu, 60dlu, 5dlu, 60dlu, 5dlu, 28dlu,  5dlu, 27dlu, 5dlu";
 		//				  1   2    3    4   5      6        7     8   9   10  11   12  13   14  15   16  17
-		String ywerte = "5dlu, p, 1dlu, p, 10dlu, 150dlu:g, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu ";
+		String ywerte = "5dlu, p, 1dlu, p, 10dlu, 150dlu:g, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu ";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
@@ -166,13 +160,36 @@ public class VerkaufGUI extends JXPanel{
 		
 		pan.add( (edits[4] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xy(12, 4));
 		edits[4].setName("preis");
+		edits[4].setEditable(false);
 		edits[4].addFocusListener(fl);
 		edits[4].addKeyListener(kl);
 		
-		pan.add( (buts[0] = ButtonTools.macheBut("+", "uebernahme", al)),cc.xy(14,4));
+		JToolBar jtb = new JToolBar();
+		FormLayout lay2 = new FormLayout("p, 5dlu, p, 5dlu, p", "p");
+		jtb.setLayout(lay2);
+		jtb.setBorder(null);
+		jtb.setOpaque(false);
+		jtb.setRollover(true);
+		
+		jtb.add( (buts[0] = new JButton()), cc.xy(1, 1));
+		buts[0].setOpaque(false);
+		buts[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
+		buts[0].setBorder(null);
 		buts[0].setMnemonic(KeyEvent.VK_PLUS);
-		pan.add( (buts[3] = ButtonTools.macheBut("-", "loesche", al)),cc.xy(16,4));
+		
+		jtb.add( (buts[0] = new JButton()), cc.xy(3, 1));
+		buts[0].setOpaque(false);
+		buts[0].setIcon(SystemConfig.hmSysIcons.get("edit"));
+		buts[0].setBorder(null);
+		buts[0].setMnemonic(KeyEvent.VK_PLUS);
+		
+		jtb.add( (buts[3] = new JButton()), cc.xy(5, 1));	
+		buts[3].setOpaque(false);
+		buts[3].setIcon(SystemConfig.hmSysIcons.get("delete"));
+		buts[3].setBorder(null);
 		buts[3].setMnemonic(KeyEvent.VK_MINUS);
+		
+		pan.add(jtb, cc.xyw(14 ,4,3));
 		
 		/******Tabelle********/
 		vkmod.setColumnIdentifiers(column);
@@ -185,35 +202,29 @@ public class VerkaufGUI extends JXPanel{
 		pan.add(jscr,cc.xyw(2, 6, 15));
 		
 		/******Summe / Steuer / Rabatt ********/
-		lab = new JLabel("Rabatt:");
-		pan.add(lab, cc.xy(12, 8));
 		lab = new JLabel("Summe:");
-		pan.add(lab,cc.xy(12,10));
+		pan.add(lab,cc.xy(12,8));
 		lab = new JLabel("MwSt. 7%:");
-		pan.add(lab,cc.xy(12,12));
+		pan.add(lab,cc.xy(12,10));
 		lab = new JLabel("MwSt. 19%");
-		pan.add(lab,cc.xy(12,14));
+		pan.add(lab,cc.xy(12,12));
 		
-		pan.add((edits[5] = new JRtaTextField("ZAHLEN", true)), cc.xyw(14, 8, 3));
-		edits[5].setName("gesamtRabatt");
-		edits[5].addFocusListener(fl);
-		
-		edits[5].setText("0");
-		pan.add( (edits[6] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xyw(14, 10, 3));
+
+		pan.add( (edits[6] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xyw(14, 8, 3));
 		edits[6].setEditable(false);
 		edits[6].setText("0,00");
-		pan.add( (edits[7] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xyw(14, 12,3));
+		pan.add( (edits[7] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xyw(14, 10,3));
 		edits[7].setEditable(false);
 		edits[7].setText("0,00");
-		pan.add( (edits[8] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xyw(14, 14, 3));
+		pan.add( (edits[8] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xyw(14, 12, 3));
 		edits[8].setEditable(false);
 		edits[8].setText("0,00");
 		
 		
 		/******Steuerbuttons********/
-		pan.add( (buts[1] = ButtonTools.macheBut("Barzahlung", "barzahlung", al)),cc.xy(12, 16));
+		pan.add( (buts[1] = ButtonTools.macheBut("Barzahlung", "barzahlung", al)),cc.xy(12, 14));
 		buts[1].setMnemonic(KeyEvent.VK_B);
-		pan.add( (buts[2] = ButtonTools.macheBut("Rechnung", "rechnung", al)),cc.xyw(14, 16, 3));
+		pan.add( (buts[2] = ButtonTools.macheBut("Rechnung", "rechnung", al)),cc.xyw(14, 14, 3));
 		buts[2].setMnemonic(KeyEvent.VK_N);
 		/*************/
 		pan.validate();
@@ -226,7 +237,7 @@ public class VerkaufGUI extends JXPanel{
 		pt.y = pt.y+10;
 		return pt;
 	}
-	private void doArtikelSuche(){
+	void doArtikelSuche(){
 		edits[0].removeFocusListener(fl);
 		UebergabeTool ean = new UebergabeTool("");
 		adlg = new ArtikelSuchenDialog(null, ean, holePosition());
@@ -396,12 +407,6 @@ public class VerkaufGUI extends JXPanel{
 						aktuellerArtikel.setPreis(Double.parseDouble(edits[4].getText().replace(",", ".")));
 					}
 					return;
-				}else if(((JComponent)arg0.getSource()).getName().equals("gesamtRabatt")) {
-					verkauf.gewaehreRabatt(Double.parseDouble(edits[5].getText()));
-					edits[6].setText(df.format(verkauf.getBetragBrutto()));
-					edits[7].setText(df.format(verkauf.getBetrag7()));
-					edits[8].setText(df.format(verkauf.getBetrag19()));
-					return;
 				}
 			}
 				catch(Exception e) {}
@@ -478,7 +483,6 @@ public class VerkaufGUI extends JXPanel{
 		verkauf = new Verkauf();
 		vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 		edits[0].requestFocus();
-		edits[5].setText("0");
 		edits[6].setText("0,00");
 		edits[7].setText("0,00");
 		edits[8].setText("0");
@@ -565,7 +569,6 @@ public class VerkaufGUI extends JXPanel{
 			verkauf = new Verkauf();
 			vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 			edits[0].requestFocus();
-			edits[5].setText("0");
 			edits[6].setText("0,00");
 			edits[7].setText("0,00");
 			edits[8].setText("0");
