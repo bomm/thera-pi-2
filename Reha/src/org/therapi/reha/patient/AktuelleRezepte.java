@@ -2630,6 +2630,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 									rezToCopy + "'", Arrays.asList(new String[] {}) ));
 
 			}
+			if ( strModus.equals("KopiereHistorienRezept") ) { 
+				String rezToCopy = Historie.getActiveRezNr();
+				vecKopiervorlage = ((Vector<String>)SqlInfo.holeSatz( "lza", " * ", "REZ_NR = '" +
+						rezToCopy + "'", Arrays.asList(new String[] {}) ));
+			}
 			// ^^^ Lemmi 20110101: Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
 			@SuppressWarnings("unchecked")
 			RezNeuanlage rezNeuAn = new RezNeuanlage((Vector<String>)vecKopiervorlage.clone(),lneu,feldname);

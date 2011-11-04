@@ -890,6 +890,31 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			return;
 		}
 	}
+	public static String getActiveRezNr(){
+		if( Reha.thisClass.patpanel.historie.tabhistorie.getSelectedRow() < 0){return null;}
+		return Reha.thisClass.patpanel.historie.tabhistorie.getValueAt(
+				Reha.thisClass.patpanel.historie.tabhistorie.getSelectedRow(), 0).toString(); 
+	}
+	private void doKopieToNew(){
+		try{
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					try{
+					if( (getActiveRezNr()) == null){return null;}
+						Reha.thisClass.patpanel.aktRezept.neuanlageRezept(true, "", "KopiereHistorienRezept");
+						Reha.thisClass.patpanel.multiTab.setSelectedIndex(0);
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+					return null;
+				}
+				
+			}.execute();
+		}catch(Exception ex){
+			
+		}
+	}
 	
 	class ToolsDlgHistorie{
 		public ToolsDlgHistorie(String command,Point pt){
@@ -899,11 +924,14 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			icons.put("Behandlungstage in Clipboard",SystemConfig.hmSysIcons.get("einzeltage"));
 			icons.put("Transfer in aktuelle Rezepte",SystemConfig.hmSysIcons.get("undo"));
 			icons.put("Rezeptgebührquittung (Kopie)",SystemConfig.hmSysIcons.get("rezeptgebuehr"));
+			icons.put("Daten in neues Rezept kopieren",SystemConfig.hmSysIcons.get("neu"));
+			
 			icons.put("§301 Reha-Fallsteuerung",SystemConfig.hmSysIcons.get("abrdreieins"));
 			// create a list with some test data
 			JList list = new JList(	new Object[] {"Gesamtumsatz dieses Patienten",
 					"Behandlungstage in Clipboard","Transfer in aktuelle Rezepte",
-					"Rezeptgebührquittung (Kopie)","§301 Reha-Fallsteuerung"});
+					"Rezeptgebührquittung (Kopie)","Daten in neues Rezept kopieren",
+					"§301 Reha-Fallsteuerung"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Historie",list);
@@ -946,6 +974,9 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 				doRgebKopie();
 				break;
 			case 4:
+				doKopieToNew();
+				break;
+			case 5:
 				do301FallSteuerung();
 				break;
 				
