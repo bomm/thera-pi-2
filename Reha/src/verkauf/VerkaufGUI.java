@@ -257,7 +257,7 @@ public class VerkaufGUI extends JXPanel{
 				return;
 			}
 		} else if(befehl == VerkaufTab.edit) {
-			if(vktab.getSelectedRow() >=0) {
+			if(vktab.getSelectedRow() >= 0) {
 				this.aktuellerArtikel = verkauf.lieferePosition(Integer.parseInt((String) vkmod.getValueAt(vktab.getSelectedRow(), 7)));
 				vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 				vktab.getColumn(lastcol).setMinWidth(0);
@@ -269,10 +269,11 @@ public class VerkaufGUI extends JXPanel{
 				edits[3].setText(this.aktuellerArtikel.getBeschreibung());
 				edits[1].setText(String.valueOf(this.aktuellerArtikel.getAnzahl()).replace('.', ','));
 				edits[2].setText(String.valueOf(this.aktuellerArtikel.getRabatt()).replace('.', ','));
+			} else {
+				JOptionPane.showMessageDialog(null, "Wenn oder was willst du ändern?");
 			}
 		} else if(befehl == VerkaufTab.delete) {
-			System.out.println("delete erreicht");
-			if(vkmod.getRowCount() >= 0) {
+			if(vkmod.getRowCount() > 0) {
 				verkauf.loescheArtikel((Integer.parseInt((String)vkmod.getValueAt(vktab.getSelectedRow(), 7))));
 				vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 				vktab.getColumn(lastcol).setMinWidth(0);
@@ -280,7 +281,9 @@ public class VerkaufGUI extends JXPanel{
 				edits[6].setText(df.format(verkauf.getBetragBrutto()));
 				edits[7].setText(df.format(verkauf.getBetrag7()));
 				edits[8].setText(df.format(verkauf.getBetrag19()));
-			}			
+			} else {
+				JOptionPane.showMessageDialog(null, "Wenn oder was willst du löschen?");
+			}
 		} else if(befehl == VerkaufTab.rechnungEnde) {
 			rechnungEnde();
 		} else if(befehl == VerkaufTab.bonEnde) {
@@ -356,9 +359,7 @@ public class VerkaufGUI extends JXPanel{
 						einheitAnzahlLabel.setText("Anzahl / " + aktuellerArtikel.getEinheit());
 					} else {
 						edits[0].removeFocusListener(fl);
-						edits[0].requestFocus();
-						//Unstimmigkeit: wird mit eingeschaltetem FocusListener rekursiv aufgerufen
-						//JOptionPane.showMessageDialog(null, "Und morgen verkaufst du deinen Chef? - den Artikel gibt es nicht vorhanden!");
+						owner.sucheText.requestFocus();
 						edits[0].addFocusListener(fl);
 					}
 					return;

@@ -56,30 +56,29 @@ public class ArtikelDialog extends RehaSmartDialog {
 	INIFile inif;
 	
 	public ArtikelDialog(int id, Point position) {
-		super(null, "LieferDlg");
+		super(null, "ArtikelDlg");
 		this.activateListener();
 		this.setSize(300, 300);
 		this.setUndecorated(true);
-		inif = new INIFile(Reha.proghome +"ini/"+ Reha.aktIK +"/verkauf.ini");
 		
 		pinPanel = new PinPanel();
 		pinPanel.getGruen().setVisible(false);
 		pinPanel.getRot().setActionCommand("close");
 		pinPanel.setName("ArtikelDlg");
 		setPinPanel(pinPanel);
+		inif = new INIFile(Reha.proghome +"ini/"+ Reha.aktIK +"/verkauf.ini");
 		getSmartTitledPanel().setContentContainer(getContent());
 		getSmartTitledPanel().getContentContainer().setName("ArtikelDlg");
 		getSmartTitledPanel().setTitle("Artikel anlegen / bearbeiten");
 		this.setName("ArtikelDlg");
 		this.setLocation(position);
+		
 		if(id != -1) {
 			artikel = new Artikel(id);
 			this.lade();
 		}
-
-		this.setModal(true);
-		this.setVisible(true);
 	}
+	
 	public void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
@@ -87,6 +86,7 @@ public class ArtikelDialog extends RehaSmartDialog {
 			}
 		});
 	}
+	
 	private JXPanel getContent() {
 		JXPanel pane = new JXPanel();
 		this.addKeyListener(kl);
@@ -243,7 +243,7 @@ public class ArtikelDialog extends RehaSmartDialog {
 	
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
 		try{
-			if(evt.getDetails()[0].equals("LieferDlg")){
+			if(evt.getDetails()[0].equals("ArtikelDlg")){
 				this.setVisible(false);
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 				rtp = null;

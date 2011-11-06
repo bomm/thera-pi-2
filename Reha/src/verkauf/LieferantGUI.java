@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -106,12 +107,20 @@ public class LieferantGUI extends JXPanel{
 		if (befehl == VerkaufTab.neu) {
 			this.doLieferantDialog(-1, this.owner.holePosition(300, 300));
 			this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
-		} else if(befehl == VerkaufTab.edit && this.lftab.getSelectedRow() != -1) {
-			this.doLieferantDialog(Integer.parseInt((String)this.lfmod.getValueAt(this.lftab.getSelectedRow(), 7)), this.owner.holePosition(300, 300));
-			this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
-		} else if(befehl == VerkaufTab.delete && this.lftab.getSelectedRow() != -1) {
-			Lieferant.loesche(Integer.parseInt((String)this.lfmod.getValueAt(this.lftab.getSelectedRow(), 7)));
-			this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
+		} else if(befehl == VerkaufTab.edit) {
+			if(this.lftab.getSelectedRow() >= 0) {
+				this.doLieferantDialog(Integer.parseInt((String)this.lfmod.getValueAt(this.lftab.getSelectedRow(), 7)), this.owner.holePosition(300, 300));
+				this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
+			}  else {
+				JOptionPane.showMessageDialog(null, "Wenn oder was willst du ändern?");
+			}
+		} else if(befehl == VerkaufTab.delete) {
+			if(this.lftab.getSelectedRow() >= 0) {
+				Lieferant.loesche(Integer.parseInt((String)this.lfmod.getValueAt(this.lftab.getSelectedRow(), 7)));
+				this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
+			} else {
+				JOptionPane.showMessageDialog(null, "Wenn oder was willst du löschen?");
+			}
 		} else if(befehl == VerkaufTab.suche) {
 			this.setzeTabDaten(Lieferant.sucheLieferantenDaten(this.owner.sucheText.getText()));
 		}
@@ -124,6 +133,7 @@ public class LieferantGUI extends JXPanel{
 				lfdlg.setzeFocus();		
 			}
 		});
+		lfdlg.setModal(true);
 		lfdlg.setVisible(true);
 		lfdlg = null;
 	}

@@ -5,7 +5,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingx.JXPanel;
@@ -28,6 +30,7 @@ public class LagerGUI extends JXPanel {
 	private JXTable lgtab;
 	private JScrollPane jscr;
 	private Vector<String> columns;
+	private ArtikelDialog adlg;
 	
 	LagerGUI(VerkaufTab owner) {
 		super();
@@ -99,14 +102,22 @@ public class LagerGUI extends JXPanel {
 	
 	public void aktiviereFunktion(int befehl) {
 		if(befehl == VerkaufTab.neu) {
-			new ArtikelDialog(-1, this.owner.holePosition(300, 300));
+			doArtikelDialog(-1);
 			this.setzeTabDaten(Artikel.liefereArtikelDaten());
 		} else if(befehl == VerkaufTab.edit) {
-			new ArtikelDialog(Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1)), this.owner.holePosition(300, 300));
-			this.setzeTabDaten(Artikel.liefereArtikelDaten());
+			if(this.lgtab.getSelectedRow() >= 0) {
+				doArtikelDialog(Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1)));
+				this.setzeTabDaten(Artikel.liefereArtikelDaten());
+			} else {
+				JOptionPane.showMessageDialog(null, "Wenn oder was willst du ändern?");
+			}
 		} else if(befehl == VerkaufTab.delete) {
-			Artikel.loescheArtikel(Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1)));
-			this.setzeTabDaten(Artikel.liefereArtikelDaten());
+			if(this.lgtab.getSelectedRow() >= 0) {
+				Artikel.loescheArtikel(Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1)));
+				this.setzeTabDaten(Artikel.liefereArtikelDaten());
+			} else {
+				JOptionPane.showMessageDialog(null, "Wenn oder was willst du löschen?");
+			}
 		} else if(befehl == VerkaufTab.suche) {
 			this.setzeTabDaten(Artikel.sucheArtikelDaten(this.owner.sucheText.getText()));
 		}
@@ -116,6 +127,18 @@ public class LagerGUI extends JXPanel {
 		this.lgmod.setDataVector(daten, this.columns);
 		this.lgtab.getColumn(this.lgmod.getColumnCount()-1).setMinWidth(0);
 		this.lgtab.getColumn(this.lgmod.getColumnCount()-1).setMaxWidth(0);
+	}
+	
+	private void doArtikelDialog(int id) {
+		adlg = new ArtikelDialog(id, this.owner.holePosition(300, 300));
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				adlg.setzeFocus();				
+			}
+		});
+		adlg.setModal(true);
+		adlg.setVisible(true);
+		adlg = null;
 	}
 	
 }

@@ -68,8 +68,6 @@ public class LieferantDialog extends RehaSmartDialog {
 			lieferant = new Lieferant(id);
 			this.lade();
 		}
-		//this.setVisible(true);
-		this.setModal(true);
 	}
 	public void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
