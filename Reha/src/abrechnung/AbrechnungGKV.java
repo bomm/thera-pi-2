@@ -174,6 +174,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		jSplitLR.setOneTouchExpandable(true);
 		jSplitLR.setDividerLocation(230);
 		add(jSplitLR,BorderLayout.CENTER);
+		mandantenCheck();
 		
 	}
 	/**********
@@ -182,6 +183,27 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	 * 
 	 * Linke Seite
 	 */
+	private void mandantenCheck(){
+		if(SystemConfig.hmFirmenDaten.get("Steuernummer").trim().equals("")){
+			String msg = "Achtung(!!!!!!) für diesen Mandant wurde keine Steuernummer angegeben!\n\n"+
+			"Eine Abrechnung ohne Steuernummer wird von der GKV nicht(!!!!) akzeptiert\n\"+" +
+			"Schließen Sie die Abrechnung starten Sie die System-Initialisierung -> Mandanten Datenbank -> Firmenangaben...\n"+
+			"und tragen Sie hier im Feld Steuernummer die vom Finanzamt vergebene Steuernummer ein.";
+			JOptionPane.showMessageDialog(null,msg);
+		}
+		if(SystemConfig.hmFirmenDaten.get("Ikbezeichnung").trim().equals("")){
+			String msg = "Achtung(!!!!!!) für diesen Mandant wurde keine Firmenbezeichnung angegeben!\n\n"+
+			"Schließen Sie die Abrechnung starten Sie die System-Initialisierung -> Mandanten Datenbank -> Firmenangaben...\n"+
+			"und tragen Sie hier im Feld 'Mandanten-Bezeichnung' eine Kurzfassung Ihres Firmennamens ein (max 30 Zeichen)";
+			JOptionPane.showMessageDialog(null,msg);
+		}
+		if(SystemConfig.hmFirmenDaten.get("Ikbezeichnung").length() > 30){
+			String msg = "Achtung(!!!!!!) für diesen Mandant wurde eine zu lange Firmenbezeichnung angegeben.\n\n"+
+			"Schließen Sie die Abrechnung starten Sie die System-Initialisierung -> Mandanten Datenbank -> Firmenangaben...\n"+
+			"und tragen Sie hier im Feld 'Mandanten-Bezeichnung' eine Kurzfassung Ihres Firmennamens ein (max 30 Zeichen)";
+			JOptionPane.showMessageDialog(null,msg);
+		}
+	}
 	private JScrollPane getLeft(){
 		FormLayout lay = new FormLayout("5dlu,fill:0:grow(1.0),5dlu",
 				//1   2  3   4  5    6  7    8  9      10             11

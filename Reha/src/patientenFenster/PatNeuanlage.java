@@ -50,8 +50,6 @@ import krankenKasse.KassenFormulare;
 import kvKarte.KVKWrapper;
 import oOorgTools.OOTools;
 
-import ocf.OcKVK;
-
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
