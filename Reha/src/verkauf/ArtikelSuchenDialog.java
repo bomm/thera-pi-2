@@ -76,13 +76,13 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 		getSmartTitledPanel().setTitle("Aritkel suchen");
 		
 		
-		//this.setContentPane(getJContentPane());
+		//this.setContentPane(getJContentPane()); 
 		this.setName("ArtSuchen");
-		this.setModal(true);
+		//this.setModal(true); //ausgeschaltet /st.
 		this.setResizable(true);
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setzeFocus();
-		this.setVisible(true);
+		//this.setzeFocus(); //ausgeschaltet /st.
+		//this.setVisible(true); //ausgeschaltet /st.
 	}
 	
 	public void setzeFocus(){

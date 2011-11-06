@@ -287,12 +287,23 @@ public class VerkaufGUI extends JXPanel{
 			bonEnde();
 		}  else if(befehl == VerkaufTab.suche) {
 			UebergabeTool uebergabe = new UebergabeTool(this.owner.sucheText.getText());
-			new ArtikelSuchenDialog(null, uebergabe, this.owner.holePosition(300, 400));
+			// wichtig !! erst mal eine InstanzVariable erzeugen
+			// die dann z.B. für Focus setzen verwendet werden kann
+			adlg = new ArtikelSuchenDialog(null, uebergabe, this.owner.holePosition(300, 400)); //neu
+			SwingUtilities.invokeLater(new Runnable(){ //neu
+				public void run(){
+					adlg.setzeFocus(); //neu					
+				}
+			});
+			adlg.setModal(true); //neu
+			adlg.setVisible(true); //neu
+			
 			edits[0].requestFocus();
 			edits[0].setText(uebergabe.getString());
 			if(!edits[0].getText().equals("")) {
 				edits[1].requestFocus();
 			}
+			adlg = null; //neu
 		}
 	}
 	
