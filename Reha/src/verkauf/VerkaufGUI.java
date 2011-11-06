@@ -5,14 +5,11 @@ import hauptFenster.Reha;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.Date;
 import java.text.DecimalFormat;
 
@@ -57,9 +54,6 @@ import com.sun.star.awt.Size;
 
 public class VerkaufGUI extends JXPanel{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6537113748627245247L;
 	
 	ArtikelSuchenDialog adlg = null;
@@ -67,9 +61,8 @@ public class VerkaufGUI extends JXPanel{
 	ActionListener al = null;
 	KeyListener kl = null;
 	FocusListener fl = null;
-	MouseListener ml = null;
 	JRtaTextField[] edits = {null,null,null,null,null,null,null,null,null};
-	JButton[] buts = {null,null,null,null};
+	JButton[] buts = {null,null,null,null, null};
 	public JXTable vktab = null;
 	public DefaultTableModel vkmod = new DefaultTableModel();
 	JScrollPane jscr = null;
@@ -81,9 +74,13 @@ public class VerkaufGUI extends JXPanel{
 	verkauf.model.Verkauf verkauf = null;
 	DecimalFormat df = null;
 	INIFile settings = null;
+	VerkaufTab owner;
 	
-	public VerkaufGUI(){
+	
+	
+	public VerkaufGUI(VerkaufTab owner){
 		super();
+		this.owner = owner;
 		this.activateListener();
 		this.setLayout(new BorderLayout());
 		this.setOpaque(false);
@@ -110,10 +107,11 @@ public class VerkaufGUI extends JXPanel{
 	
 	private JXPanel getContent1(){
 		JXPanel pan = new JXPanel();
+		pan.setOpaque(false);
 		JLabel lab = null;
 		/**************/
 		//				  1       2     3       4     5      6     7     8     9     10   11    12      13     14       15   16     17
-		String xwerte = "5dlu,60dlu, 5dlu, 60dlu, 5dlu, 60dlu, 5dlu, 60dlu:g, 5dlu, 60dlu, 5dlu, 60dlu, 5dlu, 28dlu,  5dlu, 27dlu, 5dlu";
+		String xwerte = "5dlu, 55dlu, 5dlu, 55dlu, 5dlu, 55dlu, 5dlu, 55dlu:g, 5dlu, 55dlu, 5dlu, 55dlu, 5dlu, 78dlu, 5dlu";
 		//				  1   2    3    4   5      6        7     8   9   10  11   12  13   14  15   16  17
 		String ywerte = "5dlu, p, 1dlu, p, 10dlu, 150dlu:g, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu ";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
@@ -124,7 +122,7 @@ public class VerkaufGUI extends JXPanel{
 		/******Legende********/
 		lab = new JLabel("Artikel-ID");
 		lab.setIcon(SystemConfig.hmSysIcons.get("kleinehilfe"));
-		lab.addMouseListener(ml);
+		lab.addMouseListener(this.owner.ml);
 		pan.add(lab,cc.xy(2,2));
 		lab = new JLabel("Beschreibung");
 		pan.add(lab,cc.xyw(8,2,3));
@@ -136,7 +134,7 @@ public class VerkaufGUI extends JXPanel{
 		pan.add(lab,cc.xy(6, 2));
 		
 		/******Edits und 2 Button********/
-		pan.add( (edits[0] = new JRtaTextField("ZAHLEN",true)),cc.xy(2,4));
+		pan.add( (edits[0] = new JRtaTextField("nix",true)),cc.xy(2,4));
 		edits[0].setName("artikelid");
 		edits[0].addFocusListener(fl);
 		edits[0].addKeyListener(kl);
@@ -174,22 +172,25 @@ public class VerkaufGUI extends JXPanel{
 		jtb.add( (buts[0] = new JButton()), cc.xy(1, 1));
 		buts[0].setOpaque(false);
 		buts[0].setIcon(SystemConfig.hmSysIcons.get("neu"));
-		buts[0].setBorder(null);
+		buts[0].setActionCommand("neu");
+		buts[0].addActionListener(al);
 		buts[0].setMnemonic(KeyEvent.VK_PLUS);
 		
-		jtb.add( (buts[0] = new JButton()), cc.xy(3, 1));
-		buts[0].setOpaque(false);
-		buts[0].setIcon(SystemConfig.hmSysIcons.get("edit"));
-		buts[0].setBorder(null);
-		buts[0].setMnemonic(KeyEvent.VK_PLUS);
+		jtb.add( (buts[4] = new JButton()), cc.xy(3, 1));
+		buts[4].setOpaque(false);
+		buts[4].setIcon(SystemConfig.hmSysIcons.get("edit"));
+		buts[4].setActionCommand("edit");
+		buts[4].addActionListener(al);
+		buts[4].setMnemonic(KeyEvent.VK_E);
 		
-		jtb.add( (buts[3] = new JButton()), cc.xy(5, 1));	
+		jtb.add( (buts[3] = new JButton()), cc.xy(5, 1));
 		buts[3].setOpaque(false);
 		buts[3].setIcon(SystemConfig.hmSysIcons.get("delete"));
-		buts[3].setBorder(null);
+		buts[3].setActionCommand("delete");
+		buts[3].addActionListener(al);
 		buts[3].setMnemonic(KeyEvent.VK_MINUS);
 		
-		pan.add(jtb, cc.xyw(14 ,4,3));
+		pan.add(jtb, cc.xy(14 ,4));
 		
 		/******Tabelle********/
 		vkmod.setColumnIdentifiers(column);
@@ -199,7 +200,7 @@ public class VerkaufGUI extends JXPanel{
 		vktab.getColumn(lastcol).setMaxWidth(0);
 		jscr = JCompTools.getTransparentScrollPane(vktab);
 		jscr.validate();
-		pan.add(jscr,cc.xyw(2, 6, 15));
+		pan.add(jscr,cc.xyw(2, 6, 13));
 		
 		/******Summe / Steuer / Rabatt ********/
 		lab = new JLabel("Summe:");
@@ -210,128 +211,93 @@ public class VerkaufGUI extends JXPanel{
 		pan.add(lab,cc.xy(12,12));
 		
 
-		pan.add( (edits[6] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xyw(14, 8, 3));
+		pan.add( (edits[6] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xy(14, 8));
 		edits[6].setEditable(false);
 		edits[6].setText("0,00");
-		pan.add( (edits[7] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xyw(14, 10,3));
+		pan.add( (edits[7] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xy(14, 10));
 		edits[7].setEditable(false);
 		edits[7].setText("0,00");
-		pan.add( (edits[8] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xyw(14, 12, 3));
+		pan.add( (edits[8] = new JRtaTextField("FL",true,"6.2","RECHTS")),cc.xy(14, 12));
 		edits[8].setEditable(false);
 		edits[8].setText("0,00");
 		
 		
 		/******Steuerbuttons********/
-		pan.add( (buts[1] = ButtonTools.macheBut("Barzahlung", "barzahlung", al)),cc.xy(12, 14));
+		pan.add( (buts[1] = ButtonTools.macheBut("Barzahlung", "bonEnde", al)),cc.xy(12, 14));
 		buts[1].setMnemonic(KeyEvent.VK_B);
-		pan.add( (buts[2] = ButtonTools.macheBut("Rechnung", "rechnung", al)),cc.xyw(14, 14, 3));
+		pan.add( (buts[2] = ButtonTools.macheBut("Rechnung", "rechnungEnde", al)),cc.xy(14, 14));
 		buts[2].setMnemonic(KeyEvent.VK_N);
 		/*************/
 		pan.validate();
 		edits[0].requestFocus();
 		return pan;
 	}
-	private Point holePosition(){
-		Point pt = edits[0].getLocationOnScreen();
-		pt.x = pt.x+10;
-		pt.y = pt.y+10;
-		return pt;
-	}
-	void doArtikelSuche(){
-		edits[0].removeFocusListener(fl);
-		UebergabeTool ean = new UebergabeTool("");
-		adlg = new ArtikelSuchenDialog(null, ean, holePosition());
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run(){
-				adlg.setzeFocus();
+	
+	public void aktiviereFunktion(int befehl) {
+		if(befehl == VerkaufTab.neu) {
+			if(aktuellerArtikel != null) {
+				aktuellerArtikel.setAnzahl(Double.parseDouble(edits[1].getText().replace(",", ".")));
+				aktuellerArtikel.gewaehreRabatt(Double.parseDouble(edits[2].getText().replace(",", ".")));
+				aktuellerArtikel.setBeschreibung(edits[3].getText());
+				aktuellerArtikel.setPreis(Double.parseDouble(edits[4].getText().replace(",", ".")) / Double.parseDouble(edits[1].getText().replace(",", ".")));
+				
+				verkauf.fügeArtikelHinzu(aktuellerArtikel);
+				aktuellerArtikel = null;
+				
+				edits[6].setText(df.format(verkauf.getBetragBrutto()));
+				edits[7].setText(df.format(verkauf.getBetrag7()));
+				edits[8].setText(df.format(verkauf.getBetrag19()));
+				
+				setzeFelderzurueck();
+				
+				vkmod.setDataVector(verkauf.liefereTabDaten(), column);
+				vktab.getColumn(lastcol).setMinWidth(0);
+				vktab.getColumn(lastcol).setMaxWidth(0);
+				edits[0].requestFocus();
+				return;
 			}
-		});
-		adlg.setVisible(true);
-		
-		edits[0].setText(ean.getString());
-		edits[0].requestFocus();
-		if(!ean.getString().equals("")) {
-			edits[1].requestFocus();
+		} else if(befehl == VerkaufTab.edit) {
+			if(vktab.getSelectedRow() >=0) {
+				this.aktuellerArtikel = verkauf.lieferePosition(Integer.parseInt((String) vkmod.getValueAt(vktab.getSelectedRow(), 7)));
+				vkmod.setDataVector(verkauf.liefereTabDaten(), column);
+				vktab.getColumn(lastcol).setMinWidth(0);
+				vktab.getColumn(lastcol).setMaxWidth(0);
+				edits[6].setText(df.format(verkauf.getBetragBrutto()));
+				edits[7].setText(df.format(verkauf.getBetrag7()));
+				edits[8].setText(df.format(verkauf.getBetrag19()));
+				edits[0].setText(this.aktuellerArtikel.getEan());
+				edits[3].setText(this.aktuellerArtikel.getBeschreibung());
+				edits[1].setText(String.valueOf(this.aktuellerArtikel.getAnzahl()).replace('.', ','));
+				edits[2].setText(String.valueOf(this.aktuellerArtikel.getRabatt()).replace('.', ','));
+			}
+		} else if(befehl == VerkaufTab.delete) {
+			System.out.println("delete erreicht");
+			if(vkmod.getRowCount() >= 0) {
+				verkauf.loescheArtikel((Integer.parseInt((String)vkmod.getValueAt(vktab.getSelectedRow(), 7))));
+				vkmod.setDataVector(verkauf.liefereTabDaten(), column);
+				vktab.getColumn(lastcol).setMinWidth(0);
+				vktab.getColumn(lastcol).setMaxWidth(0);
+				edits[6].setText(df.format(verkauf.getBetragBrutto()));
+				edits[7].setText(df.format(verkauf.getBetrag7()));
+				edits[8].setText(df.format(verkauf.getBetrag19()));
+			}			
+		} else if(befehl == VerkaufTab.rechnungEnde) {
+			rechnungEnde();
+		} else if(befehl == VerkaufTab.bonEnde) {
+			bonEnde();
+		}  else if(befehl == VerkaufTab.suche) {
+			UebergabeTool uebergabe = new UebergabeTool(this.owner.sucheText.getText());
+			new ArtikelSuchenDialog(null, uebergabe, this.owner.holePosition(300, 400));
+			edits[0].requestFocus();
+			edits[0].setText(uebergabe.getString());
+			if(!edits[0].getText().equals("")) {
+				edits[1].requestFocus();
+			}
 		}
-		edits[0].addFocusListener(fl);
-		adlg = null;
-		
 	}
+	
 	private void activateListener(){
-		ml = new MouseListener() {
-
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				doArtikelSuche();
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent arg0) {
-				
-			}
-
-			@Override
-			public void mouseExited(MouseEvent arg0) {
-				
-			}
-
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
-				
-			}
-			
-		};
-		
-		al = new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				String cmd = arg0.getActionCommand();
-				if(cmd.equals("uebernahme") && aktuellerArtikel != null){
-					aktuellerArtikel.setAnzahl(Double.parseDouble(edits[1].getText().replace(",", ".")));
-					aktuellerArtikel.gewaehreRabatt(Double.parseDouble(edits[2].getText().replace(",", ".")));
-					aktuellerArtikel.setBeschreibung(edits[3].getText());
-					aktuellerArtikel.setPreis(Double.parseDouble(edits[4].getText().replace(",", ".")) / Double.parseDouble(edits[1].getText().replace(",", ".")));
-					
-					verkauf.fügeArtikelHinzu(aktuellerArtikel);
-					aktuellerArtikel = null;
-					
-					edits[6].setText(df.format(verkauf.getBetragBrutto()));
-					edits[7].setText(df.format(verkauf.getBetrag7()));
-					edits[8].setText(df.format(verkauf.getBetrag19()));
-					
-					setzeFelderzurueck();
-					
-					vkmod.setDataVector(verkauf.liefereTabDaten(), column);
-					vktab.getColumn(lastcol).setMinWidth(0);
-					vktab.getColumn(lastcol).setMaxWidth(0);
-					edits[0].requestFocus();
-					return;
-				}
-				else if(cmd.equals("loesche")){
-					if(vkmod.getRowCount() > 0) {
-						verkauf.loescheArtikel((Integer.parseInt((String)vkmod.getValueAt(vktab.getSelectedRow(), 6))));
-						vkmod.setDataVector(verkauf.liefereTabDaten(), column);
-						vktab.getColumn(lastcol).setMinWidth(0);
-						vktab.getColumn(lastcol).setMaxWidth(0);
-						edits[6].setText(df.format(verkauf.getBetragBrutto()));
-						edits[7].setText(df.format(verkauf.getBetrag7()));
-						edits[8].setText(df.format(verkauf.getBetrag19()));
-					}
-					return;
-				}else if(cmd.equals("barzahlung")){
-					bonEnde();
-					return;
-				}else if(cmd.equals("rechnung")){
-					rechnungEnde();
-					return;
-				}
-			}
-		};
+		this.al = this.owner.al;
 		
 		kl = new KeyListener(){
 			@Override
@@ -356,7 +322,7 @@ public class VerkaufGUI extends JXPanel{
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				if(arg0.getKeyChar() == '?') {
-					doArtikelSuche();
+					aktiviereFunktion(VerkaufTab.suche);
 				}
 			}
 		};
@@ -371,7 +337,7 @@ public class VerkaufGUI extends JXPanel{
 			public void focusLost(FocusEvent arg0) {
 				try {
 				if( ((JComponent)arg0.getSource()).getName().equals("artikelid")){
-					Long ean = Long.parseLong(edits[0].getText());
+					String ean = edits[0].getText();
 					if(Artikel.artikelExistiert(ean)) {
 						aktuellerArtikel = new ArtikelVerkauf(ean);	
 						edits[3].setText(aktuellerArtikel.getBeschreibung());
@@ -420,7 +386,7 @@ public class VerkaufGUI extends JXPanel{
 		Point position = getLocation();
 		Dimension dim = getSize();
 		position.setLocation((position.getX() + (dim.getWidth() / 2)), position.getY());
-		new WechselgeldDialog(null, position, verkauf.getBetragBrutto());
+		new WechselgeldDialog(null, this.owner.holePosition(200, 150), verkauf.getBetragBrutto());
 		
 		String propSection = "Bon";
 		String nummernkreis = "VB-"+ SqlInfo.erzeugeNummer("vbon");

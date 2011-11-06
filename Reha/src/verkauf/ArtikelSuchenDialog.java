@@ -64,8 +64,7 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 		this.ean = ean;
 		this.activateListener();
 		this.setSize(300, 400);
-		//this.setLocation((int) (position.getX() - (this.getWidth() / 2)), (int) (position.getY() + 20));
-		this.setLocation( (int)position.getX(), (int)position.getY());
+		this.setLocation(position);
 		this.setUndecorated(true);
 		
 		pinPanel = new PinPanel();
@@ -82,7 +81,8 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 		this.setModal(true);
 		this.setResizable(true);
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
+		this.setzeFocus();
+		this.setVisible(true);
 	}
 	
 	public void setzeFocus(){
@@ -119,6 +119,11 @@ public class ArtikelSuchenDialog extends RehaSmartDialog {
 			suche.addFocusListener(fl);
 			suche.addKeyListener(kl);
 			pane.add(suche, cc.xy(4, 3));
+			
+			if(ean.getString() != null) {
+				this.suche.setText(ean.getString());
+				ean.setString(null);
+			}
 			
 			String[] spaltenNamen = {"Artikel-ID", "Beschreibung", "Preis"};
 			tabellenModel = new MyArtikelWahlModel();

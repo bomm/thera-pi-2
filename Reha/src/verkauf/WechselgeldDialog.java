@@ -54,13 +54,13 @@ public class WechselgeldDialog extends JXDialog {
 		this.summe = summe;
 		this.activateListener();
 		this.setSize(200, 150);
-		this.setLocation((int) (position.getX() - (this.getWidth() / 2)), (int) (position.getY() + 20));
+		this.setLocation(position);
 		this.setUndecorated(true);
 		this.setContentPane(getJContentPane());
 		this.setName("Wechselgeld");
 		this.setModal(true);
 		this.setResizable(true);
-		setzeFocus();
+		this.setzeFocus();
 		this.setVisible(true);
 	}
 	

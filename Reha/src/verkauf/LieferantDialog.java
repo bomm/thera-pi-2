@@ -140,28 +140,7 @@ public class LieferantDialog extends RehaSmartDialog {
 		
 		return pane;
 	}
-	/*
-	private JXTitledPanel getJXTitledPanel() {
-		JXTitledPanel panel = new JXTitledPanel();
-		
-		JXButton close = new JXButton();
-		close.setBorder(null);
-		close.setOpaque(false);
-		close.setIcon(SystemConfig.hmSysIcons.get("rot"));
-		close.setPreferredSize(new Dimension(16, 16));
-		close.addMouseListener(new MouseAdapter(){
-			public void mouseClicked(MouseEvent e) {
-				schliessen();
-			}
-		});
-		panel.setRightDecoration(close);
-		
-		panel.setTitle("Lieferanten");
-		panel.setTitleForeground(Color.white);
-		panel.setBorder(null);
-		return panel;
-	}
-	*/
+	
 	private void activateListener() {
 		al = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
