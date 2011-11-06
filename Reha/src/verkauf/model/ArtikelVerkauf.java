@@ -6,7 +6,7 @@ public class ArtikelVerkauf extends Artikel{
 	double preis, rabatt = 0, anzahl = 1;
 	String beschreibung;
 	
-	public ArtikelVerkauf(long ean) {
+	public ArtikelVerkauf(String ean) {
 		super(ean);
 		this.preis = super.getPreis();
 		this.beschreibung = super.getBeschreibung();

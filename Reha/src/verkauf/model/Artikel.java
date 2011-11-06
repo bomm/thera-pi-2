@@ -1,6 +1,5 @@
 package verkauf.model;
 
-import java.text.DecimalFormat;
 import java.util.Vector;
 
 import sqlTools.SqlInfo;
@@ -9,12 +8,11 @@ public class Artikel {
 	private double preis;
 	private double mwst;
 	private double einkaufspreis;
-	private long ean;
 	private double lagerstand;
-	private int lieferantenID;
-	private String beschreibung, einheit;
+	public int lieferantenID, id;
+	private String beschreibung, einheit, ean;
 	
-	public Artikel(long ean, String beschreibung, String einheit, double preis, double mwst, double lagerstand, double ek, int lieferantenID) {
+	public Artikel(String ean, String beschreibung, String einheit, double preis, double mwst, double lagerstand, double ek, int lieferantenID) {
 		this.preis = preis;
 		this.einheit = einheit;
 		this.mwst = mwst;
@@ -28,10 +26,10 @@ public class Artikel {
 				"VALUES('"+ this.ean +"', '"+ this.beschreibung +"', '"+ this.preis +"', '"+ this.mwst +"', '"+ this.lagerstand +"', '"+ this.einheit +"', '"+ this.lieferantenID +"', '"+ this.einkaufspreis +"'  );");
 	}
 	
-	public Artikel(long ean) {
+	public Artikel(int id) {
+		this.id = id;
 		// Abfragen aus der Datenbank
-		this.ean = ean;
-		String sql = "SELECT beschreibung, preis, mwst, lagerstand, einheit, einkaufspreis, verklieferantID FROM verkartikel WHERE ean = "+ this.ean;
+		String sql = "SELECT beschreibung, preis, mwst, lagerstand, einheit, einkaufspreis, verklieferantID, ean FROM verkartikel WHERE verkartikelID = "+ this.id;
 		
 		Vector<Vector<String>> felder = SqlInfo.holeFelder(sql);
 		Vector<String> datensatz = felder.get(0);
@@ -43,6 +41,26 @@ public class Artikel {
 			this.einheit = datensatz.get(4);
 			this.einkaufspreis = Double.parseDouble(datensatz.get(5));
 			this.lieferantenID = Integer.parseInt(datensatz.get(6));
+			this.ean = datensatz.get(7);
+		}
+	}
+	
+	public Artikel(String ean) {
+		this.ean = ean;
+		// Abfragen aus der Datenbank
+		String sql = "SELECT beschreibung, preis, mwst, lagerstand, einheit, einkaufspreis, verklieferantID, verkartikelID FROM verkartikel WHERE ean LIKE '"+ this.ean+"';";
+		
+		Vector<Vector<String>> felder = SqlInfo.holeFelder(sql);
+		Vector<String> datensatz = felder.get(0);
+		if(!datensatz.isEmpty()) {
+			this.beschreibung = datensatz.get(0);
+			this.preis = Double.parseDouble(datensatz.get(1));
+			this.mwst = Double.parseDouble(datensatz.get(2));
+			this.lagerstand = Double.parseDouble(datensatz.get(3));
+			this.einheit = datensatz.get(4);
+			this.einkaufspreis = Double.parseDouble(datensatz.get(5));
+			this.lieferantenID = Integer.parseInt(datensatz.get(6));
+			this.id = Integer.parseInt(datensatz.get(7));
 		}
 	}
 	
@@ -50,20 +68,14 @@ public class Artikel {
 		this.lagerstand = this.lagerstand - anzahl;
 		this.update();
 		String sql = "INSERT INTO verkfaktura (verkfakturaID, v_nummer, art_id, art_beschreibung, art_einzelpreis, art_mwst, anzahl, pat_id) " +
-				"VALUES (NULL, '"+ vnummer +"', '"+ this.ean +"', '"+ this.getBeschreibung() +"', '"+ vpreis +"', '"+ this.mwst +"', '"+ anzahl +"', '"+ patid +"')";
+				"VALUES (NULL, '"+ vnummer +"', '"+ this.id +"', '"+ this.getBeschreibung() +"', '"+ vpreis +"', '"+ this.mwst +"', '"+ anzahl +"', '"+ patid +"')";
 		SqlInfo.sqlAusfuehren(sql);
 	}
-
 	
-	public void löscheArtikel() {
-		String sql = "DELETE FROM verkartikel WHERE ean = "+ this.ean +";";
-		SqlInfo.sqlAusfuehren(sql);
-	}
-
 	void update() {
 		String sql = "UPDATE verkartikel SET beschreibung = '"+ this.beschreibung +"', preis = '"+ this.preis +"'," +
 				"mwst = '"+ this.mwst +"' , lagerstand = '"+ this.lagerstand +"', einkaufspreis = '"+ this.einkaufspreis +"'" +
-						", verklieferantID = '"+ this.lieferantenID +"'  WHERE ean = "+ this.ean +" LIMIT 1;";
+						", verklieferantID = '"+ this.lieferantenID +"', ean = '"+ this.ean +"'  WHERE verkartikelID = "+ this.id +" LIMIT 1;";
 		//System.out.println(sql);
 		SqlInfo.sqlAusfuehren(sql);
 	}
@@ -80,7 +92,7 @@ public class Artikel {
 		return lagerstand;
 	}
 
-	public long getEan() {
+	public String getEan() {
 		return ean;
 	}
 
@@ -103,10 +115,9 @@ public class Artikel {
 		this.update();
 	}
 
-	public void setEan(long ean) {
-		String sql = "UPDATE verkartikel SET `ean` = '"+ ean +"' WHERE ean = "+ this.ean +" LIMIT 1;";
-		SqlInfo.sqlAusfuehren(sql);
+	public void setEan(String ean) {
 		this.ean = ean;
+		this.update();
 	}
 
 	public void setBeschreibung(String beschreibung) {
@@ -141,30 +152,26 @@ public class Artikel {
 		this.update();
 	}
 	
-	public static boolean artikelExistiert(long ean) {
-		String sql = "Select ean From verkartikel Where ean = " + ean+" LIMIT 1"; 
+	public static void loescheArtikel(int id) {
+		String sql = "DELETE FROM verkartikel WHERE verkartikelID = " + id;
+		SqlInfo.sqlAusfuehren(sql);
+	}
+	
+	public static boolean artikelExistiert(String ean) {
+		String sql = "Select ean From verkartikel Where ean LIKE '" + ean +"' LIMIT 1"; 
 		return SqlInfo.gibtsSchon(sql);
 	}
 	
-	public static String[][] artikelListe() {
-		String sql = "Select ean From verkartikel";
-		Vector<String> eans = SqlInfo.holeFeld(sql);
-		String[][] artikelliste = new String[eans.size()][6];
-		DecimalFormat df = new DecimalFormat("0.00");
-		DecimalFormat df2 = new DecimalFormat("0");
-		int i = 0;
-		while(!eans.isEmpty()) {
-			Artikel artikel = new Artikel(Long.parseLong(eans.get(0)));
-			eans.remove(0);
-			
-			artikelliste[i][0] = String.valueOf(artikel.getEan());
-			artikelliste[i][1] = artikel.getBeschreibung();
-			artikelliste[i][2] = df.format(artikel.getPreis());
-			artikelliste[i][3] = df2.format(artikel.mwst);
-			artikelliste[i][4] = df.format(artikel.getLagerstand()) + " " + artikel.getEinheit();
-			artikelliste[i][5] = "0";
-			i++;
-		}
-		return artikelliste;
+	public static Vector<Vector<String>> liefereArtikelDaten() {
+		String sql = "SELECT verkartikel.ean, verkartikel.beschreibung, verkartikel.preis, verkartikel.einkaufspreis, verklieferant.name, verkartikel.lagerstand, verkartikel.verkartikelID FROM verkartikel, verklieferant WHERE verkartikel.verklieferantID = verklieferant.verklieferantID";
+		Vector<Vector<String>> daten = SqlInfo.holeFelder(sql);
+		return daten;
+	}
+	
+	public static Vector<Vector<String>> sucheArtikelDaten(String filter) {
+		String sql = "SELECT verkartikel.ean, verkartikel.beschreibung, verkartikel.preis, verkartikel.einkaufspreis, verklieferant.name, verkartikel.lagerstand, verkartikel.verkartikelID FROM verkartikel, verklieferant WHERE verkartikel.verklieferantID = verklieferant.verklieferantID" +
+				" AND (verkartikel.ean LIKE '%"+filter+"%' OR verkartikel.beschreibung LIKE '%"+filter+"%')";
+		Vector<Vector<String>> daten = SqlInfo.holeFelder(sql);
+		return daten;
 	}
 }

@@ -40,7 +40,7 @@ public class Lieferant {
 	private void update() {
 		String sql ="UPDATE verklieferant SET name = '"+ this.name +"', "+
 				"ansprechpartner = '"+ this.ansprechpartner +"', "+
-				"anschrift` = '"+ this.anschrift +"', "+
+				"anschrift = '"+ this.anschrift +"', "+
 				"plz = '"+ this.plz +"', "+
 				"ort = '"+ this.ort +"', "+
 				"telefon = '"+ this.telefon +"', "+
@@ -130,14 +130,35 @@ public class Lieferant {
 		return returnsstmt;
 	}
 	
-	public static Lieferant[] liefereLieferanten() {
-		String sql = "SELECT verklieferantID FROM verklieferant;";
-		Vector<String> lieferantenIDs = SqlInfo.holeFeld(sql);
-		Lieferant[] lieferanten = new Lieferant[lieferantenIDs.size()];
-		for(int i = 0; i < lieferanten.length; i++) {
-			lieferanten[i] = new Lieferant(Integer.parseInt(lieferantenIDs.get(i)));
-		}
+	public static Vector<Vector<String>> liefereLieferantenDaten() {
+		String sql = "SELECT name, ansprechpartner, telefon, telefax, anschrift, plz, ort, verklieferantID FROM verklieferant;";
+		Vector<Vector<String>> lieferanten = SqlInfo.holeFelder(sql);
 		return lieferanten;
+	}
+	
+	public static Vector<Vector<String>> sucheLieferantenDaten(String suche) {
+		String sql = "SELECT name, ansprechpartner, telefon, telefax, anschrift, plz, ort, verklieferantID FROM verklieferant WHERE name LIKE '%"+ suche +"%' OR ansprechpartner LIKE '%"+ suche +"%' " +
+				"OR telefon LIKE '%"+ suche +"%' OR telefax LIKE '%"+ suche +"%';";
+		Vector<Vector<String>> lieferanten = SqlInfo.holeFelder(sql);
+		return lieferanten;
+	}
+	
+	public static void loesche(int ID) {
+		String sql = "DELETE FROM verklieferant WHERE verklieferantID = " + ID;
+		SqlInfo.sqlAusfuehren(sql);
+	}
+
+	public static Lieferant[] liefereLieferantenCombo() {
+		String sql = "SELECT verklieferantID FROM verklieferant;";
+		Vector<String> ids = SqlInfo.holeFeld(sql);
+		Lieferant[] returnsstmt = new Lieferant[ids.size()];
+		int i = 0;
+		while(!ids.isEmpty()) {
+			returnsstmt[i] = new Lieferant(Integer.parseInt(ids.get(0)));
+			ids.remove(0);
+			i++;
+		}
+		return returnsstmt;
 	}
 	
 

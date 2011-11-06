@@ -68,15 +68,16 @@ public class Verkauf {
 	public String[][] liefereTabDaten() {
 		ArtikelVerkauf[] positionen = new ArtikelVerkauf[this.artikel.size()];
 		positionen = this.artikel.toArray(positionen);
-		String[][] returns = new String[positionen.length][7];
+		String[][] returns = new String[positionen.length][8];
 		for(int i = 0; i < positionen.length; i++) {
 			returns[i][0] = String.valueOf(positionen[i].getEan());
 			returns[i][1] = positionen[i].getBeschreibung();
 			returns[i][2] = df.format(positionen[i].getPreis());
 			returns[i][3] = df.format(positionen[i].getAnzahl());
-			returns[i][4] = df.format(positionen[i].getPreis() * positionen[i].getAnzahl());
-			returns[i][5] = df.format(positionen[i].getMwst());
-			returns[i][6] = String.valueOf(positionen[i].getPosition());
+			returns[i][4] = df.format(positionen[i].getRabatt());
+			returns[i][5] = df.format(positionen[i].getPreis() * positionen[i].getAnzahl());
+			returns[i][6] = df.format(positionen[i].getMwst());
+			returns[i][7] = String.valueOf(positionen[i].getPosition());
 		}
 		
 		return returns;
@@ -92,5 +93,11 @@ public class Verkauf {
 		for(int n = 0; n < artikel.size(); n++) {
 			artikel.get(n).verkaufeArtikel(0, vnummer, 0d, patid);
 		}
+	}
+	
+	public ArtikelVerkauf lieferePosition(int i) {
+		ArtikelVerkauf a = this.artikel.get(i);
+		this.loescheArtikel(i);
+		return a;
 	}
 }
