@@ -77,7 +77,7 @@ public class VerkaufGUI extends JXPanel{
 	DecimalFormat df = null;
 	INIFile settings = null;
 	VerkaufTab owner;
-	
+	boolean debug = false;
 	
 	
 	public VerkaufGUI(VerkaufTab owner){
@@ -251,40 +251,74 @@ public class VerkaufGUI extends JXPanel{
 				edits[8].setText(df.format(verkauf.getBetrag19()));
 				
 				setzeFelderzurueck();
-				
+				/*
 				vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 				vktab.getColumn(lastcol).setMinWidth(0);
 				vktab.getColumn(lastcol).setMaxWidth(0);
-				vktab.setRowSelectionInterval(vktab.getRowCount()-1, vktab.getRowCount()-1);
+				*/
+				String[][] werte = verkauf.liefereTabDaten();
+				setzeTabellenWerte(werte);
+				if(werte.length > 0){
+					vktab.setRowSelectionInterval(werte.length-1, werte.length-1);	
+				}
 				edits[0].requestFocus();
 				return;
 			}
 		} else if(befehl == VerkaufTab.edit) {
 			if(vktab.getSelectedRow() >= 0) {
-				this.aktuellerArtikel = verkauf.lieferePosition(Integer.parseInt((String) vkmod.getValueAt(vktab.getSelectedRow(), 7)));
-				vkmod.setDataVector(verkauf.liefereTabDaten(), column);
-				vktab.getColumn(lastcol).setMinWidth(0);
-				vktab.getColumn(lastcol).setMaxWidth(0);
-				edits[6].setText(df.format(verkauf.getBetragBrutto()));
-				edits[7].setText(df.format(verkauf.getBetrag7()));
-				edits[8].setText(df.format(verkauf.getBetrag19()));
-				edits[0].setText(this.aktuellerArtikel.getEan());
-				edits[3].setText(this.aktuellerArtikel.getBeschreibung());
-				edits[1].setText(String.valueOf(this.aktuellerArtikel.getAnzahl()).replace('.', ','));
-				edits[2].setText(String.valueOf(this.aktuellerArtikel.getRabatt()).replace('.', ','));
+				try{
+					this.aktuellerArtikel = verkauf.lieferePosition(Integer.parseInt((String) vkmod.getValueAt(vktab.getSelectedRow(), 7)));
+					String[][] werte = verkauf.liefereTabDaten();
+					setzeTabellenWerte(werte);
+					/*
+					System.out.println(werte.length);
+					vkmod.setDataVector(werte, column);
+					vktab.getColumn(lastcol).setMinWidth(0);
+					vktab.getColumn(lastcol).setMaxWidth(0);
+					*/
+					edits[6].setText(df.format(verkauf.getBetragBrutto()));
+					edits[7].setText(df.format(verkauf.getBetrag7()));
+					edits[8].setText(df.format(verkauf.getBetrag19()));
+					edits[0].setText(this.aktuellerArtikel.getEan());
+					edits[3].setText(this.aktuellerArtikel.getBeschreibung());
+					edits[1].setText(String.valueOf(this.aktuellerArtikel.getAnzahl()).replace('.', ','));
+					edits[2].setText(String.valueOf(this.aktuellerArtikel.getRabatt()).replace('.', ','));
+					double zeilengesamt = this.aktuellerArtikel.getAnzahl()*this.aktuellerArtikel.getPreis()-
+					 (this.aktuellerArtikel.getAnzahl()*this.aktuellerArtikel.getPreis()/100*this.aktuellerArtikel.getRabatt());
+					edits[4].setText(df.format(zeilengesamt));
+					
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 			} else {
 				JOptionPane.showMessageDialog(null, "Wen oder was willst du ändern?");
 			}
 		} else if(befehl == VerkaufTab.delete) {
 			if(vkmod.getRowCount() > 0) {
 				if(vktab.getSelectedRow() < 0){return;}
-				verkauf.loescheArtikel((Integer.parseInt((String)vkmod.getValueAt(vktab.getSelectedRow(), 7))));
+				int del1 = vktab.getSelectedRow();
+				int del2 = vktab.convertRowIndexToModel(del1);
+				//läuft auf Fehler wenn z.B. 3 oder mehr Artikel in der Tabelle
+				//anschließend der mittlere gelöscht wird und dann der letzte
+				//verkauf.loescheArtikel((Integer.parseInt((String)vkmod.getValueAt(vktab.getSelectedRow(), 7))));
+				verkauf.loescheArtikel(del2);
+				String[][] werte = verkauf.liefereTabDaten();
+				setzeTabellenWerte(werte);
+				/*
 				vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 				vktab.getColumn(lastcol).setMinWidth(0);
 				vktab.getColumn(lastcol).setMaxWidth(0);
+				*/
 				edits[6].setText(df.format(verkauf.getBetragBrutto()));
 				edits[7].setText(df.format(verkauf.getBetrag7()));
 				edits[8].setText(df.format(verkauf.getBetrag19()));
+				if(vkmod.getRowCount() >= (del1+1)){
+					vktab.setRowSelectionInterval(del1, del1);
+				}else if(vkmod.getRowCount() == 0){
+					return;
+				}else if(vkmod.getRowCount() >= del1){
+					vktab.setRowSelectionInterval(del1-1, del1-1);
+				}
 			} else {
 				JOptionPane.showMessageDialog(null, "Wen oder was willst du löschen?");
 			}
@@ -313,7 +347,19 @@ public class VerkaufGUI extends JXPanel{
 			adlg = null; //neu
 		}
 	}
-	
+	private void setzeTabellenWerte(String[][] tabDaten){
+		vkmod.setRowCount(0);
+		for(int i = 0; i < tabDaten.length;i++){
+			if(debug){zeigeWerte(tabDaten[i]);}
+			vkmod.addRow(tabDaten[i]);
+		}
+		vktab.repaint();
+	}
+	private void zeigeWerte(String[] werte){
+		for(int i = 0; i < werte.length;i++){
+			System.out.println(werte[i]);
+		}
+	}
 	private void activateListener(){
 		this.al = this.owner.al;
 		
@@ -331,8 +377,12 @@ public class VerkaufGUI extends JXPanel{
 					edits[6].setText(df.format(verkauf.getBetragBrutto()));
 					edits[7].setText(df.format(verkauf.getBetragBrutto()));
 					edits[8].setText(df.format(verkauf.getBetragBrutto()));
+					String[][] werte = verkauf.liefereTabDaten();
+					setzeTabellenWerte(werte);
+					/*
 					vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 					vktab.getColumn(lastcol).setMinWidth(0);
+					*/
 					vktab.getColumn(lastcol).setMaxWidth(0);
 					
 				}
@@ -408,7 +458,7 @@ public class VerkaufGUI extends JXPanel{
 		position.y = position.y - 175;
 		position.setLocation(position.x, position.y);
 
-		wDialog = new  WechselgeldDialog(null, this.owner.holePosition(200, 150), verkauf.getBetragBrutto());
+		wDialog = new  WechselgeldDialog(null, position /*this.owner.holePosition(200, 150)*/, verkauf.getBetragBrutto());
 		//nicht die feine englische...,
 		//alternativ müßten die ganzen Focus- und KeyListener abgehängt werden
 		new SwingWorker<Void,Void>(){
@@ -486,7 +536,11 @@ public class VerkaufGUI extends JXPanel{
 		schreibeUmsatzDaten(nummernkreis, 0.00, -100);
 		verkauf.fuehreVerkaufdurch(-100, nummernkreis);
 		verkauf = new Verkauf();
+		String[][] werte = verkauf.liefereTabDaten();
+		setzeTabellenWerte(werte);
+		/*
 		vkmod.setDataVector(verkauf.liefereTabDaten(), column);
+		*/
 		edits[0].requestFocus();
 		edits[6].setText("0,00");
 		edits[7].setText("0,00");
@@ -574,7 +628,11 @@ public class VerkaufGUI extends JXPanel{
 			verkauf.fuehreVerkaufdurch(patid, nummernkreis);
 			schreibeUmsatzDaten(nummernkreis, verkauf.getBetragBrutto(), patid);
 			verkauf = new Verkauf();
+			String[][] werte = verkauf.liefereTabDaten();
+			setzeTabellenWerte(werte);
+			/*
 			vkmod.setDataVector(verkauf.liefereTabDaten(), column);
+			*/
 			edits[0].requestFocus();
 			edits[6].setText("0,00");
 			edits[7].setText("0,00");
