@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowListener;
 import java.util.Vector;
 
 import javax.swing.JLabel;
@@ -41,7 +42,7 @@ import events.RehaTPEventClass;
 import events.RehaTPEventListener;
 
 
-public class ArtikelSuchenDialog extends RehaSmartDialog {
+public class ArtikelSuchenDialog extends RehaSmartDialog{
 
 	/**
 	 * 

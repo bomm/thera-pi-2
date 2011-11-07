@@ -643,4 +643,9 @@ public class VerkaufGUI extends JXPanel{
 		SqlInfo.sqlAusfuehren(sql);
 	}
 	
+	public void aufraeumen(){
+		//hier sollten die Listener removed werden
+		//anschließend die Listener genullt
+	}
+	
 }

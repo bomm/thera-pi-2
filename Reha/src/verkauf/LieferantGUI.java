@@ -143,5 +143,10 @@ public class LieferantGUI extends JXPanel{
 		this.lftab.getColumn(lfmod.getColumnCount()-1).setMinWidth(0);
 		this.lftab.getColumn(lfmod.getColumnCount()-1).setMaxWidth(0);
 	}
+	public void aufraeumen(){
+		//hier sollten die Listener removed werden
+		//anschließend die Listener genullt
+	}
+
 
 }

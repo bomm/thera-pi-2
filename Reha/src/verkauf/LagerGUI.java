@@ -140,5 +140,10 @@ public class LagerGUI extends JXPanel {
 		adlg.setVisible(true);
 		adlg = null;
 	}
+	public void aufraeumen(){
+		//hier sollten die Listener removed werden
+		//anschließend die Listener genullt
+	}
+	
 	
 }
