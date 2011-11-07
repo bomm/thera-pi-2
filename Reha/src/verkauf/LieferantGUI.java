@@ -65,6 +65,8 @@ public class LieferantGUI extends JXPanel{
 		lfmod = new DefaultTableModel();
 		lfmod.setColumnIdentifiers(columns);
 		lftab = new JXTable(lfmod);
+		lftab.getColumn(7).setMinWidth(0);
+		lftab.getColumn(7).setMaxWidth(0);
 		lftab.setEditable(false);
 		lftab.addMouseListener(new MouseListener() {
 

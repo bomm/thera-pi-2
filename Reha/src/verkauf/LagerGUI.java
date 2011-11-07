@@ -64,7 +64,10 @@ public class LagerGUI extends JXPanel {
 		pane.setLayout(lay);
 		
 		lgmod = new DefaultTableModel();
+		lgmod.setColumnIdentifiers(columns);
 		lgtab = new JXTable(lgmod);
+		lgtab.getColumn(6).setMinWidth(0);
+		lgtab.getColumn(6).setMaxWidth(0);
 		lgtab.setEditable(false);
 		this.setzeTabDaten(Artikel.liefereArtikelDaten());
 		lgtab.addMouseListener(new MouseListener() {
