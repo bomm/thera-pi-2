@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
@@ -33,8 +34,14 @@ import systemTools.JRtaTextField;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+import dialoge.PinPanel;
+import dialoge.RehaSmartDialog;
+import events.RehaTPEvent;
+import events.RehaTPEventClass;
+import events.RehaTPEventListener;
 
-public class WechselgeldDialog extends JXDialog {
+
+public class WechselgeldDialog extends RehaSmartDialog {
 
 	/**
 	 * 
@@ -49,12 +56,18 @@ public class WechselgeldDialog extends JXDialog {
 	KeyListener kl = null;
 	DecimalFormat df = new DecimalFormat("0.00");
 	
+	RehaTPEventClass rtp = null;
+	
+	PinPanel pinPanel = null;
+	
+	
 	public WechselgeldDialog(Frame owner, Point position, double summe) {
-		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
+		super(null,"WechselGeld");
 		this.summe = summe;
 		this.activateListener();
 		this.setSize(200, 150);
 		this.setLocation(position);
+		/*
 		this.setUndecorated(true);
 		this.setContentPane(getJContentPane());
 		this.setName("Wechselgeld");
@@ -62,9 +75,23 @@ public class WechselgeldDialog extends JXDialog {
 		this.setResizable(true);
 		this.setzeFocus();
 		this.setVisible(true);
+		*/
+		
+		pinPanel = new PinPanel();
+		pinPanel.getGruen().setVisible(false);
+		pinPanel.setName("WechselGeld");
+		setPinPanel(pinPanel);
+		
+		getSmartTitledPanel().setContentContainer(getJContentPane());
+		getSmartTitledPanel().getContentContainer().setName("WechselGeld");
+		getSmartTitledPanel().setTitle("Wechselgeld");
+		this.setName("WechselGeld");
+		validate();
 	}
-	
-	private void setzeFocus(){
+	public JRtaTextField getTextFeld(){
+		return gegebenFeld;
+	}
+	public void setzeFocus(){
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				gegebenFeld.requestFocus();
@@ -73,53 +100,56 @@ public class WechselgeldDialog extends JXDialog {
 	}
 	
 	private JPanel getJContentPane() {
-		if(pane == null) {
-			pane = new JXPanel();
-			pane.setBorder(new EtchedBorder(Color.white, Color.gray));
-			
-			//			      1     2      3     4        5
-			String xwerte = "5dlu, 40dlu, 5dlu, 60dlu:g, 5dlu";
-			//              1   2    3   4     5  6    7   8    9
-			String ywerte ="p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu:g, p, 5dlu ";
-			
-			FormLayout lay = new FormLayout(xwerte, ywerte);
-			CellConstraints cc = new CellConstraints();
-			
-			pane.setLayout(lay);
-			pane.setBackground(Color.white);
-			
-			pane.add(getJXTitledPanel(), cc.xyw(1, 1, 5));
-			
-			JXLabel lab = new JXLabel("Summe");
-			pane.add(lab, cc.xy(2, 3));
-			
-			lab = new JXLabel("gegeben:");
-			pane.add(lab, cc.xy(2, 5));
-			
-			lab = new JXLabel("Rückgeld:");
-			pane.add(lab, cc.xy(2, 7));
-			
-			summeLab = new JXLabel(df.format(summe).replace(".", ","));
-			pane.add(summeLab, cc.xy(4, 3));
-			
-			rest = new JXLabel("0,00");
-			pane.add(rest, cc.xy(4, 7));
-			
-			gegebenFeld = new JRtaTextField("FL",true,"6.2","RECHTS");
-			gegebenFeld.setText(df.format(summe));
-			gegebenFeld.addKeyListener(kl);
-			pane.add(gegebenFeld, cc.xy(4, 5));
-			
-			JXButton close = new JXButton("schliessen");
-			close.setActionCommand("schliessen");
-			close.addActionListener(al);
-			pane.add(close, cc.xyw(2, 9, 3));
+		try{
+		pane = new JXPanel();
+		pane.setBorder(new EtchedBorder(Color.WHITE, Color.GRAY));
 		
-			pane.validate();
+		//			      1     2      3     4        5
+		String xwerte = "5dlu, 40dlu, 5dlu, 60dlu:g, 5dlu";
+		//              1   2    3   4     5  6    7   8    9
+		String ywerte ="p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu:g, p, 5dlu ";
+		
+		FormLayout lay = new FormLayout(xwerte, ywerte);
+		CellConstraints cc = new CellConstraints();
+		
+		pane.setLayout(lay);
+		pane.setBackground(Color.WHITE);
+		
+		//pane.add(getJXTitledPanel(), cc.xyw(1, 1, 5));
+		
+		JXLabel lab = new JXLabel("Summe");
+		pane.add(lab, cc.xy(2, 3));
+		
+		lab = new JXLabel("gegeben:");
+		pane.add(lab, cc.xy(2, 5));
+		
+		lab = new JXLabel("Rückgeld:");
+		pane.add(lab, cc.xy(2, 7));
+		
+		summeLab = new JXLabel(df.format(summe).replace(".", ","));
+		pane.add(summeLab, cc.xy(4, 3));
+		
+		rest = new JXLabel("0,00");
+		pane.add(rest, cc.xy(4, 7));
+		
+		gegebenFeld = new JRtaTextField("FL",true,"6.2","RECHTS");
+		gegebenFeld.setText(df.format(summe));
+		gegebenFeld.addKeyListener(kl);
+		pane.add(gegebenFeld, cc.xy(4, 5));
+		
+		JXButton close = new JXButton("schliessen");
+		close.setActionCommand("schliessen");
+		close.addActionListener(al);
+		pane.add(close, cc.xyw(2, 9, 3));
+	
+		pane.validate();
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
+
 		return pane;		
 	}
-	
+	/*
 	private JXTitledPanel getJXTitledPanel() {
 		JXTitledPanel panel = new JXTitledPanel();
 		
@@ -140,7 +170,7 @@ public class WechselgeldDialog extends JXDialog {
 		panel.setBorder(null);
 		return panel;
 	}
-	
+	*/
 	private void activateListener() {
 		fl = new FocusListener() {
 
@@ -162,20 +192,23 @@ public class WechselgeldDialog extends JXDialog {
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 					schliessen();
-				}
-				
+					return;
+				}else if(arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					schliessen();
+					return;
+				} 
 			}
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				
+				String dummyparse = (gegebenFeld.getText().trim().equals("") ? "0.00" : gegebenFeld.getText().replace(",", "."));
+				double uebrig = Double.parseDouble(dummyparse) - summe;		
+				rest.setText(df.format(uebrig));				
 			}
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
-				
-				double uebrig = Double.parseDouble(gegebenFeld.getText().replace(",", ".")) - summe;		
-				rest.setText(df.format(uebrig));				
+				//bei Typed ist das TextFeld noch nicht gefüllt
 			}
 			
 		};
@@ -191,10 +224,26 @@ public class WechselgeldDialog extends JXDialog {
 			}
 			
 		};
+		
+		rtp = new RehaTPEventClass();
+		rtp.addRehaTPEventListener((RehaTPEventListener) this);
 	}
 	
 	private void schliessen() {
 		this.setVisible(false);
+		this.dispose();
 	}
+	public void rehaTPEventOccurred(RehaTPEvent evt) {
+		try{
+			if(evt.getDetails()[0].equals("WechselGeld")){
+				this.setVisible(false);
+				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
+				rtp = null;
+				pinPanel = null;
+				this.dispose();
+			}
+		}catch(NullPointerException ne){
+		}
+	}			
 
 }

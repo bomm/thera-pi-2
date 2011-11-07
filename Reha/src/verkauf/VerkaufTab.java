@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
@@ -168,18 +169,33 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 		al = new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(e.getActionCommand().equals("neu")) {
-					aktiviereFunktion(VerkaufTab.neu);
-				} else if(e.getActionCommand().equals("edit")) {
-					aktiviereFunktion(VerkaufTab.edit);
-				} else if(e.getActionCommand().equals("delete")) {
-					aktiviereFunktion(VerkaufTab.delete);
-				} else if(e.getActionCommand().equals("bonEnde")) {
-					aktiviereFunktion(VerkaufTab.bonEnde);
-				} else if(e.getActionCommand().equals("rechnungEnde")) {
-					aktiviereFunktion(VerkaufTab.rechnungEnde);
-				}
+			public void actionPerformed(ActionEvent ex) {
+
+
+				final ActionEvent e = ex;
+				
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						try{
+							if(e.getActionCommand().equals("neu")) {
+								aktiviereFunktion(VerkaufTab.neu);
+							} else if(e.getActionCommand().equals("edit")) {
+								aktiviereFunktion(VerkaufTab.edit);
+							} else if(e.getActionCommand().equals("delete")) {
+								aktiviereFunktion(VerkaufTab.delete);
+							} else if(e.getActionCommand().equals("bonEnde")) {
+								aktiviereFunktion(VerkaufTab.bonEnde);
+							} else if(e.getActionCommand().equals("rechnungEnde")) {
+								aktiviereFunktion(VerkaufTab.rechnungEnde);
+							}
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
+						return null;
+					}
+				}.execute();
+
 				
 			}
 			

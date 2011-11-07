@@ -22,6 +22,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.thera_pi.nebraska.gui.utils.ButtonTools;
@@ -71,6 +72,7 @@ public class VerkaufGUI extends JXPanel{
 	String[] column = {"Artikel-ID", "Beschreibung", "Einzel-Preis", "Anzahl", "Rabatt", "Gesamt-Preis", "MwSt.", ""};
 	
 	ArtikelVerkauf aktuellerArtikel = null;
+	WechselgeldDialog wDialog = null;
 	verkauf.model.Verkauf verkauf = null;
 	DecimalFormat df = null;
 	INIFile settings = null;
@@ -400,10 +402,30 @@ public class VerkaufGUI extends JXPanel{
 	
 	private void bonEnde() {
 		if(verkauf.getAnzahlPositionen() != 0) {
-		Point position = getLocation();
-		Dimension dim = getSize();
-		position.setLocation((position.getX() + (dim.getWidth() / 2)), position.getY());
-		new WechselgeldDialog(null, this.owner.holePosition(200, 150), verkauf.getBetragBrutto());
+
+		Point position = buts[1].getLocationOnScreen();
+		position.x = position.x + (buts[1].getWidth()/2) - 100;
+		position.y = position.y - 175;
+		position.setLocation(position.x, position.y);
+
+		wDialog = new  WechselgeldDialog(null, this.owner.holePosition(200, 150), verkauf.getBetragBrutto());
+		//nicht die feine englische...,
+		//alternativ müßten die ganzen Focus- und KeyListener abgehängt werden
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				while(! wDialog.getTextFeld().hasFocus()){
+					wDialog.setzeFocus();
+					Thread.sleep(25);
+					//System.out.println("erzwinge Focus");
+				}
+				return null;
+			}
+		}.execute();
+		wDialog.setModal(true);
+		wDialog.setVisible(true);
+		
+		wDialog = null;
 		
 		String propSection = "Bon";
 		String nummernkreis = "VB-"+ SqlInfo.erzeugeNummer("vbon");
@@ -469,12 +491,14 @@ public class VerkaufGUI extends JXPanel{
 		edits[6].setText("0,00");
 		edits[7].setText("0,00");
 		edits[8].setText("0");
+		}else{
+			JOptionPane.showMessageDialog(this, "Keine Positionen zum Bonieren vorhanden!");
 		}
 	}
 	
 	private void rechnungEnde() {
 		if(verkauf.getAnzahlPositionen() != 0) {
-		if(Reha.thisClass.patpanel != null) {
+		if( (Reha.thisClass.patpanel != null) && (Reha.thisClass.patpanel.patDaten != null)) {
 			String name = Reha.thisClass.patpanel.patDaten.get(2) , vorname = Reha.thisClass.patpanel.patDaten.get(3),
 					adresse = Reha.thisClass.patpanel.patDaten.get(21), plz = Reha.thisClass.patpanel.patDaten.get(23), 
 					ort = Reha.thisClass.patpanel.patDaten.get(24), anrede = Reha.thisClass.patpanel.patDaten.get(0);
