@@ -383,8 +383,9 @@ public class VerkaufGUI extends JXPanel{
 					/*
 					vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 					vktab.getColumn(lastcol).setMinWidth(0);
-					*/
 					vktab.getColumn(lastcol).setMaxWidth(0);
+					*/
+					
 					
 				}
 			}
