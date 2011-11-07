@@ -330,7 +330,7 @@ public class VerkaufGUI extends JXPanel{
 			UebergabeTool uebergabe = new UebergabeTool(this.owner.sucheText.getText());
 			// wichtig !! erst mal eine InstanzVariable erzeugen
 			// die dann z.B. für Focus setzen verwendet werden kann
-			adlg = new ArtikelSuchenDialog(null, uebergabe, this.owner.holePosition(300, 400)); //neu
+			adlg = new ArtikelSuchenDialog(null, uebergabe, this.owner.holePosition(300, 400),this.owner.sucheText.getText()); //neu
 			SwingUtilities.invokeLater(new Runnable(){ //neu
 				public void run(){
 					adlg.setzeFocus(); //neu					
@@ -345,6 +345,7 @@ public class VerkaufGUI extends JXPanel{
 				edits[1].requestFocus();
 			}
 			adlg = null; //neu
+			this.owner.sucheText.setText("");
 		}
 	}
 	private void setzeTabellenWerte(String[][] tabDaten){

@@ -24,6 +24,7 @@ import javax.swing.table.DefaultTableModel;
 
 import jxTableTools.DoubleTableCellRenderer;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -53,6 +54,7 @@ public class ArtikelSuchenDialog extends RehaSmartDialog{
 	JXTable tabelle = null;
 	MyArtikelWahlModel tabellenModel = null;
 	UebergabeTool ean = null;
+	String search = null;
 	ActionListener al = null;
 	FocusListener fl = null;
 	KeyListener kl = null;
@@ -60,9 +62,10 @@ public class ArtikelSuchenDialog extends RehaSmartDialog{
 	RehaTPEventClass rtp = null;
 	PinPanel pinPanel = null;
 	
-	public ArtikelSuchenDialog(Frame owner, UebergabeTool ean, Point position) {
+	public ArtikelSuchenDialog(Frame owner, UebergabeTool ean, Point position,String initsearch) {
 		super(null, "ArtSuchen");
 		this.ean = ean;
+		this.search = initsearch;
 		this.activateListener();
 		this.setSize(300, 400);
 		this.setLocation(position);
@@ -84,6 +87,16 @@ public class ArtikelSuchenDialog extends RehaSmartDialog{
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		//this.setzeFocus(); //ausgeschaltet /st.
 		//this.setVisible(true); //ausgeschaltet /st.
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				if(!suche.getText().trim().equals("")){
+					holeDaten();
+				}
+				return null;
+			}
+			
+		}.execute();
 	}
 	
 	public void setzeFocus(){
