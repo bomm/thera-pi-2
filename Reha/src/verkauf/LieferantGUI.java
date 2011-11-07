@@ -139,9 +139,16 @@ public class LieferantGUI extends JXPanel{
 	}
 	
 	private void setzeTabDaten(Vector<Vector<String>> daten) {
+		/*
 		this.lfmod.setDataVector(daten, columns);
 		this.lftab.getColumn(lfmod.getColumnCount()-1).setMinWidth(0);
 		this.lftab.getColumn(lfmod.getColumnCount()-1).setMaxWidth(0);
+		*/
+		lfmod.setRowCount(0);
+		for(int i = 0; i < daten.size();i++){
+			lfmod.addRow(daten.get(i));
+		}
+		lftab.repaint();
 	}
 	public void aufraeumen(){
 		//hier sollten die Listener removed werden

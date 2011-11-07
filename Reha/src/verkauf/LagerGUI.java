@@ -124,9 +124,16 @@ public class LagerGUI extends JXPanel {
 	}
 	
 	private void setzeTabDaten(Vector<Vector<String>> daten) {
+		/*
 		this.lgmod.setDataVector(daten, this.columns);
 		this.lgtab.getColumn(this.lgmod.getColumnCount()-1).setMinWidth(0);
 		this.lgtab.getColumn(this.lgmod.getColumnCount()-1).setMaxWidth(0);
+		*/
+		lgmod.setRowCount(0);
+		for(int i = 0; i < daten.size();i++){
+			lgmod.addRow(daten.get(i));
+		}
+		lgtab.repaint();
 	}
 	
 	private void doArtikelDialog(int id) {
