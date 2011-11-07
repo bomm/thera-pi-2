@@ -109,14 +109,14 @@ public class LagerGUI extends JXPanel {
 				doArtikelDialog(Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1)));
 				this.setzeTabDaten(Artikel.liefereArtikelDaten());
 			} else {
-				JOptionPane.showMessageDialog(null, "Wenn oder was willst du ändern?");
+				JOptionPane.showMessageDialog(null, "Wen oder was willst du ändern?");
 			}
 		} else if(befehl == VerkaufTab.delete) {
 			if(this.lgtab.getSelectedRow() >= 0) {
 				Artikel.loescheArtikel(Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1)));
 				this.setzeTabDaten(Artikel.liefereArtikelDaten());
 			} else {
-				JOptionPane.showMessageDialog(null, "Wenn oder was willst du löschen?");
+				JOptionPane.showMessageDialog(null, "Wen oder was willst du löschen?");
 			}
 		} else if(befehl == VerkaufTab.suche) {
 			this.setzeTabDaten(Artikel.sucheArtikelDaten(this.owner.sucheText.getText()));

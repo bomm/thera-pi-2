@@ -63,7 +63,7 @@ public class ArtikelDialog extends RehaSmartDialog {
 		
 		pinPanel = new PinPanel();
 		pinPanel.getGruen().setVisible(false);
-		pinPanel.getRot().setActionCommand("close");
+		//pinPanel.getRot().setActionCommand("close");
 		pinPanel.setName("ArtikelDlg");
 		setPinPanel(pinPanel);
 		inif = new INIFile(Reha.proghome +"ini/"+ Reha.aktIK +"/verkauf.ini");
@@ -204,19 +204,30 @@ public class ArtikelDialog extends RehaSmartDialog {
 			if(this.textEinkaufspreis.getText().equals("")) {
 				this.textEinkaufspreis.setText("0,00");
 			}
+			String dummyparse = "";
 			if(this.artikel != null) {
 				this.artikel.setEan(this.textArtikelID.getText());
 				this.artikel.setBeschreibung(this.textBeschreibung.getText());
-				this.artikel.setPreis(Double.parseDouble(this.textPreis.getText().replace(',', '.')));
-				this.artikel.setEinkaufspreis(Double.parseDouble(this.textEinkaufspreis.getText().replace(',', '.')));
-				this.artikel.setLagerstand(Double.parseDouble(this.textLagerstand.getText().replace(',', '.')));
+				dummyparse = (this.textPreis.getText().trim().equals("") ? "0.00" : this.textPreis.getText().replace(',', '.')); 
+				this.artikel.setPreis(Double.parseDouble(dummyparse));
+				dummyparse = (this.textEinkaufspreis.getText().trim().equals("") ? "0.00" : this.textEinkaufspreis.getText().replace(',', '.'));				
+				this.artikel.setEinkaufspreis(Double.parseDouble(dummyparse));
+				dummyparse = (this.textLagerstand.getText().trim().equals("") ? "0.00" : this.textLagerstand.getText().replace(',', '.'));				
+				this.artikel.setLagerstand(Double.parseDouble(dummyparse));
 				this.artikel.setLieferant(((Lieferant) this.comboLieferant.getSelectedItem()).getID());
 				this.artikel.setEinheit((String) this.comboEinheit.getSelectedItem());
 				this.artikel.setMwst(Double.parseDouble(((String) this.comboMwst.getSelectedItem()).replace(',', '.')));
 			} else {
-			this.artikel = new Artikel(this.textArtikelID.getText(), this.textBeschreibung.getText(), (String) this.comboEinheit.getSelectedItem(), Double.parseDouble(this.textPreis.getText().replace(',', '.')),
-						Double.parseDouble(((String) this.comboMwst.getSelectedItem()).replace(',', '.')), Double.parseDouble(this.textLagerstand.getText().replace(',', '.')), Double.parseDouble(this.textEinkaufspreis.getText().replace(',', '.')),
-						((Lieferant) this.comboLieferant.getSelectedItem()).getID());
+				this.artikel = new Artikel(
+					this.textArtikelID.getText(),
+					this.textBeschreibung.getText(),
+					(String) this.comboEinheit.getSelectedItem(), 
+					Double.parseDouble( (this.textPreis.getText().trim().equals("") ? "0.00" : this.textPreis.getText().replace(',', '.')) ),
+					Double.parseDouble(((String) this.comboMwst.getSelectedItem()).replace(',', '.')),
+					Double.parseDouble( (this.textLagerstand.getText().trim().equals("") ? "0.00" : this.textLagerstand.getText().replace(',', '.')) ), 
+					Double.parseDouble( (this.textEinkaufspreis.getText().trim().equals("") ? "0.00" : this.textEinkaufspreis.getText().replace(',', '.')) ),
+					( this.comboLieferant.getItemCount() > 0 ? ((Lieferant) this.comboLieferant.getSelectedItem()).getID() : -1)
+					);
 			}
 			this.schliessen();
 		}
@@ -248,7 +259,7 @@ public class ArtikelDialog extends RehaSmartDialog {
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 				rtp = null;
 				pinPanel = null;
-				this.dispose();
+				schliessen();
 			}
 		}catch(NullPointerException ne){
 		}

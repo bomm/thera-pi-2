@@ -253,6 +253,7 @@ public class VerkaufGUI extends JXPanel{
 				vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 				vktab.getColumn(lastcol).setMinWidth(0);
 				vktab.getColumn(lastcol).setMaxWidth(0);
+				vktab.setRowSelectionInterval(vktab.getRowCount()-1, vktab.getRowCount()-1);
 				edits[0].requestFocus();
 				return;
 			}
@@ -270,10 +271,11 @@ public class VerkaufGUI extends JXPanel{
 				edits[1].setText(String.valueOf(this.aktuellerArtikel.getAnzahl()).replace('.', ','));
 				edits[2].setText(String.valueOf(this.aktuellerArtikel.getRabatt()).replace('.', ','));
 			} else {
-				JOptionPane.showMessageDialog(null, "Wenn oder was willst du ändern?");
+				JOptionPane.showMessageDialog(null, "Wen oder was willst du ändern?");
 			}
 		} else if(befehl == VerkaufTab.delete) {
 			if(vkmod.getRowCount() > 0) {
+				if(vktab.getSelectedRow() < 0){return;}
 				verkauf.loescheArtikel((Integer.parseInt((String)vkmod.getValueAt(vktab.getSelectedRow(), 7))));
 				vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 				vktab.getColumn(lastcol).setMinWidth(0);
@@ -282,7 +284,7 @@ public class VerkaufGUI extends JXPanel{
 				edits[7].setText(df.format(verkauf.getBetrag7()));
 				edits[8].setText(df.format(verkauf.getBetrag19()));
 			} else {
-				JOptionPane.showMessageDialog(null, "Wenn oder was willst du löschen?");
+				JOptionPane.showMessageDialog(null, "Wen oder was willst du löschen?");
 			}
 		} else if(befehl == VerkaufTab.rechnungEnde) {
 			rechnungEnde();
@@ -336,6 +338,9 @@ public class VerkaufGUI extends JXPanel{
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				if(arg0.getKeyChar() == '?') {
+					arg0.consume();
+					((JRtaTextField)arg0.getSource()).setText("");
+					//edits[0].setText("");
 					aktiviereFunktion(VerkaufTab.suche);
 				}
 			}

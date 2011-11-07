@@ -112,14 +112,14 @@ public class LieferantGUI extends JXPanel{
 				this.doLieferantDialog(Integer.parseInt((String)this.lfmod.getValueAt(this.lftab.getSelectedRow(), 7)), this.owner.holePosition(300, 300));
 				this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
 			}  else {
-				JOptionPane.showMessageDialog(null, "Wenn oder was willst du ändern?");
+				JOptionPane.showMessageDialog(null, "Wen oder was willst du ändern?");
 			}
 		} else if(befehl == VerkaufTab.delete) {
 			if(this.lftab.getSelectedRow() >= 0) {
 				Lieferant.loesche(Integer.parseInt((String)this.lfmod.getValueAt(this.lftab.getSelectedRow(), 7)));
 				this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
 			} else {
-				JOptionPane.showMessageDialog(null, "Wenn oder was willst du löschen?");
+				JOptionPane.showMessageDialog(null, "Wen oder was willst du löschen?");
 			}
 		} else if(befehl == VerkaufTab.suche) {
 			this.setzeTabDaten(Lieferant.sucheLieferantenDaten(this.owner.sucheText.getText()));
