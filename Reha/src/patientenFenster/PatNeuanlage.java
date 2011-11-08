@@ -824,7 +824,7 @@ boolean updateBild = false;
 					builder12.getPanel().setDoubleBuffered(true);
 					
 					builder12.addSeparator("Krankenversicherung", cc12.xyw(1, 1, 6));
-					kassenLab = new JLabel("Kasse");
+					kassenLab = new JLabel("Kasse *)");
 					kassenLab.setIcon(SystemConfig.hmSysIcons.get("kleinehilfe"));
 					kassenLab.setHorizontalTextPosition(JLabel.LEFT);
 					
@@ -854,7 +854,7 @@ boolean updateBild = false;
 					builder12.add(jtf[16], cc12.xy(6, 11));
 					
 					builder12.addSeparator("Arzt / Therapeut", cc12.xyw(1, 23, 6));
-					arztLab = new JLabel("Hausarzt");
+					arztLab = new JLabel("Hausarzt *)");
 					arztLab.setIcon(SystemConfig.hmSysIcons.get("kleinehilfe"));
 					arztLab.setHorizontalTextPosition(JLabel.LEFT);
 					arztLab.addMouseListener(new MouseAdapter(){
@@ -1377,16 +1377,16 @@ boolean updateBild = false;
 		//builder.add(jtf[0], cc11.xy(3,1));
 		builder.addLabel("Titel", cc11.xy(4,3));
 		builder.add(jtf[1], cc11.xy(6,3));
-		builder.addLabel("Nachname", cc11.xy(1,5));
+		builder.addLabel("Nachname *)", cc11.xy(1,5));
 		builder.add(jtf[2], cc11.xyw(3, 5, 4));
-		builder.addLabel("Vorname", cc11.xy(1,7));
+		builder.addLabel("Vorname *)", cc11.xy(1,7));
 		builder.add(jtf[3], cc11.xyw(3, 7, 4));
-		builder.addLabel("Strasse, Nr.", cc11.xy(1,9));
+		builder.addLabel("Strasse, Nr. *)", cc11.xy(1,9));
 		builder.add(jtf[4], cc11.xyw(3, 9, 4));
-		builder.addLabel("PLZ, Ort", cc11.xy(1,11));
+		builder.addLabel("PLZ, Ort *)", cc11.xy(1,11));
 		builder.add(jtf[5], cc11.xy(3, 11));
 		builder.add(jtf[6], cc11.xyw(4, 11, 3));
-		builder.addLabel("Geburtstag", cc11.xy(1,13));
+		builder.addLabel("Geburtstag *)", cc11.xy(1,13));
 		builder.add(jtf[11], cc11.xy(3, 13));
 		builder.addLabel("Telefon priv.", cc11.xy(1, 15));
 		builder.add(jtf[7], cc11.xyw(3, 15, 4));
