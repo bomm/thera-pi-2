@@ -133,7 +133,7 @@ public class SysUtilVerkauf extends JXPanel {
 		pane.getPanel().setOpaque(false);
 				
 		
-		pane.addSeparator("Bondruck", cc.xyw(2,2,4));
+		pane.addSeparator("Bondruck", cc.xyw(1,2,5));
 		//JXLabel lab = new JXLabel("Bon:");
 		//pane.add(lab, cc.xyw(2, 2, 2));
 		
@@ -215,7 +215,7 @@ public class SysUtilVerkauf extends JXPanel {
 		bonSeitenlaenge.add(new JXLabel("mm * 100"), BorderLayout.EAST);
 		pane.add(bonSeitenlaenge, cc.xy(5, 24));
 		
-		pane.addSeparator("Rechnungsdruck", cc.xyw(2,26,4));
+		pane.addSeparator("Rechnungsdruck", cc.xyw(1,26,5));
 		/*
 		lab = new JXLabel("Rechnung:");
 		pane.add(lab, cc.xyw(2, 26, 2));
