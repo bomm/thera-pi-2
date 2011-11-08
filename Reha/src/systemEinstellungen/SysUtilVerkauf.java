@@ -104,10 +104,10 @@ public class SysUtilVerkauf extends JXPanel {
 		jpan.getPanel().setOpaque(false);		
 		CellConstraints jpancc = new CellConstraints();
 		
-		jpan.addSeparator("", jpancc.xyw(1,1,5));
-		jpan.add(abbruch, jpancc.xy(3,3));
-		jpan.add(speichern, jpancc.xy(5,3));
-		jpan.addLabel("Änderungen übernehmen?", jpancc.xy(1,3));
+		jpan.addSeparator("", jpancc.xyw(1,2,5));
+		jpan.add(abbruch, jpancc.xy(3,4));
+		jpan.add(speichern, jpancc.xy(5,4));
+		jpan.addLabel("Änderungen übernehmen?", jpancc.xy(1,4));
 		
 		jpan.getPanel().validate();
 		return jpan.getPanel();

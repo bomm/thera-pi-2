@@ -101,7 +101,6 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		rgb = new RgebHintergrund();
 		rgb.setLayout(new BorderLayout());
 		new SwingWorker<Void,Void>(){
-
 			@Override
 			protected Void doInBackground() throws Exception {
 				try{
@@ -111,8 +110,8 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				}
 				return null;
 			}
-			
-		}.execute();	
+		}.execute();
+		
 		rgb.add(getGebuehren(),BorderLayout.CENTER);
 		
 		getSmartTitledPanel().setContentContainer(rgb);

@@ -292,7 +292,7 @@ public class RehaSmartDialog extends JXDialog implements ISmartDialog,WindowList
 		// TODO Auto-generated method stub
 		ListenerSchliessen();
 		this.removeWindowListener(this);
-		////System.out.println("Basisklasse wird geschlossen - "+getName()+" IgnoreReturn = "+ignorereturn);
+		//System.out.println("Basisklasse wird geschlossen - "+getName()+" IgnoreReturn = "+ignorereturn);
 
 		
 	}
