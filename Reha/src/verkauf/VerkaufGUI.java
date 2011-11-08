@@ -9,6 +9,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Date;
 import java.text.DecimalFormat;
 
@@ -199,6 +201,34 @@ public class VerkaufGUI extends JXPanel{
 		vktab.setEditable(false);
 		vktab.getColumn(lastcol).setMinWidth(0);
 		vktab.getColumn(lastcol).setMaxWidth(0);
+		vktab.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if(arg0.getClickCount() == 2) {
+					aktiviereFunktion(VerkaufTab.edit);
+				}
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+			}
+			
+		});
 		jscr = JCompTools.getTransparentScrollPane(vktab);
 		jscr.validate();
 		pan.add(jscr,cc.xyw(2, 6, 13,CellConstraints.FILL,CellConstraints.FILL));
@@ -417,7 +447,7 @@ public class VerkaufGUI extends JXPanel{
 						einheitAnzahlLabel.setText("Anzahl / " + aktuellerArtikel.getEinheit());
 					} else {
 						edits[0].removeFocusListener(fl);
-						owner.sucheText.requestFocus();
+						edits[0].requestFocus();
 						edits[0].addFocusListener(fl);
 					}
 					return;

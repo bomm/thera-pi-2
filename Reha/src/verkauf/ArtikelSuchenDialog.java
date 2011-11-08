@@ -143,6 +143,7 @@ public class ArtikelSuchenDialog extends RehaSmartDialog{
 			tabellenModel.setColumnIdentifiers(spaltenNamen);
 			tabelle = new JXTable(tabellenModel);
 			tabelle.addKeyListener(kl);
+			tabelle.addMouseListener(ml);
 			tabelle.setEditable(false);
 			tabelle.getColumn(2).setCellRenderer(new DoubleTableCellRenderer());
 			JScrollPane scr = JCompTools.getTransparentScrollPane(tabelle);

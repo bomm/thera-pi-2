@@ -11,7 +11,6 @@ import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingworker.SwingWorker;
-import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.thera_pi.nebraska.gui.utils.JCompTools;
@@ -51,16 +50,19 @@ public class LieferantGUI extends JXPanel{
 		this.columns.add("");
 		
 		this.add(getContent(), BorderLayout.CENTER);
+		this.setLastRowSelected();
 	}
 	
 	private JXPanel getContent() {
 		JXPanel pane = new JXPanel();
 		pane.setOpaque(false);
 		String xwerte = "5dlu, p:g, 5dlu";
-		String ywerte = "5dlu, p:g, 5dlu";
+		String ywerte = "5dlu, p, 5dlu, p:g, 5dlu";
 		FormLayout lay = new FormLayout(xwerte, ywerte);
 		CellConstraints cc = new CellConstraints();
 		pane.setLayout(lay);
+		
+		pane.add(this.owner.getToolbar(), cc.xy(2, 2));
 		
 		lfmod = new DefaultTableModel();
 		lfmod.setColumnIdentifiers(columns);
@@ -97,9 +99,9 @@ public class LieferantGUI extends JXPanel{
 		this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
 		jscr = JCompTools.getTransparentScrollPane(lftab);
 		jscr.validate();
-		pane.add(jscr, cc.xy(2, 2));
+		pane.add(jscr, cc.xy(2, 4, CellConstraints.FILL, CellConstraints.FILL));
 		
-		pane.add(new JXLabel(), cc.xy(3, 3));
+		//pane.add(new JXLabel(), cc.xy(3, 3));
 		
 		pane.validate();
 		return pane;
@@ -109,10 +111,12 @@ public class LieferantGUI extends JXPanel{
 		if (befehl == VerkaufTab.neu) {
 			this.doLieferantDialog(-1, this.owner.holePosition(300, 300));
 			this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
+			this.setLastRowSelected();
 		} else if(befehl == VerkaufTab.edit) {
 			if(this.lftab.getSelectedRow() >= 0) {
 				this.doLieferantDialog(Integer.parseInt((String)this.lfmod.getValueAt(this.lftab.getSelectedRow(), 7)), this.owner.holePosition(300, 300));
 				this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
+				this.setLastRowSelected();
 			}  else {
 				JOptionPane.showMessageDialog(null, "Wen oder was willst du ändern?");
 			}
@@ -120,11 +124,13 @@ public class LieferantGUI extends JXPanel{
 			if(this.lftab.getSelectedRow() >= 0) {
 				Lieferant.loesche(Integer.parseInt((String)this.lfmod.getValueAt(this.lftab.getSelectedRow(), 7)));
 				this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
+				this.setLastRowSelected();
 			} else {
 				JOptionPane.showMessageDialog(null, "Wen oder was willst du löschen?");
 			}
 		} else if(befehl == VerkaufTab.suche) {
 			this.setzeTabDaten(Lieferant.sucheLieferantenDaten(this.owner.sucheText.getText()));
+			this.setLastRowSelected();
 		}
 	}
 	
@@ -161,6 +167,11 @@ public class LieferantGUI extends JXPanel{
 	public void aufraeumen(){
 		//hier sollten die Listener removed werden
 		//anschließend die Listener genullt
+	}
+	private void setLastRowSelected() {
+		if(this.lfmod.getRowCount() > 0) {
+			this.lftab.setRowSelectionInterval(this.lfmod.getRowCount()-1, this.lfmod.getRowCount()-1);
+		}
 	}
 
 

@@ -23,6 +23,9 @@ public class ArtikelVerkauf extends Artikel{
 	}
 	
 	public void gewaehreRabatt(double rabatt) {
+		if(this.rabatt != 0) {
+			this.preis = super.getPreis();
+		}
 		if(rabatt != 0) {
 			this.rabatt = rabatt;
 			this.preis = super.getPreis();

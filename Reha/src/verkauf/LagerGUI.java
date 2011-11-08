@@ -50,6 +50,7 @@ public class LagerGUI extends JXPanel {
 		this.setOpaque(false);
 		this.setLayout(new BorderLayout());
 		this.add(getContent(), BorderLayout.CENTER);
+		this.setLastRowSelected();
 		
 	}
 	
@@ -58,11 +59,13 @@ public class LagerGUI extends JXPanel {
 		pane.setOpaque(false);
 		
 		String xwerte = "5dlu, p:g, 5dlu";
-		String ywerte = "5dlu, p:g, 5dlu";
+		String ywerte = "5dlu, p, 5dlu, p:g, 5dlu";
 		
 		FormLayout lay = new FormLayout(xwerte, ywerte);
 		CellConstraints cc = new CellConstraints();
 		pane.setLayout(lay);
+		
+		pane.add(this.owner.getToolbar(), cc.xy(2,2));
 		
 		lgmod = new DefaultTableModel();
 		lgmod.setColumnIdentifiers(columns);
@@ -98,7 +101,7 @@ public class LagerGUI extends JXPanel {
 		});
 		jscr = JCompTools.getTransparentScrollPane(lgtab);
 		jscr.validate();
-		pane.add(jscr, cc.xy(2, 2));
+		pane.add(jscr, cc.xy(2, 4, CellConstraints.FILL, CellConstraints.FILL));
 		
 		pane.validate();
 		return pane;
@@ -108,10 +111,12 @@ public class LagerGUI extends JXPanel {
 		if(befehl == VerkaufTab.neu) {
 			doArtikelDialog(-1);
 			this.setzeTabDaten(Artikel.liefereArtikelDaten());
+			this.setLastRowSelected();
 		} else if(befehl == VerkaufTab.edit) {
 			if(this.lgtab.getSelectedRow() >= 0) {
 				doArtikelDialog(Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1)));
 				this.setzeTabDaten(Artikel.liefereArtikelDaten());
+				this.setLastRowSelected();
 			} else {
 				JOptionPane.showMessageDialog(null, "Wen oder was willst du ändern?");
 			}
@@ -119,11 +124,13 @@ public class LagerGUI extends JXPanel {
 			if(this.lgtab.getSelectedRow() >= 0) {
 				Artikel.loescheArtikel(Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1)));
 				this.setzeTabDaten(Artikel.liefereArtikelDaten());
+				this.setLastRowSelected();
 			} else {
 				JOptionPane.showMessageDialog(null, "Wen oder was willst du löschen?");
 			}
 		} else if(befehl == VerkaufTab.suche) {
 			this.setzeTabDaten(Artikel.sucheArtikelDaten(this.owner.sucheText.getText()));
+			this.setLastRowSelected();
 		}
 	}
 	
@@ -167,5 +174,10 @@ public class LagerGUI extends JXPanel {
 		//anschließend die Listener genullt
 	}
 	
+	private void setLastRowSelected() {
+		if(this.lgmod.getRowCount() > 0) {
+			this.lgtab.setRowSelectionInterval(this.lgmod.getRowCount()-1, this.lgmod.getRowCount()-1);
+		}
+	}
 	
 }

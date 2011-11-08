@@ -62,13 +62,12 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 		eltern = vki;
 		this.activateListener();
 		this.setOpaque(false);
-		String ywerte = "0dlu, p, 0dlu, 300dlu:g";
+		String ywerte = "0dlu, 300dlu:g, 0dlu";
 		String xwerte = "0dlu, 200dlu:g, 0dlu";
 		FormLayout lay = new FormLayout(xwerte, ywerte);
 		CellConstraints cc = new CellConstraints();
 		this.setLayout(lay);
-		this.add(getToolbar(), cc.xy(2, 2));
-		this.add(getTabs(), cc.xy(2, 4,CellConstraints.FILL,CellConstraints.FILL));
+		this.add(getTabs(), cc.xy(2, 2,CellConstraints.FILL,CellConstraints.FILL));
 	}
 	
 	private JTabbedPane getTabs() {
@@ -97,7 +96,7 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 		return pane;
 	}
 
-	private JToolBar getToolbar() {
+	JToolBar getToolbar() {
 		JToolBar pane = new JToolBar();
 		pane.setOpaque(false);
 		//					1  2   3     4       5      6     7   8   9    10   11  12 13
