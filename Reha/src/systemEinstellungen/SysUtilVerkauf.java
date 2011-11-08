@@ -407,9 +407,11 @@ public class SysUtilVerkauf extends JXPanel {
 				if(arg0.getActionCommand().equals("speicher")) {
 					speicherEinstellungen();
 				} else if(arg0.getActionCommand().equals("vorlageRechnung")) {
-					rechnungVorlage.setText(dateiWaehlen());
+					String sdummy = dateiWaehlen();
+					rechnungVorlage.setText((sdummy.equals("") ? rechnungVorlage.getText() : sdummy) );
 				} else if(arg0.getActionCommand().equals("vorlageBon")) {
-					bonVorlage.setText(dateiWaehlen());
+					String sdummy = dateiWaehlen();
+					bonVorlage.setText((sdummy.equals("") ? bonVorlage.getText() : sdummy) );
 				} else 	if(arg0.getActionCommand().equals("abbrechen")){
 					SystemInit.abbrechen();
 					return;
