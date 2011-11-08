@@ -224,7 +224,11 @@ public class LieferantDialog extends RehaSmartDialog {
 			}
 		}catch(NullPointerException ne){
 		}
-	}		
+	}	
+	
+	public JRtaTextField getTextField() {
+		return this.name;
+	}
 
 }
 

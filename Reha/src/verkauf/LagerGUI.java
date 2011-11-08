@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.thera_pi.nebraska.gui.utils.JCompTools;
@@ -146,6 +147,17 @@ public class LagerGUI extends JXPanel {
 				adlg.setzeFocus();				
 			}
 		});
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				while(! adlg.getTextField().hasFocus()){
+					adlg.setzeFocus();
+					Thread.sleep(25);
+					//System.out.println("erzwinge Focus");
+				}
+				return null;
+			}
+		}.execute();
 		adlg.setModal(true);
 		adlg.setVisible(true);
 		adlg = null;

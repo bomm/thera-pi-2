@@ -8,9 +8,9 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
@@ -130,11 +130,17 @@ public class LieferantGUI extends JXPanel{
 	
 	private void doLieferantDialog(int id,Point pt){
 		lfdlg = new LieferantDialog(id,pt);
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run(){
-				lfdlg.setzeFocus();		
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				while(! lfdlg.getTextField().hasFocus()){
+					lfdlg.setzeFocus();
+					Thread.sleep(25);
+					//System.out.println("erzwinge Focus");
+				}
+				return null;
 			}
-		});
+		}.execute();
 		lfdlg.setModal(true);
 		lfdlg.setVisible(true);
 		lfdlg = null;

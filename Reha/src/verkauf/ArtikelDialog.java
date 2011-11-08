@@ -264,6 +264,10 @@ public class ArtikelDialog extends RehaSmartDialog {
 		}catch(NullPointerException ne){
 		}
 	}		
+	
+	public JRtaTextField getTextField() {
+		return this.textArtikelID;
+	}
 
 }
 

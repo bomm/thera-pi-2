@@ -201,7 +201,7 @@ public class VerkaufGUI extends JXPanel{
 		vktab.getColumn(lastcol).setMaxWidth(0);
 		jscr = JCompTools.getTransparentScrollPane(vktab);
 		jscr.validate();
-		pan.add(jscr,cc.xyw(2, 6, 13));
+		pan.add(jscr,cc.xyw(2, 6, 13,CellConstraints.FILL,CellConstraints.FILL));
 		
 		/******Summe / Steuer / Rabatt ********/
 		lab = new JLabel("Summe:");
@@ -529,6 +529,8 @@ public class VerkaufGUI extends JXPanel{
 				doc.getPrintService().setActivePrinter(drucker);
 				PrintProperties printprop = new PrintProperties((short) 1, null);
 				doc.getPrintService().print(printprop);
+				Thread.sleep(100);
+				doc.close();
 			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Fehler: "+ e.getMessage() +"!");
@@ -621,6 +623,8 @@ public class VerkaufGUI extends JXPanel{
 					doc.getPrintService().setActivePrinter(drucker);
 					PrintProperties printprop = new PrintProperties(settings.getIntegerProperty(propSection, "Exemplare").shortValue(), null);
 					doc.getPrintService().print(printprop);
+					Thread.sleep(100);
+					doc.close();
 				}
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "Fehler: "+ e.getMessage() +"!");

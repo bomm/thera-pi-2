@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -67,7 +68,7 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 		CellConstraints cc = new CellConstraints();
 		this.setLayout(lay);
 		this.add(getToolbar(), cc.xy(2, 2));
-		this.add(getTabs(), cc.xy(2, 4));
+		this.add(getTabs(), cc.xy(2, 4,CellConstraints.FILL,CellConstraints.FILL));
 	}
 	
 	private JTabbedPane getTabs() {
@@ -108,12 +109,17 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 		pane.setBorder(null);
 		pane.setLayout(lay);
 		
+		/*
 		JXLabel lab = new JXLabel(SystemConfig.hmSysIcons.get("find"));
 		lab.addMouseListener(this.ml);
+		lab.setHorizontalTextPosition(SwingConstants.RIGHT);
 		pane.add(lab, cc.xy(2, 1));
-		
+		*/
 		sucheLabel = new JXLabel("Artikel suchen:");
-		pane.add(sucheLabel, cc.xy(4, 1));
+		sucheLabel.setIcon(SystemConfig.hmSysIcons.get("find"));
+		sucheLabel.addMouseListener(this.ml);
+		sucheLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+		pane.add(sucheLabel, cc.xyw(2, 1, 3,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		
 		sucheText = new JRtaTextField("nix", false);
 		sucheText.addKeyListener(kl);
