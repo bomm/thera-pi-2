@@ -15,6 +15,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.thera_pi.nebraska.gui.utils.JCompTools;
 
+import systemTools.JRtaTextField;
 import verkauf.model.Artikel;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -32,6 +33,7 @@ public class LagerGUI extends JXPanel {
 	private JScrollPane jscr;
 	private Vector<String> columns;
 	private ArtikelDialog adlg;
+	private JRtaTextField sucheText = new JRtaTextField("nix", false);
 	
 	LagerGUI(VerkaufTab owner) {
 		super();
@@ -65,7 +67,7 @@ public class LagerGUI extends JXPanel {
 		CellConstraints cc = new CellConstraints();
 		pane.setLayout(lay);
 		
-		pane.add(this.owner.getToolbar(), cc.xy(2,2));
+		pane.add(this.owner.getToolbar(sucheText), cc.xy(2,2));
 		
 		lgmod = new DefaultTableModel();
 		lgmod.setColumnIdentifiers(columns);
@@ -129,7 +131,7 @@ public class LagerGUI extends JXPanel {
 				JOptionPane.showMessageDialog(null, "Wen oder was willst du löschen?");
 			}
 		} else if(befehl == VerkaufTab.suche) {
-			this.setzeTabDaten(Artikel.sucheArtikelDaten(this.owner.sucheText.getText()));
+			this.setzeTabDaten(Artikel.sucheArtikelDaten(this.sucheText.getText()));
 			this.setLastRowSelected();
 		}
 	}

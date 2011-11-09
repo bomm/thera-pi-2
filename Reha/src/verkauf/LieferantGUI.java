@@ -15,6 +15,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.thera_pi.nebraska.gui.utils.JCompTools;
 
+import systemTools.JRtaTextField;
 import verkauf.model.Lieferant;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -32,6 +33,7 @@ public class LieferantGUI extends JXPanel{
 	private LieferantDialog lfdlg;
 	private JXTable lftab;
 	private DefaultTableModel lfmod;
+	private JRtaTextField sucheText = new JRtaTextField("nix", false);
 	
 	LieferantGUI(VerkaufTab owner) {
 		super();
@@ -62,7 +64,7 @@ public class LieferantGUI extends JXPanel{
 		CellConstraints cc = new CellConstraints();
 		pane.setLayout(lay);
 		
-		pane.add(this.owner.getToolbar(), cc.xy(2, 2));
+		pane.add(this.owner.getToolbar(sucheText), cc.xy(2, 2));
 		
 		lfmod = new DefaultTableModel();
 		lfmod.setColumnIdentifiers(columns);
@@ -129,7 +131,7 @@ public class LieferantGUI extends JXPanel{
 				JOptionPane.showMessageDialog(null, "Wen oder was willst du löschen?");
 			}
 		} else if(befehl == VerkaufTab.suche) {
-			this.setzeTabDaten(Lieferant.sucheLieferantenDaten(this.owner.sucheText.getText()));
+			this.setzeTabDaten(Lieferant.sucheLieferantenDaten(this.sucheText.getText()));
 			this.setLastRowSelected();
 		}
 	}

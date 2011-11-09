@@ -51,7 +51,6 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 	JVerkaufInternal eltern;
 	JTabbedPane pane = null;
 	JXLabel sucheLabel = null;
-	JRtaTextField sucheText = null;
 	JButton neuButton, editButton, delButton;
 	ActionListener al;
 	KeyListener kl;
@@ -96,7 +95,7 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 		return pane;
 	}
 
-	JToolBar getToolbar() {
+	JToolBar getToolbar(JRtaTextField sucheText) {
 		JToolBar pane = new JToolBar();
 		pane.setOpaque(false);
 		//					1  2   3     4       5      6     7   8   9    10   11  12 13
@@ -119,8 +118,7 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 		sucheLabel.addMouseListener(this.ml);
 		sucheLabel.setHorizontalTextPosition(SwingConstants.LEFT);
 		pane.add(sucheLabel, cc.xyw(2, 1, 3,CellConstraints.RIGHT,CellConstraints.DEFAULT));
-		
-		sucheText = new JRtaTextField("nix", false);
+	
 		sucheText.addKeyListener(kl);
 		pane.add(sucheText, cc.xy(6, 1));
 		
