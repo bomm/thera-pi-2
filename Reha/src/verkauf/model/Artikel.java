@@ -214,4 +214,8 @@ public class Artikel {
 		}
 		return daten;
 	}
+	public static void entferneLieferant(int lieferantID) {
+		String sql = "UPDATE verkartikel SET verklieferantID = '-1' WHERE verklieferantID = '" + lieferantID +"';";
+		SqlInfo.sqlAusfuehren(sql);
+	}
 }
