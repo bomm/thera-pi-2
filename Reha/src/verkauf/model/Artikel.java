@@ -1,5 +1,6 @@
 package verkauf.model;
 
+import java.text.DecimalFormat;
 import java.util.Vector;
 
 import sqlTools.SqlInfo;
@@ -163,15 +164,54 @@ public class Artikel {
 	}
 	
 	public static Vector<Vector<String>> liefereArtikelDaten() {
-		String sql = "SELECT verkartikel.ean, verkartikel.beschreibung, verkartikel.preis, verkartikel.einkaufspreis, verklieferant.name, verkartikel.lagerstand, verkartikel.verkartikelID FROM verkartikel, verklieferant WHERE verkartikel.verklieferantID = verklieferant.verklieferantID";
-		Vector<Vector<String>> daten = SqlInfo.holeFelder(sql);
+		String sql = "SELECT verkartikel.verkartikelID FROM verkartikel;";
+		DecimalFormat df = new DecimalFormat("0,00");
+		Vector<String> artikelIDs = SqlInfo.holeFeld(sql);
+		Vector<Vector<String>> daten = new Vector<Vector<String>>();
+		while(!artikelIDs.isEmpty()) {
+			Vector<String> artikel = new Vector<String>();
+			Artikel a = new Artikel(Integer.parseInt(artikelIDs.get(0)));
+			artikelIDs.remove(0);
+			artikel.add(String.valueOf(a.getEan()));
+			artikel.add(String.valueOf(a.getBeschreibung()));
+			artikel.add(df.format(a.getPreis()));
+			artikel.add(df.format(a.getEinkaufspreis()));
+			if(a.getLieferant() != -1) {
+				artikel.add(new Lieferant(a.getLieferant()).toString());
+			} else {
+				artikel.add("");
+			}
+			artikel.add(String.valueOf(a.getLagerstand()));
+			artikel.add(String.valueOf(a.id));
+			daten.add(artikel);
+		}
 		return daten;
 	}
 	
 	public static Vector<Vector<String>> sucheArtikelDaten(String filter) {
-		String sql = "SELECT verkartikel.ean, verkartikel.beschreibung, verkartikel.preis, verkartikel.einkaufspreis, verklieferant.name, verkartikel.lagerstand, verkartikel.verkartikelID FROM verkartikel, verklieferant WHERE verkartikel.verklieferantID = verklieferant.verklieferantID" +
-				" AND (verkartikel.ean LIKE '%"+filter+"%' OR verkartikel.beschreibung LIKE '%"+filter+"%')";
-		Vector<Vector<String>> daten = SqlInfo.holeFelder(sql);
+		String sql = "SELECT verkartikel.verkartikelID FROM verkartikel WHERE (verkartikel.ean LIKE '%"+filter+"%' OR verkartikel.beschreibung LIKE '%"+filter+"%')";
+		System.out.println(sql);
+		DecimalFormat df = new DecimalFormat("0,00");
+		Vector<String> artikelIDs = SqlInfo.holeFeld(sql);
+		System.out.println(artikelIDs.size());
+		Vector<Vector<String>> daten = new Vector<Vector<String>>();
+		while(!artikelIDs.isEmpty()) {
+			Vector<String> artikel = new Vector<String>();
+			Artikel a = new Artikel(Integer.parseInt(artikelIDs.get(0)));
+			artikelIDs.remove(0);
+			artikel.add(String.valueOf(a.getEan()));
+			artikel.add(String.valueOf(a.getBeschreibung()));
+			artikel.add(df.format(a.getPreis()));
+			artikel.add(df.format(a.getEinkaufspreis()));
+			if(a.getLieferant() != -1) {
+				artikel.add(new Lieferant(a.getLieferant()).toString());
+			} else {
+				artikel.add("");
+			}
+			artikel.add(String.valueOf(a.getLagerstand()));
+			artikel.add(String.valueOf(a.id));
+			daten.add(artikel);
+		}
 		return daten;
 	}
 }
