@@ -16,6 +16,7 @@ import org.jdesktop.swingx.JXTable;
 import org.thera_pi.nebraska.gui.utils.JCompTools;
 
 import systemTools.JRtaTextField;
+import verkauf.model.Artikel;
 import verkauf.model.Lieferant;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -124,7 +125,9 @@ public class LieferantGUI extends JXPanel{
 			}
 		} else if(befehl == VerkaufTab.delete) {
 			if(this.lftab.getSelectedRow() >= 0) {
-				Lieferant.loesche(Integer.parseInt((String)this.lfmod.getValueAt(this.lftab.getSelectedRow(), 7)));
+				int id = Integer.parseInt((String)this.lfmod.getValueAt(this.lftab.getSelectedRow(), 7));
+				Artikel.entferneLieferant(id);
+				Lieferant.loesche(id);
 				this.setzeTabDaten(Lieferant.liefereLieferantenDaten());
 				this.setLastRowSelected();
 			} else {
