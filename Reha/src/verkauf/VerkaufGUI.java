@@ -39,6 +39,7 @@ import verkauf.model.ArtikelVerkauf;
 import verkauf.model.Verkauf;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
+import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.internal.text.TextFieldService;
@@ -444,6 +445,7 @@ public class VerkaufGUI extends JXPanel{
 						edits[3].setText(aktuellerArtikel.getBeschreibung());
 						edits[4].setText(df.format(aktuellerArtikel.getPreis()));
 						einheitAnzahlLabel.setText("Anzahl / " + aktuellerArtikel.getEinheit());
+						// TODO prüfen ob das Fenster grade Aktiv ist!; Rechnung vorschau? 
 					} else {
 						edits[0].removeFocusListener(fl);
 						edits[0].requestFocus();
@@ -558,8 +560,18 @@ public class VerkaufGUI extends JXPanel{
 				doc.getPrintService().setActivePrinter(drucker);
 				PrintProperties printprop = new PrintProperties((short) 1, null);
 				doc.getPrintService().print(printprop);
-				Thread.sleep(100);
-				doc.close();
+				final ITextDocument xdoc = doc;
+				new SwingWorker<Void,Void>() {
+
+					@Override
+					protected Void doInBackground() throws Exception {
+						Thread.sleep(100);
+						xdoc.close();
+						Thread.sleep(100);
+						return null;
+					}
+					
+				};
 			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Fehler: "+ e.getMessage() +"!");
@@ -601,7 +613,9 @@ public class VerkaufGUI extends JXPanel{
 				descriptor.setAsTemplate(true);
 				
 				String url = Reha.proghome + "vorlagen/"+ Reha.aktIK + "/" + settings.getStringProperty(propSection, "Vorlage");
-				ITextDocument doc = (ITextDocument) service.loadDocument(url, descriptor);
+				IDocument document = service.loadDocument(url, descriptor);
+				ITextDocument doc = (ITextDocument) document;
+				
 				TextFieldService feldservice = (TextFieldService) doc.getTextFieldService();
 				ITextField[] felder = feldservice.getPlaceholderFields();
 				for(int i = 0; i < felder.length; i++) {
@@ -637,6 +651,7 @@ public class VerkaufGUI extends JXPanel{
 						felder[i].getTextRange().setText(nummernkreis);
 					}	
 				}
+				
 				TextTableService tservice = (TextTableService) doc.getTextTableService();
 				ITextTable[] tables = tservice.getTextTables();
 				fuelleTabelle(tables[0], propSection);
@@ -650,10 +665,21 @@ public class VerkaufGUI extends JXPanel{
 						drucker = doc.getPrintService().createPrinter(druckername);
 					}
 					doc.getPrintService().setActivePrinter(drucker);
-					PrintProperties printprop = new PrintProperties(settings.getIntegerProperty(propSection, "Exemplare").shortValue(), null);
+					short exemplare = settings.getIntegerProperty(propSection, "Exemplare").shortValue();
+					final PrintProperties printprop = new PrintProperties(exemplare, null);
 					doc.getPrintService().print(printprop);
-					Thread.sleep(100);
-					doc.close();
+					final ITextDocument xdoc = doc;
+					new SwingWorker<Void,Void>() {
+
+						@Override
+						protected Void doInBackground() throws Exception {
+							Thread.sleep(100);
+							xdoc.close();
+							Thread.sleep(100);
+							return null;
+						}
+						
+					};
 				}
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "Fehler: "+ e.getMessage() +"!");
@@ -674,9 +700,7 @@ public class VerkaufGUI extends JXPanel{
 			
 		} else {
 			JOptionPane.showMessageDialog(null, "Bitte erst Patientenfenster öffnen und Patienten auswählen!");
-			// vlt. von Selbst Patientenfenster öffnen?
-		}
-		}
+		}}
 	}
 	
 	private void fuelleTabelle(ITextTable tabelle, String propSection) throws TextException {
