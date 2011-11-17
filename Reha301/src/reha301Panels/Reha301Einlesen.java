@@ -613,12 +613,13 @@ public class Reha301Einlesen{
 		}
 		if(zeile.startsWith("COM+")){
 			if(teile.length < 2){ret[0]="";return ret;}
+			//if(teile.length == 2){ret[0]="Kontakt: "+teile[1];return ret;}
 			if(teile[1].trim().endsWith(":TE")){
 				ret[0] = String.valueOf("Telefon: "+teile[1].split(":")[0]);	
 				dbHmap.put("telefon",teile[1].split(":")[0] );
-			}else if(teile[2].trim().equals(":FX")){
+			}else if(teile[1].trim().endsWith(":FX")){
 				ret[0] = String.valueOf("Fax: "+teile[1].split(":")[0]);	
-			}else if(teile[2].trim().equals(":EM")){
+			}else if(teile[1].trim().endsWith(":EM")){
 				ret[0] = String.valueOf("Email: "+teile[1].split(":")[0]);	
 			}
 			return ret;
