@@ -38,6 +38,9 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 	public static boolean rehaMailIsActive = false;
 	public static int rehaMailreversePort = -1;
 
+	public static boolean rehaHMKIsActive = false;
+	public static int rehaHMKreversePort = -1;
+
 	public RehaIOServer(int x){
 		Reha.xport = x;
 		execute();
@@ -192,6 +195,25 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 			return;
 		}
 	}
+	/**********
+	 * 
+	 * 
+	 * RehaHMK
+	 * 
+	 * 
+	 */	
+	private void doRehaHMK(String op){
+		if(op.split("#")[1].equals(RehaIOMessages.IS_STARTET)){
+			Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
+			rehaHMKIsActive = true;
+			Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+			return;
+		}else if(op.split("#")[1].equals(RehaIOMessages.IS_FINISHED)){
+			rehaHMKIsActive = false;
+			rehaHMKreversePort = -1;
+			return;
+		}
+	}	
 	/*************
 	 * 
 	 * 
@@ -220,6 +242,9 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 		}else if(op.split("#")[1].equals("RehaMail")){
 			rehaMailreversePort = Integer.parseInt(op.split("#")[2]);
 			System.out.println("Port fuer RehaMail = "+op.split("#")[2]);
+		}else if(op.split("#")[1].equals("RehaHMK")){
+			rehaHMKreversePort = Integer.parseInt(op.split("#")[2]);
+			System.out.println("Port fuer RehaHMK = "+op.split("#")[2]);
 		}
 	}
 	/*******************************/
@@ -291,6 +316,9 @@ public class RehaIOServer extends SwingWorker<Void,Void>{
 					
 				}else if(sb.toString().startsWith("RehaMail#")){
 					doRehaMail(String.valueOf(sb.toString()));
+					
+				}else if(sb.toString().startsWith("RehaHMK#")){
+					doRehaHMK(String.valueOf(sb.toString()));
 					
 				}else if(sb.toString().startsWith("AppName#")){
 					doReversePort(sb.toString());

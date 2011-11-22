@@ -32,6 +32,7 @@ public class JLabelRenderer extends JLabel implements TableCellRenderer{
     			  setText( ((JLabel)value).getText() );
 	    	  }
 	      }
+	      
 	      return this;
 	   }
 

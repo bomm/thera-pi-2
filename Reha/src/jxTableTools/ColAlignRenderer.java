@@ -29,14 +29,16 @@ int align = 0;
 		  /*
 	      setBackground( (Color) table.getValueAt(row, column-2) );
 	      setForeground( (Color) table.getValueAt(row, column-1) );
+	      
+	      
 	      if(value instanceof JLabel){
 	    	  if( ((JLabel)value).toString().equals("")){
-	    		  setText("Demo-Text"); 	    		  
+	    		  //setText("Demo-Text"); 	    		  
 	    	  }else{
     			  setText( ((JLabel)value).getText() );
 	    	  }
 	      }
-	      */
+		  */
 	      return this;
 	   }
 

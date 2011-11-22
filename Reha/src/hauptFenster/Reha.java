@@ -313,7 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-10-18-DB=";
+	public static String aktuelleVersion = "V=2011-11-22-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1728,6 +1728,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.setActionCommand("workflow");
 			men.addActionListener(this);
 			toolsMenu.add(men);		
+			toolsMenu.addSeparator();
+			men = new JMenuItem("Heilmittelrichtlinien-Tool");
+			men.setActionCommand("hmrsearch");
+			men.addActionListener(this);
+			toolsMenu.add(men);		
 
 
 		}
@@ -2726,7 +2731,21 @@ public void actionPerformed(ActionEvent arg0) {
 		//Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		return;
 	}
-
+	if(cmd.equals("hmrsearch")){
+		System.out.println("isActive = "+RehaIOServer.rehaHMKIsActive);
+		if(RehaIOServer.rehaHMKIsActive){
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaHMKreversePort,"Reha#"+RehaIOMessages.MUST_GOTOFRONT );		
+				}
+			});
+			return;
+		}
+		new LadeProg(Reha.proghome+"RehaHMK.jar "+
+				" "+Reha.proghome+" "+Reha.aktIK+" "+String.valueOf(Integer.toString(Reha.xport)) );
+		//Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+		return;
+	}
 	
 	
 }
