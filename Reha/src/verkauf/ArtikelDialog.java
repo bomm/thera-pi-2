@@ -239,7 +239,9 @@ public class ArtikelDialog extends RehaSmartDialog {
 		this.textPreis.setText(String.valueOf(this.artikel.getPreis()).replace('.', ','));
 		this.textEinkaufspreis.setText(String.valueOf(this.artikel.getEinkaufspreis()).replace('.', ','));
 		this.textLagerstand.setText(String.valueOf(this.artikel.getLagerstand()).replace('.', ','));
-		this.comboLieferant.setSelectedItem(new Lieferant(this.artikel.getLieferant()));
+		if(this.artikel.getLieferant() != -1) {
+			this.comboLieferant.setSelectedItem(new Lieferant(this.artikel.getLieferant()));
+		}
 		this.comboEinheit.setSelectedItem(this.artikel.getEinheit());
 		this.comboMwst.setSelectedItem(String.valueOf(this.artikel.getMwst()));
 	}
