@@ -536,18 +536,21 @@ public class VerkaufGUI extends JXPanel{
 				} else if(felder[i].getDisplayText().equals("<Rnummer>")) {
 					felder[i].getTextRange().setText(nummernkreis);
 				} else if(felder[i].getDisplayText().equals("<Rbrutto>")) {
-					felder[i].getTextRange().setText(df.format(verkauf.getBetragBrutto()));
+					felder[i].getTextRange().setText(df.format(verkauf.getBetragBrutto()) + " €");
 				} else if(felder[i].getDisplayText().equals("<Rmwst7>")) {
-					felder[i].getTextRange().setText(df.format(verkauf.getBetrag7()));
+					felder[i].getTextRange().setText(df.format(verkauf.getBetrag7()) + " €");
 				} else if(felder[i].getDisplayText().equals("<Rmwst19>")) {
-					felder[i].getTextRange().setText(df.format(verkauf.getBetrag19()));
+					felder[i].getTextRange().setText(df.format(verkauf.getBetrag19()) + " €");
 				} else if(felder[i].getDisplayText().equals("<Rnetto>")) {
-					felder[i].getTextRange().setText(df.format(verkauf.getBetragBrutto() - verkauf.getBetrag19() - verkauf.getBetrag7()));
+					felder[i].getTextRange().setText(df.format(verkauf.getBetragBrutto() - verkauf.getBetrag19() - verkauf.getBetrag7()) + " €");
 				}
 			}
 			TextTableService tservice = (TextTableService) doc.getTextTableService();
-			ITextTable[] tables = tservice.getTextTables();
-			fuelleTabelle(tables[0], propSection);
+			
+			ITextTable tabelle = tservice.getTextTable("Tabelle1");
+			if(tabelle != null) {
+				fuelleTabelle(tabelle, propSection);
+			}
 			
 			if(settings.getBooleanProperty(propSection, "SofortDrucken")) {
 				String druckername = settings.getStringProperty(propSection, "Drucker");
@@ -638,13 +641,13 @@ public class VerkaufGUI extends JXPanel{
 					} else if(felder[i].getDisplayText().equals("<Port>")) {
 						felder[i].getTextRange().setText(StringTools.EGross(ort));
 					} else if(felder[i].getDisplayText().equals("<Rnetto>")) {
-						felder[i].getTextRange().setText(df.format(verkauf.getBetragBrutto() - verkauf.getBetrag19() - verkauf.getBetrag7()));
+						felder[i].getTextRange().setText(df.format(verkauf.getBetragBrutto() - verkauf.getBetrag19() - verkauf.getBetrag7()) + " €");
 					} else if(felder[i].getDisplayText().equals("<Rmwst7>")) {
-						felder[i].getTextRange().setText(df.format(verkauf.getBetrag7()));
+						felder[i].getTextRange().setText(df.format(verkauf.getBetrag7()) + " €");
 					} else if(felder[i].getDisplayText().equals("<Rmwst19>")) {
-						felder[i].getTextRange().setText(df.format(verkauf.getBetrag19()));
+						felder[i].getTextRange().setText(df.format(verkauf.getBetrag19()) + " €");
 					} else if(felder[i].getDisplayText().equals("<Rbrutto>")) {
-						felder[i].getTextRange().setText(df.format(verkauf.getBetragBrutto()));
+						felder[i].getTextRange().setText(df.format(verkauf.getBetragBrutto()) + " €");
 					} else if(felder[i].getDisplayText().equals("<Rrabatt>")) {
 						felder[i].getTextRange().setText(df.format(verkauf.getRabatt()));
 					} else if(felder[i].getDisplayText().equals("<Rnummer>")) {
@@ -653,8 +656,11 @@ public class VerkaufGUI extends JXPanel{
 				}
 				
 				TextTableService tservice = (TextTableService) doc.getTextTableService();
-				ITextTable[] tables = tservice.getTextTables();
-				fuelleTabelle(tables[0], propSection);
+				
+				ITextTable tabelle = tservice.getTextTable("Tabelle1");
+				if(tabelle != null) {
+					fuelleTabelle(tabelle, propSection);
+				}
 				
 				if(settings.getBooleanProperty(propSection, "SofortDrucken")) {
 					String druckername = settings.getStringProperty(propSection, "Drucker");
@@ -710,17 +716,17 @@ public class VerkaufGUI extends JXPanel{
 			for(int m = 0; m < settings.getIntegerProperty(propSection, "Spaltenanzahl"); m++) {
 				String spaltenname = settings.getStringProperty(propSection, "Spalte" +(m+1));
 				if(spaltenname.equals("ArtikelID")) {
-					tabelle.getCell(m, n+1).getTextService().getText().setText(String.valueOf(positionen[n].getEan()));
+					tabelle.getCell(m, n+1).getTextService().getText().setText(positionen[n].getEan());
 				} else if(spaltenname.equals("MwSt")) {
-					tabelle.getCell(m, n+1).getTextService().getText().setText(String.valueOf(positionen[n].getMwst()));
+					tabelle.getCell(m, n+1).getTextService().getText().setText(new DecimalFormat("0").format(positionen[n].getMwst()));
 				} else if(spaltenname.equals("Anzahl")) {
-					tabelle.getCell(m, n+1).getTextService().getText().setText(String.valueOf(positionen[n].getAnzahl()));
+					tabelle.getCell(m, n+1).getTextService().getText().setText(df.format(positionen[n].getAnzahl()));
 				} else if(spaltenname.equals("Beschreibung")) {
 					tabelle.getCell(m, n+1).getTextService().getText().setText(positionen[n].getBeschreibung());
 				} else if(spaltenname.equals("EinzelPreis")) {
-					tabelle.getCell(m, n+1).getTextService().getText().setText(df.format(positionen[n].getPreis()));
+					tabelle.getCell(m, n+1).getTextService().getText().setText(df.format(positionen[n].getPreis()) + " €");
 				} else if(spaltenname.equals("GesamtPreis")) {
-					tabelle.getCell(m, n+1).getTextService().getText().setText(df.format(positionen[n].getPreis() * positionen[n].getAnzahl()));
+					tabelle.getCell(m, n+1).getTextService().getText().setText(df.format(positionen[n].getPreis() * positionen[n].getAnzahl())  + " €");
 				} else if(spaltenname.equals("Rabatt")) {
 					tabelle.getCell(m, n+1).getTextService().getText().setText(df.format(positionen[n].getRabatt()));
 				} else if(spaltenname.equals("Bemerkung")) {
@@ -737,7 +743,7 @@ public class VerkaufGUI extends JXPanel{
 					
 					tabelle.getCell(m, n+1).getTextService().getText().setText(inhalt);
 				} else if(spaltenname.equals("NettoPreis")) {
-					tabelle.getCell(m, n+1).getTextService().getText().setText(df.format(positionen[n].getPreis() / (1 + (positionen[n].getMwst()))));
+					tabelle.getCell(m, n+1).getTextService().getText().setText(df.format(positionen[n].getPreis() / (1 + (positionen[n].getMwst())))  + " €");
 				}
 			}
 		}
