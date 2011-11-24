@@ -165,7 +165,7 @@ public class Artikel {
 	
 	public static Vector<Vector<String>> liefereArtikelDaten() {
 		String sql = "SELECT verkartikel.verkartikelID FROM verkartikel;";
-		DecimalFormat df = new DecimalFormat("0,00");
+		DecimalFormat df = new DecimalFormat("0.00");
 		Vector<String> artikelIDs = SqlInfo.holeFeld(sql);
 		Vector<Vector<String>> daten = new Vector<Vector<String>>();
 		while(!artikelIDs.isEmpty()) {
@@ -191,7 +191,7 @@ public class Artikel {
 	public static Vector<Vector<String>> sucheArtikelDaten(String filter) {
 		String sql = "SELECT verkartikel.verkartikelID FROM verkartikel WHERE (verkartikel.ean LIKE '%"+filter+"%' OR verkartikel.beschreibung LIKE '%"+filter+"%')";
 		System.out.println(sql);
-		DecimalFormat df = new DecimalFormat("0,00");
+		DecimalFormat df = new DecimalFormat("0.00");
 		Vector<String> artikelIDs = SqlInfo.holeFeld(sql);
 		System.out.println(artikelIDs.size());
 		Vector<Vector<String>> daten = new Vector<Vector<String>>();
