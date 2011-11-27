@@ -94,8 +94,8 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 	public void setRezeptDaten(String reznummer,String sid){
 		RezeptDaten.feddisch = false;	
 		boolean reha = false;
-		reznum.setText(reznummer);
-		reznum.repaint();
+		//reznum.setText(reznummer);
+		//reznum.repaint();
 		final String xreznummer = reznummer;
 				try{
 					String stest = StringTools.NullTest((String)Reha.thisClass.patpanel.vecaktrez.get(43));
@@ -179,9 +179,13 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 						public  void run(){
 							int farbcode = StringTools.ZahlTest((String)Reha.thisClass.patpanel.vecaktrez.get(57));
 							if(farbcode > 0){
+								reznum.setText(xreznummer);
 								reznum.setForeground( (SystemConfig.vSysColsObject.get(0).get(farbcode)[0]) );
+								reznum.repaint();
 							}else{
+								reznum.setText(xreznummer);
 								reznum.setForeground(Color.BLUE);
+								reznum.repaint();								
 							}
 						}
 					});		
@@ -321,7 +325,7 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 			    			((String)Reha.thisClass.patpanel.patDaten.get(0)).substring(0,1)+
 			    			"-"+Reha.thisClass.patpanel.patDaten.get(2)+","+
 			    			Reha.thisClass.patpanel.patDaten.get(3)+"°"+
-			    			reznum.getText()+
+			    			String.valueOf(reznum.getText())+
 			    			(farbcode > 0 ? (String)SystemConfig.vSysColsCode.get(farbcode) : "")+
 			    			"°"+Reha.thisClass.patpanel.rezlabs[14].getText()
 			    			);
