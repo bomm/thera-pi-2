@@ -268,6 +268,15 @@ public class RezTools {
 		boolean[] bret = {false,false};
 		Vector<Vector<String>> vec = SqlInfo.holeFelder("select vorrangig,extraok from kuerzel where kuerzel='"+kuerzel+
 				"' and disziplin ='"+xreznr.substring(0,2)+"' LIMIT 1");
+		if(vec.size() <= 0){
+			String msg = "Achtung!\n\n"+
+			"Ihre Kürzelzuordnung in den Preislisten ist nicht korrekt!!!!!\n"+
+			"Kürzel: "+kuerzel+"\n"+
+			"Disziplin: "+xreznr.substring(0,2)+"\n\n"+
+			"Für die ausgewählte Diziplin ist das angegebene Kürzel nicht in der Kürzeltabelle vermerkt!";
+			JOptionPane.showMessageDialog(null, msg);
+			return null;
+		}
 		bret[0] = vec.get(0).get(0).equals("T");
 		bret[1] = vec.get(0).get(1).equals("T");
 		return bret;

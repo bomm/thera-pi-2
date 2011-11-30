@@ -564,15 +564,15 @@ private int dbBehandler;
 
 		if((int) ZeitFunk.MinutenSeitMitternacht(this.feld.getFeld(this.Kollege,iBeginn,this.Block-1)) >
 				startAktuell){
-			JOptionPane.showMessageDialog(null,"Der gew�nschte Starttermin w�rde sich mit dem voangegangenen\n"+
-					"Termin �berschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null,"Der gewünschte Starttermin würde sich mit dem voangegangenen\n"+
+					"Termin überschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
 			////System.out.println("Beginn Vorblock = nach dem Beginn des aktuellen Blocks");
 			return -1;
 		}
 		if( (this.Block < (AnzahlOrigBloecke-1)) && (startAktuell < endeVorBlock) ){
 			if(SystemConfig.TerminUeberlappung == 0){
-				JOptionPane.showMessageDialog(null,"Der gew�nschte Starttermin w�rde sich mit dem voangegangenen\n"+
-						"Termin �berschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(null,"Der gewünschte Starttermin würde sich mit dem voangegangenen\n"+
+						"Termin überschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
 				////System.out.println("Termin�berlappung ist nicht erlaubt");
 				return -1;
 			}
@@ -707,15 +707,15 @@ private int dbBehandler;
 		int aktende = (int) ZeitFunk.MinutenSeitMitternacht(sende);
 		String sbeginn = this.feld.getFeld(this.Kollege,iBeginn,this.Block);
 		if(ende >= SystemConfig.KalenderMilli[1]){
-			JOptionPane.showMessageDialog(null,"Die gew�nschte Endzeit des Termines liegt nach der absoluten Endzeit\n"+
+			JOptionPane.showMessageDialog(null,"Die gewünschte Endzeit des Termines liegt nach der absoluten Endzeit\n"+
 					"des Terminkalenders und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
 			return -1;
 		}
 		// verpacken in g�ltige if-abfrage
 		if( (ende > aktende) && (this.Block < AnzahlOrigBloecke-1) ){
 			if(SystemConfig.TerminUeberlappung == 0){
-				JOptionPane.showMessageDialog(null,"Der gew�nschte Endzeitpunkt w�rde sich mit anderen \n"+
-					"Terminen �berschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(null,"Der gewünschte Endzeitpunkt würde sich mit anderen \n"+
+					"Terminen überschneiden und kann deshalb nicht geschrieben werden", "Wichtige Mitteilung", JOptionPane.WARNING_MESSAGE);
 				////System.out.println("Termin�berlappung ist nicht erlaubt");
 				return -1;
 			}

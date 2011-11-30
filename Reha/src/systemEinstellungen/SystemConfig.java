@@ -53,7 +53,7 @@ public class SystemConfig {
 	
 	public static boolean[] taskPaneCollapsed = {false,false,true,true,false,true};
 	/**
-	 * nachfolgende static's sind notwendig f�r den Einsatz des Terminkalenders
+	 * nachfolgende static's sind notwendig für den Einsatz des Terminkalenders
 	 */
 	public static ArrayList<ArrayList<ArrayList<String[]>>> aTerminKalender;
 	public static int AnzahlKollegen;
@@ -140,6 +140,7 @@ public class SystemConfig {
 	public static String sReaderName = null;
 	public static String sReaderAktiv = null;
 	public static String sReaderCtApiLib = null;
+	public static String sReaderDeviceID = null;
 	public static String sDokuScanner = null;
 	public static String sBarcodeScanner = null;
 	public static String sBarcodeAktiv = null;
@@ -911,11 +912,21 @@ public class SystemConfig {
 		if(inif.getIntegerProperty("KartenLeser", "KartenLeserAktivieren") > 0){
 			sReaderName = inif.getStringProperty("KartenLeser", "KartenLeserName");
 			sReaderAktiv = "1";
+			boolean mustsave = false;
 			if(inif.getStringProperty("KartenLeser", "KartenLeserCTAPILib")==null){
 				inif.setStringProperty("KartenLeser", "KartenLeserCTAPILib","ctpcsc31kv",null);
+				mustsave = true;
+			}
+			if(inif.getStringProperty("KartenLeser", "KartenLeserDeviceID")==null){
+				inif.setStringProperty("KartenLeser", "KartenLeserDeviceID","0",null);
+				mustsave = true;
+			}
+			if(mustsave){
 				inif.save();
 			}
-			sReaderCtApiLib = inif.getStringProperty("KartenLeser", "KartenLeserCTAPILib");			
+
+			sReaderCtApiLib = inif.getStringProperty("KartenLeser", "KartenLeserCTAPILib");
+			sReaderDeviceID = inif.getStringProperty("KartenLeser", "KartenLeserDeviceID");
 			hmKVKDaten = new HashMap<String,String>();
 			hmKVKDaten.put("Krankekasse", "");
 			hmKVKDaten.put("Kassennummer", "");

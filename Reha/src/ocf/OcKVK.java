@@ -75,6 +75,8 @@ public class OcKVK {
 	public Vector<Vector<String>> vecreader = new Vector<Vector<String>>();
 	public String aktReaderName;
 	public String aktDllName;
+	public String aktDeviceId;
+	
 	private PassThruCardService ptcs;
 	public SmartCard sc;
 	private CommandAPDU command;
@@ -88,7 +90,7 @@ public class OcKVK {
 	public boolean systemStarted = false;
 
 	ResponseAPDU response;
-	public OcKVK(String readerName,String dllName,boolean test) throws Exception,UnsatisfiedLinkError {
+	public OcKVK(String readerName,String dllName,String deviceid,boolean test) throws Exception,UnsatisfiedLinkError {
 		//SCR335
 		//ctpcsc31kv
 		// nur in der Testphase der testphase
@@ -97,6 +99,7 @@ public class OcKVK {
 		
 		this.aktReaderName = readerName;
 		this.aktDllName = dllName;
+		this.aktDeviceId = deviceid;
 		initProperties();
 		initTerminal(test);
 		systemStarted = true;
@@ -280,7 +283,7 @@ public class OcKVK {
 		try{
 			 Properties sysProps = System.getProperties();
 			 sysProps.put ("OpenCard.terminals", "de.cardcontact.opencard.terminal.ctapi4ocf.CTAPICardTerminalFactory|"+
-					 aktReaderName+"|CTAPI|0|"+aktDllName);
+					 aktReaderName+"|CTAPI|"+aktDeviceId+"|"+aktDllName);
 			 sysProps.put ("OpenCard.services", "opencard.opt.util.PassThruCardServiceFactory");
 		}catch(Exception ex){
 			return -1;

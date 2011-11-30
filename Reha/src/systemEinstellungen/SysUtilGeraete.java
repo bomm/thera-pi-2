@@ -278,7 +278,7 @@ private JPanel getKnopfPanel(){
 				api = SystemConfig.hmGeraete.get("CTApi")[kvkgeraet.getSelectedIndex()];
 				System.out.println("Starte Test mit Reader="+reader+" und API="+api);
 				
-				ocKVK = new OcKVK(reader,api,true);
+				ocKVK = new OcKVK(reader,api,"0",true);
 				if(ocKVK.terminalOk){
 					SystemConfig.hmKVKDaten.clear();
 					ocKVK.lesen();
@@ -310,7 +310,7 @@ private JPanel getKnopfPanel(){
 		if(ocAktive){
 			try {
 				Reha.thisClass.ocKVK = new OcKVK(SystemConfig.sReaderName.trim().replace(" ", "_"),
-						SystemConfig.sReaderCtApiLib,false);
+						SystemConfig.sReaderCtApiLib,SystemConfig.sReaderDeviceID,false);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

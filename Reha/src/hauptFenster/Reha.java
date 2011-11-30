@@ -313,7 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2011-11-22-DB=";
+	public static String aktuelleVersion = "V=2011-11-24-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -3132,7 +3132,7 @@ final class ErsterLogin implements Runnable{
 								System.out.println("Aktiviere Reader: "+SystemConfig.sReaderName+"\n"+
 										"CT-API Bibliothek: "+SystemConfig.sReaderCtApiLib);
 								Reha.thisClass.ocKVK = new OcKVK(SystemConfig.sReaderName.trim().replace(" ", "_"),
-									SystemConfig.sReaderCtApiLib,false);
+									SystemConfig.sReaderCtApiLib,SystemConfig.sReaderDeviceID,false);
 							}catch(CardTerminalException ex){
 								disableReader("Fehlerstufe rc = -8 = CardTerminal reagiert nicht\n"+ex.getMessage());
 							} catch (CardServiceException e) {
