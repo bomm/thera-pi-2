@@ -10,6 +10,8 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import org.jdesktop.swingworker.SwingWorker;
+
 import oOorgTools.OOTools;
 import sqlTools.SqlInfo;
 import terminKalender.DatFunk;
@@ -213,8 +215,15 @@ class AkutListe{
 				textTable.getCell(4, i).getCharacterProperties().setFontColor(rot);
 
 			}
-
-			document.getFrame().getXFrame().getContainerWindow().setVisible(true);
+			final IDocument xdoc = document;
+			new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws Exception {
+					xdoc.getFrame().getXFrame().getContainerWindow().setVisible(true);
+					return null;
+				}
+				
+			}.execute();
 			vec.clear();
 			vec = null;
 
