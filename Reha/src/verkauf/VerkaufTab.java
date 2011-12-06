@@ -46,6 +46,7 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 	public static int rechnungEnde = 4;
 	public static int bonEnde = 5;
 	public static int suche = 6;
+	public static int reload = 7;
 	
 	private static final long serialVersionUID = 1L;
 	JVerkaufInternal eltern;
@@ -85,6 +86,7 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 				int index =pane.getSelectedIndex();
 				if(index == 0 || index == 1) {
 					sucheLabel.setText("Artikel suchen:");
+					aktiviereFunktion(VerkaufTab.reload);
 				} else if(index == 2) {
 					sucheLabel.setText("Lieferanten suchen:");
 				}

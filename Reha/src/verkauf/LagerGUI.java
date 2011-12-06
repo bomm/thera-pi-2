@@ -133,6 +133,13 @@ public class LagerGUI extends JXPanel {
 		} else if(befehl == VerkaufTab.suche) {
 			this.setzeTabDaten(Artikel.sucheArtikelDaten(this.sucheText.getText()));
 			this.setLastRowSelected();
+		} else if(befehl == VerkaufTab.reload) {
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					setzeTabDaten(Artikel.liefereArtikelDaten());	
+					setLastRowSelected();
+				}
+			});
 		}
 	}
 	
