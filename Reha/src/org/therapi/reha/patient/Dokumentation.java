@@ -178,6 +178,9 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public String quelle = "";
 	public String nameOOorgDokuNeu;
 	public ImageIcon pdfplus;
+	public ImageIcon oowriterplus;
+	public ImageIcon oocalcplus;
+
 	//public JRtaTextField annika = null;
 	Scanner scanner;
 	public Dokumentation(){
@@ -253,6 +256,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 						setzeListener();
 						Image ico = SystemConfig.hmSysIcons.get("pdf").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 						pdfplus = new ImageIcon(ico);
+						ico = SystemConfig.hmSysIcons.get("ooowriter").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+						oowriterplus = new ImageIcon(ico);
+						ico = SystemConfig.hmSysIcons.get("ooocalc").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+						oocalcplus = new ImageIcon(ico);
+						
 						return null;
 					}
 				}.execute();
@@ -2372,8 +2380,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			icons.put("Photo von DigiCam holen",SystemConfig.hmSysIcons.get("camera"));
 			icons.put("Office-Dokument aufnehmen", SystemConfig.hmSysIcons.get("openoffice26"));
 			icons.put("PDF-Dokument aufnehmen", pdfplus /*SystemConfig.hmSysIcons.get("pdf")*/);
-			icons.put("Neue OO-Writer-Doku erstellen",SystemConfig.hmSysIcons.get("ooowriter"));
-			icons.put("Neue OO-Calc-Doku erstellen",SystemConfig.hmSysIcons.get("ooocalc"));
+			icons.put("Neue OO-Writer-Doku erstellen",oowriterplus/*SystemConfig.hmSysIcons.get("ooowriter")*/);
+			icons.put("Neue OO-Calc-Doku erstellen",oocalcplus/*SystemConfig.hmSysIcons.get("ooocalc")*/);
 
 			// create a list with some test data
 			JList list = new JList(	new Object[] {"Scanner einstellungen",
