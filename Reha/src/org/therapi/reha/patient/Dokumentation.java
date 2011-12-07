@@ -177,6 +177,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 	public String aktion  = "";
 	public String quelle = "";
 	public String nameOOorgDokuNeu;
+	public ImageIcon pdfplus;
 	//public JRtaTextField annika = null;
 	Scanner scanner;
 	public Dokumentation(){
@@ -250,6 +251,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							scanStarten();
 						}
 						setzeListener();
+						Image ico = SystemConfig.hmSysIcons.get("pdf").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+						pdfplus = new ImageIcon(ico);
 						return null;
 					}
 				}.execute();
@@ -1032,52 +1035,6 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				
 			}else{
 				JOptionPane.showMessageDialog(null,"Es werden ausschliesslich OpenOffice Writer und Calc Dateien unterstützt");
-				return;
-			}
-		}
-	}
-	
-	private void pdfDokuHole(){
-		setCursor(Reha.thisClass.wartenCursor);
-		ladePDF();
-		setCursor(Reha.thisClass.normalCursor);
-	}
-	private void ladePDF(){
-		String[] bild = oeffneBild(new String[] {"pdf", "???", "???"},false);
-		if(bild.length > 0){
-			String bildpfad = bild[1].replaceAll("\\\\", "/");
-			if( (bildpfad.toLowerCase().endsWith(".pdf"))){
-				try {
-					Reha.thisClass.patpanel.dokumentation.setCursor(Reha.thisClass.wartenCursor);
-					FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0]), 4096*4, true);
-					File f = new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0]);
-					if(f.exists()){
-						int dokuid = SqlInfo.erzeugeNummer("doku");
-						int pat_int = Integer.valueOf(Reha.thisClass.patpanel.aktPatID); //Integer.valueOf(annika.getText().trim());
-
-							
-							doSpeichernDoku(
-									dokuid,
-									pat_int,
-									SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0],
-									0,
-									new String[] {DatFunk.sDatInSQL(DatFunk.sHeute()),bild[0],Reha.aktUser,""},
-									true);
-
-							this.holeDokus(Reha.thisClass.patpanel.aktPatID,Integer.toString(dokuid));
-							setCursor(Reha.thisClass.normalCursor);
-					}
-
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}else{
-				JOptionPane.showMessageDialog(null,"Es werden ausschliesslich PDF-Dateien unterstützt");
 				return;
 			}
 		}
@@ -2269,6 +2226,32 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		
 	}
 /**************************************************/
+	private void pdfSpeichernDoku(){
+		int dokuid = -1;
+		String[] doku = oeffneBild(new String[] {"pdf","????","???"},false);
+		if(doku.length==0){setCursor(Reha.thisClass.normalCursor);return;}
+		if(! doku[0].toLowerCase().endsWith(".pdf")){
+			setCursor(Reha.thisClass.normalCursor);
+			JOptionPane.showMessageDialog(null,"Diese Funktion ist nur für PDF-Dateien geeignet");
+			return;
+		}
+		doku[1] = doku[1].replaceAll("\\\\", "/");
+		try {
+			doSpeichernDoku( (dokuid=SqlInfo.erzeugeNummer("doku")),
+					Integer.valueOf(Reha.thisClass.patpanel.aktPatID), 
+					doku[1],
+					0,
+					new String[] {DatFunk.sDatInSQL(DatFunk.sHeute()),doku[0],Reha.aktUser,""},
+					true);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.holeDokus(Reha.thisClass.patpanel.aktPatID,Integer.toString(dokuid));
+		setCursor(Reha.thisClass.normalCursor);
+	}
+/**************************************************/
 	public void speichernOoDocs(int dokuid,int pat_intern, String dateiname,int format,String[] str,boolean neu) throws Exception{
 		Statement stmt = null;;
 		ResultSet rs = null;
@@ -2387,17 +2370,18 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
 			icons.put("Scanner einstellungen",SystemConfig.hmSysIcons.get("scanner"));
 			icons.put("Photo von DigiCam holen",SystemConfig.hmSysIcons.get("camera"));
-			icons.put("Office-Dokument aufnehmen",SystemConfig.hmSysIcons.get("openoffice26"));
+			icons.put("Office-Dokument aufnehmen", SystemConfig.hmSysIcons.get("openoffice26"));
+			icons.put("PDF-Dokument aufnehmen", pdfplus /*SystemConfig.hmSysIcons.get("pdf")*/);
 			icons.put("Neue OO-Writer-Doku erstellen",SystemConfig.hmSysIcons.get("ooowriter"));
 			icons.put("Neue OO-Calc-Doku erstellen",SystemConfig.hmSysIcons.get("ooocalc"));
-			icons.put("PDF-Datei hinzufügen", SystemConfig.hmSysIcons.get("pdf"));
+
 			// create a list with some test data
 			JList list = new JList(	new Object[] {"Scanner einstellungen",
 					"Photo von DigiCam holen", 
 					"Office-Dokument aufnehmen",
+					"PDF-Dokument aufnehmen",
 					"Neue OO-Writer-Doku erstellen",
-					"Neue OO-Calc-Doku erstellen",
-					"PDF-Datei hinzufügen"});
+					"Neue OO-Calc-Doku erstellen"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Dokumentation",list);
@@ -2437,7 +2421,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				}
 				doHoleOO();
 				break;
-			case 3:
+			case 4:
 				if(Reha.thisClass.patpanel.aktPatID.equals("")){
 					keinAtiverPatient();
 					tDlg = null;
@@ -2448,7 +2432,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				}
 				oooDokuNeu(0);
 				break;
-			case 4:
+			case 5:
 				if(Reha.thisClass.patpanel.aktPatID.equals("")){
 					keinAtiverPatient();
 					tDlg = null;
@@ -2459,7 +2443,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				}
 				oooDokuNeu(1);
 				break;
-			case 5:
+			case 3:
 				if(Reha.thisClass.patpanel.aktPatID.equals("")){
 					keinAtiverPatient();
 					tDlg = null;
@@ -2468,7 +2452,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				if(!Rechte.hatRecht(Rechte.Doku_ooorg, true)){
 					return;
 				}
-				pdfDokuHole();
+				pdfSpeichernDoku();
 				break;
 			}
 			tDlg = null;
