@@ -1036,6 +1036,52 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			}
 		}
 	}
+	
+	private void pdfDokuHole(){
+		setCursor(Reha.thisClass.wartenCursor);
+		ladePDF();
+		setCursor(Reha.thisClass.normalCursor);
+	}
+	private void ladePDF(){
+		String[] bild = oeffneBild(new String[] {"pdf", "???", "???"},false);
+		if(bild.length > 0){
+			String bildpfad = bild[1].replaceAll("\\\\", "/");
+			if( (bildpfad.toLowerCase().endsWith(".pdf"))){
+				try {
+					Reha.thisClass.patpanel.dokumentation.setCursor(Reha.thisClass.wartenCursor);
+					FileTools.copyFile(new File(bildpfad), new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0]), 4096*4, true);
+					File f = new File(SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0]);
+					if(f.exists()){
+						int dokuid = SqlInfo.erzeugeNummer("doku");
+						int pat_int = Integer.valueOf(Reha.thisClass.patpanel.aktPatID); //Integer.valueOf(annika.getText().trim());
+
+							
+							doSpeichernDoku(
+									dokuid,
+									pat_int,
+									SystemConfig.hmVerzeichnisse.get("Temp")+"/"+bild[0],
+									0,
+									new String[] {DatFunk.sDatInSQL(DatFunk.sHeute()),bild[0],Reha.aktUser,""},
+									true);
+
+							this.holeDokus(Reha.thisClass.patpanel.aktPatID,Integer.toString(dokuid));
+							setCursor(Reha.thisClass.normalCursor);
+					}
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}else{
+				JOptionPane.showMessageDialog(null,"Es werden ausschliesslich PDF-Dateien unterstützt");
+				return;
+			}
+		}
+	}
 
 	private void ladeJpeg(){
 		String[] bild = oeffneBild(new String[] {"jpg","xxx","xxx"},true);
@@ -2344,12 +2390,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			icons.put("Office-Dokument aufnehmen",SystemConfig.hmSysIcons.get("openoffice26"));
 			icons.put("Neue OO-Writer-Doku erstellen",SystemConfig.hmSysIcons.get("ooowriter"));
 			icons.put("Neue OO-Calc-Doku erstellen",SystemConfig.hmSysIcons.get("ooocalc"));
+			icons.put("PDF-Datei hinzufügen", SystemConfig.hmSysIcons.get("pdf"));
 			// create a list with some test data
 			JList list = new JList(	new Object[] {"Scanner einstellungen",
 					"Photo von DigiCam holen", 
 					"Office-Dokument aufnehmen",
 					"Neue OO-Writer-Doku erstellen",
-					"Neue OO-Calc-Doku erstellen"});
+					"Neue OO-Calc-Doku erstellen",
+					"PDF-Datei hinzufügen"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Dokumentation",list);
@@ -2410,6 +2458,17 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 					return;
 				}
 				oooDokuNeu(1);
+				break;
+			case 5:
+				if(Reha.thisClass.patpanel.aktPatID.equals("")){
+					keinAtiverPatient();
+					tDlg = null;
+					return;
+				}// 0 = Calc
+				if(!Rechte.hatRecht(Rechte.Doku_ooorg, true)){
+					return;
+				}
+				pdfDokuHole();
 				break;
 			}
 			tDlg = null;
