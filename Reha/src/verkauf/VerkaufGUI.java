@@ -585,6 +585,7 @@ public class VerkaufGUI extends JXPanel{
 		verkauf = new Verkauf();
 		String[][] werte = verkauf.liefereTabDaten();
 		setzeTabellenWerte(werte);
+		this.owner.aktiviereFunktion(VerkaufTab.reload);
 		/*
 		vkmod.setDataVector(verkauf.liefereTabDaten(), column);
 		*/
@@ -703,6 +704,7 @@ public class VerkaufGUI extends JXPanel{
 			edits[6].setText("0,00");
 			edits[7].setText("0,00");
 			edits[8].setText("0");
+			this.owner.aktiviereFunktion(VerkaufTab.reload);
 			
 		} else {
 			JOptionPane.showMessageDialog(null, "Bitte erst Patientenfenster öffnen und Patienten auswählen!");

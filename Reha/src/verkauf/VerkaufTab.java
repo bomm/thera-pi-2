@@ -86,7 +86,6 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 				int index =pane.getSelectedIndex();
 				if(index == 0 || index == 1) {
 					sucheLabel.setText("Artikel suchen:");
-					aktiviereFunktion(VerkaufTab.reload);
 				} else if(index == 2) {
 					sucheLabel.setText("Lieferanten suchen:");
 				}
@@ -250,7 +249,10 @@ public class VerkaufTab extends JXPanel implements ChangeListener {
 	}
 	
 	public void aktiviereFunktion(int funktion){
-		if(pane.getSelectedIndex() == 0){
+		if(funktion == VerkaufTab.reload) {
+			((LagerGUI)pane.getComponentAt(1)).aktiviereFunktion(funktion);	
+		}
+		else if(pane.getSelectedIndex() == 0){
 			((VerkaufGUI)pane.getComponentAt(0)).aktiviereFunktion(funktion);
 		}else if(pane.getSelectedIndex() == 1){
 			((LagerGUI)pane.getComponentAt(1)).aktiviereFunktion(funktion);			
