@@ -945,6 +945,7 @@ public class SystemConfig {
 			hmKVKDaten.put("Checksumme", "");	
 			hmKVKDaten.put("Fehlercode", "");
 			hmKVKDaten.put("Fehlertext", "");
+			hmKVKDaten.put("Anrede", "");
 		}else{
 			sReaderName = "";
 			sReaderAktiv = "0";

@@ -845,7 +845,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			
 			if (cmd.equals("Akutliste")){
 				if(SqlInfo.holeEinzelFeld("select id from pat5 where akutpat='T' LIMIT 1").equals("")){
-					JOptionPane.showMessageDialog(null,"Keine Aktupatienten im Patientenstamm vermerkt");
+					JOptionPane.showMessageDialog(null,"Keine Akutpatienten im Patientenstamm vermerkt");
 					return;
 				}
 				new SwingWorker<Void,Void>(){

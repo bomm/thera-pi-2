@@ -1486,8 +1486,12 @@ boolean updateBild = false;
 		if(SystemConfig.sReaderAktiv.equals("0")){
 			return;
 		}
-		if(SystemConfig.hmKVKDaten.isEmpty() || (!Reha.thisClass.ocKVK.isCardReady)){
-			JOptionPane.showMessageDialog(null,"Bitte zuerst die Chipkarten in das Lesegerät einführen");
+		if(!Reha.thisClass.ocKVK.isCardReady){
+			JOptionPane.showMessageDialog(null,"Chipkarten-Lesegerät ist nicht bereit");
+			return;
+		}
+		if(SystemConfig.hmKVKDaten.isEmpty()){
+			JOptionPane.showMessageDialog(null,"Daten der Chipkarte konnten nicht gelesen werden");
 			return;
 		}
 		////System.out.println("Aufruf der KVK");

@@ -2,10 +2,18 @@ package ocf;
 
 import hauptFenster.Reha;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.zip.GZIPInputStream;
 
 import javax.swing.JOptionPane;
 
@@ -31,13 +39,28 @@ import systemTools.StringTools;
 
 public class OcKVK {
 	// CLA || INS || P1 || P2 || Le (= erwartete Länge der Daten)
-	final byte[] CMD_READ_BINARY ={(byte)0x00, (byte)0xB0,(byte)0x00, (byte)0x00, (byte)0x300 };
+	final byte[] CMD_READ_BINARY ={(byte)0x00, (byte)0xB0,(byte)0x00, (byte)0x00, (byte)0x00 };
+	final byte[] CMD_READ_BINARY_EF ={(byte)0x00, (byte)0xB0,
+	        (byte)0x81, (byte)0x00, (byte)0x02 };
+	final byte[] CMD_SELECT_KVKFILE = {(byte)0x00, (byte)0xA4, (byte)0x04, (byte)0x00, (byte)0x06,
+			(byte)0xD2, (byte)0x76, (byte)0x00, (byte)0x00, (byte)0x01, (byte)0x01};
+	final byte[] CMD_SELECT_EGK_HDC = {(byte)0x00, (byte)0xA4, (byte)0x04, (byte)0x0C, (byte)0x06,
+			(byte)0xD2, (byte)0x76, (byte)0x00, (byte)0x00, (byte)0x01, (byte)0x02};
+	final byte[] CMD_SELCT_VD ={(byte)0x00, (byte)0xA4,
+	        (byte)0x02, (byte)0x04, (byte)0x02, (byte)0xD0, (byte)0x02,(byte)0x00 };
+	final byte[] CMD_SELCT_PD ={(byte)0x00, (byte)0xA4,
+	        (byte)0x02, (byte)0x04, (byte)0x02, (byte)0xD0, (byte)0x01,(byte)0x00 };
+	
+	ByteArrayInputStream in = null; 
+	ByteArrayOutputStream out = null;
+	
+	
 	private static final int MAX_APDU_SIZE = 0x300;  //  bytes
 	//Wird später ersetzt durch kvkTags
 	final static String[] hmProperty = {"Rohdaten","Krankenkasse","Kassennummer","Kartennummer","Versichertennummer",
 		"Status","Statusext","Titel","Vorname","Namenszusatz",
 		"Nachname","Geboren","Strasse","Land","Plz",
-		"Ort","Gueltigkeit","Checksumme"};
+		"Ort","Gueltigkeit","Checksumme","Anrede"};
 	//Wird später ersetzt durch kvkTags	
 	final int[] tags = { 0x60,0x80,0x81,0x8F,0x82,0x83,0x90,0x84,0x85,
 			0x86,0x87,0x88,0x89,0x8A,0x8B,0x8C,0x8D,0x8E};
@@ -90,6 +113,7 @@ public class OcKVK {
 	public boolean systemStarted = false;
 
 	ResponseAPDU response;
+	boolean blockIKKasse = false;
 	public OcKVK(String readerName,String dllName,String deviceid,boolean test) throws Exception,UnsatisfiedLinkError {
 		//SCR335
 		//ctpcsc31kv
@@ -104,11 +128,13 @@ public class OcKVK {
 		initTerminal(test);
 		systemStarted = true;
 		terminalOk = true;
+		Properties sysProps = System.getProperties();
+		sysProps.put ("OpenCard.services", "de.cardcontact.opencard.factory.IsoCardServiceFactory");
 	}
 
 	public int lesen() throws CardTerminalException, CardServiceException, ClassNotFoundException{
 		int ret = 0;
-
+			blockIKKasse = false;
 			sc = SmartCard.waitForCard(cr);
 			ptcs = (PassThruCardService) sc.getCardService(PassThruCardService.class, true);
 			/*****Karte testen*****/
@@ -129,30 +155,347 @@ public class OcKVK {
 		    	return -1;
 		    }
 			command = new CommandAPDU(MAX_APDU_SIZE); 
-		    command.append(CMD_READ_BINARY);
-		    response = ptcs.sendCommandAPDU(command);
-
+			command.append(CMD_SELECT_KVKFILE);
+			response = ptcs.sendCommandAPDU(command);
 		    if(response == null || response.getBytes().length==0){
 		    	System.out.println("keine KV-Karte oder Karte defekt");
 		    	sc.close();
 		    	return -1;
 		    }
-		    if(response.getByte(0)== (byte)0x60){ //Nach ASN.1 Standard der KVK
-		    	//getKVKDaten(response.getBytes());
-		    	checkKVK_ASN1(response.getBytes(),kvkTags);
-			    //System.out.print(SystemConfig.hmKVKDaten);
-			    sc.close();
+
+		    if(getResponseValue(response.getBytes()).equals("9000")){
+		    	//es ist eine KVK
+			    command.setLength(0);
+				command.append(CMD_READ_BINARY);
+			    response = ptcs.sendCommandAPDU(command);
+
+			    if(response.getByte(0)== (byte)0x60){ //Nach ASN.1 Standard der KVK
+			    	checkKVK_ASN1(response.getBytes(),kvkTags);
+				    sc.close();
+			    }else{
+			    	//Hier entweder neue Routine, falls betriebsintern
+			    	//noch anderweitige Chipkarten eingesetzt werden z.B. Zugangskontrolle etc.
+			    	//oder Fehlermeldung daß Karte keine KV-Karte ist.
+			    	ret = -1;
+			    	sc.close();
+			    }
 		    }else{
-		    	//Hier entweder neue Routine, falls betriebsintern
-		    	//noch anderweitige Chipkarten eingesetzt werden z.B. Zugangskontrolle etc.
-		    	//oder Fehlermeldung daß Karte keine KV-Karte ist.
-		    	ret = -1;
-		    	sc.close();
+		    	ptcs.getCard().reset(true);
+		    	//Hier testen ob es eine eGK ist
+		    	command.setLength(0);
+				command.append(CMD_SELECT_EGK_HDC);
+			    response = ptcs.sendCommandAPDU(command);
+			    if(getResponseValue(response.getBytes()).equals("9000")){
+			    	// ja es ist eine eGK;
+			    	command.setLength(0);
+					command.append(this.CMD_READ_BINARY_EF);
+				    response = ptcs.sendCommandAPDU(command);
+			    	//System.out.println("Response = "+getResponseValue(response.getBytes()));
+			        /***********PD-Daten********************/
+			        byte[] resultpd = new byte[850];
+			        byte[] offset = {(byte)0x00,(byte)0x01,(byte)0x02,(byte)0x03,(byte)0x04};
+			        byte[] cmd = {(byte)0x00, (byte)0xB0, (byte)0x00, (byte)0x00, (byte)0x00};
+			        int bytes;
+			        int zaehler = 0;
+			        try{
+				        for(int of = 0; of < 4;of++){
+				            command.setLength(0);
+				            cmd[2] = offset[of];
+				            command.append(cmd);
+				            response = ptcs.sendCommandAPDU(command);
+				            /*********************/         
+				            bytes = response.getLength();
+				            for (n = 0; n < bytes; n++) {
+					              if( (n < (bytes-2))){
+						           	   try{
+						           		   if( ( (of==0 && n > 1) || (of > 0)) /*&& (zaehler < lang)*/ ){
+						               		   resultpd[zaehler]=(byte)response.getByte(n);
+						               		   zaehler++;
+						           		   }
+						           	   }catch(Exception ex){
+						           		   System.out.println("Fehler bei Zähler: "+zaehler);
+						           		   ex.printStackTrace();
+						           	   }
+					              }
+				            }
+				        }
+			        }catch(Exception ex){
+			        	ex.printStackTrace();
+			        }
+			        try{
+				       	 in = new ByteArrayInputStream(resultpd); 
+				       	 out = Unzip("",in);
+				       	 in.close();
+				       	 out.flush();
+				       	 out.close();
+				       	/**********HashMap leeren**********/ 
+				       	SystemConfig.hmKVKDaten.clear();
+				       	readAndParseXML(new ByteArrayInputStream(out.toByteArray()),0);
+			        }catch(Exception ex){
+			       	 ex.printStackTrace();
+			        }
+			        /***********VD-Daten********************/
+			        command.setLength(0);
+			        command.append(this.CMD_SELCT_VD);
+			        response = ptcs.sendCommandAPDU(command);
+			        byte[] resultvd = new byte[1250];
+			        zaehler = 0;
+
+			        /**********************************************************/     
+			        for(int of = 0; of < 5;of++){
+			            command.setLength(0);
+			            cmd[2] = offset[of];
+			            command.append(cmd);
+			            response = ptcs.sendCommandAPDU(command);
+			            /*********************/         
+			            bytes = response.getLength();
+			            for (n = 0; n < bytes; n++) {
+				              if( (n < (bytes-2))){
+					           	   try{
+					           		   if( ( (of==0 && n > 7) || (of > 0)) ){
+					               		   resultvd[zaehler]=(byte)response.getByte(n);
+					               		   zaehler++;
+					           		   }
+
+					           	   }catch(Exception ex){
+					           		   System.out.println("Fehler bei Zähler: "+zaehler);
+					           		   ex.printStackTrace();
+					           	   }
+				              }
+			            }
+			        }
+			        try{
+				       	 in = new ByteArrayInputStream(resultvd); 
+				       	 out = Unzip("",in);
+				       	 in.close();
+				       	 out.flush();
+				       	 out.close();
+				       	 readAndParseXML(new ByteArrayInputStream(out.toByteArray()),1);
+			        }catch(Exception ex){
+			         	ex.printStackTrace();
+			        }
+			        sc.close(); 
+			    }else{
+			    	//es ist auch keine eGK;
+			    	ret = -1;
+			    	sc.close();
+			    	return -1;
+			    }
+		    	
 		    }
 		    sc.close();
 		    return ret;    
 		}
+	private String getResponseValue(byte[] by){
+		String wert = "";
+		int bytes = by.length;
+		int x;
+        for (n = 0; n < bytes; n++) {
+        	x = (int) (0x000000FF & by[n]);
+   			s = Integer.toHexString(x).toUpperCase();
+        	if (s.length() == 1) s = "0" + s;
+            if( (n >= (bytes-2))){
+         	   	try{
+         	   		wert = wert+s;
+         	   	}catch(Exception ex){
+         	   		ex.printStackTrace();
+         	   	}
+            }
+        }		
+		return wert;
+	}
+	private void readAndParseXML(ByteArrayInputStream in,int datenart){
+		InputStreamReader inread = new InputStreamReader(in);
+		try {
+		
+		BufferedReader br = new BufferedReader(inread);
+		String s;
+			int zaehler = 0;
+			while((s = br.readLine()) != null) {
+				if(datenart==0){
+					//PD
+					testePD(s,s.indexOf("<"),s.indexOf(">"),zaehler);
+					zaehler++;
+				}else if(datenart == 1){
+					//VD
+					testeVD(s,s.indexOf("<"),s.indexOf(">"),zaehler);
+					zaehler++;
+				}
+
+			}
+			inread.close();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+		 
+	}
+	/***********
+	 * 
+	 * @param zeile
+	 * @param first
+	 * @param last
+	 * @param durchlauf
+	 */
+	private void testePD(String zeile,int first,int last,int durchlauf){
+		String dummy = zeile.substring(first+1,last).trim();
+		if(dummy.startsWith("/")) return;
+		int dataend = zeile.indexOf("</");
+		if(dataend==0 || dataend < last) return;
+		/*
+		System.out.print(dummy+" = ");
+		System.out.println("Start = "+last+" / Ende = "+dataend);
+		System.out.println(zeile.substring(last+1,dataend));
+		*/
+		/*
+	Versicherten_ID = X110121694
+	Geburtsdatum = 19470413
+	Vorname = Ullrich
+	Nachname = D�mmer-Meningham
+	Geschlecht = M
+	Vorsatzwort = 
+	Namenszusatz = 
+	Titel
+	Postleitzahl = 20355
+	Ort = Hamburg
+	Postfach = 
+	Wohnsitzlaendercode = D
+	Strasse = Steinwegpassage
+	Hausnummer = 2	
+	Anschriftenzusatz = 
+	final static String[] hmProperty = {"Rohdaten","Krankenkasse","Kassennummer","Kartennummer","Versichertennummer",
+		"Status","Statusext","Titel","Vorname","Namenszusatz",
+		"Nachname","Geboren","Strasse","Land","Plz",
+		"Ort","Gueltigkeit","Checksumme","Anrede"};
 	
+		 */
+		if(dummy.equals("Versicherten_ID")){
+			SystemConfig.hmKVKDaten.put("Versichertennummer",zeile.substring(last+1,dataend));
+			return;
+		}else if(dummy.equals("Geburtsdatum")){
+			String geboren = zeile.substring(last+1,dataend);
+			SystemConfig.hmKVKDaten.put("Geboren",geboren.substring(6)+
+					geboren.substring(4,6)+
+					geboren.substring(0,4));
+			return;
+		}else if(dummy.equals("Vorname")){
+			SystemConfig.hmKVKDaten.put("Vorname",zeile.substring(last+1,dataend));
+			return;
+		}else if(dummy.equals("Nachname")){
+			SystemConfig.hmKVKDaten.put("Nachname",zeile.substring(last+1,dataend));
+			return;
+		}else if(dummy.equals("Titel")){
+			SystemConfig.hmKVKDaten.put("Titel",zeile.substring(last+1,dataend));
+			return;
+		}else if(dummy.equals("Namenszusatz")){
+			SystemConfig.hmKVKDaten.put("Namenszusatz",zeile.substring(last+1,dataend));
+			return;
+		}else if(dummy.equals("Postleitzahl")){
+			SystemConfig.hmKVKDaten.put("Plz",zeile.substring(last+1,dataend));
+			return;
+		}else if(dummy.equals("Ort")){
+			SystemConfig.hmKVKDaten.put("Ort",zeile.substring(last+1,dataend));
+			return;
+		}else if(dummy.equals("Geschlecht")){
+			SystemConfig.hmKVKDaten.put("Anrede",(zeile.substring(last+1,dataend).equals("M") ? "HERR" : "FRAU"));
+			return;
+		}else if(dummy.equals("Strasse")){
+			SystemConfig.hmKVKDaten.put("Strasse",zeile.substring(last+1,dataend));
+			return;
+		}else if(dummy.equals("Hausnummer")){
+			SystemConfig.hmKVKDaten.put("Strasse", SystemConfig.hmKVKDaten.get("Strasse")+" "+zeile.substring(last+1,dataend));
+			return;
+		}
+	}
+	/**********
+	 * 
+	 * @param zeile
+	 * @param first
+	 * @param last
+	 * @param durchlauf
+	 */
+	private void testeVD(String zeile,int first,int last,int durchlauf){
+		String dummy = zeile.substring(first+1,last).trim();
+		if(dummy.startsWith("/")) return;
+		int dataend = zeile.indexOf("</");
+		if(dataend==0 || dataend < last) return;
+		/*
+		System.out.print(dummy+" = ");
+		System.out.println("Start = "+last+" / Ende = "+dataend);
+		System.out.println(zeile.substring(last+1,dataend));
+		*/
+		
+		/*
+	Beginn = 20100301
+	Ende = 20131231
+	Kostentraegerkennung = 999567890
+	Kostentraegerlaendercode = D
+	Name = gematik Musterkasse1GKV
+	Kostentraegerkennung = 991534564
+	Name = gematik Musterkasse1GKV
+	Rechtskreis = 1
+	Versichertenart = 5
+	Versichertenstatus_RSA = 0
+	Kostenerstattung_ambulant = 0
+	Kostenerstattung_stationaer = 0
+	WOP = 02
+	Status = 0
+	Shutdown 
+	final static String[] hmProperty = {"Rohdaten","Krankenkasse","Kassennummer","Kartennummer","Versichertennummer",
+		"Status","Statusext","Titel","Vorname","Namenszusatz",
+		"Nachname","Geboren","Strasse","Land","Plz",
+		"Ort","Gueltigkeit","Checksumme","Anrede"};
+		
+		 */
+		if(dummy.equals("Kostentraegerkennung") && (!this.blockIKKasse) ){
+			String ik = zeile.substring(last+1,dataend);
+			SystemConfig.hmKVKDaten.put("Kassennummer",ik.substring(2));
+			return;
+		}else if(dummy.equals("Name") && (!this.blockIKKasse) ){
+			SystemConfig.hmKVKDaten.put("Krankenkasse",zeile.substring(last+1,dataend));
+			this.blockIKKasse = true;
+			return;
+		}else if(dummy.equals("Versichertenart") ){
+			SystemConfig.hmKVKDaten.put("Statusext",zeile.substring(last+1,dataend));
+			return;
+		}else if(dummy.equals("Ende") ){
+			String ende = zeile.substring(last+1,dataend);
+			SystemConfig.hmKVKDaten.put("Gueltigkeit",ende.substring(4,6)+
+					ende.substring(2,4));
+			return;
+		}
+		
+	}
+	/*******
+	 * 
+	 * @param inFilePath
+	 * @param in
+	 * @return
+	 * @throws Exception
+	 */
+	private ByteArrayOutputStream Unzip(String inFilePath, ByteArrayInputStream in) throws Exception
+	{
+		ByteArrayOutputStream out = null;
+		try{
+			GZIPInputStream gzipInputStream = null;
+			gzipInputStream = new GZIPInputStream(in);
+			out = new ByteArrayOutputStream();
+		 
+		    byte[] buf = new byte[1024];
+		    int len;
+		    while ((len = gzipInputStream.read(buf)) > 0)
+		        out.write(buf, 0, len);
+		 
+		    gzipInputStream.close();
+		    out.close();
+		    if(in==null) new File(inFilePath).delete();
+		    
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+	    return out;
+	}	
 	
 	//Kann später gelöscht werden wird ersetzt durch die Methode 
 	public HashMap<String,String> getKVKDaten(byte[] daten){
@@ -248,7 +591,7 @@ public class OcKVK {
 			SystemConfig.hmKVKDaten.clear();
 			return SystemConfig.hmKVKDaten;
 		}
-		
+		SystemConfig.hmKVKDaten.put("Anrede", "HERR");
 		for(i=1; i < tags.length;i++ ){
 			//Wenn eines der optionalen Tags nicht vorhanden ist...
 			if((int) (0x000000FF & response[startByte]) !=  (Integer)tags[i][0] ){
