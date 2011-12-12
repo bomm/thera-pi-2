@@ -764,7 +764,7 @@ boolean updateBild = false;
 		jtf[13] = new JRtaTextField("ZAHLEN", true);
 		jtf[13].setName("kv_nummer");
 
-		jtf[14] = new JRtaTextField("ZAHLEN", true);
+		jtf[14] = new JRtaTextField("GROSS", true);
 		jtf[14].setName("v_nummer");
 
 		jtf[15] = new JRtaTextField("ZAHLEN", true);

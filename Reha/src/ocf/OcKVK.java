@@ -114,6 +114,13 @@ public class OcKVK {
 
 	ResponseAPDU response;
 	boolean blockIKKasse = false;
+	String ikktraeger = "";
+	String namektraeger = "";
+	
+	BufferedReader br = null;
+	String resultString = null;
+	StringBuffer neustring = new StringBuffer();
+	
 	public OcKVK(String readerName,String dllName,String deviceid,boolean test) throws Exception,UnsatisfiedLinkError {
 		//SCR335
 		//ctpcsc31kv
@@ -223,18 +230,38 @@ public class OcKVK {
 			        	ex.printStackTrace();
 			        }
 			        try{
-				       	 in = new ByteArrayInputStream(resultpd); 
-				       	 out = Unzip("",in);
-				       	 in.close();
-				       	 out.flush();
-				       	 out.close();
+			        	
+			        	
+			        	in = new ByteArrayInputStream(resultpd); 
+			        	out = Unzip("",in);
+			        	in.close();
+			        	out.flush();
+			        	out.close();
+			        	resultString = new String(out.toByteArray());
 				       	/**********HashMap leeren**********/ 
 				       	SystemConfig.hmKVKDaten.clear();
-				       	readAndParseXML(new ByteArrayInputStream(out.toByteArray()),0);
+					    if(resultString.indexOf("\n") >= 0){					       	 
+
+					    	readAndParseXML(new ByteArrayInputStream(resultString.getBytes()),0);
+			        	}else{
+			        		if( createLineBrake(resultString) ){
+			        			//System.out.println(neustring.toString());
+			        			readAndParseXML(new ByteArrayInputStream(neustring.toString().getBytes()),0);
+			        		}
+			        	}
 			        }catch(Exception ex){
-			       	 ex.printStackTrace();
+			       	 	ex.printStackTrace();
+			       	 	SystemConfig.hmKVKDaten.clear();
+			       	 	sc.close();
+			       	 	return -1;
 			        }
-			        /***********VD-Daten********************/
+			        /*******************************VD-Daten**************************
+			         * 
+			         * 
+			         *****/
+					ikktraeger = "";
+					namektraeger = "";
+
 			        command.setLength(0);
 			        command.append(this.CMD_SELCT_VD);
 			        response = ptcs.sendCommandAPDU(command);
@@ -265,14 +292,25 @@ public class OcKVK {
 			            }
 			        }
 			        try{
-				       	 in = new ByteArrayInputStream(resultvd); 
-				       	 out = Unzip("",in);
-				       	 in.close();
-				       	 out.flush();
-				       	 out.close();
-				       	 readAndParseXML(new ByteArrayInputStream(out.toByteArray()),1);
+			        	in = new ByteArrayInputStream(resultvd); 
+			        	out = Unzip("",in);
+			        	in.close();
+			        	out.flush();
+			        	out.close();
+					    resultString = new String(out.toByteArray());
+			        	if(resultString.indexOf("\n") >= 0){
+			        		readAndParseXML(new ByteArrayInputStream(resultString.getBytes()),1);
+			        	}else{
+			        		if( createLineBrake(resultString) ){
+			        			//System.out.println(neustring.toString());
+			        			readAndParseXML(new ByteArrayInputStream(neustring.toString().getBytes()),1);
+			        		}
+			        	}
 			        }catch(Exception ex){
 			         	ex.printStackTrace();
+			         	SystemConfig.hmKVKDaten.clear();
+			         	sc.close();
+				    	return -1;
 			        }
 			        sc.close(); 
 			    }else{
@@ -286,6 +324,49 @@ public class OcKVK {
 		    sc.close();
 		    return ret;    
 		}
+	private boolean createLineBrake(String string){
+
+		int aktindex = 0;
+		int indexauf = 0;
+		int indexzu = 0;
+		
+		neustring.setLength(0);
+		neustring.trimToSize();
+		try{
+		while(aktindex < string.length()){
+			indexauf = string.indexOf("<",aktindex);
+			indexzu = string.indexOf(">",aktindex);
+			/***letztes Element*****/
+			//System.out.println("Start:"+indexauf+" / Ende:"+indexzu);
+			if(indexzu+1 >= string.length()){
+				neustring.append(string.substring(indexauf,indexzu+1));
+				break;
+			}
+			/*****Elementgruppe = einzelnes Element Anfang oder Ende*****/
+			if(string.substring(indexzu+1, indexzu+2).equals("<")){
+				neustring.append(string.substring(indexauf,indexzu+1)+System.getProperty("line.separator"));
+				aktindex=indexzu+1;
+				continue;
+			}else{
+				/*******Datenelement******/
+				indexzu = string.indexOf(">",indexzu+1);
+				if(indexzu > 0){
+					neustring.append(string.substring(indexauf,indexzu+1)+System.getProperty("line.separator"));
+					aktindex=indexzu+1;
+				}else{
+					System.out.println("Fehler bei indexzu="+indexzu);
+					aktindex +=1;
+				}
+			}
+		}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return false;
+		}
+		//System.out.println("Bei Austritt -- Start:"+indexauf+" / Ende:"+indexzu);
+		return true;
+	}
+	
 	private String getResponseValue(byte[] by){
 		String wert = "";
 		int bytes = by.length;
@@ -307,7 +388,6 @@ public class OcKVK {
 	private void readAndParseXML(ByteArrayInputStream in,int datenart){
 		InputStreamReader inread = new InputStreamReader(in);
 		try {
-		
 		BufferedReader br = new BufferedReader(inread);
 		String s;
 			int zaehler = 0;
@@ -328,7 +408,10 @@ public class OcKVK {
 			
 			e.printStackTrace();
 		}
-		 
+		if(SystemConfig.hmKVKDaten.get("Kassennummer") == null || SystemConfig.hmKVKDaten.get("Kassennummer").equals("")){ 
+			SystemConfig.hmKVKDaten.put("Kassennummer",this.ikktraeger);
+			SystemConfig.hmKVKDaten.put("Krankenkasse",this.namektraeger);
+		}
 	}
 	/***********
 	 * 
@@ -342,11 +425,13 @@ public class OcKVK {
 		if(dummy.startsWith("/")) return;
 		int dataend = zeile.indexOf("</");
 		if(dataend==0 || dataend < last) return;
+		
 		/*
 		System.out.print(dummy+" = ");
 		System.out.println("Start = "+last+" / Ende = "+dataend);
 		System.out.println(zeile.substring(last+1,dataend));
 		*/
+		
 		/*
 	Versicherten_ID = X110121694
 	Geburtsdatum = 19470413
@@ -425,6 +510,7 @@ public class OcKVK {
 		System.out.println(zeile.substring(last+1,dataend));
 		*/
 		
+		
 		/*
 	Beginn = 20100301
 	Ende = 20131231
@@ -449,11 +535,18 @@ public class OcKVK {
 		 */
 		if(dummy.equals("Kostentraegerkennung") && (!this.blockIKKasse) ){
 			String ik = zeile.substring(last+1,dataend);
-			SystemConfig.hmKVKDaten.put("Kassennummer",ik.substring(2));
+			ikktraeger = ik.substring(2);
 			return;
 		}else if(dummy.equals("Name") && (!this.blockIKKasse) ){
-			SystemConfig.hmKVKDaten.put("Krankenkasse",zeile.substring(last+1,dataend));
+			namektraeger = zeile.substring(last+1,dataend);
 			this.blockIKKasse = true;
+			return;
+		}else if(dummy.equals("Kostentraegerkennung") && (this.blockIKKasse) ){
+			String ik = zeile.substring(last+1,dataend);
+			SystemConfig.hmKVKDaten.put("Kassennummer",ik.substring(2));
+			return;
+		}else if(dummy.equals("Name") && (this.blockIKKasse) ){
+			SystemConfig.hmKVKDaten.put("Krankenkasse",zeile.substring(last+1,dataend));
 			return;
 		}else if(dummy.equals("Versichertenart") ){
 			SystemConfig.hmKVKDaten.put("Statusext",zeile.substring(last+1,dataend));
@@ -780,6 +873,7 @@ class CardListener implements CTListener {
 			//System.out.println("anderer Slot oder anderer Terminal");
 		}
 	}
+
 
 }
 
