@@ -484,6 +484,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			// Lemmi 20110106: Belegung der Indices zur ComboBox für spätere Auswahlen:
 			strRezepklassenAktiv[i] = SystemConfig.rezeptKlassenAktiv.get(i).get(1);  // hier speichern wir die Kürzel für spätere Aktivitäten
 		}
+		if(SystemConfig.AngelegtVonUser) {
+			jtf[cANGEL].setText(Reha.aktUser);
+			jtf[cANGEL].setEditable(false);
+		}
 
 		jpan.addLabel("Rezeptklasse auswählen",cc.xy(1, 3));
 		jpan.add(jcmb[cRKLASSE],cc.xyw(3, 3,5));
