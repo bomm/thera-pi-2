@@ -513,7 +513,8 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 				Reha.thisClass.patpanel.patDaten.get(2)+","+
 				SystemConfig.hmAdrRDaten.get("<Rnummer>")+"', "+
 				"pat_intern='"+SystemConfig.hmAdrRDaten.get("<Rpatid>")+"', "+
-				"rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"'";
+				"rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"' ," +
+				"user='"+ Reha.aktUser +"'";
 				SqlInfo.sqlAusfuehren(cmd);
 				////System.out.println("Kassenbuch -> "+cmd);
 			}catch(Exception ex){
