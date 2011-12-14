@@ -71,6 +71,8 @@ public class SystemConfig {
 	public static int UpdateIntervall;
 	public static float KalenderAlpha = 0.0f;
 	
+	public static boolean AngelegtVonUser = false;
+	
 	public static ArrayList<ArrayList<ArrayList<String[]>>> aRoogleGruppen;
 	
 	public static String OpenOfficePfad = null;
@@ -323,6 +325,9 @@ public class SystemConfig {
 	private void HauptFenster(){
 		try{
 			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+			
+			AngelegtVonUser = ini.getBooleanProperty("SystemIntern", "AngelegtVonUser");
+			
 			//ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
 			boolean mustsave = false;
 			aHauptFenster = new ArrayList<String>();
@@ -379,6 +384,7 @@ public class SystemConfig {
 			wissenURL = ini.getStringProperty("WWW-Services","RTA-Wissen");
 			homePageURL = ini.getStringProperty("WWW-Services","HomePage");		
 			homeDir = Reha.proghome;
+			
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
