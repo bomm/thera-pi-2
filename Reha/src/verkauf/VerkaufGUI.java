@@ -762,8 +762,8 @@ public class VerkaufGUI extends JXPanel{
 	
 	private void schreibeUmsatzDaten(String vnummer, double offen, int patid) {
 		Date date = new Date(System.currentTimeMillis());
-		String sql ="INSERT INTO verkliste (verklisteID, v_nummer, v_datum, v_betrag, v_mwst7, v_mwst19, v_offen, v_bezahldatum, mahndat1, mahndat2, mahndat3, mahnsperre, pat_id) " +
-				"VALUES (NULL, '"+ vnummer +"', '"+ date.toString() +"', '"+ verkauf.getBetragBrutto() +"', '"+ verkauf.getBetrag7() +"', '"+ verkauf.getBetrag19() +"', '"+ offen +"', NULL, NULL, NULL, NULL, '0', '"+ patid +"');";
+		String sql ="INSERT INTO verkliste (verklisteID, v_nummer, v_datum, v_betrag, v_mwst7, v_mwst19, v_offen, v_bezahldatum, mahndat1, mahndat2, mahndat3, mahnsperre, pat_id, user) " +
+				"VALUES (NULL, '"+ vnummer +"', '"+ date.toString() +"', '"+ verkauf.getBetragBrutto() +"', '"+ verkauf.getBetrag7() +"', '"+ verkauf.getBetrag19() +"', '"+ offen +"', NULL, NULL, NULL, NULL, '0', '"+ patid +"', '"+ Reha.aktUser +"');";
 		SqlInfo.sqlAusfuehren(sql);
 	}
 	
