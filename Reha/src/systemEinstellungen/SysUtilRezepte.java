@@ -63,6 +63,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 	
 	JButton[] button = {null,null,null,null,null,null,null};
 	JRtaCheckBox[] heilmittel = {null,null,null,null,null,null};
+	JRtaCheckBox angelegtVonUser = null;
 	JRtaComboBox voreinstellung = null;
 	JComboBox druckername = null;
 	JComboBox barcodedrucker = null;
@@ -123,6 +124,9 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			}
 			
 		}
+		
+		angelegtVonUser.setSelected(inif.getBooleanProperty("Sonstiges", "AngelegtVonUser"));
+		
 		voreinstellung.setSelectedItem(SystemConfig.initRezeptKlasse);
 		
 		int forms = inif.getIntegerProperty("Formulare", "RezeptFormulareAnzahl");
@@ -148,10 +152,10 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			
 		//                                      1.             2.     3.     4.     5.     6.    7. 
 		FormLayout lay = new FormLayout("right:max(120dlu;p), 20dlu, 40dlu, 70dlu, 4dlu, 10dlu,0dlu",
-       //1.    2. 3.   4.   5.   6.  7.   8.  9.  10.  11. 12.  13.  14.  15. 16.   17. 18.   19.   20.    21.   22.   23.
+       //1.    2. 3.   4.   5.   6.  7.   8.  9.  10.  11. 12.  13.  14.  15. 16.   17. 18.   19.   20.  21. 22.     23. 24     25
 		"p, 2dlu, p,  2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p  ,10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p,  10dlu ,  p, 10dlu,  p," +
-       //24    25  26   27   28   29  30  31 32
-		"10dlu,p,10dlu,80dlu,2dlu,p ,2dlu,p,10dlu");
+       //26    27  28   29   30   31  32  33 34    35  36   37
+		"10dlu,p,10dlu,80dlu,2dlu,p ,2dlu,p, 2dlu, p, 2dlu, p, 10dlu");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -246,7 +250,11 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		butPan.validate();
 		builder.add(butPan, cc.xyw(1,33,6));
 		
-
+		builder.addSeparator("Sonstiges", cc.xyw(1, 35, 6));
+		builder.addLabel("Angelegt von = SystemUser?", cc.xy(1, 37));
+		
+		angelegtVonUser = new JRtaCheckBox();
+		builder.add(angelegtVonUser, cc.xy(6, 37));
 		
 		return builder.getPanel();
 	}
@@ -446,7 +454,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			}
 		}
 		
-		
+		inif.setBooleanProperty("Sonstiges", "AngelegtVonUser", angelegtVonUser.isSelected(), null);
 		inif.save();
 		SystemConfig.rezGebDrucker = (String)druckername.getSelectedItem();
 		SystemConfig.rezBarcodeDrucker = (String)barcodedrucker.getSelectedItem();
