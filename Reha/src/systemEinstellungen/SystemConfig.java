@@ -326,7 +326,7 @@ public class SystemConfig {
 		try{
 			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
 			
-			AngelegtVonUser = ini.getBooleanProperty("SystemIntern", "AngelegtVonUser");
+			AngelegtVonUser = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini").getBooleanProperty("Sonstiges", "AngelegtVonUser");
 			
 			//ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
 			boolean mustsave = false;
