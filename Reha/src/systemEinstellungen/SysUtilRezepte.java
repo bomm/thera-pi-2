@@ -125,7 +125,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			
 		}
 		
-		angelegtVonUser.setSelected(inif.getBooleanProperty("Sonstiges", "AngelegtVonUser"));
+		angelegtVonUser.setSelected(SystemConfig.AngelegtVonUser);
 		
 		voreinstellung.setSelectedItem(SystemConfig.initRezeptKlasse);
 		
@@ -155,7 +155,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
        //1.    2. 3.   4.   5.   6.  7.   8.  9.  10.  11. 12.  13.  14.  15. 16.   17. 18.   19.   20.  21. 22.     23. 24     25
 		"p, 2dlu, p,  2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p  ,10dlu, p, 10dlu, p, 10dlu, p, 10dlu, p,  10dlu ,  p, 10dlu,  p," +
        //26    27  28   29   30   31  32  33 34    35  36   37
-		"10dlu,p,10dlu,80dlu,2dlu,p ,2dlu,p, 2dlu, p, 2dlu, p, 10dlu");
+		"10dlu,p,10dlu,80dlu,2dlu,p ,2dlu,p, 2dlu, p, 10dlu, p, 10dlu");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
@@ -251,7 +251,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		builder.add(butPan, cc.xyw(1,33,6));
 		
 		builder.addSeparator("Sonstiges", cc.xyw(1, 35, 6));
-		builder.addLabel("Angelegt von = SystemUser?", cc.xy(1, 37));
+		builder.addLabel("Angelegt von = aktueller User", cc.xy(1, 37));
 		
 		angelegtVonUser = new JRtaCheckBox();
 		builder.add(angelegtVonUser, cc.xy(6, 37));
@@ -454,10 +454,11 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 			}
 		}
 		
-		inif.setBooleanProperty("Sonstiges", "AngelegtVonUser", angelegtVonUser.isSelected(), null);
+		inif.setStringProperty("Sonstiges", "AngelegtVonUser", (angelegtVonUser.isSelected() ? "1" : "0"), null);
 		inif.save();
 		SystemConfig.rezGebDrucker = (String)druckername.getSelectedItem();
 		SystemConfig.rezBarcodeDrucker = (String)barcodedrucker.getSelectedItem();
+		SystemConfig.AngelegtVonUser = angelegtVonUser.isSelected();
 		SystemConfig.RezeptInit();
 		JOptionPane.showMessageDialog(null,"Konfiguration in rezept.ini erfolgreich gespeichert");
 		}catch(Exception ex){

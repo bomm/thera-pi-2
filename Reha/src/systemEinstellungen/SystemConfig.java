@@ -325,9 +325,6 @@ public class SystemConfig {
 	private void HauptFenster(){
 		try{
 			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-			
-			AngelegtVonUser = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini").getBooleanProperty("Sonstiges", "AngelegtVonUser");
-			
 			//ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
 			boolean mustsave = false;
 			aHauptFenster = new ArrayList<String>();
@@ -384,7 +381,6 @@ public class SystemConfig {
 			wissenURL = ini.getStringProperty("WWW-Services","RTA-Wissen");
 			homePageURL = ini.getStringProperty("WWW-Services","HomePage");		
 			homeDir = Reha.proghome;
-			
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -1033,8 +1029,14 @@ public class SystemConfig {
 			rezBarCodName = new String[] {null};
 			rezBarCodForm = new Vector<String>();
 		}
+		String dummy = inif.getStringProperty("Sonstiges", "AngelegtVonUser");
+		if(dummy == null){
+			inif.setStringProperty("Sonstiges", "AngelegtVonUser","0",null);
+			inif.save();
+		}else{
+			AngelegtVonUser = (inif.getStringProperty("Sonstiges", "AngelegtVonUser").equals("0") ? false : true);
+		}
 		//System.out.println(rezeptKlassenAktiv);
-
 	}
 	@SuppressWarnings("unchecked")
 	public static void TherapBausteinInit() {
