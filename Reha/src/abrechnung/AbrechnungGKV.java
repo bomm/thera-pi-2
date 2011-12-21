@@ -1583,6 +1583,10 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 							rezgeb.add(BigDecimal.valueOf(Double.valueOf(dummy)));
 							einzelzuzahlung.add(BigDecimal.valueOf(Double.valueOf(dummy)));
 						}else{
+							/*
+							System.out.println("Dummy = "+dummy);
+							System.out.println("Muliplikator = "+bdAnzahl);
+							*/
 							//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
 							rezgeb.add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl));
 							//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
@@ -1616,18 +1620,32 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 							}
 						}else{
 							//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
-							rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(anzahl.get(pos))));
+							/*
+							System.out.println("Dummy = "+dummy);
+							System.out.println("Muliplikator (falsch) = "+anzahl.get(pos));
+							System.out.println("Muliplikator (richtig) = "+bdAnzahl);
+							*/
+							rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl)));
 							//Herr Lehmann: nächste Zeile muß freigeschaltet werden für Einzelkilometer
 							if(! BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl).equals(einzelzuzahlung.get(pos))){
 								zuzahlUmstellung = true;
 							}
+							/*
+							rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf(dummy)).multiply(anzahl.get(pos))));
+							if(! BigDecimal.valueOf(Double.valueOf(dummy)).multiply(bdAnzahl).equals(einzelzuzahlung.get(pos))){
+								zuzahlUmstellung = true;
+							}
+							*/
 						}
 					}else{
+						//System.out.println("Keine Zuzahlung Dummy = ");
+						//System.out.println("Keine Zuzahlung Muliplikator = "+anzahl.get(pos));
 						rezgeb.set(pos,rezgeb.get(pos).add(BigDecimal.valueOf(Double.valueOf("0.00"))));
 						if(!BigDecimal.valueOf(Double.valueOf("0.00")).equals(einzelzuzahlung.get(pos))){
 							//////System.out.println("Einzelzuzahlung = "+einzelzuzahlung.get(pos));
 							//////System.out.println("Vergleichswert = 0.00 ");
-							zuzahlUmstellung = true;							
+							zuzahlUmstellung = true;
+							//System.out.println("Umstellung der Zuzahlung = "+zuzahlUmstellung);
 						}
 					}
 				}
