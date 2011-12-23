@@ -2008,7 +2008,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			vec.set(cVAR_ZZSTAT, "");
 			vec.set(cVAR_LASTDAT, "");
 			
-			vec.set(cVAR_ANGEL, "");
+			if(SystemConfig.AngelegtVonUser){
+				vec.set(cVAR_ANGEL, Reha.aktUser);
+			}else{
+				vec.set(cVAR_ANGEL, "");				
+			}
 			vec.set(cVAR_LASTEDIT, "");
 			
 			vec.set(cVAR_BEFREIT, "");
