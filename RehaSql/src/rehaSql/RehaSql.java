@@ -395,7 +395,6 @@ public class RehaSql implements WindowListener {
         		System.out.println("SQLState: " + ex.getSQLState());
         		System.out.println("VendorError: " + ex.getErrorCode());
         		RehaSql.DbOk = false;
-        
         	}
 	        return;
 		}
@@ -440,7 +439,6 @@ public class RehaSql implements WindowListener {
 			}
 			
 		}
-		
 		System.exit(0);
 	}
 	@Override

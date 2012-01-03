@@ -383,13 +383,14 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			@Override
 			protected Void doInBackground() throws Exception {
 				int spalten = tabmod.getColumnCount();
+				int relativerow = tab.convertRowIndexToModel(row);
 				String pat="",rez="";
 				for(int i = 0; i < spalten;i++){
 					if(tabmod.getColumnName(i).toString().trim().toLowerCase().equals("rez_nr") ||
 							tabmod.getColumnName(i).toString().trim().equals("reznr")){
-						rez = tabmod.getValueAt(row, i).toString();
+						rez = tabmod.getValueAt(relativerow, i).toString();
 					}else if(tabmod.getColumnName(i).toString().trim().toLowerCase().equals("pat_intern")){
-						pat = tabmod.getValueAt(row, i).toString();
+						pat = tabmod.getValueAt(relativerow, i).toString();
 					}
 				}
 				if((!pat.equals("")) || (!rez.equals(""))){
@@ -700,7 +701,33 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 
 	}
 
+	private void doExecuteOnly(){
+		Statement stmt = null;
+		//ToDo auf delete und update testen und wenn ja auf Limit 1 testen und wenn nein SuperUser-Passwort anfordern
+
+
+		try {
+			textArea.setText("Ihr Statement: ["+sqlstatement.getText().trim()+"]\n"+textArea.getText());
+			stmt =  RehaSql.thisClass.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+			            ResultSet.CONCUR_UPDATABLE );
+			stmt.execute(sqlstatement.getText());
+			tabmod.setRowCount(0);
+			tab.validate();
+		} catch (SQLException e) {
+			textArea.setText(e.getMessage()+"\n"+textArea.getText());
+		}
+		finally {
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException sqlEx) { // ignore }
+					stmt = null;
+				}
+			}
+		}
+
 		
+	}	
 	private void doExecuteStatement(){
 		Statement stmt = null;
 		//ToDo auf delete und update testen und wenn ja auf Limit 1 testen und wenn nein SuperUser-Passwort anfordern
@@ -768,7 +795,13 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			doOnlySuperUserExecuteStatement();
 			return;
 		}
-		
+		if(sqlstatement.getText().trim().toLowerCase().startsWith("alter table") ||
+				sqlstatement.getText().trim().toLowerCase().startsWith("truncate table") ||
+				sqlstatement.getText().trim().toLowerCase().startsWith("create table")){
+			doExecuteOnly();
+			return;
+			
+		}
 		if(sqlstatement.getText().trim().toLowerCase().startsWith("update") || sqlstatement.getText().trim().toLowerCase().startsWith("insert") ||
 				sqlstatement.getText().trim().toLowerCase().startsWith("delete")){
 			doExecuteStatement();
@@ -1005,9 +1038,11 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 				}
 			}
 			Object obj = null;
+			int relativerow = -1;
 			for(int i = 0; i < rowcount;i++){
 				for(int y = 0;y < colVisible.size();y++){
-					obj = tabmod.getValueAt(i,colVisible.get(y));
+					relativerow = tab.convertRowIndexToModel(i);
+					obj = tabmod.getValueAt(relativerow,colVisible.get(y));
 					if(obj!=null){
 						if(obj instanceof Double){
 							OOTools.doCellValue(cellCursor, y, i+1, (Double) obj);
