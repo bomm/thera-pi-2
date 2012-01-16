@@ -210,6 +210,9 @@ public class SystemConfig {
 	
 	public static String sWebCamActive = null;
 	public static int[] sWebCamSize = {320,240};
+	
+	public static HashMap<String,Object> hmArschgeigenModus = new HashMap<String,Object>();
+	public static Vector<Vector<String>> vArschgeigenDaten = new Vector<Vector<String>>();
 	                     
 	public SystemConfig(){
 	
@@ -817,7 +820,7 @@ public class SystemConfig {
 		hmAdrPDaten = new HashMap<String,String>();
 		List<String> lAdrPDaten = Arrays.asList(new String[]{"<Padr1>","<Padr2>","<Padr3>","<Padr4>","<Padr5>",
 											"<Pgeboren>","<Panrede>","<Pnname>","<Pvname>","<Pbanrede>",
-											"<Ptelp>","<Ptelg>","<Ptelmob>","<Pfax>","<Pemail>","<Ptitel>","<Pihrem>","<Pihnen>","<Pid>","<Palter>","<Pzigsten>"});
+											"<Ptelp>","<Ptelg>","<Ptelmob>","<Pfax>","<Pemail>","<Ptitel>","<Pihrem>","<Pihnen>","<Pid>","<Palter>","<Pzigsten>","<Pvnummer>"});
 		for(int i = 0; i < lAdrPDaten.size(); i++){
 			hmAdrPDaten.put(lAdrPDaten.get(i),"");
 		}
@@ -1428,6 +1431,36 @@ public class SystemConfig {
 				"Sollten Sie die Berechtigung für die Umstellung haben, <font color='#ff0000'>stellen Sie bitte selbst um:</font><br>"+
 				"System-Initialisierung -> sonstige Einstellungen -> Befreiungen zurücksetzen/Jahreswechsel</b></html>";
 			JOptionPane.showMessageDialog(null,htmlstring);
+		}
+	}
+	
+	public static void ArschGeigenTest(){
+		//public static HashMap<String,Object> hmArschgeigenModus = new HashMap<String,Object>();
+		//public static Vector<Vector<String>> vArschgeigenDaten = new Vector<Vector<String>>();
+		if(new File(Reha.proghome+"ini/"+Reha.aktIK+"/arschgeigen.ini").exists()){
+			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arschgeigen.ini");
+			int anzahlag = inif.getIntegerProperty("Arschgeigen", "AnzahlArschgeigen");
+			int anzahliks;
+			Vector<String> vDummy = new Vector<String>();
+			for(int i = 0; i < anzahlag;i++){
+				vDummy.clear();
+				anzahliks = inif.getIntegerProperty("Arschgeigen"+Integer.toString(i+1), "ArschgeigenAnzahl");
+				for(int i2 = 0 ; i2 < anzahliks; i2++){
+					vDummy.add(inif.getStringProperty("Arschgeigen"+Integer.toString(i+1), "ArschgeigenIK"+Integer.toString(i2+1)));
+				}
+				/*
+				ArschgeigenModus=4
+				ArschgeigenStichtag=01.01.2012
+				ArschgeigenTarifgruppeAlt = 8
+				ArschgeigenTarifgruppeNeu = 2
+				*/
+				vArschgeigenDaten.add((Vector<String>)vDummy.clone());
+				hmArschgeigenModus.put("Modus"+Integer.toString(i),(Integer) inif.getIntegerProperty("Arschgeigen"+Integer.toString(i+1), "ArschgeigenModus") );
+				hmArschgeigenModus.put("Stichtag"+Integer.toString(i),(String) inif.getStringProperty("Arschgeigen"+Integer.toString(i+1), "ArschgeigenStichtag") );
+				hmArschgeigenModus.put("Tarifalt"+Integer.toString(i),(Integer) inif.getIntegerProperty("Arschgeigen"+Integer.toString(i+1), "ArschgeigenTarifgruppeAlt")-1 );
+				hmArschgeigenModus.put("Tarifneu"+Integer.toString(i),(Integer) inif.getIntegerProperty("Arschgeigen"+Integer.toString(i+1), "ArschgeigenTarifgruppeNeu")-1 );
+			}
+			
 		}
 	}
 	

@@ -1835,7 +1835,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
     	TreePath path = treeKasse.getSelectionPath();
     	return	(path.getPathCount()>=3);
 	}
-	private String getAktKTraeger(){
+	String getAktKTraeger(){
 		TreePath path = treeKasse.getSelectionPath();
 		JXTTreeNode node = (JXTTreeNode) path.getLastPathComponent();
 		return ((KnotenObjekt)node.getUserObject()).ikkasse;

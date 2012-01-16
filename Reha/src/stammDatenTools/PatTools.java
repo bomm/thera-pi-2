@@ -129,6 +129,7 @@ public class PatTools {
 			SystemConfig.hmAdrPDaten.put("<Pemail>", Reha.thisClass.patpanel.patDaten.get(50));
 			SystemConfig.hmAdrPDaten.put("<Ptitel>", titel);
 			SystemConfig.hmAdrPDaten.put("<Pid>", Reha.thisClass.patpanel.patDaten.get(66));
+			SystemConfig.hmAdrPDaten.put("<Pvnummer>", Reha.thisClass.patpanel.patDaten.get(16));
 		}catch(Exception ex){
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null,"Fehler beim zusammenstellen der Patienten HashMap");

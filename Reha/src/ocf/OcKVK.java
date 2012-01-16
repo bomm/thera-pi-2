@@ -549,7 +549,8 @@ public class OcKVK {
 			SystemConfig.hmKVKDaten.put("Krankenkasse",zeile.substring(last+1,dataend));
 			return;
 		}else if(dummy.equals("Versichertenart") ){
-			SystemConfig.hmKVKDaten.put("Statusext",zeile.substring(last+1,dataend));
+			//SystemConfig.hmKVKDaten.put("Statusext",zeile.substring(last+1,dataend));
+			SystemConfig.hmKVKDaten.put("Status",zeile.substring(last+1,dataend));
 			return;
 		}else if(dummy.equals("Ende") ){
 			String ende = zeile.substring(last+1,dataend);

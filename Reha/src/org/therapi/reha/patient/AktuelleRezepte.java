@@ -286,8 +286,15 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 
 					@Override
 					protected Void doInBackground() throws Exception {
-						RezTools.constructFormularHMap();
-						//OOTools.testePlatzhalter(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
+						RezTools.constructRawHMap();
+						/*
+						System.out.println("Anzahl Termine = "+SystemConfig.hmAdrRDaten.get("<Ranzahltage>"));
+						System.out.println("Wegpos = "+SystemConfig.hmAdrRDaten.get("<Rwegpos>"));
+						System.out.println("Wegpreis = "+SystemConfig.hmAdrRDaten.get("<Rwegpreis>"));
+						System.out.println("Rkuerzel1 = "+SystemConfig.hmAdrRDaten.get("<Rkuerzel1>"));
+						System.out.println("Rlangtext1 = "+SystemConfig.hmAdrRDaten.get("<Rlangtext1>"));
+						//RezTools.constructFormularHMap();
+						*/
 						OOTools.starteStandardFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+formular.get(iformular),null);
 						return null;
 					}
@@ -953,6 +960,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						//tabaktrez.setRowSelectionInterval(row, row);
 						Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(row, 7)+"'", Arrays.asList(new String[] {}) ));
 						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 7));
+						//RezTools.constructRawHMap();
 						/*
 						if(!inEinzelTermine){
 							try{
@@ -970,6 +978,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						//tabaktrez.setRowSelectionInterval(0, 0);
 						Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(row, 7)+"'", Arrays.asList(new String[] {}) ));
 						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(0, 0),(String)tabaktrez.getValueAt(0, 7));
+						//RezTools.constructRawHMap();
 						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
 					
@@ -1086,6 +1095,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			tabaktterm.setRowSelectionInterval(lines-1, lines-1);
 		}
 		SystemConfig.hmAdrRDaten.put("<Rletztdat>",(terdat[0].trim().equals("") ? "  .  .    " : terdat[0]));
+		SystemConfig.hmAdrRDaten.put("<Ranzahltage>", Integer.toString(lines));
+
 	}
 	public void setzeBild(int satz,int icon){
 		dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[icon],satz,1);
@@ -1097,7 +1108,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		tabaktterm.validate();
 		anzahlTermine.setText("Anzahl Termine: 0");
 		SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
-		SystemConfig.hmAdrRDaten.put("<Rerstdat>","");		
+		SystemConfig.hmAdrRDaten.put("<Rerstdat>","");
+		SystemConfig.hmAdrRDaten.put("<Ranzahltage>","0");
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void holeEinzelTermineAusRezept(String xreznr,String termine){
@@ -1175,10 +1187,12 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			SystemConfig.hmAdrRDaten.put("<Rletztdat>",(terms.get(terms.size()-1).get(0).equals("") ? "  .  .    " : String.valueOf(terms.get(terms.size()-1).get(0))) );
 			tabaktterm.validate();
 			anzahlTermine.setText("Anzahl Termine: "+terms.size());
+			SystemConfig.hmAdrRDaten.put("<Ranzahltage>",Integer.toString(terms.size()));
 		}else{
 			SystemConfig.hmAdrRDaten.put("<Rletztdat>", "  .  .    " );
 			tabaktterm.validate();
 			anzahlTermine.setText("Anzahl Termine: "+"0");
+			SystemConfig.hmAdrRDaten.put("<Ranzahltage>","0");
 		}
 	}
 	@SuppressWarnings({ "unchecked", "unused" })
@@ -1201,6 +1215,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			anzahlTermine.setText("Anzahl Termine: 0");
 			SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
 			SystemConfig.hmAdrRDaten.put("<Rerstdat>","");
+			SystemConfig.hmAdrRDaten.put("<Ranzahltage>","0");
 			inEinzelTermine = false;
 			return;
 		}
@@ -1210,6 +1225,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			anzahlTermine.setText("Anzahl Termine: 0");
 			SystemConfig.hmAdrRDaten.put("<Rletztdat>","");
 			SystemConfig.hmAdrRDaten.put("<Rerstdat>","");
+			SystemConfig.hmAdrRDaten.put("<Ranzahltage>","0");
 			inEinzelTermine = false;
 			return;
 		}
@@ -1244,6 +1260,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			//tabaktterm.setRowSelectionInterval(lines-1, lines-1);
 		}
 		SystemConfig.hmAdrRDaten.put("<Rletztdat>",(terdat[0].trim().equals("") ? "  .  .    " : terdat[0]));
+		SystemConfig.hmAdrRDaten.put("<Ranzahltage>",Integer.toString(lines));
 		inEinzelTermine = false;
 	}
 
@@ -1263,6 +1280,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			sb.append((dtermm.getValueAt(i,3)!= null ? ((String)dtermm.getValueAt(i,3)).trim() : "")+"@");			
 			sb.append((dtermm.getValueAt(i,4)!= null ? ((String)dtermm.getValueAt(i,4)).trim() : "")+"\n");
 		}
+		SystemConfig.hmAdrRDaten.put("<Ranzahltage>",Integer.toString(reihen));
 		SqlInfo.aktualisiereSatz("verordn", "termine='"+sb.toString()+"'","id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7)+"'");
 		Reha.thisClass.patpanel.vecaktrez.set(34,sb.toString());
 		if(aktuellAngezeigt>=0){
@@ -1407,10 +1425,14 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 										@Override
 										protected Void doInBackground()
 												throws Exception {
+											try{
 												if( (testreznum.startsWith("RH")) && (Reha.thisClass.dta301panel != null) ){
 													Reha.thisClass.dta301panel.aktualisieren(testreznum);
-													//x
 												}
+												//RezTools.constructRawHMap();
+											}catch(Exception ex){
+												ex.printStackTrace();
+											}
 											return null;
 										}
 		    							

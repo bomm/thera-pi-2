@@ -976,6 +976,58 @@ public class RezTools {
 		// Ebenso das Wegegeldhandling
 	}
 	
+
+	public static void constructRawHMap(){
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					DecimalFormat df = new DecimalFormat( "0.00" );
+					String diszi = RezTools.putRezNrGetDisziplin((String)Reha.thisClass.patpanel.vecaktrez.get(1));
+
+					int pg = Integer.parseInt((String)Reha.thisClass.patpanel.vecaktrez.get(41))-1;
+					String id = "";
+					SystemConfig.hmAdrRDaten.put("<Rid>",(String)Reha.thisClass.patpanel.vecaktrez.get(35) );
+					SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
+					SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)) );
+
+					for(int i = 0;i<4;i++){
+						id = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
+						SystemConfig.hmAdrRDaten.put("<Rposition"+(i+1)+">",(String)Reha.thisClass.patpanel.vecaktrez.get(48+i));
+						SystemConfig.hmAdrRDaten.put("<Rpreis"+(i+1)+">", (String)Reha.thisClass.patpanel.vecaktrez.get(18+i).replace(".",",") );
+						SystemConfig.hmAdrRDaten.put("<Ranzahl"+(i+1)+">", (String)Reha.thisClass.patpanel.vecaktrez.get(3+i) );
+						SystemConfig.hmAdrRDaten.put("<Rgesamt"+(i+1)+">", df.format( ((BigDecimal)BigDecimal.valueOf(Double.valueOf(SystemConfig.hmAdrRDaten.get("<Ranzahl"+(i+1)+">"))).multiply(BigDecimal.valueOf(Double.valueOf(SystemConfig.hmAdrRDaten.get("<Rpreis"+(i+1)+">").replace(",","."))))).doubleValue() ));
+						if(!id.equals("0")){
+							SystemConfig.hmAdrRDaten.put("<Rkuerzel"+(i+1)+">", RezTools.getKurzformFromID(id, SystemPreislisten.hmPreise.get(diszi).get(pg) ) );
+							SystemConfig.hmAdrRDaten.put("<Rlangtext"+(i+1)+">", RezTools.getLangtextFromID(id, "", SystemPreislisten.hmPreise.get(diszi).get(pg) ) );
+						}else{
+							SystemConfig.hmAdrRDaten.put("<Rkuerzel"+(i+1)+">", "");
+							SystemConfig.hmAdrRDaten.put("<Rlangtext"+(i+1)+">", "");
+						}
+					}
+					//Hausbesuche
+					if( ((String)Reha.thisClass.patpanel.vecaktrez.get(43)).equals("T") ){
+						SystemConfig.hmAdrRDaten.put("<Rhbpos>", SystemPreislisten.hmHBRegeln.get(diszi).get(pg).get(0));
+						SystemConfig.hmAdrRDaten.put("<Rhbanzahl>",(String)Reha.thisClass.patpanel.vecaktrez.get(64) );
+						SystemConfig.hmAdrRDaten.put("<Rhbpreis>",RezTools.getPreisAktFromPos(SystemConfig.hmAdrRDaten.get("<Rhbpos>"), "", SystemPreislisten.hmPreise.get(diszi).get(pg)).replace(".",",") );
+						SystemConfig.hmAdrRDaten.put("<Rwegpos>", SystemPreislisten.hmHBRegeln.get(diszi).get(pg).get(2));
+						SystemConfig.hmAdrRDaten.put("<Rweganzahl>",(String)Reha.thisClass.patpanel.vecaktrez.get(7) );
+						SystemConfig.hmAdrRDaten.put("<Rwegpreis>",RezTools.getPreisAktFromPos(SystemConfig.hmAdrRDaten.get("<Rwegpos>"), "", SystemPreislisten.hmPreise.get(diszi).get(pg)).replace(".",",") );						
+					}else{
+						SystemConfig.hmAdrRDaten.put("<Rhbpos>", "");
+						SystemConfig.hmAdrRDaten.put("<Rhbanzahl>","");
+						SystemConfig.hmAdrRDaten.put("<Rhbpreis>","");
+						SystemConfig.hmAdrRDaten.put("<Rwegpos>", "");
+						SystemConfig.hmAdrRDaten.put("<Rweganzahl>","");
+						SystemConfig.hmAdrRDaten.put("<Rwegpreis>","");						
+					}
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				return null;
+			}
+		}.execute();
+	}
 	public static void constructGanzFreiRezHMap(ZuzahlModell zm){
 		SystemConfig.hmAdrRDaten.put("<Rid>",(String)Reha.thisClass.patpanel.vecaktrez.get(35) );
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );

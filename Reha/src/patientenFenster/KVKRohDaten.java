@@ -183,7 +183,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
          "<td>\n" +
          "<font color=red>"+
          "<font size=+1>"+
-         SystemConfig.hmKVKDaten.get("Statusext")+
+         SystemConfig.hmKVKDaten.get("Status").substring(0,1)+
          "</font>"+         
          "</td></tr>\n" +
          //
@@ -404,7 +404,17 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 				thisPat.jtf[12].setText(SystemConfig.hmKVKDaten.get("Krankenkasse"));
 				thisPat.jtf[13].setText("10"+SystemConfig.hmKVKDaten.get("Kassennummer"));
 				thisPat.jtf[14].setText(SystemConfig.hmKVKDaten.get("Versichertennummer"));
-				thisPat.jtf[15].setText(SystemConfig.hmKVKDaten.get("Statusext"));
+				//thisPat.jtf[15].setText(SystemConfig.hmKVKDaten.get("Statusext"));
+				try{
+					if(SystemConfig.hmKVKDaten.get("Status").startsWith("0") || SystemConfig.hmKVKDaten.get("Status").trim().length()==0){
+						thisPat.jtf[15].setText("1");	
+					}else{
+						thisPat.jtf[15].setText(SystemConfig.hmKVKDaten.get("Status").substring(0,1));
+					}
+				}catch(Exception ex){
+					thisPat.jtf[15].setText("1");
+				}
+				
 				
 				thisPat.jtf[2].setText(SystemConfig.hmKVKDaten.get("Nachname").toUpperCase());
 				thisPat.jtf[3].setText(SystemConfig.hmKVKDaten.get("Vorname").toUpperCase());

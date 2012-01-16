@@ -240,6 +240,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	
 	boolean rezeptFertig = false;
 	
+	public boolean mitTarifWechsel = false;
+	public int neueTarifgruppe = -1;
+	
 	StringBuffer edibuf = new StringBuffer();
 	StringBuffer htmlpos = new StringBuffer();
 	StringBuffer htmlposbuf = new StringBuffer();
@@ -1219,6 +1222,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			zuZahlungsPos = "0";
 			doTreeFreiAb(0,nodes,false);
 			doTarifWechselCheck();
+			arschGeigenCheck();
 			return;
 		}
 		if(patU18){
@@ -1233,6 +1237,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			zuZahlungsPos = "0";
 
 			doTarifWechselCheck();
+			arschGeigenCheck();
 			return;
 
 		}else{
@@ -1252,6 +1257,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				zuZahlungsPos = "0";
 				
 				doTarifWechselCheck();
+				arschGeigenCheck();
 				return;
 
 				
@@ -1269,6 +1275,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				zuZahlungsPos = "5";
 				
 				doTarifWechselCheck();
+				arschGeigenCheck();
 				return;
 			}
 		}
@@ -1383,6 +1390,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		// for next Schleife die Preise anpassen!
 		// bevor jetzt weitergemacht werden kann muß der Vector für die Behandlungen erstellt werden!!!!!
 		doTarifWechselCheck();
+		arschGeigenCheck();
 
 	}
 	/***************************TarifWechselCheck********************************/
@@ -1455,6 +1463,72 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			}
 			return;
 		}
+	}
+	
+	private void arschGeigenCheck(){
+		try{
+			if(SystemConfig.vArschgeigenDaten.size() <= 0){this.mitTarifWechsel = false; return;}
+			this.mitTarifWechsel = false;
+			for(int i = 0; i < SystemConfig.vArschgeigenDaten.size();i++){
+				if( SystemConfig.vArschgeigenDaten.get(i).indexOf(eltern.getAktKTraeger()) >= 0){
+					setTarifWechsel(i);
+					return;
+				}
+			}
+		}catch(NullPointerException ex){
+			ex.printStackTrace();
+		}
+		return;
+	}
+	private void setTarifWechsel(int welcher){
+		try{
+			int tarifalt = (Integer)SystemConfig.hmArschgeigenModus.get("Tarifalt"+Integer.toString(welcher));
+			int tarifneu = (Integer)SystemConfig.hmArschgeigenModus.get("Tarifneu"+Integer.toString(welcher));
+			//Vector<Vector<String>> vecalt =  (Vector<Vector<String>>) RezTools.holePreisVector(aktRezNum.getText().substring(0,2),tarifalt ) ;
+			Vector<Vector<String>> vecneu =  (Vector<Vector<String>>) RezTools.holePreisVector(aktRezNum.getText().substring(0,2),tarifneu );
+			int count = getNodeCount();
+			String xpos = "";
+			AbrFall abr;
+			String preis;
+			boolean alterpreis = false;
+			for(int i = 0; i< count;i++){
+				abr = this.holeAbrFall(i);
+				
+				if( DatFunk.TageDifferenz( (String)SystemConfig.hmArschgeigenModus.get("Stichtag"+Integer.toString(welcher)),abr.datum ) >= 0){
+					//abr.alterpreis = "aktuell";
+					xpos = RezTools.getPosFromID(abr.preisid, preisgruppe, preisvec);
+					preis = RezTools.getPreisAktFromPos(xpos, Integer.toString(tarifneu), vecneu);
+					abr.preis = Double.valueOf(preis);
+					abr.tarifwechsel = true;
+					this.neueTarifgruppe = welcher;
+					this.mitTarifWechsel = true;
+					abr.tarifkennzeichen = SystemPreislisten.hmPreisBereich.get(aktDisziplin).get(tarifneu);
+				}else{
+					alterpreis = true;
+				}
+				if(alterpreis && this.mitTarifWechsel){
+					final int xwelcher = welcher;
+					final int xtarifalt = tarifalt;
+					final int xtarifneu = tarifneu;
+					SwingUtilities.invokeLater(new Runnable(){
+
+						public void run(){
+							String meldung = "<html><b>Achtung es hat ein Wechsel der Tarifgruppe statt gefunden</b><br><br>"+
+							"Stichtag für den Wechsel ist der <b><font color=#FF0000>"+SystemConfig.hmArschgeigenModus.get("Stichtag"+Integer.toString(xwelcher))+"</font></b><br><br>"+
+							"alte Tarifgruppe = <b><font color=#FF0000>"+SystemPreislisten.hmPreisGruppen.get(aktDisziplin).get(xtarifalt)+"</font></b><br>"+
+							"neue Tarifgruppe = <b><font color=#FF0000>"+SystemPreislisten.hmPreisGruppen.get(aktDisziplin).get(xtarifneu)+"</font></b><br><br>";
+							JOptionPane.showMessageDialog(getInstance(), meldung);
+						}
+					});
+				}
+			}		
+		}catch(NullPointerException ex){
+			ex.printStackTrace();
+		}
+
+	}
+	private AbrechnungRezept getInstance(){
+		return this;
 	}
 	private String getDatumErsterTag(){
 		return this.holeAbrFall(0).datum;
@@ -2030,6 +2104,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		public String sqldatum = "";
 		public String preisid = "";
 		public boolean niezuzahl = false;
+		public boolean tarifwechsel = false;
+		public String tarifkennzeichen = "";
 		//SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		public AbrFall(String titel,String datum,String bezeichnung,Double anzahl,Double preis,
 				boolean zuzahlung,double rezgeb,String unterbrechung,String alterpreis,String sqldatum,String preisid,boolean niezuzahl){
@@ -2045,6 +2121,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			this.alterpreis = alterpreis;
 			this.preisid = preisid;
 			this.niezuzahl = niezuzahl;
+			this.tarifwechsel = false;
+			this.tarifkennzeichen = "";
 		}
 	}
 	
@@ -3402,14 +3480,15 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		JXTTreeTableNode node;
 		for(int i = 0; i < getNodeCount();i++){
 			node = holeNode(i);
-			edibuf.append("EHE+"+disziplinGruppe+":"+SystemPreislisten.hmPreisBereich.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1)+"000"+plus);
-//			edibuf.append("EHE+"+disziplinGruppe+plus+SystemConfig.vPreisGueltig.get(Integer.parseInt(preisgruppe)-1)+"000"+plus);
+			//Notwendig wg. BKK-Gesundheit Tarifwechsel
+			if(!node.abr.tarifwechsel){
+				edibuf.append("EHE+"+disziplinGruppe+":"+SystemPreislisten.hmPreisBereich.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1)+"000"+plus);				
+			}else{
+				edibuf.append("EHE+"+disziplinGruppe+":"+node.abr.tarifkennzeichen+"000"+plus);
+			}
 			edibuf.append(RezTools.getPosFromID(node.abr.preisid, preisgruppe, preisvec)+plus);
 			edibuf.append(dfx.format(node.abr.anzahl)+plus);
-			////System.out.println("Abrechnungspreis = "+BigDecimal.valueOf(node.abr.preis)+ " / "+"Abrechnung-Anzahl = "+BigDecimal.valueOf(node.abr.anzahl));
-//			////System.out.println("Abrechnung-Anzahl = "+BigDecimal.valueOf(node.abr.anzahl));
 			gesamt += BigDecimal.valueOf(node.abr.preis).multiply(BigDecimal.valueOf(node.abr.anzahl)).doubleValue();
-			////System.out.println("Gesamtpreis = "+dfx.format(BigDecimal.valueOf(node.abr.preis).multiply(BigDecimal.valueOf(node.abr.anzahl)).doubleValue()));
 			edibuf.append(dfx.format(node.abr.preis)+plus);
 			edibuf.append(ediDatumFromDeutsch(node.abr.datum));
 			if(node.abr.rezgeb > 0){
