@@ -411,7 +411,10 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		
 		String[] spdummy;
 		String cmd = "";
-		
+		String notikdat = "";
+		String notikent = "";
+		String notikpap = "";
+		String notxemail = "";
 		int lang;
 		
 		spdummy = ktr.get(0).split("\\+");
@@ -425,10 +428,24 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 			}
 			if(ktr.get(i).indexOf("VKG+03+") >= 0){
 				//Verweis auf Datenannahme mit Entschlüsselung //Schlüssel 07 Art der Datenlieferung
-				spdummy = ktr.get(i).split("\\+");
+				spdummy = ktr.get(i).replace("'","").split("\\+");
 				if(spdummy[5].equals("07")){
-					ikdat = spdummy[2];
-					ikent = spdummy[2];
+					/*
+					if(ikkas.equals("103500706")){
+						String meldung = "Abrechnungsschlüssel = "+spdummy[9]+"\n"+
+						"IKDAT = "+ikdat;
+						JOptionPane.showMessageDialog(null, meldung);
+					}
+					*/
+					if( (spdummy[9].equals("00") || spdummy[9].startsWith("2")) ){
+						ikdat = spdummy[2];
+						ikent = spdummy[2];
+					}else{
+						if( (spdummy[9].equals("99")) && (ikdat.equals("")) ){
+							ikdat = spdummy[2];
+							ikent = spdummy[2];
+						}
+					}
 				}	
 			}
 			if(ktr.get(i).indexOf("VKG+02+") >= 0){
@@ -438,9 +455,13 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 				//Verweis auf Papierannahmestelle
 				spdummy = ktr.get(i).replace("'","").split("\\+");
 				if(   (spdummy[5].equals("28") || spdummy[5].equals("29")) &&
-						(spdummy[9].equals("00") || spdummy[9].equals("20"))	){
+						(spdummy[9].equals("00") || spdummy[9].startsWith("2"))	){
 					ikpap = spdummy[2];
-				}	
+				}else{
+					if(spdummy[9].equals("99") && (ikpap.equals(""))){
+						ikpap = spdummy[2];
+					}
+				}
 			}
 			if(ktr.get(i).indexOf("NAM+01+") >= 0){
 				//Name der Kasse
