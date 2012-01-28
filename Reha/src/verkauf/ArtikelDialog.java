@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.text.DecimalFormat;
 
 import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
@@ -51,9 +52,11 @@ public class ArtikelDialog extends RehaSmartDialog {
 	
 	private Artikel artikel;
 	
-	private String[] mwstSaetze = {"0", "7", "19"};
+	private String[] mwstSaetze = {"0,00", "7,00", "19,00"};
 	
 	INIFile inif;
+	
+	DecimalFormat df = new DecimalFormat( "0.00" );
 	
 	public ArtikelDialog(int id, Point position) {
 		super(null, "ArtikelDlg");
@@ -243,7 +246,9 @@ public class ArtikelDialog extends RehaSmartDialog {
 			this.comboLieferant.setSelectedItem(new Lieferant(this.artikel.getLieferant()));
 		}
 		this.comboEinheit.setSelectedItem(this.artikel.getEinheit());
-		this.comboMwst.setSelectedItem(String.valueOf(this.artikel.getMwst()));
+		System.out.println("MWST = "+this.artikel.getMwst());
+		this.comboMwst.setSelectedItem(df.format(this.artikel.getMwst()));
+		
 	}
 	
 	private String[] getEinheiten() {

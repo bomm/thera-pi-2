@@ -176,6 +176,7 @@ public class Artikel {
 			artikel.add(String.valueOf(a.getBeschreibung()));
 			artikel.add(df.format(a.getPreis()));
 			artikel.add(df.format(a.getEinkaufspreis()));
+			artikel.add(df.format(a.getMwst()));
 			if(a.getLieferant() != -1) {
 				artikel.add(new Lieferant(a.getLieferant()).toString());
 			} else {

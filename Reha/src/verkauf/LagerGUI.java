@@ -45,6 +45,7 @@ public class LagerGUI extends JXPanel {
 		columns.add("Beschreibung");
 		columns.add("VK-Preis");
 		columns.add("EK-Preis");
+		columns.add("MWSt");
 		columns.add("Lieferant");
 		columns.add("Lagerstand");
 		columns.add("");
