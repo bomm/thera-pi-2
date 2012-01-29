@@ -32,6 +32,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -2241,89 +2242,46 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,
 	}
 	
 	private void calcKilometer() {
-		String patientAdr = jtf[4].getText() + "," +jtf[6].getText();
-		patientAdr = patientAdr.replaceAll(" ", "+");
-		patientAdr = patientAdr.replaceAll("ÃŸ", "SS");
-		patientAdr = patientAdr.replaceAll("Ã¼", "UE");
-		patientAdr = patientAdr.replaceAll("Ã¶", "OE");
-		patientAdr = patientAdr.replaceAll("Ã¤", "AE");
-		
-		String mandAdr = SystemConfig.hmFirmenDaten.get("Strasse") + "," + SystemConfig.hmFirmenDaten.get("Ort");
-		mandAdr = mandAdr.replaceAll(" ", "+");
-		mandAdr = mandAdr.replaceAll("ÃŸ", "SS");
-		mandAdr = mandAdr.replaceAll("Ã¼", "UE");
-		mandAdr = mandAdr.replaceAll("Ã¶", "OE");
-		mandAdr = mandAdr.replaceAll("Ã¤", "AE");
-		
-		String url = "http://maps.google.com/maps/api/directions/xml?origin="+ mandAdr +"&destination="+ patientAdr +"&sensor=false";
-		String copy = "Vermutlich ist ein Fehler aufgetreten - Adressen richtig?";
-		//Google nach Kilometern Fragen!
-		int meter = 1;
-		int sekunden = 1;
 		try {
-		URL google = new URL(url);
-		InputStream in = google.openStream();
-		XMLInputFactory factory = XMLInputFactory.newInstance();
-		XMLStreamReader parser = factory.createXMLStreamReader(in);
-		Boolean vaterReached = false;
-		while(parser.hasNext()) {
-			String name = (parser.hasName()) ? parser.getName().getLocalPart() : "";
-			if(name.equals("copyrights")) {
-				copy = parser.getElementText();
+			String patientAdr = jtf[4].getText() + "," +jtf[6].getText();
+			patientAdr = patientAdr.replaceAll(" ", "+");
+			patientAdr = patientAdr.replaceAll("ß", "SS");
+			patientAdr = patientAdr.replaceAll("Ü", "UE");
+			patientAdr = patientAdr.replaceAll("Ö", "OE");
+			patientAdr = patientAdr.replaceAll("Ä", "AE");
+			
+			String mandAdr = SystemConfig.hmFirmenDaten.get("Strasse") + "," + SystemConfig.hmFirmenDaten.get("Ort");
+			mandAdr = mandAdr.toUpperCase().replaceAll(" ", "+");
+			mandAdr = mandAdr.replaceAll("ß", "SS");
+			mandAdr = mandAdr.replaceAll("Ü", "UE");
+			mandAdr = mandAdr.replaceAll("Ö", "OE");
+			mandAdr = mandAdr.replaceAll("Ä", "AE");
+			
+			ProcessBuilder builder = new ProcessBuilder("java",  "CalcKilometer", patientAdr, mandAdr);
+			Process p = builder.start();
+			Scanner s = new Scanner( p.getInputStream() ).useDelimiter("\\Z");
+			String[] ergebnis = s.next().split(";");	
+			s.close();
+			
+			int kmGesamt = Integer.parseInt(ergebnis[0]);
+			int minuten = Integer.parseInt(ergebnis[1]);
+			String copy = ergebnis[2];
+			
+			Object[] options = {"Übernehmen", "Nö!"};
+			int answer = JOptionPane.showOptionDialog(null,
+			"Google hat für Hin- und Rükweg " + kmGesamt +" km berechnet. Fahrzeit: " + minuten + " min \n" +
+					copy,
+					"Google sagt",
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					options,
+					options[0]);
+			if(answer == JOptionPane.YES_OPTION) {
+				jtf[31].setText(String.valueOf(kmGesamt));
 			}
-			if(name.equals("leg") && parser.isStartElement()) {
-				vaterReached = true;
-			} else if(name.equals("leg") && parser.isEndElement()) {
-				vaterReached = false;
-			} else if(vaterReached && parser.isStartElement()) {
-				if(name.equals("duration")) {
-					while(!parser.isEndElement()) {
-						if(parser.hasName()) {
-							if(parser.getName().getLocalPart().equals("value")) {
-								sekunden = Integer.parseInt(parser.getElementText());
-							}
-						}
-						parser.next();
-					}
-				} else if(name.equals("distance")) {
-					while(!parser.isEndElement()) {
-						if(parser.hasName()) {
-							if(parser.getName().getLocalPart().equals("value")) {
-								meter = Integer.parseInt(parser.getElementText());
-							}
-						}
-						parser.next();
-					}
-				} else {
-					while(!(parser.isEndElement() && ((parser.hasName()) ? parser.getName().getLocalPart().equals(name) : false ))) {
-						parser.next();
-					}
-				}
-			}
-			parser.next();
-		}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		
-		System.out.println("Patient-Adresse: " + patientAdr);
-		System.out.println("Praxis-Adresse: " + mandAdr);
-		System.out.println("URL: " + url);
-		int kmGesamt = Math.round((meter*2) / 1000);
-		int minuten = sekunden / 60;
-		Object[] options = {"Ãœbernehmen",
-                "NÃ¶!"};
-		int answer = JOptionPane.showOptionDialog(null,
-				"Google den fÃ¼r Hin- und RÃ¼ckweg " + kmGesamt +" km berechnet. Fahrzeit: " + minuten + " min \n" +
-						copy,
-						"Google sagt",
-						JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE,
-						null,
-						options,
-						options[0]);
-		if(answer == JOptionPane.YES_OPTION) {
-			jtf[31].setText(String.valueOf(kmGesamt));
 		}
 	}
 
