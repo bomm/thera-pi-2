@@ -2245,17 +2245,17 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,
 		try {
 			String patientAdr = jtf[4].getText() + "," +jtf[6].getText();
 			patientAdr = patientAdr.replaceAll(" ", "+");
-			patientAdr = patientAdr.replaceAll("ß", "SS");
-			patientAdr = patientAdr.replaceAll("Ü", "UE");
-			patientAdr = patientAdr.replaceAll("Ö", "OE");
-			patientAdr = patientAdr.replaceAll("Ä", "AE");
+			patientAdr = patientAdr.replaceAll("ÃŸ", "SS");
+			patientAdr = patientAdr.replaceAll("Ãœ", "UE");
+			patientAdr = patientAdr.replaceAll("Ã–", "OE");
+			patientAdr = patientAdr.replaceAll("Ã„", "AE");
 			
 			String mandAdr = SystemConfig.hmFirmenDaten.get("Strasse") + "," + SystemConfig.hmFirmenDaten.get("Ort");
 			mandAdr = mandAdr.toUpperCase().replaceAll(" ", "+");
-			mandAdr = mandAdr.replaceAll("ß", "SS");
-			mandAdr = mandAdr.replaceAll("Ü", "UE");
-			mandAdr = mandAdr.replaceAll("Ö", "OE");
-			mandAdr = mandAdr.replaceAll("Ä", "AE");
+			mandAdr = mandAdr.replaceAll("ÃŸ", "SS");
+			mandAdr = mandAdr.replaceAll("Ãœ", "UE");
+			mandAdr = mandAdr.replaceAll("Ã–", "OE");
+			mandAdr = mandAdr.replaceAll("Ã„", "AE");
 			
 			ProcessBuilder builder = new ProcessBuilder("java",  "CalcKilometer", patientAdr, mandAdr);
 			Process p = builder.start();
@@ -2267,9 +2267,9 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,
 			int minuten = Integer.parseInt(ergebnis[1]);
 			String copy = ergebnis[2];
 			
-			Object[] options = {"Übernehmen", "Nö!"};
+			Object[] options = {"Ãœbernehmen", "NÃ¶!"};
 			int answer = JOptionPane.showOptionDialog(null,
-			"Google hat für Hin- und Rükweg " + kmGesamt +" km berechnet. Fahrzeit: " + minuten + " min \n" +
+			"Google hat fÃ¼r Hin- und RÃ¼ckweg " + kmGesamt +" km berechnet. Fahrzeit: " + minuten + " min \n" +
 					copy,
 					"Google sagt",
 					JOptionPane.YES_NO_OPTION,
