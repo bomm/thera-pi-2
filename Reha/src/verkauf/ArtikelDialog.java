@@ -246,7 +246,7 @@ public class ArtikelDialog extends RehaSmartDialog {
 			this.comboLieferant.setSelectedItem(new Lieferant(this.artikel.getLieferant()));
 		}
 		this.comboEinheit.setSelectedItem(this.artikel.getEinheit());
-		System.out.println("MWST = "+this.artikel.getMwst());
+		//System.out.println("MWST = "+this.artikel.getMwst());
 		this.comboMwst.setSelectedItem(df.format(this.artikel.getMwst()));
 		
 	}

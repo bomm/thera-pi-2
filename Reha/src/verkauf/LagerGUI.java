@@ -3,6 +3,7 @@ package verkauf;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -17,6 +18,7 @@ import org.thera_pi.nebraska.gui.utils.JCompTools;
 
 import systemTools.JRtaTextField;
 import verkauf.model.Artikel;
+import verkauf.model.Lieferant;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -73,8 +75,8 @@ public class LagerGUI extends JXPanel {
 		lgmod = new DefaultTableModel();
 		lgmod.setColumnIdentifiers(columns);
 		lgtab = new JXTable(lgmod);
-		lgtab.getColumn(6).setMinWidth(0);
-		lgtab.getColumn(6).setMaxWidth(0);
+		lgtab.getColumn(7).setMinWidth(0);
+		lgtab.getColumn(7).setMaxWidth(0);
 		lgtab.setEditable(false);
 		this.setzeTabDaten(Artikel.liefereArtikelDaten());
 		lgtab.addMouseListener(new MouseListener() {
@@ -117,8 +119,9 @@ public class LagerGUI extends JXPanel {
 			this.setLastRowSelected();
 		} else if(befehl == VerkaufTab.edit) {
 			if(this.lgtab.getSelectedRow() >= 0) {
-				doArtikelDialog(Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1)));
-				this.setzeTabDaten(Artikel.liefereArtikelDaten());
+				int id = Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1));
+				doArtikelDialog(id);
+				this.setzeZeileNeu(id);
 				this.setLastRowSelected();
 			} else {
 				JOptionPane.showMessageDialog(null, "Wen oder was willst du ändern?");
@@ -126,7 +129,7 @@ public class LagerGUI extends JXPanel {
 		} else if(befehl == VerkaufTab.delete) {
 			if(this.lgtab.getSelectedRow() >= 0) {
 				Artikel.loescheArtikel(Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1)));
-				this.setzeTabDaten(Artikel.liefereArtikelDaten());
+				this.loescheZeile(this.lgtab.getSelectedRow());
 				this.setLastRowSelected();
 			} else {
 				JOptionPane.showMessageDialog(null, "Wen oder was willst du löschen?");
@@ -144,17 +147,44 @@ public class LagerGUI extends JXPanel {
 		}
 	}
 	
+	private void setzeZeileNeu(final int id) {
+		final Artikel a = new Artikel(id);
+		final DecimalFormat df = new DecimalFormat("0.00");
+		new SwingWorker<Void,Void>() {
+			protected Void doInBackground() throws Exception {
+				for(int n = 0; n < lgtab.getRowCount(); n++) {
+					if(id == Integer.parseInt((String)lgmod.getValueAt(lgtab.getSelectedRow(), lgmod.getColumnCount()-1))) {
+						lgmod.setValueAt(a.getEan(), n, 0);
+						lgmod.setValueAt(a.getBeschreibung(), n, 1);
+						lgmod.setValueAt(df.format(a.getPreis()), n, 2);
+						lgmod.setValueAt(df.format(a.getEinkaufspreis()), n, 3);
+						lgmod.setValueAt(df.format(a.getMwst()), n, 4);
+						lgmod.setValueAt(new Lieferant(a.getLieferant()).toString(), n, 5);
+						lgmod.setValueAt(df.format(a.getLagerstand()), n, 6);
+						lgmod.setValueAt(a.id, n, 7);
+					}
+				}
+				return null;
+			}
+		}.execute();
+	}
+	
+	private void loescheZeile(int row) {
+		lgmod.removeRow(row);
+	}
+	
 	private void setzeTabDaten(Vector<Vector<String>> daten) {
-		/*
-		this.lgmod.setDataVector(daten, this.columns);
-		this.lgtab.getColumn(this.lgmod.getColumnCount()-1).setMinWidth(0);
-		this.lgtab.getColumn(this.lgmod.getColumnCount()-1).setMaxWidth(0);
-		*/
-		lgmod.setRowCount(0);
-		for(int i = 0; i < daten.size();i++){
-			lgmod.addRow(daten.get(i));
-		}
-		lgtab.repaint();
+		final Vector<Vector<String>> d = daten;
+		new SwingWorker<Void, Void>() {
+			protected Void doInBackground() throws Exception {
+				lgmod.setRowCount(0);
+				for(int i = 0; i < d.size();i++){
+					lgmod.addRow(d.get(i));
+				}
+				lgtab.repaint();
+				return null;
+			}
+		}.execute();
 	}
 	
 	private void doArtikelDialog(int id) {

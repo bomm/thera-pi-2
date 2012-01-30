@@ -378,12 +378,18 @@ public class VerkaufGUI extends JXPanel{
 		}
 	}
 	private void setzeTabellenWerte(String[][] tabDaten){
-		vkmod.setRowCount(0);
-		for(int i = 0; i < tabDaten.length;i++){
-			if(debug){zeigeWerte(tabDaten[i]);}
-			vkmod.addRow(tabDaten[i]);
-		}
-		vktab.repaint();
+		final String[][] tDaten = tabDaten;
+		new SwingWorker<Void, Void>() {
+				protected Void doInBackground() throws Exception {
+				vkmod.setRowCount(0);
+				for(int i = 0; i < tDaten.length;i++){
+					if(debug){zeigeWerte(tDaten[i]);}
+					vkmod.addRow(tDaten[i]);
+				}
+				vktab.repaint();
+				return null;
+			}
+		}.execute();
 	}
 	private void zeigeWerte(String[] werte){
 		for(int i = 0; i < werte.length;i++){
