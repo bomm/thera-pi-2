@@ -182,7 +182,7 @@ public class Artikel {
 			} else {
 				artikel.add("");
 			}
-			artikel.add(String.valueOf(a.getLagerstand()));
+			artikel.add(df.format(a.getLagerstand()));
 			artikel.add(String.valueOf(a.id));
 			daten.add(artikel);
 		}
@@ -191,10 +191,10 @@ public class Artikel {
 	
 	public static Vector<Vector<String>> sucheArtikelDaten(String filter) {
 		String sql = "SELECT verkartikel.verkartikelID FROM verkartikel WHERE (verkartikel.ean LIKE '%"+filter+"%' OR verkartikel.beschreibung LIKE '%"+filter+"%')";
-		System.out.println(sql);
+		//System.out.println(sql);
 		DecimalFormat df = new DecimalFormat("0.00");
 		Vector<String> artikelIDs = SqlInfo.holeFeld(sql);
-		System.out.println(artikelIDs.size());
+		//System.out.println(artikelIDs.size());
 		Vector<Vector<String>> daten = new Vector<Vector<String>>();
 		while(!artikelIDs.isEmpty()) {
 			Vector<String> artikel = new Vector<String>();
