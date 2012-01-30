@@ -152,7 +152,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 					if(!Rechte.hatRecht(Rechte.Gutachten_editvoll, true)){
 						return;
 					}
-					// hier pr�fen welcher Berichtstyp und dementsprechend das Berichtsfenster �ffnen
+					// hier prüfen welcher Berichtstyp und dementsprechend das Berichtsfenster �ffnen
 					///neuanlageRezept(false,"");
 					int wahl = tabbericht.getSelectedRow();
 					if(wahl < 0){
@@ -161,7 +161,18 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 					String verfas = (String)dtblm.getValueAt(wahl, 2); 
 					if( verfas.toUpperCase().contains("REHAARZT") ||
 							verfas.toUpperCase().contains("REHA-ARZT")	){
-						doBerichtEdit();						
+						new SwingWorker<Void,Void>(){
+							@Override
+							protected Void doInBackground() throws Exception {
+								try{
+									doBerichtEdit();	
+								}catch(Exception ex){
+									ex.printStackTrace();
+								}
+								return null;
+							}
+						}.execute();
+												
 					}
 				}
 			}

@@ -1078,6 +1078,18 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			});	   		
 			return false;
 		}
+		if( SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[cRKLASSE].getSelectedIndex()])==1  ){
+			if(jtf[cFREQ].getText().trim().equals("")){
+				JOptionPane.showMessageDialog(null, "Ohne Angabe der 'Behandlungsfrequenz' kann ein GKV-Rezept nicht abgespeichert werden.");
+				SwingUtilities.invokeLater(new Runnable(){
+				 	   public  void run()
+				 	   {
+							jtf[cFREQ].requestFocus();
+				 	   }
+				});	   		
+				return false;
+			}
+		}
 		return true;
 	}
 	private void ladePreisliste(String item,int preisgruppe){
@@ -1528,6 +1540,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			if(stest.equals(".  .")){
 				stest = DatFunk.sHeute();
 			}
+			boolean neuerpreis = RezTools.neuePreisNachRezeptdatum(aktuelleDisziplin, preisgruppe, String.valueOf(stest));
 			sbuf.append("rez_datum='"+DatFunk.sDatInSQL(stest)+"', ");
 			int row = Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
 			if(row >= 0){
@@ -1562,9 +1575,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("anzahl3='"+jtf[cANZ3].getText()+"', ");
 			sbuf.append("anzahl4='"+jtf[cANZ4].getText()+"', ");
 			itest = jcmb[cLEIST1].getSelectedIndex();
+			
 			if(itest > 0){
 				sbuf.append("art_dbeh1='"+preisvec.get(itest-1).get(9)+"', ");
-				sbuf.append("preise1='"+preisvec.get(itest-1).get(3)+"', ");
+				sbuf.append("preise1='"+preisvec.get(itest-1).get((neuerpreis ? 3 : 4))+"', ");
 				sbuf.append("pos1='"+preisvec.get(itest-1).get(2)+"', ");
 				sbuf.append("kuerzel1='"+preisvec.get(itest-1).get(1)+"', ");
 				
@@ -1578,7 +1592,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			itest = jcmb[cLEIST2].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh2='"+preisvec.get(itest-1).get(9)+"', ");
-				sbuf.append("preise2='"+preisvec.get(itest-1).get(3)+"', ");
+				sbuf.append("preise2='"+preisvec.get(itest-1).get((neuerpreis ? 3 : 4))+"', ");
 				sbuf.append("pos2='"+preisvec.get(itest-1).get(2)+"', ");
 				sbuf.append("kuerzel2='"+preisvec.get(itest-1).get(1)+"', ");
 			}else{
@@ -1590,7 +1604,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			itest = jcmb[cLEIST3].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh3='"+preisvec.get(itest-1).get(9)+"', ");
-				sbuf.append("preise3='"+preisvec.get(itest-1).get(3)+"', ");
+				sbuf.append("preise3='"+preisvec.get(itest-1).get((neuerpreis ? 3 : 4))+"', ");
 				sbuf.append("pos3='"+preisvec.get(itest-1).get(2)+"', ");
 				sbuf.append("kuerzel3='"+preisvec.get(itest-1).get(1)+"', ");
 			}else{
@@ -1602,7 +1616,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			itest = jcmb[cLEIST4].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh4='"+preisvec.get(itest-1).get(9)+"', ");
-				sbuf.append("preise4='"+preisvec.get(itest-1).get(3)+"', ");
+				sbuf.append("preise4='"+preisvec.get(itest-1).get((neuerpreis ? 3 : 4))+"', ");
 				sbuf.append("pos4='"+preisvec.get(itest-1).get(2)+"', ");
 				sbuf.append("kuerzel4='"+preisvec.get(itest-1).get(1)+"', ");
 			}else{
@@ -1767,6 +1781,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			if(stest.equals(".  .")){
 				stest = DatFunk.sHeute();
 			}
+			boolean neuerpreis = RezTools.neuePreisNachRezeptdatum(aktuelleDisziplin, preisgruppe, String.valueOf(stest));
 			//Zunächst ermitteln welche Fristen und ob Kalender oder Werktage gelten
 			//Dann das Rezeptdatum übergeben, Rückgabewert ist spätester Beginn. 
 			sbuf.append("rez_datum='"+DatFunk.sDatInSQL(stest)+"', ");
@@ -1799,7 +1814,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			itest = jcmb[cLEIST1].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh1='"+preisvec.get(itest-1).get(9)+"', ");
-				sbuf.append("preise1='"+preisvec.get(itest-1).get(3)+"', ");
+				sbuf.append("preise1='"+preisvec.get(itest-1).get((neuerpreis ? 3 : 4))+"', ");
 				sbuf.append("pos1='"+preisvec.get(itest-1).get(2)+"', ");
 				sbuf.append("kuerzel1='"+preisvec.get(itest-1).get(1)+"', ");
 			}else{
@@ -1808,7 +1823,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			itest = jcmb[cLEIST2].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh2='"+preisvec.get(itest-1).get(9)+"', ");
-				sbuf.append("preise2='"+preisvec.get(itest-1).get(3)+"', ");
+				sbuf.append("preise2='"+preisvec.get(itest-1).get((neuerpreis ? 3 : 4))+"', ");
 				sbuf.append("pos2='"+preisvec.get(itest-1).get(2)+"', ");
 				sbuf.append("kuerzel2='"+preisvec.get(itest-1).get(1)+"', ");
 			}else{
@@ -1817,7 +1832,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			itest = jcmb[cLEIST3].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh3='"+preisvec.get(itest-1).get(9)+"', ");
-				sbuf.append("preise3='"+preisvec.get(itest-1).get(3)+"', ");
+				sbuf.append("preise3='"+preisvec.get(itest-1).get((neuerpreis ? 3 : 4))+"', ");
 				sbuf.append("pos3='"+preisvec.get(itest-1).get(2)+"', ");
 				sbuf.append("kuerzel3='"+preisvec.get(itest-1).get(1)+"', ");
 			}else{
@@ -1826,7 +1841,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			itest = jcmb[cLEIST4].getSelectedIndex();
 			if(itest > 0){
 				sbuf.append("art_dbeh4='"+preisvec.get(itest-1).get(9)+"', ");
-				sbuf.append("preise4='"+preisvec.get(itest-1).get(3)+"', ");
+				sbuf.append("preise4='"+preisvec.get(itest-1).get((neuerpreis ? 3 : 4))+"', ");
 				sbuf.append("pos4='"+preisvec.get(itest-1).get(2)+"', ");
 				sbuf.append("kuerzel4='"+preisvec.get(itest-1).get(1)+"', ");
 			}else{

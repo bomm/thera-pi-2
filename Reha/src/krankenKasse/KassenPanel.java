@@ -939,7 +939,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
             buf1.append("<tr><td class='spalte2' align='right'>Feld Kassenname</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/nichtok.gif"+"'></td></tr>");
             klappt = false;
         }else{
-            buf1.append("<tr><td class='spalte2' align='right'>Feld Kassenname</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+            buf1.append("<tr><td class='spalte2' align='right'>Feld Kassenname</td><td>&nbsp;</td><td>"+testvec.get(0).get(1)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             testHm.put("kassen_name", String.valueOf(testvec.get(0).get(0).trim()));
         }
         //K-IK
@@ -947,7 +947,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
             buf1.append("<tr><td class='spalte2' align='right'>IK der Krankenkasse</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/nichtok.gif"+"'></td></tr>");
             klappt = false;
         }else{
-            buf1.append("<tr><td class='spalte2' align='right'>IK der Krankenkasse</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+            buf1.append("<tr><td class='spalte2' align='right'>IK der Krankenkasse</td><td>&nbsp;</td><td>"+testvec.get(0).get(1)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             testHm.put("kassen_ik", String.valueOf(testvec.get(0).get(1).trim()));
         }
         //IK-Kostenträger
@@ -955,15 +955,16 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
             buf1.append("<tr><td class='spalte2' align='right'>IK des Kostenträgers</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/nichtok.gif"+"'></td></tr>");
             klappt = false;
         }else{
-            buf1.append("<tr><td class='spalte2' align='right'>IK des Kostenträgers</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+            buf1.append("<tr><td class='spalte2' align='right'>IK des Kostenträgers</td><td>&nbsp;</td><td>"+testvec.get(0).get(2)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             testHm.put("ktraeger_ik", String.valueOf(testvec.get(0).get(2).trim()));
             //testen ob im Kassenstamm vorhanden
             if(! SqlInfo.holeEinzelFeld("select id from kass_adr where ik_kasse='"+testvec.get(0).get(2)+"' LIMIT 1").equals("")){
-            	buf1.append("<tr><td class='spalte2' align='right'>Kostenträger im Kassenstamm vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+            	buf1.append("<tr><td class='spalte2' align='right'>Kostenträger im Kassenstamm vorhanden</td><td>&nbsp;</td><td>"+testvec.get(0).get(2)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             }else{
             	//wenn nicht im Kassenstamm dann Kostenträgerdatei auswerten
+            	
             	if( ! SqlInfo.holeEinzelFeld("select id from ktraeger where ikkasse='"+testvec.get(0).get(2)+"' LIMIT 1").equals("") ){
-                	buf1.append("<tr><td class='spalte2' align='right'>Kostenträger im Kostenträgerstamm vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+                	buf1.append("<tr><td class='spalte2' align='right'>Kostenträger im Kostenträgerstamm vorhanden</td><td>&nbsp;</td><td>"+testvec.get(0).get(2)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             	}else{
                     klappt = false;
             		buf1.append("<tr><td class='spalte2' align='right'>Kostenträger vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/nichtok.gif"+"'></td></tr>");
@@ -976,14 +977,14 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
             klappt = false;
         }else{
         	//testen om im Kassenstamm vohanden
-            buf1.append("<tr><td class='spalte2' align='right'>IK der Datenannahmestelle</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+            buf1.append("<tr><td class='spalte2' align='right'>IK der Datenannahmestelle</td><td>&nbsp;</td><td>"+testvec.get(0).get(3)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             testHm.put("annahme_ik", String.valueOf(testvec.get(0).get(3).trim()));
             if(!SqlInfo.holeEinzelFeld("select id from kass_adr where ik_kasse='"+testvec.get(0).get(3)+"' LIMIT 1").equals("")){
-            	buf1.append("<tr><td class='spalte2' align='right'>Datenannahmestelle im Kassenstamm vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");	
+            	buf1.append("<tr><td class='spalte2' align='right'>Datenannahmestelle im Kassenstamm vorhanden</td><td>&nbsp;</td><td>"+testvec.get(0).get(3)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");	
             }else{
             	//wenn nicht im Kassenstamm dann Kostenträgerdatei auswerten
             	if( ! SqlInfo.holeEinzelFeld("select id from ktraeger where ikkasse='"+testvec.get(0).get(3)+"' LIMIT 1").equals("") ){
-                	buf1.append("<tr><td class='spalte2' align='right'>Datenannahmestelle im Kostenträgerstamm vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+                	buf1.append("<tr><td class='spalte2' align='right'>Datenannahmestelle im Kostenträgerstamm vorhanden</td><td>&nbsp;</td><td>"+testvec.get(0).get(3)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             	}else{
                     klappt = false;
             		buf1.append("<tr><td class='spalte2' align='right'>Datenannahmestelle vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/nichtok.gif"+"'></td></tr>");
@@ -996,14 +997,14 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
             klappt = false;
         }else{
         	//testen om im Kassenstamm vohanden
-            buf1.append("<tr><td class='spalte2' align='right'>IK der Stelle mit Entschlüsselungsbefugnis</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+            buf1.append("<tr><td class='spalte2' align='right'>IK der Stelle mit Entschlüsselungsbefugnis</td><td>&nbsp;</td><td>"+testvec.get(0).get(4)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             testHm.put("decode_ik", String.valueOf(testvec.get(0).get(4).trim()));
             if(!SqlInfo.holeEinzelFeld("select id from kass_adr where ik_kasse='"+testvec.get(0).get(4)+"' LIMIT 1").equals("")){
-            	buf1.append("<tr><td class='spalte2' align='right'>Stelle mit Entschlüsselungsbefugnis im Kassenstamm vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");	
+            	buf1.append("<tr><td class='spalte2' align='right'>Stelle mit Entschlüsselungsbefugnis im Kassenstamm vorhanden</td><td>&nbsp;</td><td>"+testvec.get(0).get(4)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");	
             }else{
             	//wenn nicht im Kassenstamm dann Kostenträgerdatei auswerten
             	if( ! SqlInfo.holeEinzelFeld("select id from ktraeger where ikkasse='"+testvec.get(0).get(4)+"' LIMIT 1").equals("") ){
-                	buf1.append("<tr><td class='spalte2' align='right'>Stelle mit Entschlüsselungsbefugnis im Kostenträgerstamm vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+                	buf1.append("<tr><td class='spalte2' align='right'>Stelle mit Entschlüsselungsbefugnis im Kostenträgerstamm vorhanden</td><td>&nbsp;</td><td>"+testvec.get(0).get(4)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             	}else{
                     klappt = false;
             		buf1.append("<tr><td class='spalte2' align='right'>Stelle mit Entschlüsselungsbefugnis vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/nichtok.gif"+"'></td></tr>");
@@ -1016,14 +1017,14 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
             klappt = false;
         }else{
         	//testen om im Kassenstamm vohanden
-            buf1.append("<tr><td class='spalte2' align='right'>IK der Papierannahmestelle</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+            buf1.append("<tr><td class='spalte2' align='right'>IK der Papierannahmestelle</td><td>&nbsp;</td><td>"+testvec.get(0).get(5)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             testHm.put("papier_ik", String.valueOf(testvec.get(0).get(5).trim()));
             if(!SqlInfo.holeEinzelFeld("select id from kass_adr where ik_kasse='"+testvec.get(0).get(5)+"' LIMIT 1").equals("")){
-            	buf1.append("<tr><td class='spalte2' align='right'>Papierannahmestelle im Kassenstamm vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");	
+            	buf1.append("<tr><td class='spalte2' align='right'>Papierannahmestelle im Kassenstamm vorhanden</td><td>&nbsp;</td><td>"+testvec.get(0).get(5)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");	
             }else{
             	//wenn nicht im Kassenstamm dann Kostenträgerdatei auswerten
             	if( ! SqlInfo.holeEinzelFeld("select id from ktraeger where ikkasse='"+testvec.get(0).get(4)+"' LIMIT 1").equals("") ){
-                	buf1.append("<tr><td class='spalte2' align='right'>Papierannahmestelle im Kostenträgerstamm vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+                	buf1.append("<tr><td class='spalte2' align='right'>Papierannahmestelle im Kostenträgerstamm vorhanden</td><td>&nbsp;</td><td>"+testvec.get(0).get(5)+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             	}else{
                     klappt = false;
             		buf1.append("<tr><td class='spalte2' align='right'>Papierannahmestelle vorhanden</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/nichtok.gif"+"'></td></tr>");
@@ -1033,16 +1034,16 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
         //Emailadresse im Kassenstamm vorhanden
         String xemail= null;
         if(! (xemail=SqlInfo.holeEinzelFeld("select email1 from kass_adr where ik_kasse='"+testvec.get(0).get(4)+"' LIMIT 1")).equals("")){
-            buf1.append("<tr><td class='spalte2' align='right'>Emailadresse der Datenannahmestelle</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+            buf1.append("<tr><td class='spalte2' align='right'>Emailadresse der Datenannahmestelle</td><td>&nbsp;</td><td>"+xemail+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             testHm.put("email", String.valueOf(xemail.trim()));
         }else{
         	//testen om im Kostenträgerstamm vohanden
             if(! (xemail=SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse='"+testvec.get(0).get(4)+"' LIMIT 1")).equals("")){
-            	buf1.append("<tr><td class='spalte2' align='right'>Emailadresse der Datenannahmestelle</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
+            	buf1.append("<tr><td class='spalte2' align='right'>Emailadresse der Datenannahmestelle</td><td>&nbsp;</td><td>"+xemail+"</td><td><img src='file:///"+Reha.proghome+"icons/ok.gif"+"'></td></tr>");
             	testHm.put("email", String.valueOf(xemail.trim()));
             }else{
                 klappt = false;
-        		buf1.append("<tr><td class='spalte2' align='right'><br>Emailadresse der Datenannahmestelle</td><td>&nbsp;</td><td><img src='file:///"+Reha.proghome+"icons/nichtok.gif"+"'></td></tr>");
+        		buf1.append("<tr><td class='spalte2' align='right'><br>Emailadresse der Datenannahmestelle</td><td>&nbsp;</td><td>nicht vorhanden</td><td><img src='file:///"+Reha.proghome+"icons/nichtok.gif"+"'></td></tr>");
             }
         }
         if(klappt){

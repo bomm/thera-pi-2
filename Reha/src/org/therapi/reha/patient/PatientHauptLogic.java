@@ -749,7 +749,7 @@ public class PatientHauptLogic {
 			Reha.thisClass.patpanel.patDatenOk = false;
 			Reha.thisClass.patpanel.patDaten = SqlInfo.holeSatz("pat5"," * ", "PAT_INTERN ='"+patint+"'", Arrays.asList(new String[] {}) );
 			//System.out.println("Größe der Daten = "+Reha.thisClass.patpanel.patDaten.size());
-			if(Reha.thisClass.patpanel.patDaten.size() == 71){
+			if(Reha.thisClass.patpanel.patDaten.size() >= 71){
 				if(Reha.thisClass.patpanel.patDaten.get(65).equals("")){
 					Reha.thisClass.patpanel.pmemo[0].setText("");
 				}else{

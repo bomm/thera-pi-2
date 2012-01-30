@@ -313,12 +313,12 @@ SuchenSeite eltern;
 				try {
 						final ITextDocument xdoc = textDocument;
 						if(SystemConfig.oTerminListe.DirektDruck){
-							System.out.println("vor print()");
+							//System.out.println("vor print()");
 							xdoc.print();
 							Thread.sleep(150);
-							System.out.println("vor close()");
+							//System.out.println("vor close()");
 							xdoc.close();
-							System.out.println("nach close()");
+							//System.out.println("nach close()");
 							//eltern.setFortschrittSetzen(termindat.size()+(termindat.size()/20));
 							/*
 							new SwingWorker<Void,Void>(){
