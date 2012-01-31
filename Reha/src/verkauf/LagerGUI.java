@@ -119,10 +119,11 @@ public class LagerGUI extends JXPanel {
 			this.setLastRowSelected();
 		} else if(befehl == VerkaufTab.edit) {
 			if(this.lgtab.getSelectedRow() >= 0) {
-				int id = Integer.parseInt((String)this.lgmod.getValueAt(this.lgtab.getSelectedRow(), this.lgmod.getColumnCount()-1));
+				int row = this.lgtab.getSelectedRow();
+				int id = Integer.parseInt((String)this.lgmod.getValueAt(row, this.lgmod.getColumnCount()-1));
 				doArtikelDialog(id);
 				this.setzeZeileNeu(id);
-				this.setLastRowSelected();
+				this.lgtab.setRowSelectionInterval(row, row);
 			} else {
 				JOptionPane.showMessageDialog(null, "Wen oder was willst du ändern?");
 			}
@@ -153,7 +154,8 @@ public class LagerGUI extends JXPanel {
 		new SwingWorker<Void,Void>() {
 			protected Void doInBackground() throws Exception {
 				for(int n = 0; n < lgtab.getRowCount(); n++) {
-					if(id == Integer.parseInt((String)lgmod.getValueAt(lgtab.getSelectedRow(), lgmod.getColumnCount()-1))) {
+					//System.out.println("Bin in Zeile " + n + " Suche " + id + " finde: " + Integer.parseInt((String)lgmod.getValueAt(n, lgmod.getColumnCount()-1)));
+					if(id == Integer.parseInt((String)lgmod.getValueAt(n, lgmod.getColumnCount()-1))) {
 						lgmod.setValueAt(a.getEan(), n, 0);
 						lgmod.setValueAt(a.getBeschreibung(), n, 1);
 						lgmod.setValueAt(df.format(a.getPreis()), n, 2);
@@ -161,7 +163,7 @@ public class LagerGUI extends JXPanel {
 						lgmod.setValueAt(df.format(a.getMwst()), n, 4);
 						lgmod.setValueAt(new Lieferant(a.getLieferant()).toString(), n, 5);
 						lgmod.setValueAt(df.format(a.getLagerstand()), n, 6);
-						lgmod.setValueAt(a.id, n, 7);
+						lgmod.setValueAt(String.valueOf(a.id), n, lgmod.getColumnCount()-1);
 					}
 				}
 				return null;
