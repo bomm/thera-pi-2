@@ -18,9 +18,9 @@ public class Verkauf {
 		position.setPosition(this.artikel.lastIndexOf(position));
 		this.betragBrutto += position.getAnzahl() * position.getPreis();
 		if(position.getMwst() == 7) {
-			this.betrag7 += (position.getPreis() * 0.07) * position.getAnzahl();
+			this.betrag7 += (position.getPreis() - (position.getPreis() / 1.07)) * position.getAnzahl();
 		} else if(position.getMwst() == 19) {
-			this.betrag19 += (position.getPreis() * 0.19) * position.getAnzahl();
+			this.betrag19 += (position.getPreis() - (position.getPreis() / 1.19)) * position.getAnzahl();
 		}
 	}
 	
