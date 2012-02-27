@@ -190,17 +190,19 @@ public class SchnellSuche extends RehaSmartDialog implements ActionListener, Key
 										}else{
 											new RezeptFahnder(false).doFahndung(reznr);
 										}
-		                				
 		                				//in Spalte 1 des TK den Behandler aufrufen 
 		                				//und den markierten Termin auf den angewählten Termin setzen.
-
 										return null;
 									}
                 				}.execute();
 
                 			}
                 		}
-
+        				if(Reha.thisClass.terminpanel != null){
+        					Reha.thisClass.terminpanel.setzeTerminAktuell(ttbl.getValueAt(ttbl.getSelectedRow(), 1).toString(),
+        							ttbl.getValueAt(ttbl.getSelectedRow(), 2).toString(),
+        							ttbl.getValueAt(ttbl.getSelectedRow(), 5).toString());
+        				}
                         break;
                     }
                 }

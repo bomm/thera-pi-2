@@ -636,11 +636,20 @@ public class SuchenSeite extends JXPanel implements TableModelListener,FocusList
 				if(arg0.getClickCount()==1 && arg0.getButton()==3){
 					int row = jxSucheTable.getSelectedRow();
 					int col = jxSucheTable.getSelectedColumn();
-					jxSucheTable.setRowSelectionInterval(row, row);
+					int row2 = jxSucheTable.rowAtPoint(arg0.getPoint());
+					if(row != row2){
+						row = row2;
+					}
+					jxSucheTable.setRowSelectionInterval(row, row);	
 					if( (Boolean) jxSucheTable.getValueAt(row, 0)){
 						if(col==7){
 							ZeigePopupMenuDauer(arg0,jxSucheTable.getValueAt(row, col).toString());
 						}
+					}
+					if(Reha.thisClass.terminpanel!= null){
+						Reha.thisClass.terminpanel.setzeTerminAktuell(jxSucheTable.getValueAt(row, 2).toString().substring(3),
+								jxSucheTable.getValueAt(row, 6).toString(),
+								jxSucheTable.getValueAt(row, 10).toString());
 					}
 					return;
 				}

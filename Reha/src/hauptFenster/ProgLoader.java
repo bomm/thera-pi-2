@@ -419,8 +419,8 @@ public void AnmeldungenFenster(int setPos,String sparam) {
 	anmeldungenjry = new JAnmeldungenInternal("thera-\u03C0  - Ermittlung des Anmeldevolumens ",SystemConfig.hmSysIcons.get("arztstamm"),1) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)anmeldungenjry,1,(Container)anmeldungenjry.getContentPane());
 	anmeldungenjry.setName(name);
-	anmeldungenjry.setSize(new Dimension(500,500));
-	anmeldungenjry.setPreferredSize(new Dimension(500,500));
+	anmeldungenjry.setSize(new Dimension(570,500));
+	anmeldungenjry.setPreferredSize(new Dimension(570,500));
 	Reha.thisClass.anmeldungenpanel = new Anmeldungen(anmeldungenjry); 
 	anmeldungenjry.setContent(Reha.thisClass.anmeldungenpanel);	
 	anmeldungenjry.addComponentListener(Reha.thisClass);

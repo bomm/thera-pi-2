@@ -256,6 +256,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	
 	boolean inworker = false;
 	
+	boolean notready = false;
+	
 	JRtaTextField[] aKasse = {new JRtaTextField("nix",false),
 			new JRtaTextField("nix",false),
 			new JRtaTextField("nix",false)};
@@ -387,6 +389,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			String preisgr = SqlInfo.holeEinzelFeld("select preisgruppe from verordn where rez_nr='"+rez+"' LIMIT 1");
 			this.aktDisziplin = aktDisziplin;
 			rezeptFertig = schonfertig;
+			notready = false;			
 			if(!rezeptFertig){
 				jXTreeTable.setEditable(true);
 				aktRezNum.setText(rez);
@@ -1065,6 +1068,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				JOptionPane.showMessageDialog(null, dlgcmd);
 				doTherapieBericht(therapiebericht);
 				this.getVectorFromNodes();
+				doTarifWechselCheck();
 			}
 		}
 		doPositionenErmitteln();
@@ -2344,7 +2348,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	
 		for(int i = 0; i < vec_poskuerzel.size();i++){
 			htmlposbuf.append("<tr><td>&nbsp;</td><td class=\"spalte1\" align=\"right\">");
-			htmlposbuf.append(vec_pospos.get(i)+" - "+" <b>"+vec_poskuerzel.get(i)+"</b>");
+			if(vec_pospos.get(i).trim().equals("") || vec_poskuerzel.get(i).equals("") ){
+				htmlposbuf.append("<b><font color=#FF0000>Preislistenfehler!!!</font></b>");
+				notready=true;
+			}else{
+				htmlposbuf.append(vec_pospos.get(i)+" - "+" <b>"+vec_poskuerzel.get(i)+"</b>");	
+			}
 			htmlposbuf.append("</td><td class=\"spalte2\" align=\"left\">");
 			htmlposbuf.append("<b>"+Integer.toString(vec_posanzahl.get(i))+" x"+"</b>");
 			htmlposbuf.append("</td></tr>");
@@ -3346,6 +3355,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				(String)node.abr.sqldatum,
 				(String)id,
 				(Boolean)immerfrei);
+		if(id.equals("-1")){
+			JOptionPane.showMessageDialog(null, "Fehler!!!\n\nDie HM-Position "+position+" existiert in Ihrer Preisliste nicht!\n\nDas Rezept kann nicht abgerechnet werden.");
+		}
 		//////System.out.println("niezuzahl ="+abr.niezuzahl+" Zuzahlungspflicht = "+abr.zuzahlung);
 		JXTTreeTableNode xnode = new JXTTreeTableNode("",abr,true);
 		demoTreeTableModel.insertNodeInto(xnode, node, node.getChildCount());
@@ -3446,7 +3458,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		double pauschal = (mitPauschale ? 10.00 : 0.00);
 		edibuf.setLength(0);
 		edibuf.trimToSize();
-		
+		if(this.notready){
+			JOptionPane.showMessageDialog(null,"Jetzt zeigt man Ihnen in fetter roter Schrift daß ein Preislistenfehler vorliegt,\nund Sie Armleuchter versuchen das Rezept trotzdem abzurechnen.\n\nLassen Sie den Alkohol weg - das schadet Ihnen!");
+			return false;
+		}
 		String test = vec_pat.get(0).get(6);
 		if( (test.trim().length()> 12) || (test.trim().length()==0) ){
 			//Versichertennummer falsch oder nicht angegeben

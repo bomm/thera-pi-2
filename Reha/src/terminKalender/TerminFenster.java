@@ -45,6 +45,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyVetoException;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -2287,6 +2288,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		zf.setModal(true);
 		zf.setVisible(true);
 		boolean update = false;
+
 		if(!this.terminrueckgabe[2].isEmpty() && !this.terminrueckgabe[3].isEmpty()){
 			for(int i = 0;i<=4;i++){
 				if(! this.terminangaben[i].equals(this.terminrueckgabe[i])){
@@ -2329,7 +2331,33 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 			starteUnlock();
 		}
 		this.zf = null;
+		if( (SystemConfig.logVTermine || SystemConfig.logAlleTermine) && update){
+			if(SystemConfig.logVTermine){
+				if( (terminangaben[0].startsWith("V?") || terminrueckgabe[0].startsWith("V?")) ){
+					//final String[] talt = terminangaben;
+					//final String[] tneu = terminrueckgabe;
+					schreibeLog(terminangaben,terminrueckgabe);
+				}
+			}else if(SystemConfig.logAlleTermine){
+				schreibeLog(terminangaben,terminrueckgabe);
+			}
+		}
+		/* V-Termine -Log Hier rein */
+		
 	} // von rlockok > 0
+	}
+	public static void schreibeLog(final String[] talt,final String[] tneu){
+		new Thread(){
+			public void run(){
+				Date dat = new Date(System.currentTimeMillis());
+				String cmd = "insert into vlog set datum='"+dat.toLocaleString()+"', benutzer='"+
+				Reha.aktUser+"', maschine='"+SystemConfig.dieseMaschine+"', vname='"+talt[0]+"', "+
+				"vreznr='"+talt[1]+"', vdauer='"+talt[3]+"', vstart='"+talt[2]+"', "+
+				"vend='"+talt[4]+"', nname='"+tneu[0]+"', nreznr='"+tneu[1]+"', ndauer='"+tneu[3]+"', "+
+				"nstart='"+tneu[2]+"', nend='"+tneu[4]+"'";
+				SqlInfo.sqlAusfuehren(cmd);
+			}
+		}.start();
 	}
 /***
  * 
@@ -3289,9 +3317,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 * Übergabe = 8 Gruppierten Terminblock zusammenfassen 
 * Übergabe = 9 Gruppierten Terminblock löschen	
 * Übergabe = 10 Freitermin eintragen
-* Übergabe = 10 Block löschen
-* Übergabe = 11 Block tauschen mit vorgänger
-* Übergabe = 12 Block tauschen mit nachfolger
+* Übergabe = 11 Block löschen
+* Übergabe = 12 Block tauschen mit vorgänger (nach oben)
+* Übergabe = 13 Block tauschen mit nachfolger (nach unten)
 */
 		private void blockSetzen(int wohin){
 			int gesperrt=0;
@@ -3764,7 +3792,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	
 		for(int i = 0;i<1;i++){
 			if(richtung < 0){
-				// mit Vorg�ngertermin tauschen;
+				// mit Vorgängertermin tauschen;
 				if(block == 0){
 					JOptionPane.showMessageDialog(null,"Sie sind bereits auf dem ersten Termin und dieser hat in der Regel keinen Vorgänger....");
 					return;
@@ -4008,6 +4036,44 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 		}
 		*/
 		
+	}
+	public void setzeTerminAktuell(String adatum,String auhrzeit,String abehandler){
+        if(ansicht == NORMAL_ANSICHT){
+        	boolean indarstellung = false;
+        	int setspalte = -1;
+        	for(int i = 0; i < 7; i++){
+        		if(oCombo[i].getSelectedItem().toString().trim().equals(abehandler.trim())){
+        			indarstellung = true;
+        			setspalte = i;
+        			break;
+        		}
+        	}
+        	if(!indarstellung){
+        		setspalte = 0;
+        		oCombo[setspalte].setSelectedItem(abehandler);
+        	}
+        	if(this.aktuellerTag != adatum){
+        		this.tagBlaettern( Integer.parseInt(Long.toString(DatFunk.TageDifferenz(this.aktuellerTag, adatum))) );
+        	}
+        	int azeile = ParameterLaden.getDBZeile(oCombo[setspalte].getSelectedIndex())-1;
+        	int ablock = -1;
+        	int alang = ((Vector<?>)((ArrayList<?>) vTerm.get(azeile)).get(2)).size();
+        	for(int i = 0; i < alang ;i++ ){
+        		if( ((String)((Vector<?>)((ArrayList<?>) vTerm.get(azeile)).get(2)).get(i)).trim().equals(auhrzeit.trim()+":00") ){
+        			ablock = i;
+        			break;
+        		}
+        	}
+        	if(ablock >=0){
+        		if(aktiveSpalte[2] != setspalte){
+        			oSpalten[aktiveSpalte[2]].spalteDeaktivieren();
+        			oSpalten[aktiveSpalte[2]].repaint();
+        		}
+        		aktiveSpalte[0] = ablock;
+        		aktiveSpalte[2] = setspalte;
+        		oSpalten[setspalte].blockGeklickt(ablock);
+        	}
+        }//bis hierher Normal_Ansicht.
 	}
 	public void aktualisieren(){
         if(ansicht == NORMAL_ANSICHT){

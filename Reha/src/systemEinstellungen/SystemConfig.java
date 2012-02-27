@@ -213,6 +213,9 @@ public class SystemConfig {
 	
 	public static HashMap<String,Object> hmArschgeigenModus = new HashMap<String,Object>();
 	public static Vector<Vector<String>> vArschgeigenDaten = new Vector<Vector<String>>();
+	
+	public static boolean logVTermine = false;
+	public static boolean logAlleTermine = false;
 	                     
 	public SystemConfig(){
 	
@@ -1402,6 +1405,42 @@ public class SystemConfig {
 		}
 		//System.out.println("Keystore-Passwort = "+hmAbrechnung.get("hmkeystorepw"));
 	}
+	public static void AktiviereLog(){
+		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		boolean mustsave = false;
+		String dummy = inif.getStringProperty("SystemIntern","VLog");
+		if(dummy==null){
+			if(Reha.thisClass.aktMandant.startsWith("RTA")){
+				inif.setStringProperty("SystemIntern","VLog","1",null);
+				logVTermine = true;
+				mustsave = true;
+			}else{
+				inif.setStringProperty("SystemIntern","VLog","0",null);
+				logVTermine = false;
+				mustsave = true;
+			}
+		}else{
+			logVTermine = (inif.getStringProperty("SystemIntern","VLog").trim().equals("0") ? false : true);
+		}
+		dummy = inif.getStringProperty("SystemIntern","ALog");
+		if(dummy==null){
+			if(Reha.thisClass.aktMandant.startsWith("RTA")){
+				inif.setStringProperty("SystemIntern","ALog","1",null);
+				logAlleTermine = true;
+				mustsave = true;
+			}else{
+				inif.setStringProperty("SystemIntern","ALog","0",null);
+				logAlleTermine = false;
+				mustsave = true;
+			}
+		}else{
+			logAlleTermine = (inif.getStringProperty("SystemIntern","ALog").trim().equals("0") ? false : true);
+		}
+		if(mustsave){
+			inif.save();
+		}
+
+	}	
 	
 	public static void JahresUmstellung(){
 		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");

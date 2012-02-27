@@ -307,7 +307,7 @@ public class PatientStammDatenPanel extends JXPanel{
 			buf3.append(makeLink("Vorjahr befreit: <font color=#FF0000><b>"+(dummy.equals(SystemConfig.vorJahr) ? "JA" : "NEIN")+"</b></font>","VORJAHR"));
 			buf3.append("</td></tr>" );
 		}
-		System.out.println(dummy);
+		//System.out.println(dummy);
 		return buf3.toString();
 	}
 	private String getLeerHtml(){

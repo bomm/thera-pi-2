@@ -50,18 +50,19 @@ public class Anmeldungen extends JXPanel{
 	private static final long serialVersionUID = -3835067202659704351L;
 	JXPanel content = null;
 	JRtaTextField[] tfs = {null,null};
-	JLabel[] kglab = {null,null,null,null};
-	JLabel[] malab = {null,null,null,null};
-	JLabel[] erlab = {null,null,null,null};
-	JLabel[] lolab = {null,null,null,null};
-	JLabel[] rhlab = {null,null,null,null};
-	JLabel[] polab = {null,null,null,null};
-	JLabel[] summenlab = {null,null,null,null};
+	JLabel[] kglab = {null,null,null,null,null};
+	JLabel[] malab = {null,null,null,null,null};
+	JLabel[] erlab = {null,null,null,null,null};
+	JLabel[] lolab = {null,null,null,null,null};
+	JLabel[] rhlab = {null,null,null,null,null};
+	JLabel[] polab = {null,null,null,null,null};
+	JLabel[] summenlab = {null,null,null,null,null};
 	String[] diszi1 = {"KG","MA","ER","LO","RH","PO"};
 	String[] diszi2 = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 	List<String> listdiszi = null;
 	int[] anzahlRezepte = {0,0,0,0,0,0};
 	int[] anzahlEinheiten = {0,0,0,0,0,0};
+	int[] anzahlMinuten = {0,0,0,0,0,0};
 	Double[] umsaetze = {0.00,0.00,0.00,0.00,0.00,0.00};
 	DecimalFormat dcf = new DecimalFormat("#####0.00");
 	
@@ -101,8 +102,8 @@ public class Anmeldungen extends JXPanel{
 		});
 	}
 	private JXPanel getContent(){
-		JLabel lab = null;			//   1                 2     3    4     5     6     7     8     9    10      11
-		FormLayout lay = new FormLayout("fill:0:grow(0.5),5dlu,20dlu,60dlu,20dlu,20dlu,60dlu,25dlu,60dlu,5dlu,fill:0:grow(0.5),",
+		JLabel lab = null;			//   1                 2     3    4     5     6     7     8     9    10      11  12      13
+		FormLayout lay = new FormLayout("fill:0:grow(0.5),5dlu,20dlu,60dlu,20dlu,20dlu,60dlu,25dlu,60dlu,25dlu,60dlu,5dlu,5dlu,fill:0:grow(0.5),",
 			// 1   2   3    4       5    6  7   8  9   10 11 12 13  14 15  16  17  18 19  20  21
 			"15dlu,p,15dlu,80dlu:g,10dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,5dlu,p,15dlu,p,15dlu");
 		CellConstraints cc = new CellConstraints();
@@ -122,7 +123,7 @@ public class Anmeldungen extends JXPanel{
 		this.tfs[1].setText(DatFunk.sHeute());
 		this.content.add(this.tfs[1],cc.xy(7,2));
 		
-		this.content.add((this.buts[0] = ButtonTools.macheButton("ermitteln", "ermitteln", al)),cc.xyw(9,2,2));
+		this.content.add((this.buts[0] = ButtonTools.macheButton("ermitteln", "ermitteln", al)),cc.xyw(11,2,2));
 		
 		anmeldemod = new MyAnmeldeTableModel();
 		String[] cols = {"angelegt am","RezeptNr.","Behandl.Beginn","angelegt von","",""};
@@ -139,7 +140,7 @@ public class Anmeldungen extends JXPanel{
 		
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(anmeldetbl);
 		jscr.validate();
-		this.content.add(jscr,cc.xyw(3,4,8));
+		this.content.add(jscr,cc.xyw(3,4,10,CellConstraints.FILL,CellConstraints.DEFAULT));
 		
 		lab = new JLabel("Anzahl");
 		lab.setForeground(Color.BLUE);
@@ -150,36 +151,46 @@ public class Anmeldungen extends JXPanel{
 		lab = new JLabel("Umsätze");
 		lab.setForeground(Color.BLUE);
 		this.content.add(lab,cc.xyw(9,6,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		lab = new JLabel("Minuten");
+		lab.setForeground(Color.RED);
+		this.content.add(lab,cc.xyw(11,6,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+
 		
 		this.content.add((kglab[0]=new JLabel("Physio")),cc.xyw(3, 8, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
 		this.content.add((kglab[1]=new JLabel("0")),cc.xy(4, 8,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((kglab[2]=new JLabel("0")),cc.xy(7, 8,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((kglab[3]=new JLabel("0,00")),cc.xyw(9, 8,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
-
+		this.content.add((kglab[4]=new JLabel("0")),cc.xyw(11, 8,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		
 		this.content.add((malab[0]=new JLabel("Massage")),cc.xyw(3, 10, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
 		this.content.add((malab[1]=new JLabel("0")),cc.xy(4, 10,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((malab[2]=new JLabel("0")),cc.xy(7, 10,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((malab[3]=new JLabel("0,00")),cc.xyw(9, 10,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		this.content.add((malab[4]=new JLabel("0")),cc.xyw(11, 10,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 
 		this.content.add((erlab[0]=new JLabel("Ergo")),cc.xyw(3, 12, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
 		this.content.add((erlab[1]=new JLabel("0")),cc.xy(4, 12,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((erlab[2]=new JLabel("0")),cc.xy(7, 12,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((erlab[3]=new JLabel("0,00")),cc.xyw(9, 12,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		this.content.add((erlab[4]=new JLabel("0")),cc.xyw(11, 12,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 
 		this.content.add((lolab[0]=new JLabel("Logo")),cc.xyw(3, 14, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
 		this.content.add((lolab[1]=new JLabel("0")),cc.xy(4, 14,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((lolab[2]=new JLabel("0")),cc.xy(7, 14,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((lolab[3]=new JLabel("0,00")),cc.xyw(9, 14,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
-
+		this.content.add((lolab[4]=new JLabel("0")),cc.xyw(11, 14,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		
 		this.content.add((rhlab[0]=new JLabel("Reha")),cc.xyw(3, 16, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
 		this.content.add((rhlab[1]=new JLabel("0")),cc.xy(4, 16,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((rhlab[2]=new JLabel("0")),cc.xy(7, 16,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((rhlab[3]=new JLabel("0,00")),cc.xyw(9, 16,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		this.content.add((rhlab[4]=new JLabel("0")),cc.xyw(11, 16,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 
 		this.content.add((polab[0]=new JLabel("Podo")),cc.xyw(3, 18, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
 		this.content.add((polab[1]=new JLabel("0")),cc.xy(4, 18,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((polab[2]=new JLabel("0")),cc.xy(7, 18,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add((polab[3]=new JLabel("0,00")),cc.xyw(9, 18,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		this.content.add((polab[4]=new JLabel("0")),cc.xyw(11, 18,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));		
 		
 		summenlab[0] = new JLabel("Summen");
 		summenlab[0].setForeground(Color.RED);
@@ -189,12 +200,16 @@ public class Anmeldungen extends JXPanel{
 		summenlab[2].setForeground(Color.RED);
 		summenlab[3] = new JLabel("0,00");
 		summenlab[3].setForeground(Color.RED);
+		summenlab[4] = new JLabel("0");
+		summenlab[4].setForeground(Color.RED);
+
 		this.content.add(summenlab[0],cc.xyw(3, 20, 2,CellConstraints.LEFT,CellConstraints.DEFAULT));
 		this.content.add(summenlab[1],cc.xy(4, 20,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add(summenlab[2],cc.xy(7, 20,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		this.content.add(summenlab[3],cc.xyw(9, 20,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
+		this.content.add(summenlab[4],cc.xyw(11, 20,2,CellConstraints.RIGHT,CellConstraints.DEFAULT));
 		
-		this.content.add((this.buts[1] = ButtonTools.macheButton("komplette Rezeptdaten in OO-Calc übertragen", "calc", al)),cc.xyw(3, 22,8,CellConstraints.FILL,CellConstraints.DEFAULT));
+		this.content.add((this.buts[1] = ButtonTools.macheButton("komplette Rezeptdaten in OO-Calc übertragen", "calc", al)),cc.xyw(3, 22,10,CellConstraints.FILL,CellConstraints.DEFAULT));
 		
 		return this.content;
 	}
@@ -375,39 +390,48 @@ public class Anmeldungen extends JXPanel{
 				kglab[1].setText(Integer.toString(anzahlRezepte[0]));
 				kglab[2].setText(Integer.toString(anzahlEinheiten[0]));
 				kglab[3].setText(dcf.format(umsaetze[0]));
+				kglab[4].setText(Integer.toString(anzahlMinuten[0]));
 
 				malab[1].setText(Integer.toString(anzahlRezepte[1]));
 				malab[2].setText(Integer.toString(anzahlEinheiten[1]));
 				malab[3].setText(dcf.format(umsaetze[1]));
+				malab[4].setText(Integer.toString(anzahlMinuten[1]));
 				
 				erlab[1].setText(Integer.toString(anzahlRezepte[2]));
 				erlab[2].setText(Integer.toString(anzahlEinheiten[2]));
 				erlab[3].setText(dcf.format(umsaetze[2]));
+				erlab[4].setText(Integer.toString(anzahlMinuten[2]));
 
 				lolab[1].setText(Integer.toString(anzahlRezepte[3]));
 				lolab[2].setText(Integer.toString(anzahlEinheiten[3]));
 				lolab[3].setText(dcf.format(umsaetze[3]));
+				lolab[4].setText(Integer.toString(anzahlMinuten[3]));
 
 				rhlab[1].setText(Integer.toString(anzahlRezepte[4]));
 				rhlab[2].setText(Integer.toString(anzahlEinheiten[4]));
 				rhlab[3].setText(dcf.format(umsaetze[4]));
+				rhlab[4].setText(Integer.toString(anzahlMinuten[4]));
 				
 				polab[1].setText(Integer.toString(anzahlRezepte[5]));
 				polab[2].setText(Integer.toString(anzahlEinheiten[5]));
 				polab[3].setText(dcf.format(umsaetze[5]));
+				polab[4].setText(Integer.toString(anzahlMinuten[5]));
 
 				int anzahl1 = 0;
 				int anzahl2 = 0;
+				int minuten2 = 0;
 				double umsatz1 = 0.00;
 				for(int i = 0;i<5;i++){
 					anzahl1 = anzahl1 +anzahlRezepte[i];
 					anzahl2 = anzahl2 +anzahlEinheiten[i];
 					umsatz1 = umsatz1+umsaetze[i];
+					minuten2 = minuten2+anzahlMinuten[i];
 					
 				}
 				summenlab[1].setText(Integer.toString(anzahl1));
 				summenlab[2].setText(Integer.toString(anzahl2));
 				summenlab[3].setText(dcf.format(umsatz1));
+				summenlab[4].setText(Integer.toString(minuten2));
 				setCursor(Reha.thisClass.cdefault);
 				return null;
 			}
@@ -427,6 +451,7 @@ public class Anmeldungen extends JXPanel{
 					anzahl= Integer.parseInt(vec.get(i+3));
 					if(i==0){
 						anzahlEinheiten[idisziplin] = anzahlEinheiten[idisziplin]+anzahl; 
+						anzahlMinuten[idisziplin] = anzahlMinuten[idisziplin]+( Integer.parseInt(vec.get(47))*anzahl );
 					}
 					bdpreis = BigDecimal.valueOf(Double.parseDouble(vec.get(i+3))).multiply(
 							BigDecimal.valueOf(Double.parseDouble(vec.get(i+18))) );

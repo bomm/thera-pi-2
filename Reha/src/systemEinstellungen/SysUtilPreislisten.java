@@ -445,8 +445,13 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			nvec.add("-1");
 			modpreis.addRow((Vector) nvec.clone());
 			preislisten.validate();
-			preislisten.scrollRowToVisible(row);
-			preislisten.setRowSelectionInterval(row, row);
+			final int xrow = row;
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					preislisten.scrollRowToVisible(preislisten.getRowCount());
+					preislisten.setRowSelectionInterval(xrow, xrow);
+				}
+			});
 		}
 		if(cmd.equals("entfernen")){
 			//Position in lokaler Liste l�schen

@@ -73,6 +73,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 	String[] hbeinzelart = {"nicht abrechenbar","x9901 Einzel o. Wegegeld","x9933 Einzel incl. Wegegeld","8602 BG Einzel o. Wegegeld","53 Beih. Einzel o. Wegegeld"};
 	String[] wgkm = {"nicht abrechenbar","x9907 (teilw.GKV u.teilw.BG)","8603 (teilw. BG)","54 (Beihilfe)"};
 	String[] wgpausch = {"nicht abrechenbar","x9903 (teilw. GKV)","x9906 (teilw. GKV)"};
+	String[] arztbericht = {"nicht abrechenbar","x9701 (teilw. GKV)"};
 	JLabel lbltgruppe = null; 
 	public SysUtilTarifgruppen(){
 		super(new BorderLayout());
@@ -100,7 +101,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		disziplin = new JRtaComboBox(new String[] {"Physio","Massage","Ergo","Logo","Reha","Podo"});
 		disziplin.setActionCommand("disziplin");
 		disziplin.addActionListener(this);
-		modtarife.setColumnIdentifiers(new String[] {"Tarifgruppe","Zuzahlungsregel","gültig ab","Anwendungsregel","Gültik.Bereich","§302-Abrechnung","Pos.HB-Einzeln","Pos.HB-Mehrere","Pos.Weg/km","Pos.Weg/Pauschal","HB-Heim mit Zuzahl."});
+		modtarife.setColumnIdentifiers(new String[] {"Tarifgruppe","Zuzahlungsregel","gültig ab","Anwendungsregel","Gültik.Bereich","§302-Abrechnung","Pos.HB-Einzeln","Pos.HB-Mehrere","Pos.Weg/km","Pos.Weg/Pauschal","HB-Heim mit Zuzahl.","Arztbericht"});
 		tarife = new JXTable(modtarife);
 		tarife.getColumn(0).setMinWidth(120);
 		tarife.getColumn(1).setMinWidth(100);
@@ -121,6 +122,8 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		tarife.getColumn(9).setCellRenderer(mr);
 		tarife.getColumn(10).setMinWidth(120);
 		tarife.getColumn(10).setCellRenderer(mr);
+		tarife.getColumn(11).setMinWidth(120);
+		tarife.getColumn(11).setCellRenderer(mr);
 
 		TableColumn zuzahlColumn = tarife.getColumnModel().getColumn(1);
 		zzregel = new String[] {"keine Zuzahlung","gesetzl. Zuzahlung"};
@@ -159,6 +162,9 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		
 		comboBox = new JComboBox(janein);
 		tarife.getColumn(10).setCellEditor(new DefaultCellEditor(comboBox));
+
+		comboBox = new JComboBox(arztbericht);
+		tarife.getColumn(11).setCellEditor(new DefaultCellEditor(comboBox));
 
 		tarife.setSelectionMode(0);
 		tarife.setSortable(false);
@@ -382,8 +388,13 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 				vec.add("  - NEIN -  ");
 			}else{
 				vec.add("  - JA -  ");
+			}	
+			/*********************************/
+			if(SystemPreislisten.hmBerichtRegeln.get(diszi).get(i).indexOf("9701") < 0){
+				vec.add("nicht abrechenbar");
+			}else{
+				vec.add("x9701 (teilw. GKV)");
 			}			
-
 			modtarife.addRow((Vector<?>)vec.clone());
 		}
 		tarife.validate();
@@ -406,6 +417,8 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		String[] resulthbmehrere = {"",disziindex[idiszi]+"9902",disziindex[idiszi]+"9934","8602","53"};
 		String[] resultwgkm = {"",disziindex[idiszi]+"9907","8603","54"};
 		String[] resultwgpausch = {"",disziindex[idiszi]+"9903",disziindex[idiszi]+"9906"};
+		String[] resultarztbericht = {"",disziindex[idiszi]+"9701"};
+
 
 		for(int i = 0;i<lang;i++){
 			try{
@@ -513,6 +526,18 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 				treffer = Arrays.asList(janein).indexOf(swert);
 				SystemPreislisten.hmHBRegeln.get(diszi).get(i).set(4, (treffer==0 ? "1" : "0"));
 				inif.setStringProperty("HBRegeln_"+diszi, "HBHeimMitZuZahl"+(i+1), (treffer==0 ? "1" : "0"), null);
+				
+				swert = String.valueOf((String) tarife.getValueAt(i, 11));
+				treffer = Arrays.asList(arztbericht).indexOf(swert);
+				SystemPreislisten.hmBerichtRegeln.get(diszi).set(i, (treffer==0 ? "" : resultarztbericht[treffer]));
+				inif.setStringProperty("BerichtRegeln_"+diszi, "Bericht"+(i+1), (treffer==0 ? "" : resultarztbericht[treffer]), null);
+				/*
+				System.out.println("*********");
+				System.out.println("BerichtRegeln_"+diszi);
+				System.out.println("Bericht"+(i+1));
+				System.out.println((treffer==0 ? "" : resultarztbericht[treffer]));
+				System.out.println("*********");
+				*/
 				/*
 				 * 
 				 * Hier rein die Fristengeschichte
