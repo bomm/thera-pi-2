@@ -22,6 +22,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import ocf.OcKVK;
+
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
@@ -391,7 +393,7 @@ public class KVKRohDaten extends RehaSmartDialog implements ActionListener{
 					thisPat.jtf[34].setText(vec.get(2));
 				}
 				if( (SystemConfig.hmKVKDaten.get("Anrede") != null)  && 
-						(!SystemConfig.hmKVKDaten.get("Anrede").equals(""))){
+						(!SystemConfig.hmKVKDaten.get("Anrede").equals("")) && OcKVK.lastCardIsEGK){
 					thisPat.cbanrede.setSelectedItem(SystemConfig.hmKVKDaten.get("Anrede"));
 					thisPat.jtf[0].setText(SystemConfig.hmKVKDaten.get("Anrede"));
 				}

@@ -121,6 +121,8 @@ public class OcKVK {
 	String resultString = null;
 	StringBuffer neustring = new StringBuffer();
 	
+	public static boolean lastCardIsEGK = false;
+	
 	public OcKVK(String readerName,String dllName,String deviceid,boolean test) throws Exception,UnsatisfiedLinkError {
 		//SCR335
 		//ctpcsc31kv
@@ -141,6 +143,7 @@ public class OcKVK {
 
 	public int lesen() throws CardTerminalException, CardServiceException, ClassNotFoundException{
 		int ret = 0;
+			lastCardIsEGK = false;
 			blockIKKasse = false;
 			sc = SmartCard.waitForCard(cr);
 			ptcs = (PassThruCardService) sc.getCardService(PassThruCardService.class, true);
@@ -194,6 +197,7 @@ public class OcKVK {
 			    response = ptcs.sendCommandAPDU(command);
 			    if(getResponseValue(response.getBytes()).equals("9000")){
 			    	// ja es ist eine eGK;
+			    	lastCardIsEGK = true;
 			    	command.setLength(0);
 					command.append(this.CMD_READ_BINARY_EF);
 				    response = ptcs.sendCommandAPDU(command);
