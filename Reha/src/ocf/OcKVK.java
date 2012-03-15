@@ -64,7 +64,7 @@ public class OcKVK {
 	//Wird später ersetzt durch kvkTags	
 	final int[] tags = { 0x60,0x80,0x81,0x8F,0x82,0x83,0x90,0x84,0x85,
 			0x86,0x87,0x88,0x89,0x8A,0x8B,0x8C,0x8D,0x8E};
-	
+	private boolean mustdebug = false;
 	//Integer Tag-Identifier
 	//String (Thera-Pi interner)
 	//Tag-Name
@@ -242,15 +242,28 @@ public class OcKVK {
 			        	out.flush();
 			        	out.close();
 			        	resultString = new String(out.toByteArray());
+			        	if(mustdebug){
+			        		System.out.println("**************** PD - Daten **********************");
+			        		System.out.println(resultString);
+			        	}
 				       	/**********HashMap leeren**********/ 
 				       	SystemConfig.hmKVKDaten.clear();
-					    if(resultString.indexOf("\n") >= 0){					       	 
-
+					    if(resultString.indexOf("\n") >= 0){
+					    	if(mustdebug){
+					    		System.out.println("*************Daten enthalten Zeilenumbrüche ************");
+					    	}	
 					    	readAndParseXML(new ByteArrayInputStream(resultString.getBytes()),0);
 			        	}else{
 			        		if( createLineBrake(resultString) ){
-			        			//System.out.println(neustring.toString());
+						    	if(mustdebug){
+						    		System.out.println("*************Daten enthalten keine(!!!) Zeilenumbrüche ************");
+						    		System.out.println(neustring.toString());
+						    	}	
 			        			readAndParseXML(new ByteArrayInputStream(neustring.toString().getBytes()),0);
+			        		}else{
+						    	if(mustdebug){
+						    		System.out.println("*************Daten enthalten keine(!!!) Zeilenumbrüche  und createLineBrake meldet Fehler ************");
+						    	}	
 			        		}
 			        	}
 			        }catch(Exception ex){
@@ -302,12 +315,27 @@ public class OcKVK {
 			        	out.flush();
 			        	out.close();
 					    resultString = new String(out.toByteArray());
+			        	if(mustdebug){
+			        		System.out.println("**************** VD - Daten **********************");
+			        		System.out.println(resultString);
+			        	}
+					    
 			        	if(resultString.indexOf("\n") >= 0){
+					    	if(mustdebug){
+					    		System.out.println("*************Daten enthalten Zeilenumbrüche ************");
+					    	}	
 			        		readAndParseXML(new ByteArrayInputStream(resultString.getBytes()),1);
 			        	}else{
 			        		if( createLineBrake(resultString) ){
-			        			//System.out.println(neustring.toString());
+						    	if(mustdebug){
+						    		System.out.println("*************Daten enthalten keine(!!!) Zeilenumbrüche ************");
+						    		System.out.println(neustring.toString());
+						    	}
 			        			readAndParseXML(new ByteArrayInputStream(neustring.toString().getBytes()),1);
+			        		}else{
+						    	if(mustdebug){
+						    		System.out.println("*************Daten enthalten keine(!!!) Zeilenumbrüche  und createLineBrake meldet Fehler ************");
+						    	}	
 			        		}
 			        	}
 			        }catch(Exception ex){
@@ -395,7 +423,22 @@ public class OcKVK {
 		BufferedReader br = new BufferedReader(inread);
 		String s;
 			int zaehler = 0;
+			boolean mussersetzen = false;
+			String ersetzenzeichen = "";
 			while((s = br.readLine()) != null) {
+				if( (s.startsWith("<") && s.contains("UC_")) && (!s.startsWith("</"))){
+					if(! s.startsWith("<UC_")){
+						mussersetzen = true;
+						ersetzenzeichen = s.substring((s.startsWith("</") ? 2 : 1),s.indexOf(":")+1);
+					}else{
+						mussersetzen = false;
+					}
+				}
+				if(mussersetzen){
+					s = s.replace(ersetzenzeichen, "");
+				}
+				//nachfolgende Zeile wurde durch allgemeine Methode oben ersetzt
+				//s = s.replace("vsdp:","").replace("vsda:","").replace("vsdg:", "");
 				if(datenart==0){
 					//PD
 					testePD(s,s.indexOf("<"),s.indexOf(">"),zaehler);
@@ -430,11 +473,12 @@ public class OcKVK {
 		int dataend = zeile.indexOf("</");
 		if(dataend==0 || dataend < last) return;
 		
-		/*
-		System.out.print(dummy+" = ");
-		System.out.println("Start = "+last+" / Ende = "+dataend);
-		System.out.println(zeile.substring(last+1,dataend));
-		*/
+		if(mustdebug){
+			System.out.print(dummy+" = ");
+			System.out.println("Start = "+last+" / Ende = "+dataend);
+			System.out.println(zeile.substring(last+1,dataend));
+		}
+
 		
 		/*
 	Versicherten_ID = X110121694
@@ -508,12 +552,12 @@ public class OcKVK {
 		if(dummy.startsWith("/")) return;
 		int dataend = zeile.indexOf("</");
 		if(dataend==0 || dataend < last) return;
-		/*
-		System.out.print(dummy+" = ");
-		System.out.println("Start = "+last+" / Ende = "+dataend);
-		System.out.println(zeile.substring(last+1,dataend));
-		*/
 		
+		if(mustdebug){
+			System.out.print(dummy+" = ");
+			System.out.println("Start = "+last+" / Ende = "+dataend);
+			System.out.println(zeile.substring(last+1,dataend));
+		}
 		
 		/*
 	Beginn = 20100301
