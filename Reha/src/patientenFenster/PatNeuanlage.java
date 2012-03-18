@@ -24,9 +24,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -47,8 +46,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 
 import jxTableTools.TableTool;
 import krankenKasse.KassenFormulare;
@@ -2257,9 +2254,12 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,
 			mandAdr = mandAdr.replaceAll("Ö", "OE");
 			mandAdr = mandAdr.replaceAll("Ä", "AE");
 			
+			System.out.println(mandAdr);
+			System.out.println(patientAdr);
+			
 			ProcessBuilder builder = new ProcessBuilder("java",  "CalcKilometer", patientAdr, mandAdr);
 			Process p = builder.start();
-			Scanner s = new Scanner( p.getInputStream() ).useDelimiter("\\Z");
+			Scanner s = new Scanner(new InputStreamReader(p.getInputStream(), "windows-1252" )).useDelimiter("\\Z");
 			String[] ergebnis = s.next().split(";");	
 			s.close();
 			
