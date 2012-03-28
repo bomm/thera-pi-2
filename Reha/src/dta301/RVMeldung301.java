@@ -621,7 +621,7 @@ public class RVMeldung301 {
 	 * 
 	 * 
 	 */
-	public boolean doVerlaengerung(String beginnDatum,String endeDatum,int vart, String hinweis){
+	public boolean doVerlaengerung(String beginnDatum,String endeDatum,int vart, String hinweis,String tage){
 		//ubart = 0 Beginn der U, 1 = Ende der U, 2 = Beginn und Ende der U
 		holeVector();
 		int zeilen = 1;
@@ -683,9 +683,9 @@ public class RVMeldung301 {
 		}
 
 		buf301Body.append("DTM+48:"+mache10erDatum(endeDatum)+":102"+EOL+NEWLINE);zeilen++;
-		long tage = DatFunk.TageDifferenz(beginnDatum, endeDatum);
-		tage++;
-		buf301Body.append("QTY+192:"+StringTools.fuelleMitZeichen(Long.toString(tage), "0", true, 3)+":DAY"+EOL+NEWLINE);zeilen++;
+		//long tage = DatFunk.TageDifferenz(beginnDatum, endeDatum);
+		//tage++;
+		buf301Body.append("QTY+192:"+StringTools.fuelleMitZeichen(tage, "0", true, 3)+":DAY"+EOL+NEWLINE);zeilen++;
 
 
 		buf301Body.append("UNT+"+
@@ -763,7 +763,7 @@ public class RVMeldung301 {
 					buf301Body.append("FTX+TXT+++B:"+flvec.get(i)+EOL+NEWLINE);zeilen++;	
 				}
 			}			
-			buf301Body.append("QTY+192:"+StringTools.fuelleMitZeichen(Long.toString(tage), "0", true, 3)+":DAY"+EOL+NEWLINE);zeilen++;
+			buf301Body.append("QTY+192:"+StringTools.fuelleMitZeichen(tage, "0", true, 3)+":DAY"+EOL+NEWLINE);zeilen++;
 
 
 			buf301Body.append("UNT+"+

@@ -158,7 +158,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 	public String abrechnungsModus = "abrechnung302";
 	final String ABR_MODE_302 = "abrechnung302";
 	final String ABR_MODE_IV = "abrechnungIV";
-	
+	public String SlgaVersion = null;
+	public String SllaVersion = null;
 	public boolean zuzahlModusDefault = true;
 	
 	public AbrechnungGKV(JAbrechnungInternal xjry){
@@ -175,7 +176,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		jSplitLR.setDividerLocation(230);
 		add(jSplitLR,BorderLayout.CENTER);
 		mandantenCheck();
-		
+		SlgaVersion = ( DatFunk.TageDifferenz("31.03.2012",DatFunk.sHeute()) <= 0 ? "06" : "07");
+		SllaVersion = ( DatFunk.TageDifferenz("31.03.2012",DatFunk.sHeute()) <= 0 ? "06" : "07");
 	}
 	/**********
 	 * 
@@ -1312,7 +1314,8 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		unbBuf.append(abrDateiName+plus);
 		unbBuf.append("2"+EOL);
 		//unbBuf.append(aktDfue+plus+"B"+plus+"SL"+Reha.aktIK.substring(2,8)+"S"+getEdiMonat()+plus+"2"+EOL);
-		unbBuf.append("UNH+00001+SLGA:06:0:0"+EOL);
+		
+		unbBuf.append("UNH+00001+SLGA:"+SlgaVersion+":0:0"+EOL);
 		unbBuf.append("FKT+01"+plus+plus+Reha.aktIK+plus+ik_kostent+plus+ik_kasse+plus+Reha.aktIK+EOL);
 		unbBuf.append("REC"+plus+aktRechnung+":0"+plus+getEdiDatumFromDeutsch(DatFunk.sHeute())+plus+"1"+EOL);
 		unbBuf.append("UST"+plus+SystemConfig.hmFirmenDaten.get("Steuernummer")+plus+"J"+EOL);
@@ -1330,7 +1333,7 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 				SystemConfig.hmFirmenDaten.get("Nachname").trim()	)+
 				plus+SystemConfig.hmFirmenDaten.get("Telefon")+EOL);
 		unbBuf.append("UNT+000010+00001"+EOL);
-		unbBuf.append("UNH+00002+SLLA:06:0:0"+EOL);
+		unbBuf.append("UNH+00002+SLLA:"+SllaVersion+":0:0"+EOL);
 		unbBuf.append("FKT+01"+plus+plus+Reha.aktIK+plus+ik_kostent+plus+ik_kasse+EOL);
 		unbBuf.append("REC"+plus+aktRechnung+":0"+plus+getEdiDatumFromDeutsch(DatFunk.sHeute())+plus+"1"+EOL);
 		getEdiTimeString(false);

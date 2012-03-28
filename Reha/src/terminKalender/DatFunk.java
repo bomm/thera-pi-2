@@ -127,8 +127,8 @@ public class DatFunk {
 		String[] datsplit2 = sneudatum.split("\\.");
 		Calendar cal1 = new GregorianCalendar();
 		Calendar cal2 = new GregorianCalendar();
-		cal1.set( Integer.parseInt(datsplit1[2]), Integer.parseInt(datsplit1[1])-1, Integer.parseInt(datsplit1[0]) ); 
-		cal2.set( Integer.parseInt(datsplit2[2]), Integer.parseInt(datsplit2[1])-1, Integer.parseInt(datsplit2[0]) );
+		cal1.set( Integer.parseInt(datsplit1[2]), Integer.parseInt(datsplit1[1])-1, Integer.parseInt(datsplit1[0]),0,0,0 ); 
+		cal2.set( Integer.parseInt(datsplit2[2]), Integer.parseInt(datsplit2[1])-1, Integer.parseInt(datsplit2[0]),0,0,0 );
 
 		mul1 = cal1.getTimeInMillis();
 		mul2 = cal2.getTimeInMillis();
@@ -137,7 +137,9 @@ public class DatFunk {
 		if(mul3==0){
 			return 0;
 		}
-		return  mul3/(24*60*60*1000L);
+		//return  mul3/(24*60*60*1000L);
+		return Math.round( (double)mul3 / (24. * 60.*60.*1000.) );  
+		
 	}
 
 	public static String WocheErster(String sdatum){

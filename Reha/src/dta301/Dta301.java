@@ -928,8 +928,10 @@ public class Dta301 extends JXPanel implements FocusListener {
 					break;
 				}
 			}
+			long tage = DatFunk.TageDifferenz(this.vbbeginndatum.getText().trim(), this.vbendedatum.getText().trim())+1;
+			//tage++;
 			meldung301.doVerlaengerung(this.vbbeginndatum.getText().trim(),
-					this.vbendedatum.getText().trim(),iart,this.veditpan.getText().trim());
+					this.vbendedatum.getText().trim(),iart,this.veditpan.getText().trim(),Long.toString(tage));
 			doTabelleFuellen();
 			return true;
 		}
@@ -1183,15 +1185,16 @@ public class Dta301 extends JXPanel implements FocusListener {
 		if(art == 3){
 			verlart = (vbradio[0].isSelected() ? 0 : 1);
 			meldung = "<html><font color='#ff0000' size=+2>Nachricht mit diesen Parametern erzeugen?</font><br><br>";
+			long tage = DatFunk.TageDifferenz(this.vbbeginndatum.getText().trim(), this.vbendedatum.getText().trim())+1;
 			if(verlart == 0){
 				meldung = meldung + "Narchittyp: <b>Verlängerungsmitteilung"+
 				"</b><br><br>Erster Tag der Verlängerung: <b>"+vbbeginndatum.getText()+
-				"</b><br><br>Letzter Tag der Verlängerung: <b>"+vbendedatum.getText()+
+				"</b><br><br>Letzter Tag der Verlängerung: <b>"+vbendedatum.getText()+" ("+Long.toString(tage)+" Tage)"+
 				"</b><br><br><b>Erklärungstext nicht unbedingt erforderlich";
 			}else{
 				meldung = meldung + "Narchittyp: <b>Antrag auf Verlängerung"+
 				"</b><br><br>Erster Tag der Verlängerung: <b>"+vbbeginndatum.getText()+
-				"</b><br><br>Letzter Tag der Verlängerung: <b>"+vbendedatum.getText();
+				"</b><br><br>Letzter Tag der Verlängerung: <b>"+vbendedatum.getText()+" ("+Long.toString(tage)+" Tage)";
 				if(veditpan.getText().trim().equals("")){
 					meldung = meldung+"</b><br><br><b><font color='#ff0000'>Achtung bei Absagen muß eine Begründung eingegeben werden</font>"+
 					"</b></html>";

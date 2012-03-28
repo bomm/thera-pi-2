@@ -197,6 +197,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	Double rezeptWert;
 	Double zuzahlungWert;
 	Double kmWert;
+	int hbstrecke = -1;
+	String hbkmpos = "";
 	JXDatePicker datePick = new JXDatePicker();
 	JXMonthView sv;
 
@@ -845,12 +847,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				wgpauschpos = testepos.toString();
 				wgpausch = true;
 			}else if(testepos.equals(kilometerpos) && (!kmchecked)){
-				 wgkmpos =  testepos.toString();
-				 wgkmstrecke = Integer.parseInt(Double.toString(node.abr.anzahl).replace(".0", ""));
-				 wgkmanzahl++;
-				 wgkm = true;
-				 kmchecked = true;
+				//System.out.println("! kmchecked "+kilometerpos+"/"+kmchecked);
+				wgkmpos =  testepos.toString();
+				wgkmstrecke = Integer.parseInt(Double.toString(node.abr.anzahl).replace(".0", ""));
+				wgkmanzahl++;
+				wgkm = true;
+				kmchecked = true;
 			}else if(testepos.contains(kilometerpos) && (kmchecked)){
+				//System.out.println("kmchecked "+kilometerpos+"/"+kmchecked);
 				wgkmanzahl++;
 			}
 		}
@@ -1549,7 +1553,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		boolean vollepackung = vec_rez.get(0).get(61).equals("T");
 		boolean heimbewohner = vec_hb.get(0).get(0).equals("T");
 		double anzahlkm = 0.00;
-		
+		hbstrecke = -1;
+		hbkmpos = "";
+
 		int maxanzahl = root.getChildCount();
 		try{
 			anzahlkm = Double.parseDouble(vec_hb.get(0).get(1).replace(",", "."));	
@@ -1613,6 +1619,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 						JOptionPane.showMessageDialog(null,"Achtung Sie rechnen HB-Kilometer ab dem Pat wurden aber 0 km zugewiesen,\ndieses Rezept bitte aus der Abrechnung nehmen bis im Pat.Stamm die Kilometeranzahl korrigiert wurde");
 					}
 					abrfallAnhaengen(    i+1,   node,  tag,   kilometerpos,    anzahlkm ,immerfrei);
+					hbstrecke = (int)Math.abs(anzahlkm);
+					hbkmpos = String.valueOf(kilometerpos);
+
 					//Kilometer im Patientenstamm auf 0 gesetzt und es existiert eine Pauschalenziffer
 				}else if((!kilometerbesser) && (!pauschalepos.trim().equals(""))){	
 				//}else if(anzahlkm <= 7 && (!pauschalepos.trim().equals(""))){
@@ -1641,8 +1650,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		int maxanzahl = root.getChildCount();
 
 		anzahlkm = Double.parseDouble(vec_hb.get(0).get(1).replace(",", "."));
-
-
+		hbstrecke = -1;
+		hbkmpos = "";
 		/*********Jetzt geht's los ***********/
 		//////System.out.println("HB-Regeln = "+SystemConfig.vHBRegeln);
 		if(maxanzahl < insgesamthb){
@@ -1665,7 +1674,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		String hauptziffer = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(0);
 		String mehrereziffer = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(1);
 
-		////System.out.println("Anzahl Kilometer = "+anzahlkm);
+		//System.out.println("Anzahl Kilometer = "+anzahlkm);
 
 			
 			//JXTTreeTableNode node = (JXTTreeTableNode)root.getChildAt(i);
@@ -1696,6 +1705,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			if(kilometerbesser && (!kilometerpos.trim().equals(""))){
 			//if(anzahlkm > 7 && (!kilometerpos.trim().equals(""))){
 				abrfallAnhaengen(    basisindex+1,   node,  tag,   kilometerpos,    anzahlkm ,immerfrei);
+				hbstrecke = (int)Math.abs(anzahlkm);
+				hbkmpos = String.valueOf(kilometerpos);
+
+				//System.out.println(hbstrecke+" / "+hbkmpos);
 				//Kilometer im Patientenstamm auf 0 gesetzt und es existiert eine Pauschalenziffer
 			}else if((!kilometerbesser) && (!pauschalepos.trim().equals(""))){	
 			//}else if(anzahlkm <= 7 && (!pauschalepos.trim().equals(""))){
@@ -2355,7 +2368,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				htmlposbuf.append(vec_pospos.get(i)+" - "+" <b>"+vec_poskuerzel.get(i)+"</b>");	
 			}
 			htmlposbuf.append("</td><td class=\"spalte2\" align=\"left\">");
-			htmlposbuf.append("<b>"+Integer.toString(vec_posanzahl.get(i))+" x"+"</b>");
+			
+			htmlposbuf.append("<b>"+Integer.toString(vec_posanzahl.get(i))+" x"+ (vec_pospos.get(i).equals(hbkmpos) ? " ("+Integer.toString(hbstrecke)+" km)" : "")+"</b>");
 			htmlposbuf.append("</td></tr>");
 		}
 		htmlposbuf.append("<tr>");
