@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -2247,6 +2248,11 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,
 					SystemConfig.hmFirmenDaten.get("Strasse").equals("") || SystemConfig.hmFirmenDaten.get("Plz").equals("") ||
 					SystemConfig.hmFirmenDaten.get("Ort").equals("")){
 				JOptionPane.showMessageDialog(this,"Patientenadresse oder Firmenadresse sind unvollständig");
+				return;
+			}
+			File f = new File(Reha.proghome+"CalcKilometer.jar");
+			if(! f.exists()){
+				JOptionPane.showMessageDialog(this,"Die Software zur Kilometerermittlung ist nicht installiert");
 				return;
 			}
 			String patientAdr = jtf[4].getText()+","+jtf[5].getText() + "," +jtf[6].getText();
