@@ -21,14 +21,17 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -2240,37 +2243,53 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,
 	
 	private void calcKilometer() {
 		try {
-			String patientAdr = jtf[4].getText() + "," +jtf[6].getText();
-			patientAdr = patientAdr.replaceAll(" ", "+");
+			if(jtf[4].getText().trim().equals("") || jtf[5].getText().trim().equals("") || jtf[6].getText().trim().equals("") || 
+					SystemConfig.hmFirmenDaten.get("Strasse").equals("") || SystemConfig.hmFirmenDaten.get("Plz").equals("") ||
+					SystemConfig.hmFirmenDaten.get("Ort").equals("")){
+				JOptionPane.showMessageDialog(this,"Patientenadresse oder Firmenadresse sind unvollständig");
+				return;
+			}
+			String patientAdr = jtf[4].getText()+","+jtf[5].getText() + "," +jtf[6].getText();
+			patientAdr = patientAdr.toUpperCase().replace(" ", "%20").replace("ß", "SS").replace("Ü", "UE").replace("Ö", "OE").replace("Ä", "AE");
+			/*
 			patientAdr = patientAdr.replaceAll("ß", "SS");
 			patientAdr = patientAdr.replaceAll("Ü", "UE");
 			patientAdr = patientAdr.replaceAll("Ö", "OE");
 			patientAdr = patientAdr.replaceAll("Ä", "AE");
-			
-			String mandAdr = SystemConfig.hmFirmenDaten.get("Strasse") + "," + SystemConfig.hmFirmenDaten.get("Ort");
-			mandAdr = mandAdr.toUpperCase().replaceAll(" ", "+");
+			*/
+			String mandAdr = SystemConfig.hmFirmenDaten.get("Strasse")+","+SystemConfig.hmFirmenDaten.get("Plz") + "," + SystemConfig.hmFirmenDaten.get("Ort");
+			mandAdr = mandAdr.toUpperCase().replace(" ", "%20").replace("ß", "SS").replace("Ü", "UE").replace("Ö", "OE").replace("Ä", "AE");
+			/*
 			mandAdr = mandAdr.replaceAll("ß", "SS");
 			mandAdr = mandAdr.replaceAll("Ü", "UE");
 			mandAdr = mandAdr.replaceAll("Ö", "OE");
 			mandAdr = mandAdr.replaceAll("Ä", "AE");
-			
-			System.out.println(mandAdr);
-			System.out.println(patientAdr);
-			
-			ProcessBuilder builder = new ProcessBuilder("java",  "CalcKilometer", patientAdr, mandAdr);
-			Process p = builder.start();
+			*/
+			//System.out.println(mandAdr);
+			//System.out.println(patientAdr);
+			ArrayList<String> alist = new ArrayList<String>();
+			alist.add("CalcKilometer.jar");
+			alist.add(patientAdr);
+			alist.add(mandAdr);
+			alist.add(0,"-jar");
+			alist.add(0,"java");
+			Process p = new ProcessBuilder(alist).start();
+			//ProcessBuilder builder = new ProcessBuilder("java -jar",  "CalcKilometer", patientAdr, mandAdr);
+			//Process p = builder.start();
 			Scanner s = new Scanner(new InputStreamReader(p.getInputStream(), "windows-1252" )).useDelimiter("\\Z");
-			String[] ergebnis = s.next().split(";");	
+			String result = s.next();
+			String[] ergebnis = result.split(";");
 			s.close();
-			
+			p.destroy();
+			p = null;
 			int kmGesamt = Integer.parseInt(ergebnis[0]);
 			int minuten = Integer.parseInt(ergebnis[1]);
 			String copy = ergebnis[2];
-			
+
 			Object[] options = {"Übernehmen", "Nö!"};
 			int answer = JOptionPane.showOptionDialog(null,
-			"Google hat für Hin- und Rückweg " + kmGesamt +" km berechnet. Fahrzeit: " + minuten + " min \n" +
-					copy,
+			"<html>Google hat für Hin- und Rückweg <b><u>" + kmGesamt +" km</u></b> berechnet.<br>Fahrzeit: " + minuten + " min <br>" +
+					copy+"</html>",
 					"Google sagt",
 					JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE,
@@ -2282,6 +2301,7 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this,"Fehler beim Bezug der Routenangaben");
 		}
 	}
 
@@ -2305,6 +2325,9 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,
 	}
 
 	/*
+	 * MARIE-CURIE-STR.1,72760,REUTLINGEN
+	 * THEODOR-FONTANE-STR.%204,72760,REUTLINGEN
+	 * 
 	 * Lemmi ToDo: Den intransparente Handhabung mit jtf[0] und Anrede prüfen
 	 * !!! // Lemmi 20110103: Merken der Originalwerte der eingelesenen
 	 * Textfelder // ACHTUNG: Die Reihenfolge der Abfragen muß in
