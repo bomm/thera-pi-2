@@ -14,14 +14,15 @@ public class CalcKilometer {
 		String copy = "Es ist ein Fehler aufgetreten - Adressen richtig?";
 		int kilometer = 1;
 		int minuten = 1;
+		int meter = 1;
+		int sekunden = 1;
+
 		if(args.length == 2) {
 			String mandAdr = args[1];
 			String patientAdr = args[0];
 			
 			String url = "http://maps.google.com/maps/api/directions/xml?origin="+ mandAdr +"&destination="+ patientAdr +"&sensor=false";
 			//Google nach Kilometern Fragen!
-			int meter = 1;
-			int sekunden = 1;
 			try {
 			URL google = new URL(url);
 			InputStream in = google.openStream();
@@ -65,12 +66,15 @@ public class CalcKilometer {
 				parser.next();
 			}
 			} catch (Exception e) {
+				e.printStackTrace();
 				copy = "Fehler: " + e.getMessage();
 			}
 			kilometer = Math.round((meter*2) / 1000);
 			minuten = sekunden / 60;
 		}
-		System.out.println(kilometer + ";" + minuten + ";" + copy);
+		System.out.println(kilometer + ";" + minuten + ";" + 
+				"(Einfache Strecke in Meter = "+Integer.toString(meter)+"m)<br>"+
+				"(Exakte Strecke hin und zurück in Meter = "+Integer.toString(meter*2)+"m)<br><br>"+copy+"<br><br>");
 	}
 
 }
