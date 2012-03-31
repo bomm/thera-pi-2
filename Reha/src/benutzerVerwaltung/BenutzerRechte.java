@@ -568,6 +568,8 @@ public class BenutzerRechte extends JXPanel{
 		if(!rechteTools.Rechte.hatRecht(rechteTools.Rechte.BenutzerRechte_set, true)){
 			return;
 		}
+		
+		
 		int lang = getNodeCount();
 		StringBuffer buf = new StringBuffer();
 		for(int i = 0; i < lang;i++){
@@ -605,6 +607,17 @@ public class BenutzerRechte extends JXPanel{
 				Reha.progRechte = buf.toString();
 			}
 		}else{
+			//Test ob Passwort schon vergeben
+			String test=String.valueOf(pws[0].getPassword()).trim();
+			int size = ParameterLaden.pKollegen.size();
+			for(int i=0;i<size;i++){
+				////System.out.println(ParameterLaden.pKollegen.get(i).get(1));
+				if(test.equals(ParameterLaden.pKollegen.get(i).get(1).trim())){
+					JOptionPane.showMessageDialog(null, "Das Passwort "+test+" ist bereits vergeben, speichern nicht möglich");
+					return;
+				}
+			}
+			/***********/
 			// neuen Benutzer anlegen erst noch entwickeln;
 			if(tfs[0].getText().equals("") || String.valueOf(pws[0].getPassword()).trim().equals("")){
 				JOptionPane.showMessageDialog(null, "Benutzername und Passwort darf nicht leer sein");
