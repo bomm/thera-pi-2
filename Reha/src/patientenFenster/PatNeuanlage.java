@@ -2294,7 +2294,7 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,
 
 			Object[] options = {"Übernehmen", "Nö!"};
 			int answer = JOptionPane.showOptionDialog(null,
-			"<html>Google hat für Hin- und Rückweg <b><u>" + kmGesamt +" km</u></b> berechnet.<br>Fahrzeit: " + minuten + " min <br>" +
+			"<html>Google hat für Hin- und Rückweg (gerundet) <b><u>" + kmGesamt +" km</u></b> errechnet.<br>Fahrzeit: " + minuten + " min <br>" +
 					copy+"</html>",
 					"Google sagt",
 					JOptionPane.YES_NO_OPTION,

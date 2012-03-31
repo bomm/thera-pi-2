@@ -1,6 +1,8 @@
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URL;
 
+import javax.swing.JOptionPane;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
@@ -12,10 +14,10 @@ public class CalcKilometer {
 	 */
 	public static void main(String[] args) {
 		String copy = "Es ist ein Fehler aufgetreten - Adressen richtig?";
-		int kilometer = 1;
-		int minuten = 1;
-		int meter = 1;
-		int sekunden = 1;
+		int kilometer = 0;
+		int minuten = 0;
+		double meter = 0.;
+		int sekunden = 0;
 
 		if(args.length == 2) {
 			String mandAdr = args[1];
@@ -52,7 +54,7 @@ public class CalcKilometer {
 						while(!parser.isEndElement()) {
 							if(parser.hasName()) {
 								if(parser.getName().getLocalPart().equals("value")) {
-									meter = Integer.parseInt(parser.getElementText());
+									meter = Double.parseDouble(parser.getElementText()+".0");//Integer.parseInt(parser.getElementText());
 								}
 							}
 							parser.next();
@@ -65,16 +67,22 @@ public class CalcKilometer {
 				}
 				parser.next();
 			}
+			Double dkm = Double.valueOf(meter*2./1000.);
+			kilometer = Double.valueOf(Math.rint(dkm)).intValue(); 
+			minuten = sekunden / 60;
 			} catch (Exception e) {
 				e.printStackTrace();
 				copy = "Fehler: " + e.getMessage();
 			}
-			kilometer = Math.round((meter*2) / 1000);
-			minuten = sekunden / 60;
+			
 		}
+		String smeter1 = Double.toString(meter);
+		String smeter2 = Double.toString(meter*2);
+		
 		System.out.println(kilometer + ";" + minuten + ";" + 
-				"(Einfache Strecke in Meter = "+Integer.toString(meter)+"m)<br>"+
-				"(Exakte Strecke hin und zurück in Meter = "+Integer.toString(meter*2)+"m)<br><br>"+copy+"<br><br>");
+				"(Einfache Strecke in Meter = "+smeter1.substring(0,smeter1.indexOf("."))+"m)<br>"+
+				"(Exakte Strecke hin und zurück in Meter = "+smeter2.substring(0,smeter2.indexOf("."))+"m)<br><br>"+copy+"<br><br>");
+		System.exit(0);
 	}
 
 }
