@@ -84,6 +84,7 @@ import patientenFenster.RezeptVorlage;
 import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
+import stammDatenTools.KasseTools;
 import stammDatenTools.RezTools;
 import stammDatenTools.ZuzahlTools;
 import systemEinstellungen.INIFile;
@@ -2336,6 +2337,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		try{
 			//Preisgruppe ermitteln
 			int preisgruppe = 0;
+			KasseTools.constructKasseHMap(Reha.thisClass.patpanel.vecaktrez.get(37));
 			try{
 				preisgruppe = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41));
 			}catch(Exception ex){

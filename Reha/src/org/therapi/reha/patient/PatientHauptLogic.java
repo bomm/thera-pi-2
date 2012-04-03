@@ -576,6 +576,7 @@ public class PatientHauptLogic {
 								 		   	macheAlleHashMaps();
 							 		   }catch(Exception ex){
 							 			   ex.printStackTrace();
+							 			   JOptionPane.showMessageDialog(null, "Fehler bei der Aufbereitung der Adressenplatzhalter");
 							 		   }
 							 	   }
 							});

@@ -607,13 +607,16 @@ public class BenutzerRechte extends JXPanel{
 				Reha.progRechte = buf.toString();
 			}
 		}else{
-			//Test ob Passwort schon vergeben
+			//Test ob Passwort oder Benutzername schon vergeben wurde
 			String test=String.valueOf(pws[0].getPassword()).trim();
+			String name = String.valueOf(tfs[0].getText().trim()); //(String) ParameterLaden.pKollegen.get(i).get(0);
 			int size = ParameterLaden.pKollegen.size();
 			for(int i=0;i<size;i++){
-				////System.out.println(ParameterLaden.pKollegen.get(i).get(1));
-				if(test.equals(ParameterLaden.pKollegen.get(i).get(1).trim())){
-					JOptionPane.showMessageDialog(null, "Das Passwort "+test+" ist bereits vergeben, speichern nicht möglich");
+				if(test.equals(ParameterLaden.pKollegen.get(i).get(1).trim()) ){
+					JOptionPane.showMessageDialog(null, "Passwort "+test+" ist bereits vergeben, speichern nicht möglich");
+					return;
+				}else if( name.equals(ParameterLaden.pKollegen.get(i).get(0).trim()) ){
+					JOptionPane.showMessageDialog(null, "Benutzername "+name+" ist bereits vergeben, speichern nicht möglich");
 					return;
 				}
 			}
