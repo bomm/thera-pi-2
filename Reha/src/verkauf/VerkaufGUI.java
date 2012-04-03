@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.sql.Date;
 import java.text.DecimalFormat;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -33,6 +34,7 @@ import org.thera_pi.nebraska.gui.utils.StringTools;
 import sqlTools.SqlInfo;
 import systemEinstellungen.INIFile;
 import systemEinstellungen.SystemConfig;
+import systemTools.JRtaRadioButton;
 import systemTools.JRtaTextField;
 import verkauf.model.Artikel;
 import verkauf.model.ArtikelVerkauf;
@@ -65,6 +67,8 @@ public class VerkaufGUI extends JXPanel{
 	KeyListener kl = null;
 	FocusListener fl = null;
 	JRtaTextField[] edits = {null,null,null,null,null,null,null,null,null};
+	JRtaRadioButton[] rbuts = {null,null};
+	ButtonGroup group = new ButtonGroup();
 	JButton[] buts = {null,null,null,null, null};
 	public JXTable vktab = null;
 	public DefaultTableModel vkmod = new DefaultTableModel();
@@ -260,6 +264,18 @@ public class VerkaufGUI extends JXPanel{
 		pan.add( (buts[2] = ButtonTools.macheBut("Rechnung", "rechnungEnde", al)),cc.xy(14, 14));
 		buts[2].setMnemonic(KeyEvent.VK_N);
 		/*************/
+		
+		/*********Adress-Quelle************/
+		rbuts[0] = new JRtaRadioButton("Adresse von aktuellem Patient beziehen");
+		pan.add(rbuts[0],cc.xyw(2,8,5));
+		rbuts[1] = new JRtaRadioButton("Adresse von aktueller Kasse beziehen");
+		pan.add(rbuts[1],cc.xyw(2,10,5));
+		rbuts[0].setOpaque(false);
+		rbuts[1].setOpaque(false);
+		group.add(rbuts[0]);
+		group.add(rbuts[1]);
+		rbuts[0].setSelected(true);
+		/*************/
 		pan.validate();
 		edits[0].requestFocus();
 		return pan;
@@ -289,7 +305,7 @@ public class VerkaufGUI extends JXPanel{
 				String[][] werte = verkauf.liefereTabDaten();
 				setzeTabellenWerte(werte);
 				if(werte.length > 0){
-					vktab.setRowSelectionInterval(werte.length-1, werte.length-1);	
+					//vktab.setRowSelectionInterval(werte.length-1, werte.length-1);	
 				}
 				edits[0].requestFocus();
 				return;
@@ -454,7 +470,7 @@ public class VerkaufGUI extends JXPanel{
 						// TODO prüfen ob das Fenster grade Aktiv ist!; Rechnung vorschau? 
 					} else {
 						edits[0].removeFocusListener(fl);
-						edits[0].requestFocus();
+						//edits[0].requestFocus();
 						edits[0].addFocusListener(fl);
 					}
 					return;
@@ -502,10 +518,18 @@ public class VerkaufGUI extends JXPanel{
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				while(! wDialog.getTextFeld().hasFocus()){
-					wDialog.setzeFocus();
-					Thread.sleep(25);
-					//System.out.println("erzwinge Focus");
+				try{
+					long eintritt = System.currentTimeMillis();
+					while(! wDialog.getTextFeld().hasFocus()){
+						wDialog.setzeFocus();
+						Thread.sleep(25);
+						if(System.currentTimeMillis()-eintritt > 5000){
+							System.out.println("Zwangsausbruch aus bonEnde");
+							break;
+						}
+					}
+				}catch(Exception ex){
+					ex.printStackTrace();
 				}
 				return null;
 			}
@@ -606,13 +630,29 @@ public class VerkaufGUI extends JXPanel{
 	
 	private void rechnungEnde() {
 		if(verkauf.getAnzahlPositionen() != 0) {
-		if( (Reha.thisClass.patpanel != null) && (Reha.thisClass.patpanel.patDaten != null)) {
-			String name = Reha.thisClass.patpanel.patDaten.get(2) , vorname = Reha.thisClass.patpanel.patDaten.get(3),
-					adresse = Reha.thisClass.patpanel.patDaten.get(21), plz = Reha.thisClass.patpanel.patDaten.get(23), 
-					ort = Reha.thisClass.patpanel.patDaten.get(24), anrede = Reha.thisClass.patpanel.patDaten.get(0);
+		if(  ((Reha.thisClass.patpanel != null) && (Reha.thisClass.patpanel.patDaten != null) && rbuts[0].isSelected()) || 
+				(Reha.thisClass.kassenpanel != null && rbuts[1].isSelected()) ) {
+			String name = null,vorname=null,adresse=null,plz=null,ort=null,anrede=null;
+			int patid = -1;
+			if(rbuts[0].isSelected()){
+				name = StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(2)) ;
+				vorname = StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(3));
+				adresse = StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(21));
+				plz = Reha.thisClass.patpanel.patDaten.get(23); 
+				ort = StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(24));
+				anrede = StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(0));
+				patid = Integer.parseInt(Reha.thisClass.patpanel.patDaten.get(29));
+			}else{
+				vorname = SystemConfig.hmAdrKDaten.get("<Kadr1>");
+				name = (! SystemConfig.hmAdrKDaten.get("<Kadr2>").trim().equals("") ? "\r"+SystemConfig.hmAdrKDaten.get("<Kadr2>") : "");
+				adresse = SystemConfig.hmAdrKDaten.get("<Kadr3>");
+				plz = SystemConfig.hmAdrKDaten.get("<Kadr4>");
+				ort = "";
+				anrede = "";
+			}
 			String propSection = "Rechnung";
 			String nummernkreis = "VR-"+ SqlInfo.erzeugeNummer("vrechnung");
-			int patid = Integer.parseInt(Reha.thisClass.patpanel.patDaten.get(29));
+
 			
 			
 			IOfficeApplication application = Reha.officeapplication;
@@ -632,21 +672,23 @@ public class VerkaufGUI extends JXPanel{
 					if(felder[i].getDisplayText().equals("<Pname>")) {
 						
 					} else if(felder[i].getDisplayText().equals("<Pnname>")) {
-						felder[i].getTextRange().setText(StringTools.EGross(name));
+						felder[i].getTextRange().setText(name);
 					} else if(felder[i].getDisplayText().equals("<Pvname>")) {
-						felder[i].getTextRange().setText(StringTools.EGross(vorname));
+						felder[i].getTextRange().setText(vorname);
 					} else if(felder[i].getDisplayText().equals("<Panrede>")) {
-						if(anrede.equals("HERR")) {
-							felder[i].getTextRange().setText("Sehr geehrter Herr " + StringTools.EGross(name));
-						} else {
-							felder[i].getTextRange().setText("Sehr geehrter Frau " + StringTools.EGross(name));
+						if(anrede.equals("Herr")) {
+							felder[i].getTextRange().setText("Sehr geehrter Herr " + name);
+						}else if(anrede.equals("")){
+							felder[i].getTextRange().setText("Sehr geehrte Damen und Herren");
+						}else {
+							felder[i].getTextRange().setText("Sehr geehrter Frau " + name);
 						}
 					} else if(felder[i].getDisplayText().equals("<Padr>")) {
-						felder[i].getTextRange().setText(StringTools.EGross(adresse));
+						felder[i].getTextRange().setText(adresse);
 					} else if(felder[i].getDisplayText().equals("<Pplz>")) {
-						felder[i].getTextRange().setText(StringTools.EGross(plz));
+						felder[i].getTextRange().setText(plz);
 					} else if(felder[i].getDisplayText().equals("<Port>")) {
-						felder[i].getTextRange().setText(StringTools.EGross(ort));
+						felder[i].getTextRange().setText(ort);
 					} else if(felder[i].getDisplayText().equals("<Rnetto>")) {
 						felder[i].getTextRange().setText(df.format(verkauf.getBetragBrutto() - verkauf.getBetrag19() - verkauf.getBetrag7()) + " €");
 					} else if(felder[i].getDisplayText().equals("<Rmwst7>")) {
@@ -713,7 +755,7 @@ public class VerkaufGUI extends JXPanel{
 			this.owner.aktiviereFunktion(VerkaufTab.reload);
 			
 		} else {
-			JOptionPane.showMessageDialog(null, "Bitte erst Patientenfenster öffnen und Patienten auswählen!");
+			JOptionPane.showMessageDialog(null, "Bitte erst Patientenfenster bzw. Kassenfenster öffnen und Patienten bzw. Kasse auswählen!");
 		}}
 	}
 	

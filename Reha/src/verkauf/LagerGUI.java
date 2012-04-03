@@ -199,10 +199,19 @@ public class LagerGUI extends JXPanel {
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				while(! adlg.getTextField().hasFocus()){
-					adlg.setzeFocus();
-					Thread.sleep(25);
-					//System.out.println("erzwinge Focus");
+				try{
+					long eintritt = System.currentTimeMillis();
+					while(! adlg.getTextField().hasFocus()){
+						adlg.setzeFocus();
+						Thread.sleep(25);
+						if(System.currentTimeMillis()-eintritt > 5000){
+							System.out.println("Zwangsausbruch aus doArtikelDialog");
+							break;
+						}
+						//System.out.println("erzwinge Focus");
+					}
+				}catch(Exception ex){
+					ex.printStackTrace();
 				}
 				return null;
 			}

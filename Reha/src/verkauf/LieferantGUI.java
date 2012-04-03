@@ -144,10 +144,18 @@ public class LieferantGUI extends JXPanel{
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				while(! lfdlg.getTextField().hasFocus()){
-					lfdlg.setzeFocus();
-					Thread.sleep(25);
-					//System.out.println("erzwinge Focus");
+				try{
+					long eintritt = System.currentTimeMillis();
+					while(! lfdlg.getTextField().hasFocus()){
+						lfdlg.setzeFocus();
+						Thread.sleep(25);
+						if(System.currentTimeMillis()-eintritt > 5000){
+							System.out.println("Zwangsausbruch aus doLieferantDialog");
+							break;
+						}
+					}
+				}catch(Exception ex){
+					ex.printStackTrace();
 				}
 				return null;
 			}

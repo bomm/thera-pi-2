@@ -158,6 +158,7 @@ public class Lieferant {
 			ids.remove(0);
 			i++;
 		}
+		//System.out.println("Austritt aus liefereLieferantenCombo");
 		return returnsstmt;
 	}
 	

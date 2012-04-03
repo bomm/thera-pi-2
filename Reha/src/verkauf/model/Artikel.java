@@ -168,6 +168,7 @@ public class Artikel {
 		DecimalFormat df = new DecimalFormat("0.00");
 		Vector<String> artikelIDs = SqlInfo.holeFeld(sql);
 		Vector<Vector<String>> daten = new Vector<Vector<String>>();
+		//System.out.println(artikelIDs.size());
 		while(!artikelIDs.isEmpty()) {
 			Vector<String> artikel = new Vector<String>();
 			Artikel a = new Artikel(Integer.parseInt(artikelIDs.get(0)));
@@ -186,6 +187,7 @@ public class Artikel {
 			artikel.add(String.valueOf(a.id));
 			daten.add(artikel);
 		}
+		//System.out.println("Austritt aus liefereArtikelDaten");
 		return daten;
 	}
 	
@@ -213,6 +215,7 @@ public class Artikel {
 			artikel.add(String.valueOf(a.id));
 			daten.add(artikel);
 		}
+		//System.out.println("Austritt aus sucheArtikelDaten");
 		return daten;
 	}
 	public static void entferneLieferant(int lieferantID) {
