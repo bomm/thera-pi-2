@@ -25,6 +25,7 @@ public class AbrechnungDlg extends JDialog{
 	private JLabel bildlab;
 	Font font = new Font("Arial",Font.PLAIN,12);
 	
+	
 	public AbrechnungDlg() {
 		super();
 		setUndecorated(true);

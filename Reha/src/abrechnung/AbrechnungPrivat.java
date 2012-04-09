@@ -75,7 +75,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	 * 
 	 */
 	private static final long serialVersionUID = 1036517682792665034L;
-
+	
 	private JXTitledPanel jtp = null;
 	private MouseAdapter mymouse = null;
 	private PinPanel pinPanel = null;

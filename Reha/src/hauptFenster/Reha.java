@@ -1,6 +1,7 @@
 package hauptFenster;
 
 import java.awt.AWTEvent;
+
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -167,7 +168,6 @@ import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
 import geraeteInit.BarCodeScanner;
-
 //@SuppressWarnings("unused")
 
 public class Reha implements FocusListener,ComponentListener,ContainerListener,MouseListener,MouseMotionListener,KeyListener,RehaEventListener, WindowListener, WindowStateListener, ActionListener  {
@@ -1910,6 +1910,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             if(path.indexOf("LibreOffice") >= 0){
             	
             	System.out.println("Nehme die neue Variante");
+            	
                 config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
                 		new String[] {"--nodefault",
                 		"--nofirststartwizard",
@@ -1931,7 +1932,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
             
             try {
-				if(officeapplication.getOfficeConnection() != null){
+				if(((IOfficeApplication) officeapplication).getOfficeConnection() != null){
 					System.out.println("OfficeConnection o.k.");
 					officeapplication.getOfficeConnection().addBridgeEventListener(new IEventListener(){
 						@Override
@@ -1944,6 +1945,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			} catch (java.lang.Exception e1) {
 				e1.printStackTrace();
 			}
+			
 			
 			
             

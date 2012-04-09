@@ -27,7 +27,6 @@ public class IntTableCellEditor extends AbstractCellEditor implements KeyListene
 	
 	JComponent component = new JRtaTextField("ZAHLEN",true);
     boolean mitMaus = false;
-
     public IntTableCellEditor(){
     	component.addKeyListener(this);
     	((JRtaTextField)component).listenerLoeschen();
@@ -98,7 +97,6 @@ public class IntTableCellEditor extends AbstractCellEditor implements KeyListene
 			////System.out.println("in Maus + Return gedrückt");
 			this.fireEditingCanceled();
 		}
-
 	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {

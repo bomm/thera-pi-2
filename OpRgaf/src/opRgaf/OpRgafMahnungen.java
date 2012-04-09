@@ -451,7 +451,8 @@ public class OpRgafMahnungen extends JXPanel{
 		mahnParameter.put("<Mmahndat1>", (rtfs[8].getText().trim().length()==10 ? rtfs[8].getText().trim() : ""));
 		mahnParameter.put("<Mmahndat2>", (rtfs[9].getText().trim().length()==10 ? rtfs[9].getText().trim() : ""));
 		//mahnParameter.put("<Mmahndat3>", (rtfs[10].getText().trim().length()==10 ? rtfs[8].getText().trim() : ""));
-		String datei = OpRgaf.progHome+"vorlagen/"+OpRgaf.aktIK+"/RGAFMahnung"+Integer.toString(aktuelleMahnstufe)+".ott";
+		String datei = (String)OpRgaf.mahnParameter.get("formular"+Integer.toString(aktuelleMahnstufe));
+		//String datei = OpRgaf.progHome+"vorlagen/"+OpRgaf.aktIK+"/RGAFMahnung"+Integer.toString(aktuelleMahnstufe)+".ott";
 		try{
 			starteMahnDruck(datei);
 			if(textDocument != null){
@@ -521,9 +522,12 @@ public class OpRgafMahnungen extends JXPanel{
 	}
 	private void doSuchen(){
 		String nichtvorDatum = eltern.getNotBefore();
-		int frist1 = eltern.getFrist(1);
-		int frist2 = eltern.getFrist(2);
-		int frist3 = eltern.getFrist(3);
+		int frist1 = (Integer) OpRgaf.mahnParameter.get("frist1");
+		int frist2 = (Integer) OpRgaf.mahnParameter.get("frist2");
+		int frist3 = (Integer) OpRgaf.mahnParameter.get("frist3");
+		//int frist1 = eltern.getFrist(1);
+		//int frist2 = eltern.getFrist(2);
+		//int frist3 = eltern.getFrist(3);
 		if(frist1 < 0 || frist2 < 0 || frist3 < 0){
 			return;
 		}

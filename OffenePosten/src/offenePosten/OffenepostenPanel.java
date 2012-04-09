@@ -279,6 +279,10 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 			
 		};
 	}
+	
+	public void refreshData(){
+		sucheEinleiten();
+	}
 	private void sucheEinleiten(){
 		new SwingWorker<Void,Void>(){
 			@Override

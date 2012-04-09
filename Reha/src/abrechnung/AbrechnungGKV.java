@@ -72,7 +72,6 @@ import events.PatStammEventClass;
 import events.PatStammEventListener;
 
 public class AbrechnungGKV extends JXPanel implements PatStammEventListener,ActionListener,TreeSelectionListener{
-
 	/**
 	 * 
 	 */

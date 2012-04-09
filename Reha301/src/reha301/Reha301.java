@@ -49,7 +49,6 @@ public class Reha301 implements WindowListener  {
 	public static String dbUser = null;
 	public static String dbPassword = null;
 	
-	
 */
 	public final Cursor wartenCursor = new Cursor(Cursor.WAIT_CURSOR);
 	public final Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);

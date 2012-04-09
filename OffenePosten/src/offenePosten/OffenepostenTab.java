@@ -196,6 +196,9 @@ public class OffenepostenTab extends JXPanel implements ChangeListener{
 		
 		return -1;
 	}
+	public void refreshData(){
+		oppanel.refreshData();
+	}
 
 
 }

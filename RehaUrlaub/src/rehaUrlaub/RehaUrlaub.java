@@ -78,6 +78,9 @@ public class RehaUrlaub implements WindowListener {
 		RehaUrlaub application = new RehaUrlaub();
 		application.getInstance();
 		
+		try{
+			
+
 		if(args.length > 0 || testcase){
 			if(!testcase){
 				System.out.println("hole daten aus INI-Datei "+args[0]);
@@ -118,7 +121,8 @@ public class RehaUrlaub implements WindowListener {
 					while(! DbOk){
 						try {
 							Thread.sleep(20);
-							if(System.currentTimeMillis()-zeit > 5000){
+							if(System.currentTimeMillis()-zeit > 7000){
+								JOptionPane.showMessageDialog(null, "TimeOut-für Datenbank erreicht");
 								System.exit(0);
 							}
 						} catch (InterruptedException e) {
@@ -126,8 +130,8 @@ public class RehaUrlaub implements WindowListener {
 						}
 					}
 					if(!DbOk){
-						JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Statistik kann nicht gestartet werden");
-						System.exit(0);
+						//JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Statistik kann nicht gestartet werden");
+						//System.exit(0);
 					}
 					RehaUrlaub.starteOfficeApplication();
 					return null;
@@ -138,21 +142,25 @@ public class RehaUrlaub implements WindowListener {
 			while(! DbOk){
 				try {
 					Thread.sleep(20);
-					if(System.currentTimeMillis()-zeit > 5000){
-						System.exit(0);
+					//JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Statistik kann nicht gestartet werden");
+					if(System.currentTimeMillis()-zeit > 7000){
+						//System.exit(0);
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 			if(! DbOk){
-				JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Statistik kann nicht gestartet werden");
-				System.exit(0);
+				//JOptionPane.showMessageDialog(null, "Datenbank konnte nicht geöffnet werden!\nReha-Statistik kann nicht gestartet werden");
+				//System.exit(0);
 			}
 			application.getJFrame();			
 		}else{
 			JOptionPane.showMessageDialog(null, "Keine Datenbankparameter übergeben!\nReha-Statistik kann nicht gestartet werden");
 			System.exit(0);
+		}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 		
 	}
@@ -174,6 +182,7 @@ public class RehaUrlaub implements WindowListener {
 		
 
 		jFrame = new JFrame();
+		jFrame.setCursor(RehaUrlaub.thisClass.wartenCursor);
 		jFrame.addWindowListener(this);
 		jFrame.setSize(1000,500);
 		jFrame.setPreferredSize(new Dimension(1000,500));
@@ -190,7 +199,7 @@ public class RehaUrlaub implements WindowListener {
 		
 
 		thisFrame = jFrame;
-		
+		jFrame.setCursor(RehaUrlaub.thisClass.normalCursor);
 		return jFrame;
 	}
 	

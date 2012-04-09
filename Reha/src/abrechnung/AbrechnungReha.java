@@ -61,7 +61,6 @@ import events.PatStammEvent;
 import events.PatStammEventClass;
 
 public class AbrechnungReha extends JXPanel{
-
 	/**
 	 * 
 	 */

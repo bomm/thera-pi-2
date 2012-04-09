@@ -698,6 +698,9 @@ public class OffenepostenMahnungen extends JXPanel{
 			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			// bereits in der neuen faktura Datenbank enthalten also kann man sich den mit mit dbf&co sparen
 		}else{
+			JOptionPane.showMessageDialog(null,"Für die Rechnungsnummer "+rnr+" sind keine Positionen in der Tabelle faktura vorhanden");
+			return;
+			/*
 			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			try{
 				doDbfGedoense(rnr,row);
@@ -706,6 +709,7 @@ public class OffenepostenMahnungen extends JXPanel{
 				JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Rechnungsdaten (alt)");
 			}
 			OffenePosten.thisFrame.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			*/
 		}
 	}
 	private void doFakturaGedoense(String rnr,int row){

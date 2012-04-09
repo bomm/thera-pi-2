@@ -169,12 +169,16 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				while(!RehaUrlaub.DbOk){
-					Thread.sleep(20);
+				try{
+					while(!RehaUrlaub.DbOk){
+						Thread.sleep(20);
+					}
+					holeTabellen();
+					holeKalUser();
+					funkcombo[0].setSelectedItem(DatFunk.sHeute().substring(6));
+				}catch(Exception ex){
+					ex.printStackTrace();
 				}
-				holeTabellen();
-				holeKalUser();
-				funkcombo[0].setSelectedItem(DatFunk.sHeute().substring(6));
 				return null;
 			}
 			
@@ -738,9 +742,13 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 				int startWoche = -1;
 				if(ersteWoche > 1 ){
 					ersteWocheIstNull = true;
+					ersteWoche = 0;
 					startWoche = 0;
 				}else{
 					startWoche = ersteWoche;
+				}
+				if(letzteWoche <= 1 ){
+					letzteWoche = 53;
 				}
 				String cmd = UrlaubFunktionen.getUrlaubTableDef(jahr);
 				String urlaubstabelle = "urlaub"+jahr;
@@ -753,6 +761,16 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 					JOptionPane.showMessageDialog(null, "Fehler in Funktion Tabelle für Urlaub anlegen");
 					return null;
 				}
+				/*
+				System.out.println("ersteWoche = "+ersteWoche);
+				System.out.println("letzteWoche = "+letzteWoche);
+				System.out.println("starteWoche = "+startWoche);
+				System.out.println("ersteWocheIstNull = "+ersteWocheIstNull);
+				int x = 0;
+				if(x == 0){
+					return null;	
+				}
+				*/
 				try{
 					String von_bis = "";
 					for(int behandler = 1; behandler < 100; behandler++){

@@ -54,6 +54,8 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 
 
+
+
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.JCompTools;
@@ -118,6 +120,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 
  
 	HashMap<String,String> hmAdresse = new HashMap<String,String>();
+	HashMap<String,String> hmAdrRDaten = new HashMap<String,String>();
 	boolean is302er = false;
 	
 	ITextTable textTable = null;
@@ -474,6 +477,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		buts[0].setEnabled(true);
 		buts[1].setEnabled(true);
 		buts[3].setEnabled(false);
+		elternTab.refreshData();
 
 		
 	}
@@ -971,6 +975,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 			hmAdresse.put("<pri5>",rnummerAlt.getText() );
 			hmAdresse.put("<pri6>",(originalChb.isSelected() ? tfs[6].getText().trim() : DatFunk.sHeute()) );
 			hmAdresse.put("<pri7>",OffenePosten.hmAdrPDaten.get("<Pbanrede>"));
+			constructRezHMap(((String)tabmod.getValueAt(0, 19)).trim());
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
@@ -1007,7 +1012,26 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		
 		
 	}
-	
+	/*********************************************************************/
+	private void constructRezHMap(String reznr){
+		String cmd = "select rez_nr,rez_datum,termine from lza where rez_nr = '"+reznr+"' LIMIT 1";
+		Vector<Vector<String>> rezdaten = SqlInfo.holeFelder(cmd);
+		try{
+			hmAdrRDaten.put("<rnummer>", String.valueOf(rezdaten.get(0).get(0)) );
+			hmAdrRDaten.put("<rdatum>", DatFunk.sDatInDeutsch(String.valueOf(rezdaten.get(0).get(1))) );
+			String[] days = String.valueOf(rezdaten.get(0).get(2)).split("\n");
+			String day = "";
+			for(int i = 0; i < days.length;i++){
+				day = day+(i > 0 ? ", " : "")+days[i].split("@")[0];
+			}
+			hmAdrRDaten.put("<rtage>", day);
+		}catch(Exception ex){
+			hmAdrRDaten.put("<rnummer>", "");
+			hmAdrRDaten.put("<rdatum>", "");
+			hmAdrRDaten.put("<rtage>", "");
+		}
+		
+	}
 	/*********************************************************************/
 	public void doBGEWiederholungsdruck(Vector<Vector<String>> preisvec){
 		hmAdresse.put("<pri1>",((String)tabmod.getValueAt(0, 0)).trim() );
@@ -1316,6 +1340,12 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 				placeholders[i].getTextRange().setText(hmAdresse.get("<pri6>"));
 			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri7>")){
 				placeholders[i].getTextRange().setText(hmAdresse.get("<pri7>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<rnummer>")){
+				placeholders[i].getTextRange().setText(hmAdrRDaten.get("<rnummer>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<rdatum>")){
+				placeholders[i].getTextRange().setText(hmAdrRDaten.get("<rdatum>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<rtage>")){
+				placeholders[i].getTextRange().setText(hmAdrRDaten.get("<rtage>"));
 			}
 		}
 		
