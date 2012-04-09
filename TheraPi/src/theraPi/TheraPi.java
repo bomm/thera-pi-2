@@ -395,10 +395,45 @@ class RehaStarter extends SwingWorker<Integer,Void>{
 
 	@Override
 	protected Integer doInBackground() throws Exception {
+		try{
+			
+
 		String programm = TheraPi.proghome+"Reha.jar";
 		System.out.println("In TheraPi.jar Programmstart = "+programm);
-
-		String start = new String("java -jar "+TheraPi.proghome+"Reha.jar "+TheraPi.StartMandant /*+" > "+TheraPi.proghome+TheraPi.StartMandant.split("@")[0]+".log" */);
+		String mandik = TheraPi.StartMandant.split("@")[0];
+		INIFile minif = new INIFile(TheraPi.proghome+"ini/"+mandik+"/rehajava.ini");
+		String memsizemin = "-Xms128m ";
+		String memsizemax = "-Xmx256m ";
+		//String memsizethread = "-Xxs2046k ";
+		/****/
+		String dummy = minif.getStringProperty("SystemIntern", "MinMemSize");
+		if(dummy != null){
+			memsizemin = "-Xms"+dummy+" ";
+		}else{
+			minif.setStringProperty("SystemIntern", "MinMemSize", "128m",null);
+			minif.save();
+		}
+		/****/
+		dummy = minif.getStringProperty("SystemIntern", "MaxMemSize");
+		if(dummy != null){
+			memsizemax = "-Xmx"+String.valueOf(dummy)+" ";
+		}else{
+			minif.setStringProperty("SystemIntern", "MaxMemSize", "256m",null);
+			minif.save();
+		}
+		/****/
+		/*
+		dummy = minif.getStringProperty("SystemIntern", "MaxMemThread");
+		if(dummy != null){
+			memsizethread = "-Xxs"+String.valueOf(dummy)+" ";
+		}else{
+			minif.setStringProperty("SystemIntern", "MaxMemThread", "2046k",null);
+			minif.save();
+		}
+		*/
+		
+		//String start = new String("java -jar "+memsizemin+memsizemax+memsizethread+TheraPi.proghome+"Reha.jar "+TheraPi.StartMandant /*+" > "+TheraPi.proghome+TheraPi.StartMandant.split("@")[0]+".log" */);
+		String start = new String("java -jar "+memsizemin+memsizemax+TheraPi.proghome+"Reha.jar "+TheraPi.StartMandant );
 		//String start = new String("cmd.exe /C start "+TheraPi.proghome.replace("/",File.separator)+"runtherapi.bat "+TheraPi.StartMandant+" "+TheraPi.StartMandant.split("@")[0]+".log");
 		
 		System.out.println("Kommando ist "+start);
@@ -406,6 +441,10 @@ class RehaStarter extends SwingWorker<Integer,Void>{
 		Runtime.getRuntime().exec(start);
         System.out.println("Reha gestartet");
         System.out.println(start);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 		return 1;
+
 	}
 }
