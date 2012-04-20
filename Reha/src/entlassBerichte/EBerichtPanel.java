@@ -627,7 +627,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			// erst die Textfelder auswerten
 			for(int i = 0; i < 24;i++){
 				if(!btf[i].getRtaType().equals("DATUM")){
-					buf.append(btf[i].getName()+"='"+btf[i].getText()+"', ");				
+					buf.append(btf[i].getName()+"='"+StringTools.Escaped(btf[i].getText())+"', ");				
 				}else{
 					if(!btf[i].getText().trim().equals(".  .")){
 						buf.append(btf[i].getName()+"='"+DatFunk.sDatInSQL(btf[i].getText())+"', ");
@@ -642,7 +642,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			}
 			// die TextAreas
 			for(int i = 0; i < 10;i++){
-				buf.append(bta[i].getName()+"='"+bta[i].getText()+"', ");
+				buf.append(bta[i].getName()+"='"+StringTools.Escaped(bta[i].getText())+"', ");
 			}
 			for(int i = 0; i < 15;i++){
 				if(i < 14){
@@ -737,7 +737,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		buf.append("update bericht2 set ");
 		for(int i = 0; i < 28;i++){
 			if(!btf[i].getRtaType().equals("DATUM")){
-				buf.append(btf[i].getName()+"='"+btf[i].getText()+"', ");				
+				buf.append(btf[i].getName()+"='"+ StringTools.Escaped(btf[i].getText())+"', ");				
 			}else{
 				if(!btf[i].getText().trim().equals(".  .")){
 					buf.append(btf[i].getName()+"='"+DatFunk.sDatInSQL(btf[i].getText())+"', ");
@@ -748,13 +748,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 
 		}
 		for(int i = 0; i < 3;i++){
-			buf.append(barzttf[i].getName()+"='"+barzttf[i].getText()+"', ");
+			buf.append(barzttf[i].getName()+"='"+StringTools.Escaped(barzttf[i].getText())+"', ");
 		}
 		for(int i = 0; i < 44;i++){
 			buf.append(bchb[i].getName()+"='"+(bchb[i].isSelected() ? "1" : "0")+"', ");
 		}
 		for(int i = 0; i < 8;i++){
-			buf.append(bta[i].getName()+"='"+bta[i].getText()+"', ");
+			buf.append(bta[i].getName()+"='"+StringTools.Escaped(bta[i].getText())+"', ");
 		}
 		for(int i = 0; i < 20;i++){
 			if(i < 19){
@@ -778,13 +778,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 		for(int i = 8; i < 10;i++){
 			if(i == 8){
 				try{
-					buf.append(bta[i].getName()+"='"+bta[i].getText()+"', ");					
+					buf.append(bta[i].getName()+"='"+StringTools.Escaped(bta[i].getText())+"', ");					
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
 			}else{
 				try{
-					buf.append(bta[i].getName()+"='"+bta[i].getText()+"'");					
+					buf.append(bta[i].getName()+"='"+StringTools.Escaped(bta[i].getText())+"'");					
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}

@@ -313,7 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2012-04-03-DB=";
+	public static String aktuelleVersion = "V=2012-04-20-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1906,7 +1906,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             Map <String, Object>config = new HashMap<String, Object>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
             config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-
+            /*
             if(path.indexOf("LibreOffice") >= 0){
             	
             	System.out.println("Nehme die neue Variante");
@@ -1921,7 +1921,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                 System.out.println("Nehme LibreOffice Configuration ");
                 
             }
-
+			*/
             
             System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,SystemConfig.OpenOfficeNativePfad);
             officeapplication = OfficeApplicationRuntime.getApplication(config);
@@ -1932,6 +1932,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
             
             try {
+            	/*
 				if(((IOfficeApplication) officeapplication).getOfficeConnection() != null){
 					System.out.println("OfficeConnection o.k.");
 					officeapplication.getOfficeConnection().addBridgeEventListener(new IEventListener(){
@@ -1942,6 +1943,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						
 					});
 				}
+				*/
 			} catch (java.lang.Exception e1) {
 				e1.printStackTrace();
 			}

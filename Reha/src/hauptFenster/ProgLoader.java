@@ -268,7 +268,8 @@ public void ArztFenster(int setPos,String aid) {
 	String name = "ArztVerwaltung"+WinNum.NeueNummer();
 	int containerNr = SystemConfig.hmContainer.get("Arzt");
 	containerHandling(containerNr);
-	arztjry = new JArztInternal("thera-\u03C0 Ärzte-Verwaltung ",SystemConfig.hmSysIcons.get("arztstamm"),containerNr) ;
+	//arztjry = new JArztInternal("thera-\u03C0 Ärzte-Verwaltung  || F3 = Daten in Zwischenablage | F2 = Daten aus Zwischenablage",SystemConfig.hmSysIcons.get("arztstamm"),containerNr) ;
+	arztjry = new JArztInternal("thera-\u03C0 Ärzte-Verwaltung",SystemConfig.hmSysIcons.get("arztstamm"),containerNr) ;
 	AktiveFenster.setNeuesFenster(name,(JComponent)arztjry,containerNr,(Container)arztjry.getContentPane());
 	arztjry.setName(name);
 	arztjry.setSize(new Dimension(650,500));

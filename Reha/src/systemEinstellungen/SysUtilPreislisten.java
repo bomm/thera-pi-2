@@ -146,7 +146,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.add(jcmb[0],cc.xyw(3,1,7));
 		
 		String[] xkuerzel = {"KG","MA","ER","LO","RH","PO"};
-		Vector<String> xvec = SqlInfo.holeFeld("select kuerzel from kuerzel where disziplin='"+xkuerzel[jcmb[0].getSelectedIndex()]+"'" );
+		Vector<String> xvec = SqlInfo.holeFeld("select kuerzel from kuerzel where disziplin='"+xkuerzel[jcmb[0].getSelectedIndex()]+"' order by kuerzel" );
 		if(xvec.size() > 0){
 			//System.out.println(xvec);
 			kuerzelcombo.setDataVector(xvec);
@@ -772,8 +772,9 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		String gueltig = "";
 		Vector vbuland = new Vector();
 		Vector vpreisgruppe = new Vector();
+		Vector testgruppe = new Vector();
 		modserver.setRowCount(0);
-		String cmd = "select buland,preisgruppe,gueltigab from allepreise where disziplin='"+disziplin+"' ORDER BY buland,preisgruppe";
+		String cmd = "select buland,preisgruppe,gueltigab from allepreise where disziplin='"+disziplin+"' ORDER BY preisgruppe,buland";
 		//vec1 = SqlInfo.holeFelder("select buland,preisgruppe,gueltigab from allepreise where disziplin='"+disziplin+"' ORDER BY buland,preisgruppe");
 		PLServerAuslesen plServ = new PLServerAuslesen();
 		vec1 = PLServerAuslesen.holeFelder(cmd);
@@ -788,16 +789,20 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 				//vbuland.add(buland);
 				//vpreisgruppe.add(preisgr);
 				int anzahl = vec1.size();
+				
 				for(int y = 0; y < anzahl;y++){
 					testbuland  = ((String)((Vector)vec1.get(y)).get(0)).trim();
 					testpg  = ((String)((Vector)vec1.get(y)).get(1)).trim();
 					vec2.clear();
-					if( (!vbuland.contains(testbuland)) || (!vpreisgruppe.contains(testpg))){
+					if(! testgruppe.contains(testbuland+testpg)){
+					//if( (!vbuland.contains(testbuland)) || (!vpreisgruppe.contains(testpg))){
+						testgruppe.add(testbuland+testpg);
 						buland = ((String)((Vector)vec1.get(y)).get(0)).trim();
 						preisgr = ((String)((Vector)vec1.get(y)).get(1)).trim();
 						
 						vec2.add(disziplin);
 						vec2.add(preisgr);
+						//vec2.add( buland  );
 						vec2.add( (pbundesweit.contains(preisgr) ? "bundesweit" : buland)  );
 						try{
 							gueltig = DatFunk.sDatInDeutsch( ((String)((Vector)vec1.get(y)).get(2)).trim() );

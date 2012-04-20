@@ -662,9 +662,9 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 		pinPanel.setName("ArztNeuanlage");
 		neuArzt.setPinPanel(pinPanel);
 		if(id.equals("")){
-			neuArzt.getSmartTitledPanel().setTitle("Arzt neu anlegen");			
+			neuArzt.getSmartTitledPanel().setTitle("Arzt neu anlegen  || F3 = Daten in Zwischenablage | F2 = Daten aus Zwischenablage");			
 		}else{
-			neuArzt.getSmartTitledPanel().setTitle("Daten eines Arztes ändern");
+			neuArzt.getSmartTitledPanel().setTitle("Daten eines Arztes ändern  || F3 = Daten in Zwischenablage | F2 = Daten aus Zwischenablage");
 		}
 
 		neuArzt.setPinPanel(pinPanel);

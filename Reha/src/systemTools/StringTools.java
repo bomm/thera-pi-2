@@ -368,6 +368,8 @@ public class StringTools {
 			return "Logo";
 		}else if(reznr.startsWith("RH")){
 			return "Reha";
+		}else if(reznr.startsWith("PO")){
+			return "Podo";
 		}
 		return "Physio";
 	}
@@ -450,7 +452,7 @@ public class StringTools {
 									"Reststring = "+reststring+" / Laenge ="+Integer.toString(reststring.length())+"\n"+
 									"Stand i3 = "+Integer.toString(i3)+"\n"+
 									"Stand i2 = "+Integer.toString(i2)+"\n";
-									JOptionPane.showMessageDialog(null, mes);
+									//JOptionPane.showMessageDialog(null, mes);
 								}
 								break;
 							}else if(i == 0){

@@ -6,8 +6,13 @@ import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -304,7 +309,93 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 			}
 		});
 	}
-	
+	private void drecksFocus(){
+		SwingUtilities.invokeLater(new Runnable(){
+			public  void run(){
+				setzeFocus();
+			}
+		});
+	}
+	private void toClipboard(){
+		try{
+			StringBuffer buf = new StringBuffer();
+			buf.append("@Thera-Pi-Arztdaten@\n");
+			for(int i = 0; i < tfs.length;i++){
+				if(tfs[i] != null){
+					buf.append("TF-"+tfs[i].getName()+"="+tfs[i].getText()+"\n");
+				}
+			}
+			buf.append("CO-facharzt"+"="+arztgruppe.getSelectedItem().toString()+"\n");
+			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(buf.toString()), null);
+			JOptionPane.showMessageDialog(this, "Arztdaten erfolgreich in die Zwischenablage übertragen");
+			drecksFocus();
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(this, "Fehler beim Übertrag der Arztdaten in die Zwischenablage");
+			drecksFocus();
+		}
+	}
+	private void fromClipboard(){
+		String dummy1 = null;
+		String dummy2 = null;
+		String dummy3 = null;
+		String dummy4 = null;
+		int i = -1;
+		int i1 = -1;
+
+		try{
+			int frage = JOptionPane.showConfirmDialog(this,"Soll der Inhalt der Zwischenablage auf Arztdaten untersucht werden\nund ggfls. die Daten übernommen werden?","Wichtige Benutheranfrage",JOptionPane.YES_NO_OPTION);
+			String clipstring = null;
+			if(frage != JOptionPane.YES_OPTION){
+				drecksFocus();
+				return;
+			}
+			Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+			if (t != null && t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+				clipstring = (String)t.getTransferData(DataFlavor.stringFlavor);
+				String[] clip = clipstring.split("\n");
+				if(! clip[0].startsWith("@Thera-Pi-Arztdaten@")){
+					JOptionPane.showMessageDialog(this, "Daten der Zwischenablage sind keine verwertbaren Arztdaten");
+					drecksFocus();
+					return;
+				}
+				for(i = 1; i < clip.length;i++){
+					try{
+						dummy1 = clip[i].split("=")[0];
+						dummy2 = clip[i].split("=")[1];
+						dummy3 = dummy1.split("-")[0];
+						dummy4 = dummy1.split("-")[1];
+					}catch(Exception ex){
+						dummy2 = "";
+						continue;
+					}
+					if(dummy3.equals("TF")){
+						for(i1 = 0; i1 < tfs.length;i1++){
+							if(tfs[i1] != null){
+								if(tfs[i1].getName().equals(dummy4) && (!tfs[i1].getName().equals("id")) ){
+									tfs[i1].setText(dummy2.replace("\n",""));
+								}	
+							}
+						}
+					}else if(dummy3.equals("CO")){
+						arztgruppe.setSelectedItem(dummy2.replace("\n",""));
+					}
+				}
+				JOptionPane.showMessageDialog(this, "Inhalt der Zwischenablage wurde erfolgreich übertragen");
+				drecksFocus();
+				return;
+			}else{
+				JOptionPane.showMessageDialog(this, "Daten der Zwischenablage sind keine verwertbaren Arztdaten");
+				drecksFocus();
+				return;
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			//System.out.println("i = "+i);
+			//System.out.println("i1 = "+i1);
+			JOptionPane.showMessageDialog(this, "Fehler beim Übertrag der Zwischenablage");
+			drecksFocus();
+		}
+	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
@@ -453,7 +544,11 @@ public class ArztNeuanlage extends JXPanel implements ActionListener,KeyListener
 	}	
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
+		if(arg0.getKeyCode() == KeyEvent.VK_F3){
+			toClipboard();
+		}else if(arg0.getKeyCode() == KeyEvent.VK_F2){
+			fromClipboard();
+		}
 	}
 	@Override
 	public void keyTyped(KeyEvent arg0) {

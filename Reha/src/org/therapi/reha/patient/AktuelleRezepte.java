@@ -1683,6 +1683,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						public void run(){
 							termineSpeichern();
 							//starteTests();
+							fuelleTage();
 						}
 					}.start();
 				}
@@ -2755,7 +2756,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	private void fuelleTage(){
 		int akt = 		this.tabaktrez.getSelectedRow();
 		if(akt < 0){
-			JOptionPane.showMessageDialog(null, "Kein aktuelles Rezept für Übertrag in Clipboard ausgewählt");
+			//JOptionPane.showMessageDialog(null, "Kein aktuelles Rezept für Übertrag in Clipboard ausgewählt");
 			return;
 		}
 		String stage = "";
