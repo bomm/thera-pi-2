@@ -332,6 +332,10 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 			      JComponent c = (JComponent)draghandler;
 			      TransferHandler th = c.getTransferHandler();
 			      th.exportAsDrag(c, e, TransferHandler.COPY); //TransferHandler.COPY
+			      if(Reha.osVersion.contains("Linux")){
+		    		  Reha.dragDropComponent = (JComponent) draghandler;
+			      }			      
+
 			    }else{
 			    	ZeigePopupMenu(e);
 			    }

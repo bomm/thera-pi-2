@@ -18,7 +18,13 @@ import java.awt.Image;
 import java.awt.LinearGradientPaint;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragGestureRecognizer;
+import java.awt.dnd.DragSource;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
@@ -128,6 +134,7 @@ import systemEinstellungen.SystemInit;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.Colors;
 import systemTools.FileTools;
+import systemTools.JRtaTextField;
 import systemTools.RehaPainters;
 import systemTools.RezeptFahnder;
 import systemTools.TestePatStamm;
@@ -343,6 +350,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public CaptureDeviceInfo device = null;
 	public MediaLocator ml = null;
 	public Player player = null;
+	
+	public static JComponent dragDropComponent = null;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -1489,10 +1498,24 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					  String mitgebracht = "";
 				    try {
 				      Transferable tr = e.getTransferable();
+				      //Ursprüngliche Routine
+				      /*
 				      DataFlavor[] flavors = tr.getTransferDataFlavors();
 				      for (int i = 0; i < flavors.length; i++){
 				        	mitgebracht  = String.valueOf((String) tr.getTransferData(flavors[i]).toString());
 				      }
+				      */
+				      if(Reha.osVersion.contains("Linux")){
+				    	  if(Reha.dragDropComponent instanceof JRtaTextField){
+				    		  mitgebracht = ((JRtaTextField)Reha.dragDropComponent).getText();
+				    	  }
+				      }else{
+					      DataFlavor[] flavors = tr.getTransferDataFlavors();
+					      for (int i = 0; i < flavors.length; i++){
+					        	mitgebracht  = String.valueOf((String) tr.getTransferData(flavors[i]).toString());
+					      }
+				      }
+				
 				      if(mitgebracht.indexOf("°") >= 0){
 			    		  String[] labs = mitgebracht.split("°");
 				    	  if(labs[0].contains("TERMDAT")){
@@ -1530,6 +1553,38 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		    bunker.setTransferHandler(new TransferHandler(propertyName));
 		    copyLabel.setTransferHandler(new TransferHandler(propertyName));
 		    copyLabel.setName("copyLabel");
+		    /*********************/
+		    if(Reha.osVersion.contains("Linux")){
+		    	DragGestureListener dragGestureListener = new DragGestureListener() {
+		    	     public void dragGestureRecognized(
+		    	       DragGestureEvent e) {
+		    	    	 StringSelection selection = new StringSelection(copyLabel.getText());
+		    			    //if(Reha.osVersion.contains("Linux")){				            
+					    		  Reha.dragDropComponent = (JComponent) bunker;
+					    		  if(!Rechte.hatRecht(Rechte.Kalender_termindragdrop, false)){
+						        		return;
+					    		  }
+						            JComponent comp = (JComponent)copyLabel;
+						            if( ((JLabel)comp).getText().equals("") ){
+						            	return;
+						            }
+						            if(bunker.getText().startsWith("TERMDAT")){
+						            	TerminFenster.setDragMode(0);
+						            }
+				            //}
+		    	       e.startDrag(null, selection,  null);
+		       	     }
+		     };		    
+		    
+		     DragSource dragSource = new DragSource();
+		     
+		     DragGestureRecognizer dgr = dragSource.createDefaultDragGestureRecognizer(
+		    	    		copyLabel, 
+		    	    		DnDConstants.ACTION_COPY, 
+		    	    		dragGestureListener);
+		    }
+		    /*********************/
+		    
 		    copyLabel.addMouseListener(new MouseAdapter() {
 		        public void mousePressed(MouseEvent evt) {
 		        	if(!Rechte.hatRecht(Rechte.Kalender_termindragdrop, false)){
