@@ -313,7 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2012-04-20-DB=";
+	public static String aktuelleVersion = "V=2012-05-15-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1907,6 +1907,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
             config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
             /*
+            config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
+            		new String[] {"-nologo",
+            		"-norestore",
+            		"-nofirststartwizard",
+            		"-invisible"
+            		});
+            */		
+            
+            /*
             if(path.indexOf("LibreOffice") >= 0){
             	
             	System.out.println("Nehme die neue Variante");
@@ -2121,6 +2130,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
     	SwingUtilities.invokeLater(new Runnable(){
     		public void run(){
     			//links
+    			//System.out.println("Variante = "+variante);
+    			//System.out.println("Vollsichtbar = "+vollsichtbar);
     	    	if(variante==1){
     	    		
     	    	
@@ -2145,6 +2156,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
     	    			vollsichtbar = -1;
     	    			return;
     	    		}
+    	    	}else if(variante==5){
+    	    		jSplitRechtsOU.setDividerLocation(jSplitRechtsOU.getWidth()-7);    	    		
+    	    	}else if(variante==6){
+    	    		
+    	    		jSplitRechtsOU.setDividerLocation(0);
+
     	    	}
     	    	vollsichtbar = -1;
     			
@@ -2153,7 +2170,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
     }
     public void setDivider(int variante){
     	final int xvariante = variante;
-    	
+    	//System.out.println("Variante = "+variante);
+		//System.out.println("Vollsichtbar = "+vollsichtbar);    	
     	SwingUtilities.invokeLater(new Runnable(){
       	   public  void run()
       	   {

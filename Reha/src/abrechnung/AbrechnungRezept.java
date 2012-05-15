@@ -3493,7 +3493,11 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}else{
 			test = test.substring(0,1)+"0001";
 		}
-		edibuf.append(test+plus+plus);
+		if(test.trim().length() != 5 || (test.trim().indexOf(" ") >= 0)){
+			JOptionPane.showMessageDialog(null,"Die Länge des Versichertenstatus ist falsch, oder es wurden Leerzeichen im Status angegeben!\nRezept kann nicht abgerechnet werden");
+			return false;			
+		}
+		edibuf.append(test.trim()+plus+plus);
 		edibuf.append(vec_rez.get(0).get(1).trim()+EOL);
 		edibuf.append("NAD+"+hochKomma(vec_pat.get(0).get(0).trim())+plus);
 		edibuf.append(hochKomma(vec_pat.get(0).get(1).trim())+plus);

@@ -1,5 +1,6 @@
 package org.therapi.reha.patient;
 
+import geraeteInit.SMS;
 import hauptFenster.Reha;
 
 import java.awt.Dimension;
@@ -140,6 +141,7 @@ public class PatientToolBarLogic {
 				if(!Rechte.hatRecht(Rechte.Patient_sms, true)){
 					return;
 				}
+				//new SMS(null);
 				break;
 			case 2:
 				if(!Rechte.hatRecht(Rechte.Patient_zusatzinfo, true)){

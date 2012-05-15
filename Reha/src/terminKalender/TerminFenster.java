@@ -157,6 +157,7 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 	private boolean altGedrueckt;	
 	private Point dragDaten = new Point(0,0);
 	private String[] dragInhalt = {null,null,null,null,null};
+	private Vector<String[]> groupDragInhalt = new Vector<String[]>();
 	public boolean dragStart = false;
 	private boolean dragAllowed = true;
 	//public DragPanel dragPanel = null;

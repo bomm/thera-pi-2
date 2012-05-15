@@ -94,7 +94,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	JRtaCheckBox neuaufalt = null;
 	Vector<String> delvec = new Vector<String>();
 	String[] dbtarife = {"kgtarif","matarif","ertarif","lotarif","rhtarif","potarif"};	
-
+	String[] zzart = new String[] {"nicht relevant","erste Behandlung >=","Rezeptdatum >=","beliebige Behandlung >=","Rezept splitten"};
 	String[] disziplin = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
  	JRtaComboBox kuerzelcombo = new JRtaComboBox();
 	KeyListener kl = null;
@@ -169,7 +169,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		builder.add(gueltig, cc.xy(3,5));
 
 		builder.addLabel("Anwendungsregel",cc.xyw(4,5,4,CellConstraints.RIGHT,CellConstraints.CENTER));
-		String[] zzart = new String[] {"nicht relevant","erste Behandlung >=","Rezeptdatum >=","beliebige Behandlung >=","Rezept splitten"};
+		//String[] zzart = new String[] {"nicht relevant","erste Behandlung >=","Rezeptdatum >=","beliebige Behandlung >=","Rezept splitten"};
 		jcmb[2] = new JRtaComboBox(zzart);
 		
 		//int einstellung = ((Integer) ((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).get( jcmb[1].getSelectedIndex()) );
@@ -690,7 +690,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		if(preis.size()> 0){
 			int aktrow = plserver.getSelectedRow(); 
 			String datum = (String)plserver.getValueAt(aktrow,3);
-			gueltig.setText(datum);			
+			gueltig.setText(datum);	
+			jcmb[2].setSelectedItem(plserver.getValueAt(aktrow,4).toString());
 		}
  
 		
@@ -774,7 +775,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		Vector vpreisgruppe = new Vector();
 		Vector testgruppe = new Vector();
 		modserver.setRowCount(0);
-		String cmd = "select buland,preisgruppe,gueltigab from allepreise where disziplin='"+disziplin+"' ORDER BY preisgruppe,buland";
+		String cmd = "select buland,preisgruppe,gueltigab,regel from allepreise where disziplin='"+disziplin+"' ORDER BY preisgruppe,buland";
 		//vec1 = SqlInfo.holeFelder("select buland,preisgruppe,gueltigab from allepreise where disziplin='"+disziplin+"' ORDER BY buland,preisgruppe");
 		PLServerAuslesen plServ = new PLServerAuslesen();
 		vec1 = PLServerAuslesen.holeFelder(cmd);
@@ -810,6 +811,11 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 						}catch(Exception ex){
 							vec2.add(DatFunk.sHeute());
 						}
+						try{
+							vec2.add( zzart[ Integer.parseInt( ((String)((Vector)vec1.get(y)).get(3)).trim() ) ] );	
+						}catch(Exception ex){
+							vec2.add(zzart[0]);
+						}
 						modserver.addRow((Vector)vec2.clone());
 						vbuland.add(buland);
 						vpreisgruppe.add(preisgr);
@@ -841,8 +847,12 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		jcmb[3].setActionCommand("plwahl");
 		jcmb[3].addActionListener(this);
 		builder.add(jcmb[3],cc.xyw(3,3,7));
-		modserver.setColumnIdentifiers(new String[] {"HM-Sparte","Preisgruppe","Bundesland","gueltig ab"});
+		modserver.setColumnIdentifiers(new String[] {"HM-Sparte","Preisgruppe","Bundesland","gueltig ab","Anwendung"});
 		plserver = new JXTable(modserver);
+		plserver.getColumn(0).setMaxWidth(70);
+		plserver.getColumn(0).setMinWidth(70);
+		plserver.getColumn(3).setMaxWidth(70);
+		plserver.getColumn(3).setMinWidth(70);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(plserver);
 		jscr.validate();
 		/*

@@ -508,6 +508,17 @@ public class RezTools {
 		}
 		return ret;
 	}
+	public static String getPreisAltFromPosNeu(String pos,String preisgruppe,Vector<Vector<String>> vec){
+		int lang = vec.size(),i;
+		String ret = "0.00";
+		for(i = 0; i < lang;i++){
+			if( vec.get(i).get(2).equals(pos)){
+				ret = vec.get(i).get(4).toString();
+				break;
+			}
+		}
+		return ret;
+	}
 	
 /***************************************/	
 	public static String getIDFromPos(String pos,String preisgruppe,Vector<Vector<String>> vec){

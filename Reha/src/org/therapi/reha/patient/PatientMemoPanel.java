@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Arrays;
 
 import javax.swing.BorderFactory;
@@ -15,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXPanel;
 
@@ -33,18 +36,51 @@ public class PatientMemoPanel extends JXPanel{
 	 */
 	private static final long serialVersionUID = 1894163619378832811L;
 	PatientHauptPanel patientHauptPanel = null;
-	
+	MouseListener ml = null;
 	public PatientMemoPanel(PatientHauptPanel patHauptPanel){
 		super();
 		setLayout(new BorderLayout());
 		setOpaque(false);
 		this.patientHauptPanel = patHauptPanel;
 		add(getMemoPanel(),BorderLayout.CENTER);
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				activateMouseListener();
+			}
+		});
+	}
+	public void activateMouseListener(){
+		ml = new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(e.getButton() == 3 && ( (patientHauptPanel.pmemo[0].isEditable()) || (patientHauptPanel.pmemo[1].isEditable())) ){
+					new Floskeln( (patientHauptPanel.pmemo[0].isEditable() ? 0 : 1), e );
+				}
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			
+		};
+		patientHauptPanel.pmemo[0].addMouseListener(ml);
+		patientHauptPanel.pmemo[1].addMouseListener(ml);
 	}
 	public void fireAufraeumen(){
 		for(int i = 0; i < patientHauptPanel.memobut.length;i++){
 			patientHauptPanel.memobut[i].removeActionListener(patientHauptPanel.memoAction);
 		}
+		patientHauptPanel.pmemo[0].removeMouseListener(ml);
+		patientHauptPanel.pmemo[1].removeMouseListener(ml);
+		ml = null;
 		patientHauptPanel.memoAction = null;
 	}
 	
@@ -247,5 +283,12 @@ public class PatientMemoPanel extends JXPanel{
 		return mittelinksunten;
 		
 	}
+	/********************************************************************************/
+	class Floskeln{
+		public Floskeln(int memo, MouseEvent e){
+			
+		}
+	}
+	/********************************************************************************/	
 
 }

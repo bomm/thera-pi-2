@@ -130,6 +130,14 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	StringBuffer writeBuf = new StringBuffer();
 	StringBuffer rechnungBuf = new StringBuffer();
 	
+	int preisregel = 0;
+	boolean wechselcheck = false;
+	
+	int[] splitpreise = {0,0};
+	//                         alle alt, alle neu, splitten
+	boolean[] preisanwenden = {false,   false     ,false};
+	Vector<Integer> hbvec = new Vector<Integer>();
+	Vector<Integer> kmvec = new Vector<Integer>();
 	public AbrechnungPrivat(JXFrame owner,String titel,int rueckgabe,int preisgruppe) {
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
 		final int ipg = preisgruppe-1;
@@ -425,11 +433,13 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		String ort = "";
 		int hbpos = -1;
 		int wgpos = -1;
+		int[] hpsplit = {-1,-1};
+		int wgsplit = -1;
 		int diff = originalPos.size()-originalId.size();
-		if(diff==2){
+		if(diff==2 && (!preisanwenden[2])){
 			hbpos=originalId.size()+1;
 			wgpos=originalId.size()+2;
-		}else if(diff==1){
+		}else if(diff==1 && (!preisanwenden[2])){
 			hbpos=originalId.size()+1;
 		}
 		try{
@@ -451,12 +461,12 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 				writeBuf.append("insert into faktura set ");
 			}
 			writeBuf.append("lfnr='"+Integer.toString(i)+"', "); 
-			if(i == (hbpos-1)){
+			if( (i == (hbpos-1)) || (hbvec.indexOf(i)>=0)){
 				//Hausbesuch
 				writeBuf.append("pos_int='"+RezTools.getIDFromPos(originalPos.get(i), "", preisliste)+"', ");
 				writeBuf.append("anzahl='"+Integer.toString(originalAnzahl.get(i))+"', ");
 				writeBuf.append("anzahltage='"+Integer.toString(originalAnzahl.get(i))+"', ");
-			}else if(i == (wgpos-1)){
+			}else if( (i == (wgpos-1)) || (kmvec.indexOf(i) >= 0)){
 				//Weggebühren Kilometer und Pauschale differenzieren
 				writeBuf.append("pos_int='"+RezTools.getIDFromPos(originalPos.get(i), "", preisliste)+"', ");
 				writeBuf.append("anzahl='"+Integer.toString(originalAnzahl.get(i))+"', ");
@@ -468,9 +478,18 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 					writeBuf.append("anzahltage='"+Integer.toString(originalAnzahl.get(i))+"', ");
 				}
 			}else{
-				writeBuf.append("pos_int='"+originalId.get(i)+"', ");
-				writeBuf.append("anzahl='"+Integer.toString(originalAnzahl.get(i))+"', ");
-				writeBuf.append("anzahltage='"+Integer.toString(originalAnzahl.get(i))+"', ");
+				try{
+					writeBuf.append("pos_int='"+originalId.get(i)+"', ");
+					writeBuf.append("anzahl='"+Integer.toString(originalAnzahl.get(i))+"', ");
+					writeBuf.append("anzahltage='"+Integer.toString(originalAnzahl.get(i))+"', ");
+				}catch(Exception ex){
+					System.out.println("\n******************Fehler*****************");
+					System.out.println("Durchlauf = "+i);
+					System.out.println("Vectorsize originalId = "+originalId.size());
+					System.out.println("Vectorsize originalAnzahl = "+originalAnzahl.size());
+					System.out.println("Vectorsize anzahltage = "+originalAnzahl.size());
+					System.out.println("******************Fehler*****************");
+				}
 			}
 			writeBuf.append("pos_kas='"+originalPos.get(i)+"', ");
 			writeBuf.append("kuerzel='"+RezTools.getKurzformFromPos(originalPos.get(i), "", preisliste)+"', ");
@@ -542,8 +561,8 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	private void doNeuerTarif(){
 		//System.out.println("Disziplin = "+this.disziplin);
 		//System.out.println("AktGruppe = "+this.aktGruppe);
-		preisliste = SystemPreislisten.hmPreise.get(this.disziplin).get(this.aktGruppe);
 		//System.out.println("stelle neuen Tarif ein....");
+		
 		String pos = "";
 		String preis = "";
 		String anzahl = "";
@@ -555,16 +574,119 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		zeilenGesamt.clear();
 		rechnungGesamt = BigDecimal.valueOf(Double.parseDouble("0.00"));
 		patKilometer = 0;
+		hbvec.clear();
+		kmvec.clear();
 
+		/*
+		 * Hier der Test auf Preisumstellung
+		 * 
+		 */
+		Vector<String> tage = null;
+		String preisdatum = null;
+		// Anzahl alter Preis    Anzahl neuer Preis
+		splitpreise[0] = 0;		splitpreise[1] = 0;
+		//   alle alt, 				alle neu, 					splitten
+		preisanwenden[0] = false; preisanwenden[1] = true; preisanwenden[2] = false;
+		preisliste = SystemPreislisten.hmPreise.get(this.disziplin).get(this.aktGruppe);
+		try{
+			preisdatum = SystemPreislisten.hmNeuePreiseAb.get(this.disziplin).get(this.aktGruppe);
+			if(preisdatum.equals("")){
+				preisregel = 0;
+				wechselcheck = false;
+			}else{
+				preisregel = SystemPreislisten.hmNeuePreiseRegel.get(this.disziplin).get(this.aktGruppe);	
+			}
+			tage = RezTools.holeEinzelTermineAusRezept(null,Reha.thisClass.patpanel.vecaktrez.get(34));
+			if(tage.size() <= 0 || preisregel == 0){
+				wechselcheck = false;
+			}else{
+				wechselcheck = true;
+			}
+			//Regel anwenden
+			if(preisregel == 1 && wechselcheck){
+				//Behandlungsbeginn 
+				if(DatFunk.TageDifferenz(preisdatum, tage.get(0)) < 0){
+					preisanwenden[0] = true;preisanwenden[1] = false;preisanwenden[2] = false;
+				}else{
+					preisanwenden[0] = false;preisanwenden[1] = true;preisanwenden[2] = false;
+				}
+			}else if(preisregel == 2 && wechselcheck){
+				//Rezeptdatum
+				if(DatFunk.TageDifferenz(preisdatum, DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.vecaktrez.get(2)) ) < 0){
+					preisanwenden[0] = true;preisanwenden[1] = false;preisanwenden[2] = false;
+				}else{
+					preisanwenden[0] = false;preisanwenden[1] = true;preisanwenden[2] = false;
+				}
+			}else if( preisregel == 3  && wechselcheck ){
+				//beliebige Behandlung
+				preisanwenden[0] = true;preisanwenden[1] = false;preisanwenden[2] = false;
+				for(int i = 0; i < tage.size();i++){
+					if(DatFunk.TageDifferenz(preisdatum, tage.get(i)) >= 0){
+						preisanwenden[0] = false;preisanwenden[1] = true;preisanwenden[2] = false;
+						break;
+					}
+				}
+			}else if( preisregel == 4  && wechselcheck ){
+				int max = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(3));
+				//splitten
+				preisanwenden[0] = false;preisanwenden[1] = false;preisanwenden[2] = true;
+				for(int i = 0; i < tage.size();i++){
+					if(DatFunk.TageDifferenz(preisdatum, tage.get(i)) < 0){
+						splitpreise[0] += 1;
+					}else{
+						splitpreise[1] += 1;
+					}
+				}
+				if(splitpreise[0] == max){
+					preisanwenden[0] = true;preisanwenden[1] = false;preisanwenden[2] = false;
+				}else if(splitpreise[1] == max){
+					preisanwenden[0] = false;preisanwenden[1] = true;preisanwenden[2] = false;
+				}else if( ((splitpreise[0] != 0 && splitpreise[1] != 0)) || (wechselcheck) ){
+					doNeuerTarifMitSplitting();
+					if(hausBesuch){
+						analysiereHausbesuchMitSplitting();	
+					}
+					for(int i = 0; i < originalAnzahl.size();i++){
+						BigDecimal zeilengesamt = BigDecimal.valueOf(einzelPreis.get(i)).multiply(BigDecimal.valueOf(Double.valueOf(Integer.toString(originalAnzahl.get(i)))));
+						zeilenGesamt.add(BigDecimal.valueOf(zeilengesamt.doubleValue()));
+						rechnungGesamt = rechnungGesamt.add(BigDecimal.valueOf(zeilengesamt.doubleValue()));	
+					}
+					try{
+						labs[6].setText("Rezeptwert = "+dcf.format(rechnungGesamt.doubleValue())+" EUR");
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+					return;
+				}else{
+					if(splitpreise[0] > 0){
+						preisanwenden[0] = true;preisanwenden[1] = false;preisanwenden[2] = false;
+					}else{
+						preisanwenden[0] = false;preisanwenden[1] = true;preisanwenden[2] = false;						
+					}
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			wechselcheck = false;
+			preisregel = 0;
+		}
+
+		/*************************************************/
+		//Änderungen in Preis
 		if(!Reha.thisClass.patpanel.vecaktrez.get(8).equals("0")){
 			originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(48));
 			originalId.add(Reha.thisClass.patpanel.vecaktrez.get(8));
 			originalAnzahl.add(Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(3)));
 			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(8), "", preisliste).replace("30Min.", "").replace("45Min.", "")); 
-
+			
 			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(8),preisliste);
 			anzahl = Reha.thisClass.patpanel.vecaktrez.get(3);
-			preis = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(8),"", preisliste);
+			if(preisanwenden[0]){
+				preis = RezTools.getPreisAltFromID(Reha.thisClass.patpanel.vecaktrez.get(8),"", preisliste);
+			}else{
+				preis = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(8),"", preisliste);	
+			}
+			
 			
 			if(! pos.trim().equals("")){
 				einzelPreis.add(Double.parseDouble(preis));
@@ -584,8 +706,11 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			
 			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(9),preisliste);
 			anzahl = Reha.thisClass.patpanel.vecaktrez.get(4);
-			preis = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(9),"", preisliste);
-			
+			if(preisanwenden[0]){
+				preis = RezTools.getPreisAltFromID(Reha.thisClass.patpanel.vecaktrez.get(9),"", preisliste);
+			}else{
+				preis = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(9),"", preisliste);	
+			}
 			if(! pos.trim().equals("")){
 				einzelPreis.add(Double.parseDouble(preis));
 				labs[1].setText(anzahl+" * "+pos+" (Einzelpreis = "+preis+")");
@@ -604,7 +729,12 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			
 			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(10),preisliste);
 			anzahl = Reha.thisClass.patpanel.vecaktrez.get(5);
-			preis = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(10),"", preisliste);
+			if(preisanwenden[0]){
+				preis = RezTools.getPreisAltFromID(Reha.thisClass.patpanel.vecaktrez.get(10),"", preisliste);
+			}else{
+				preis = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(10),"", preisliste);	
+			}
+			
 			
 			if(! pos.trim().equals("")){
 				einzelPreis.add(Double.parseDouble(preis));
@@ -624,7 +754,12 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			
 			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(11),preisliste);
 			anzahl = Reha.thisClass.patpanel.vecaktrez.get(6);
-			preis = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(11),"", preisliste);
+			if(preisanwenden[0]){
+				preis = RezTools.getPreisAltFromID(Reha.thisClass.patpanel.vecaktrez.get(11),"", preisliste);
+			}else{
+				preis = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(11),"", preisliste);	
+			}
+			
 			
 			if(! pos.trim().equals("")){
 				einzelPreis.add(Double.parseDouble(preis));
@@ -635,6 +770,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 				labs[3].setText(anzahl+" * "+pos+" (Einzelpreis = 0.00)");
 			}
 		}
+		/***********************************/
 		if(hausBesuch){
 			analysiereHausbesuch();
 		}
@@ -645,7 +781,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		//System.out.println("EinzelPeise = "+einzelPreis);			
 		//System.out.println("Langtexte = "+originalLangtext);
 		*/
-		
+
 		
 		for(int i = 0; i < originalAnzahl.size();i++){
 			BigDecimal zeilengesamt = BigDecimal.valueOf(einzelPreis.get(i)).multiply(BigDecimal.valueOf(Double.valueOf(Integer.toString(originalAnzahl.get(i)))));
@@ -660,6 +796,7 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	}
 	private void analysiereHausbesuch(){
 		this.aktGruppe = jcmb.getSelectedIndex();
+		labs[5].setText("");
 		//System.out.println("Hausbesuch = "+this.hausBesuch);
 		//System.out.println("Hausbesuch Einzeln = "+this.hbEinzeln);
 
@@ -667,9 +804,14 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		int hbanzahl = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(64));
 
 		if(this.hbEinzeln){
-
+			String preis = "";
 			String pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(this.aktGruppe).get(0);
-			String preis = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);
+			if(preisanwenden[0]){
+				preis = RezTools.getPreisAltFromPosNeu(pos.toString(), "", preisliste);
+			}else{
+				preis = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);	
+			}
+			
 			originalAnzahl.add(hbanzahl);
 			originalPos.add(pos.toString());
 			einzelPreis.add(Double.parseDouble(preis.toString()));
@@ -683,7 +825,11 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 					JOptionPane.showMessageDialog(null, "Im Patientenstamm sind keine Kilometer hinterlegt und eine pauschale\n"+
 							"Wegegeldberechnung ist für diese Tarifgruppe nicht vorgesehen.\nWegegeld wird nicht abgerechnet!");
 				}else{
-					preis = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);
+					if(preisanwenden[0]){
+						preis = RezTools.getPreisAltFromPosNeu(pos.toString(), "", preisliste);
+					}else{
+						preis = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);	
+					}
 					originalAnzahl.add(hbanzahl);
 					originalPos.add(pos.toString());
 					einzelPreis.add(Double.parseDouble(preis.toString()));
@@ -697,7 +843,11 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 					JOptionPane.showMessageDialog(null, "Im Patientenstamm sind zwar "+patKilometer+" Kilometer hinterlegt aber Wegegeldberechnung\n"+
 					"ist für diese Tarifgruppe nicht vorgesehen.\nWegegeld wird nicht aberechnet!");
 				}else{
-					preis = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);
+					if(preisanwenden[0]){
+						preis = RezTools.getPreisAltFromPosNeu(pos.toString(), "", preisliste);
+					}else{
+						preis = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);	
+					}
 					kmBeiHB = patKilometer;
 					originalAnzahl.add(hbanzahl*patKilometer);
 					originalPos.add(pos.toString());
@@ -713,7 +863,12 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			if(pos.trim().equals("")){
 				JOptionPane.showMessageDialog(null, "In dieser Tarifgruppe ist die Ziffer Hausbesuche - mehrere Patienten - nicht vorgeshen!\n");
 			}else{
-				String preis = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);
+				String preis = "";
+				if(preisanwenden[0]){
+					preis = RezTools.getPreisAltFromPosNeu(pos.toString(), "", preisliste);
+				}else{
+					preis = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);	
+				}
 				originalAnzahl.add(hbanzahl);
 				originalPos.add(pos.toString());
 				einzelPreis.add(Double.parseDouble(preis.toString()));
@@ -722,6 +877,353 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 			}
 		}
 	}
+/******************************************************************/
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	private void doNeuerTarifMitSplitting(){
+		//System.out.println("Disziplin = "+this.disziplin);
+		//System.out.println("AktGruppe = "+this.aktGruppe);
+		//System.out.println("stelle neuen Tarif ein....");
+		
+		String pos = "";
+		einzelPreis.clear();
+		originalPos.clear();
+		originalAnzahl.clear();
+		originalId.clear();
+		originalLangtext.clear();
+		zeilenGesamt.clear();
+		rechnungGesamt = BigDecimal.valueOf(Double.parseDouble("0.00"));
+		patKilometer = 0;
+		String anzahlAlt="",anzahlNeu="";
+		String preisAlt = "", preisNeu = "";
+		int test = 0;
+		/*************************************************/
+		int testanzahl = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(3));
+		if(testanzahl !=  (splitpreise[0]+splitpreise[1]) ){
+			JOptionPane.showMessageDialog(null, "Die Anwendungsregel dieser Tarifgruppe ist Splitting!!!\nBei dieser Regel müssen die Behandlungstage mit der Anzahl der Behandlungen im Rezept übereinstimmen!");
+			return;
+		}
+		//Änderungen in Preis und ggfls. in Anzahl
+		//Benötigt werde: Anzahlen auf dem Rezept, Anzahl alter Preis, Anzahl neuer Preis.
+		if(!Reha.thisClass.patpanel.vecaktrez.get(8).equals("0")){
+			originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(48));
+			originalId.add(Reha.thisClass.patpanel.vecaktrez.get(8));
+			//jetzt Anzahlen für alter Preis
+			originalAnzahl.add(splitpreise[0]);
+			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(8), "", preisliste).replace("30Min.", "").replace("45Min.", "")); 
+
+			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(8),preisliste);
+			anzahlAlt = Integer.toString(splitpreise[0]);
+			
+			preisAlt = RezTools.getPreisAltFromID(Reha.thisClass.patpanel.vecaktrez.get(8),"", preisliste);
+			
+			
+			if(! pos.trim().equals("")){
+				einzelPreis.add(Double.parseDouble(preisAlt));
+				labs[0].setText(anzahlAlt+" * "+pos+" (Einzelpreis = "+preisAlt+")");
+
+			}else{
+				JOptionPane.showMessageDialog(null,"Die Rezeptpositionen sind in dieser preisgruppe nicht vorhanden");
+				labs[0].setText(anzahlAlt+" * "+pos+" (Einzelpreis = 0.00)");
+			}
+			//jetzt Anzahlen für neuer Preis
+			originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(48));
+			originalId.add(Reha.thisClass.patpanel.vecaktrez.get(8));
+			originalAnzahl.add(splitpreise[1]);
+			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(8), "", preisliste).replace("30Min.", "").replace("45Min.", "")); 
+			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(8),preisliste);
+			anzahlNeu = Integer.toString(splitpreise[1]);
+			preisNeu = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(8),"", preisliste);
+			
+			if(! pos.trim().equals("")){
+				einzelPreis.add(Double.parseDouble(preisNeu));
+				labs[0].setText(labs[0].getText()+" / "+anzahlNeu+" * "+pos+" (Einzelpreis = "+preisNeu+")");
+
+			}else{
+				JOptionPane.showMessageDialog(null,"Die Rezeptpositionen sind in dieser preisgruppe nicht vorhanden");
+				labs[0].setText(labs[0].getText()+" / "+anzahlNeu+" * "+pos+" (Einzelpreis = 0.00)");
+			}
+			
+		}
+		/***********************************/
+		if(!Reha.thisClass.patpanel.vecaktrez.get(9).equals("0")){
+			 
+			originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(49));
+			originalId.add(Reha.thisClass.patpanel.vecaktrez.get(9));
+			test = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(4));
+			originalAnzahl.add( (splitpreise[0] > test ? test : splitpreise[0]));
+			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(9), "", preisliste).replace("30Min.", "").replace("45Min.", ""));
+			
+			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(9),preisliste);
+			anzahlAlt = Integer.toString((splitpreise[0] > test ? test : splitpreise[0]));
+			preisAlt = RezTools.getPreisAltFromID(Reha.thisClass.patpanel.vecaktrez.get(9),"", preisliste);
+
+			
+			if(! pos.trim().equals("")){
+				einzelPreis.add(Double.parseDouble(preisAlt));
+				labs[1].setText(anzahlAlt+" * "+pos+" (Einzelpreis = "+preisAlt+")");
+
+			}else{
+				JOptionPane.showMessageDialog(null,"Die Rezeptpositionen sind in dieser preisgruppe nicht vorhanden");
+				labs[1].setText(anzahlAlt+" * "+pos+" (Einzelpreis = 0.00)");
+			}
+			//nur wenn die angegebene Anzahl < ist als Anzahl Tage im Rezeptblatt
+			if(splitpreise[0] < test){
+				originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(49));
+				originalId.add(Reha.thisClass.patpanel.vecaktrez.get(9));
+				
+				originalAnzahl.add( test-splitpreise[0]);
+				originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(9), "", preisliste).replace("30Min.", "").replace("45Min.", ""));
+				pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(9),preisliste);
+				anzahlNeu = Integer.toString(test-splitpreise[0]);
+				preisNeu = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(9),"", preisliste);
+				
+				if(! pos.trim().equals("")){
+					einzelPreis.add(Double.parseDouble(preisNeu));
+					labs[1].setText(labs[1].getText()+" / "+anzahlNeu+" * "+pos+" (Einzelpreis = "+preisNeu+")");
+
+				}else{
+					JOptionPane.showMessageDialog(null,"Die Rezeptpositionen sind in dieser preisgruppe nicht vorhanden");
+					labs[1].setText(labs[1].getText()+"/ "+anzahlNeu+" * "+pos+" (Einzelpreis = 0.00)");
+				}
+
+			}
+			
+		}
+		/***********************************/		
+		if(!Reha.thisClass.patpanel.vecaktrez.get(10).equals("0")){
+			originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(50));
+			originalId.add(Reha.thisClass.patpanel.vecaktrez.get(10));
+			test = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(5));
+			originalAnzahl.add((splitpreise[0] > test ? test : splitpreise[0]));
+			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(10), "", preisliste).replace("30Min.", "").replace("45Min.", ""));
+			
+			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(10),preisliste);
+			test = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(5));
+			anzahlAlt = Integer.toString((splitpreise[0] > test ? test : splitpreise[0])); 
+			preisAlt = RezTools.getPreisAltFromID(Reha.thisClass.patpanel.vecaktrez.get(10),"", preisliste);
+			
+			if(! pos.trim().equals("")){
+				einzelPreis.add(Double.parseDouble(preisAlt));
+				labs[2].setText(anzahlAlt+" * "+pos+" (Einzelpreis = "+preisAlt+")");
+
+			}else{
+				JOptionPane.showMessageDialog(null,"Die Rezeptpositionen sind in dieser preisgruppe nicht vorhanden");
+				labs[2].setText(anzahlAlt+" * "+pos+" (Einzelpreis = 0.00)");
+			}
+			if(splitpreise[0] < test){
+				originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(50));
+				originalId.add(Reha.thisClass.patpanel.vecaktrez.get(10));
+				originalAnzahl.add( test-splitpreise[0]);
+				originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(10), "", preisliste).replace("30Min.", "").replace("45Min.", ""));
+				anzahlNeu = Integer.toString(test-splitpreise[0]);
+				preisNeu = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(10),"", preisliste);
+				if(! pos.trim().equals("")){
+					einzelPreis.add(Double.parseDouble(preisNeu));
+					labs[2].setText(labs[2].getText()+" / "+anzahlNeu+" * "+pos+" (Einzelpreis = "+preisNeu+")");
+
+				}else{
+					JOptionPane.showMessageDialog(null,"Die Rezeptpositionen sind in dieser preisgruppe nicht vorhanden");
+					labs[2].setText(labs[2].getText()+" / "+anzahlNeu+" * "+pos+" (Einzelpreis = 0.00)");
+				}
+
+			}
+		}
+		/***********************************/
+		if(!Reha.thisClass.patpanel.vecaktrez.get(11).equals("0")){
+			originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(51));
+			originalId.add(Reha.thisClass.patpanel.vecaktrez.get(11));
+			test = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(6));
+			originalAnzahl.add((splitpreise[0] > test ? test : splitpreise[0]));
+			originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(11), "", preisliste).replace("30Min.", "").replace("45Min.", ""));
+			
+			pos = RezTools.getKurzformFromID(Reha.thisClass.patpanel.vecaktrez.get(11),preisliste);
+			anzahlAlt = Integer.toString((splitpreise[0] > test ? test : splitpreise[0]));
+			preisAlt = RezTools.getPreisAltFromID(Reha.thisClass.patpanel.vecaktrez.get(11),"", preisliste);
+			
+			if(! pos.trim().equals("")){
+				einzelPreis.add(Double.parseDouble(preisAlt));
+				labs[3].setText(anzahlAlt+" * "+pos+" (Einzelpreis = "+preisAlt+")");
+
+			}else{
+				JOptionPane.showMessageDialog(null,"Die Rezeptpositionen sind in dieser preisgruppe nicht vorhanden");
+				labs[3].setText(anzahlAlt+" * "+pos+" (Einzelpreis = 0.00)");
+			}
+			if(splitpreise[0] < test){
+				originalPos.add(Reha.thisClass.patpanel.vecaktrez.get(51));
+				originalId.add(Reha.thisClass.patpanel.vecaktrez.get(11));
+				originalAnzahl.add(test-splitpreise[0]);
+				originalLangtext.add(RezTools.getLangtextFromID(Reha.thisClass.patpanel.vecaktrez.get(11), "", preisliste).replace("30Min.", "").replace("45Min.", ""));
+				anzahlNeu = Integer.toString(test-splitpreise[0]);
+				preisNeu = RezTools.getPreisAktFromID(Reha.thisClass.patpanel.vecaktrez.get(11),"", preisliste);
+				if(! pos.trim().equals("")){
+					einzelPreis.add(Double.parseDouble(preisNeu));
+					labs[3].setText(labs[3].getText()+" / "+anzahlNeu+" * "+pos+" (Einzelpreis = "+preisNeu+")");
+
+				}else{
+					JOptionPane.showMessageDialog(null,"Die Rezeptpositionen sind in dieser preisgruppe nicht vorhanden");
+					labs[3].setText(labs[3].getText()+" / "+anzahlNeu+" * "+pos+" (Einzelpreis = 0.00)");
+				}
+				
+			}
+		}
+		/***********************************/
+		/*
+		if(hausBesuch){
+			analysiereHausbesuch();
+		}
+		
+		for(int i = 0; i < originalAnzahl.size();i++){
+			BigDecimal zeilengesamt = BigDecimal.valueOf(einzelPreis.get(i)).multiply(BigDecimal.valueOf(Double.valueOf(Integer.toString(originalAnzahl.get(i)))));
+			zeilenGesamt.add(BigDecimal.valueOf(zeilengesamt.doubleValue()));
+			rechnungGesamt = rechnungGesamt.add(BigDecimal.valueOf(zeilengesamt.doubleValue()));		
+		}
+		try{
+			labs[6].setText("Rezeptwert = "+dcf.format(rechnungGesamt.doubleValue())+" EUR");
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		*/
+	}
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	private void analysiereHausbesuchMitSplitting(){
+		this.aktGruppe = jcmb.getSelectedIndex();
+		labs[5].setText("");
+		
+		/***********Hausbesuch voll abrechnen******/
+		int hbanzahl = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(64));
+		int althb = -1;
+		int neuhb = -1 ;
+		String preisAlt = "";
+		String preisNeu = "";
+
+		if(this.hbEinzeln){
+			althb = (splitpreise[0] > hbanzahl ? hbanzahl : splitpreise[0]);
+			String pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(this.aktGruppe).get(0);
+			preisAlt = RezTools.getPreisAltFromPosNeu(pos.toString(), "", preisliste);
+			originalAnzahl.add( (splitpreise[0] > hbanzahl ? hbanzahl : splitpreise[0]) );
+			originalPos.add(pos.toString());
+			einzelPreis.add(Double.parseDouble(preisAlt.toString()));
+			originalLangtext.add("Hausbesuchspauschale");
+			labs[4].setText(althb+" * "+pos+" (Einzelpreis = "+preisAlt+")");
+			hbvec.add(originalPos.size()-1);
+			if(splitpreise[0] < hbanzahl){
+				neuhb = hbanzahl-splitpreise[0];
+				originalAnzahl.add( neuhb);
+				originalPos.add(pos.toString());
+				preisNeu = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);
+				einzelPreis.add(Double.parseDouble(preisNeu.toString()));
+				originalLangtext.add("Hausbesuchspauschale");
+				labs[4].setText(labs[4].getText()+" / "+neuhb+" * "+pos+" (Einzelpreis = "+preisNeu+")");
+				hbvec.add(originalPos.size()-1);
+			}
+			
+			patKilometer = StringTools.ZahlTest(Reha.thisClass.patpanel.patDaten.get(48));
+			
+			if(patKilometer <= 0){
+				// Keine Kilometer Im Patientenstamm hinterlegt
+				if( (pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(this.aktGruppe).get(3)).trim().equals("")){
+					//Wegegeldpauschale ist nicht vorgesehen und Kilometer sind null - ganz schön blöd....
+					JOptionPane.showMessageDialog(null, "Im Patientenstamm sind keine Kilometer hinterlegt und eine pauschale\n"+
+							"Wegegeldberechnung ist für diese Tarifgruppe nicht vorgesehen.\nWegegeld wird nicht abgerechnet!");
+				}else{
+					preisAlt = RezTools.getPreisAltFromPosNeu(pos.toString(), "", preisliste);
+					originalAnzahl.add(althb);
+					originalPos.add(pos.toString());
+					einzelPreis.add(Double.parseDouble(preisAlt.toString()));
+					originalLangtext.add("Wegegeldpauschale");
+					labs[5].setText(althb+" * "+pos+" (Einzelpreis = "+preisAlt+")");
+					hbPauschale = true;
+					kmvec.add(originalPos.size()-1);
+					if(splitpreise[0] < hbanzahl){
+						neuhb = hbanzahl-splitpreise[0];
+						originalAnzahl.add( neuhb);
+						originalPos.add(pos.toString());
+						preisNeu = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);
+						einzelPreis.add(Double.parseDouble(preisNeu.toString()));
+						originalLangtext.add("Wegegeldpauschale");
+						labs[5].setText(labs[5].getText()+" / "+neuhb+" * "+pos+" (Einzelpreis = "+preisNeu+")");
+						kmvec.add(originalPos.size()-1);
+					}
+				}
+			}else{
+				/*******es wurden zwar Kilometer angegeben aber diese Preisgruppe kennt keine Wegegebühr****/
+				if( (pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(this.aktGruppe).get(2)).trim().equals("")){
+					JOptionPane.showMessageDialog(null, "Im Patientenstamm sind zwar "+patKilometer+" Kilometer hinterlegt aber Wegegeldberechnung\n"+
+					"ist für diese Tarifgruppe nicht vorgesehen.\nWegegeld wird nicht aberechnet!");
+				}else{
+					preisAlt = RezTools.getPreisAltFromPosNeu(pos.toString(), "", preisliste);
+					kmBeiHB = patKilometer;
+					originalAnzahl.add(althb*patKilometer);
+					originalPos.add(pos.toString());
+					einzelPreis.add(Double.parseDouble(preisAlt.toString()));
+					originalLangtext.add("Wegegeld / km");
+					labs[5].setText((althb*patKilometer)+" * "+pos+" (Einzelpreis = "+preisAlt+")");
+					hbmitkm = true;
+					kmvec.add(originalPos.size()-1);
+					if(splitpreise[0] < hbanzahl){
+						neuhb = hbanzahl-splitpreise[0];
+						originalAnzahl.add( neuhb*patKilometer);
+						originalPos.add(pos.toString());
+						preisNeu = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);
+						einzelPreis.add(Double.parseDouble(preisNeu.toString()));
+						originalLangtext.add("Wegegeld / km");
+						labs[5].setText(labs[5].getText()+" / "+(neuhb*patKilometer)+" * "+pos+" (Einzelpreis = "+preisNeu+")");
+						kmvec.add(originalPos.size()-1);
+					}
+				}
+			}
+ 
+		}else{ /****************************Hausbesuch mehrere abrechnen***************************/
+			String pos = SystemPreislisten.hmHBRegeln.get(disziplin).get(this.aktGruppe).get(1);
+			if(pos.trim().equals("")){
+				JOptionPane.showMessageDialog(null, "In dieser Tarifgruppe ist die Ziffer Hausbesuche - mehrere Patienten - nicht vorgeshen!\n");
+			}else{
+				althb = (splitpreise[0] > hbanzahl ? hbanzahl : splitpreise[0]);
+				preisAlt = RezTools.getPreisAltFromPosNeu(pos.toString(), "", preisliste);
+				originalAnzahl.add(althb);
+				originalPos.add(pos.toString());
+				einzelPreis.add(Double.parseDouble(preisAlt.toString()));
+				originalLangtext.add("Hausbesuchspauschale (mehrere Patienten)");
+				labs[5].setText((althb)+" * "+pos+" (Einzelpreis = "+preisAlt+")");
+				hbvec.add(originalPos.size()-1);
+				if(splitpreise[0] < hbanzahl){
+					neuhb = hbanzahl-splitpreise[0];
+					originalAnzahl.add(neuhb);
+					originalPos.add(pos.toString());
+					preisNeu = RezTools.getPreisAktFromPos(pos.toString(), "", preisliste);
+					einzelPreis.add(Double.parseDouble(preisNeu.toString()));
+					originalLangtext.add("Hausbesuchspauschale (mehrere Patienten)");
+					labs[5].setText(labs[5].getText()+" / "+(neuhb)+" * "+pos+" (Einzelpreis = "+preisNeu+")");
+					hbvec.add(originalPos.size()-1);
+				}
+			}
+		}
+		/***********************Ende Originalroutine******************************/
+	}
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+/******************************************************************/
+	
+/******************************************************************/	
 	private void doKorrektur(){
 		
 	}

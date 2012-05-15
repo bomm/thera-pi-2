@@ -1101,7 +1101,19 @@ public static int PosTest(int pos){
 	return pos;
 }
 public static void containerHandling(int cont){
-	if(Reha.thisClass.vollsichtbar == -1){
+	if(Reha.thisClass.vollsichtbar == -1 || (!SystemConfig.desktopHorizontal)){
+		System.out.println("Location = "+Reha.thisClass.jSplitRechtsOU.getDividerLocation());
+		System.out.println("Width = "+Reha.thisClass.jSplitRechtsOU.getWidth());
+		if(cont == 0){
+			if(Reha.thisClass.jSplitRechtsOU.getDividerLocation() == 0 ){
+				Reha.thisClass.setDivider(5);	
+			}
+		}else if(cont == 1){
+			if(Reha.thisClass.jSplitRechtsOU.getDividerLocation() == Reha.thisClass.jSplitRechtsOU.getWidth()-7 ){
+				Reha.thisClass.setDivider(6);	
+			}			
+		}
+			
 		return;
 	}
 	if((Reha.thisClass.vollsichtbar == 1 && cont == 1) || (Reha.thisClass.vollsichtbar == 0 && cont == 0) ){

@@ -337,6 +337,8 @@ public class Anmeldungen extends JXPanel{
 			@Override
 			protected Void doInBackground() throws Exception {
 				anmeldemod.setRowCount(0);
+				anzahlMinuten[0]=0;anzahlMinuten[1]=0;anzahlMinuten[2]=0;anzahlMinuten[3]=0;anzahlMinuten[4]=0;anzahlMinuten[5]=0;
+				summenlab[4].setText("0");
 				for(int i = 0; i < anzahlRezepte.length;i++){
 					anzahlRezepte[i] = 0;
 					anzahlEinheiten[i] = 0;
@@ -387,6 +389,7 @@ public class Anmeldungen extends JXPanel{
 						anmeldemod.addRow((Vector<?>)vec2.clone());
 					//}
 				}
+				
 				//beendeFortschritt();
 				kglab[1].setText(Integer.toString(anzahlRezepte[0]));
 				kglab[2].setText(Integer.toString(anzahlEinheiten[0]));
