@@ -504,7 +504,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					neuanlageRezept(false,"","");
 				}
 				if(arg0.getClickCount()==1 && arg0.getButton()==3){
-				   if(Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
+				   if(Rechte.hatRecht(Rechte.Funktion_rezgebstatusedit, false)){
 					   Point point = arg0.getPoint();
 					   int row = tabaktrez.rowAtPoint(point);
 					   if(row < 0){return;}

@@ -243,7 +243,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		CellConstraints cc = new CellConstraints();
 		pb.getPanel().setOpaque(false);
 		pb.getPanel().setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-		String lbltext = "<html>1.Block: akuteller Funktionsstatus&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Körperfunktionen und -strukturen)</font></b>";
+		//String lbltext = "<html>1.Block: akuteller Funktionsstatus&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Körperfunktionen und -strukturen)</font></b>";
+		String lbltext = "<html>1.Block: "+SystemConfig.berichttitel[0]+"&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Körperfunktionen und -strukturen)</font></b>";
 		JLabel lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,2));
 		lab = new JLabel("F2 für Textblock-Aufruf");
@@ -257,7 +258,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		JScrollPane span = JCompTools.getTransparentScrollPane(icfblock[0]);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));
 		pb.add(span,cc.xyw(2,4,5));
-		lbltext ="<html>2.Block: weitere therapierelevante Aspekte&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Aktivitäten / Teilhabe)</font></b>";
+		//lbltext ="<html>2.Block: weitere therapierelevante Aspekte&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Aktivitäten / Teilhabe)</font></b>";
+		lbltext ="<html>2.Block: "+SystemConfig.berichttitel[1]+"&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Aktivitäten / Teilhabe)</font></b>";
 		lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,6));		
 		//icfblock[1] = new JTextPane();
@@ -269,7 +271,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		span = JCompTools.getTransparentScrollPane(icfblock[1]);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));		
 		pb.add(span,cc.xyw(2,8,5));
-		lbltext = "<html>3.Block: prognostische Einschätzung&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Umweltfaktoren)</font></b>";
+		//lbltext = "<html>3.Block: prognostische Einschätzung&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Umweltfaktoren)</font></b>";
+		lbltext = "<html>3.Block: "+SystemConfig.berichttitel[2]+"&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - Umweltfaktoren)</font></b>";
 		lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,10));		
 		//icfblock[2] = new JTextPane();
@@ -281,7 +284,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 		span = JCompTools.getTransparentScrollPane(icfblock[2]);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));
 		pb.add(span,cc.xyw(2,12,5));
-		lbltext = "<html>4.Block: Reserveblock&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - personbezogene Faktoren)</font></b>";
+		//lbltext = "<html>4.Block: Reserveblock&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - personbezogene Faktoren)</font></b>";
+		lbltext = "<html>4.Block: "+SystemConfig.berichttitel[3]+"&nbsp;&nbsp;&nbsp;&nbsp;<b><font color='#e77817'>(ICF - personbezogene Faktoren)</font></b>";
 		lab = new JLabel(lbltext);
 		pb.add(lab,cc.xy(2,14));		
 		//icfblock[3] = new JTextPane();

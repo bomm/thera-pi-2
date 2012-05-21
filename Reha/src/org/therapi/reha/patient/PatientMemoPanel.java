@@ -1,9 +1,11 @@
 package org.therapi.reha.patient;
 
+import floskeln.Floskeln;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -19,6 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
+import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 
 import sqlTools.ExUndHop;
@@ -42,12 +45,8 @@ public class PatientMemoPanel extends JXPanel{
 		setLayout(new BorderLayout());
 		setOpaque(false);
 		this.patientHauptPanel = patHauptPanel;
+		
 		add(getMemoPanel(),BorderLayout.CENTER);
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run(){
-				activateMouseListener();
-			}
-		});
 	}
 	public void activateMouseListener(){
 		ml = new MouseListener(){
@@ -57,7 +56,15 @@ public class PatientMemoPanel extends JXPanel{
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if(e.getButton() == 3 && ( (patientHauptPanel.pmemo[0].isEditable()) || (patientHauptPanel.pmemo[1].isEditable())) ){
-					new Floskeln( (patientHauptPanel.pmemo[0].isEditable() ? 0 : 1), e );
+					//new Floskeln( (patientHauptPanel.pmemo[0].isEditable() ? 0 : 1), e );
+					Floskeln fl = new Floskeln(Reha.thisFrame,"Floskeln",null);
+					fl.setBounds(200, 200, 200, 200);
+					fl.setPreferredSize(new Dimension(200,200));
+					fl.setLocation(e.getLocationOnScreen());
+					fl.setVisible(true);
+					fl.setModal(true);
+					fl = null;
+					//JXFrame owner,String titel, Component aktFocus
 				}
 			}
 			@Override
@@ -279,16 +286,16 @@ public class PatientMemoPanel extends JXPanel{
 		
 		mittelinksunten.add(patientHauptPanel.memotab,BorderLayout.CENTER);
 		mittelinksunten.revalidate();
-
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				activateMouseListener();
+			}
+		});
 		return mittelinksunten;
 		
 	}
 	/********************************************************************************/
-	class Floskeln{
-		public Floskeln(int memo, MouseEvent e){
-			
-		}
-	}
+	
 	/********************************************************************************/	
 
 }

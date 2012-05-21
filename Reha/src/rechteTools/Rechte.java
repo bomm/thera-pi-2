@@ -93,7 +93,7 @@ public class Rechte {
 	public static int Funktion_urlaubueberstunden	= 52;
 	public static int Funktion_offeneposten				= 53;
 	public static int Funktion_kassenbuch				= 54;
-	public static int Funktion_unbelegt3				= 55;
+	public static int Funktion_rezgebstatusedit			= 55;
 	public static int Funktion_unbelegt4				= 56;
 	public static int Funktion_unbelegt5				= 57;
 	public static int Funktion_unbelegt6				= 58;
@@ -175,7 +175,7 @@ public class Rechte {
 		
 		"Kassenabrechnung starten","Rehaabrechnung starten","Barkassen Abrechnung starten",
 		"Neuanmeldungen ermitteln","Umsätze von bis ermitteln","Mitarbeiterbeteiligung ermitteln",
-		"Urlaub-/Überstunden ermitteln","Offene-Posten starten","Kassenbuch anlegen/ändern","unbelegt-3","unbelegt-4","unbelegt-5",
+		"Urlaub-/Überstunden ermitteln","Offene-Posten starten","Kassenbuch anlegen/ändern","Rez.Gebühr bezahlt/unbezahlt ändern","unbelegt-4","unbelegt-5",
 		"unbelegt-6","unbelegt-7","unbelegt-8","unbelegt-9","unbelegt-10",
 		
 		"Firmenangaben Mandanten","Datenbankparameter","Kalender Grundeinstellungen","Kalender-Benuter verwalten",
