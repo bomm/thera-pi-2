@@ -506,36 +506,96 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	}
 	public double doRechneHistorie(String db){
 		int rows = tabhistorie.getRowCount();
-		String felder = "anzahl1,anzahl2,anzahl3,anzahl3,preise1,preise2,preise3,preise4";
+		String felder = "anzahl1,anzahl2,anzahl3,anzahl3,preise1,preise2,preise3,preise4,hausbes";
 		Double gesamtumsatz = new Double(0.00); 
 		if(db.equals("lza")){
 			if(rows <= 0){
 				return new Double(0.00);
 			}
+			String suchrezid = null;
+			String suchrez = null;
 			for(int i = 0; i < rows;i++){
-				String suchrez = (String)tabhistorie.getValueAt(i,6);
-				Vector<String> vec = SqlInfo.holeSatz(db, felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
-				if(vec.size() > 0){
-					BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
-					for(int anz = 0;anz <4;anz++){
-						preispos = BigDecimal.valueOf(new Double((String)vec.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec.get(anz)))) ;
-						gesamtumsatz = gesamtumsatz+preispos.doubleValue();
+				suchrezid = (String)tabhistorie.getValueAt(i,6);
+				suchrez = (String)tabhistorie.getValueAt(i,0);
+				Vector<String> vec = null;
+				/*********************/
+				vec = SqlInfo.holeSatz(db, felder, "id='"+suchrezid+"'", Arrays.asList(new String[] {}));
+				if(vec.get(8).equals("T")){
+					vec = SqlInfo.holeFeld("select sum(gesamt) from faktura where rez_nr = '"+suchrez+"'");
+					if(! vec.get(0).equals("")){
+						gesamtumsatz = gesamtumsatz+Double.parseDouble(vec.get(0));
+						//System.out.println("-1- "+vec);
+					}else{
+						vec = SqlInfo.holeSatz(db, felder, "id='"+suchrezid+"'", Arrays.asList(new String[] {}));
+						if(vec.size() > 0){
+							BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
+							for(int anz = 0;anz <4;anz++){
+								preispos = BigDecimal.valueOf(new Double((String)vec.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec.get(anz)))) ;
+								gesamtumsatz = gesamtumsatz+preispos.doubleValue();
+							}
+						}
+					}					
+				}else{
+					vec = SqlInfo.holeSatz(db, felder, "id='"+suchrezid+"'", Arrays.asList(new String[] {}));
+					if(vec.size() > 0){
+						BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
+						for(int anz = 0;anz <4;anz++){
+							preispos = BigDecimal.valueOf(new Double((String)vec.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec.get(anz)))) ;
+							gesamtumsatz = gesamtumsatz+preispos.doubleValue();
+						}
 					}
 				}
+				/*********************/
+				/*
+				vec = SqlInfo.holeFeld("select sum(gesamt) from faktura where rez_nr = '"+suchrez+"'");
+
+				if(! vec.get(0).equals("")){
+					gesamtumsatz = gesamtumsatz+Double.parseDouble(vec.get(0));
+					System.out.println("-1- "+vec);
+				}else{
+					vec = SqlInfo.holeSatz(db, felder, "id='"+suchrezid+"'", Arrays.asList(new String[] {}));
+					if(vec.size() > 0){
+						BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
+						for(int anz = 0;anz <4;anz++){
+							preispos = BigDecimal.valueOf(new Double((String)vec.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec.get(anz)))) ;
+							gesamtumsatz = gesamtumsatz+preispos.doubleValue();
+						}
+					}
+				}
+				*/
+				/*********************/
 			}
 		}else{
 			String cmd = "pat_intern='"+Reha.thisClass.patpanel.aktPatID+"'";
 			Vector<Vector<String>> vec = SqlInfo.holeSaetze(db, "id,rez_nr",cmd , Arrays.asList(new String[] {}));
 			rows = vec.size();
+			String suchrezid = null;
+			String suchrez = null;
+			Object[] hbscheiss = {null,null,null};
+			Vector<String> vhbscheiss = null;
 			for(int i = 0; i < rows;i++){
-				String suchrez = (String)((Vector<?>)vec.get(i)).get(0);//(String)tabhistorie.getValueAt(i,6);
-				Vector<String> vec2 = SqlInfo.holeSatz(db, felder, "id='"+suchrez+"'", Arrays.asList(new String[] {}));
+				suchrezid = (String)((Vector<?>)vec.get(i)).get(0);//(String)tabhistorie.getValueAt(i,6);
+				suchrez = (String)((Vector<?>)vec.get(i)).get(1);
+				Vector<String> vec2 = SqlInfo.holeSatz(db, felder, "id='"+suchrezid+"'", Arrays.asList(new String[] {}));
 				if(vec2.size() > 0){
 					BigDecimal preispos = BigDecimal.valueOf(new Double(0.00));
 					for(int anz = 0;anz <4;anz++){
 						preispos = BigDecimal.valueOf(new Double((String)vec2.get(anz+4))).multiply( BigDecimal.valueOf(new Double((String)vec2.get(anz)))) ;
 						gesamtumsatz = gesamtumsatz+preispos.doubleValue();
 					}
+				}
+				try{
+					if( vec2.get(8).equals("T") ){
+						vhbscheiss = SqlInfo.holeSatz("verordn", " * ", "rez_nr = '"+suchrez+"'", Arrays.asList(new String[] {}));
+						
+						hbscheiss = RezTools.ermittleHBwert(vhbscheiss);
+						gesamtumsatz = gesamtumsatz+( (Double)hbscheiss[0] != null ? (Double)hbscheiss[0] : 0.00);
+						gesamtumsatz = gesamtumsatz+( (Double)hbscheiss[1] != null ? (Double)hbscheiss[1] : 0.00);
+						//System.out.println(suchrez+ " - "+hbscheiss[0]+"/"+hbscheiss[1]+"/"+hbscheiss[2]);
+						
+					}
+				}catch(Exception ex){
+					ex.printStackTrace();
 				}
 			}
 			

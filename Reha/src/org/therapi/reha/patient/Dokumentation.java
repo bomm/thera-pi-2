@@ -2669,13 +2669,13 @@ class OoListener implements IDocumentListener {
 			
 			IDocument doc = arg0.getDocument();
 			if(doc == null){
-				System.out.println(geaendert+" - "+datei+" - "+neu+" doc = null ");
+				//System.out.println(geaendert+" - "+datei+" - "+neu+" doc = null ");
 				return;
 			}
 			
 			String file = arg0.getDocument().getPersistenceService().getLocation().getPath();
 			file = file.substring(1).replace("%20", " ");
-			System.out.println(geaendert+" - "+datei+" - "+file+" - "+neu);
+			//System.out.println(geaendert+" - "+datei+" - "+file+" - "+neu);
 			if(geaendert && datei.equals(file) && (!neu)){
 				final String xfile = file;
 				final int xid = Integer.parseInt(id);
@@ -2701,12 +2701,12 @@ class OoListener implements IDocumentListener {
 				arg0.getDocument().removeDocumentListener(this);
 				warschoninsave = true;
 			}else if(datei.equals(file) && !geaendert){
-				System.out.println(geaendert+" - "+datei+" - "+file+" - "+neu);
+				//System.out.println(geaendert+" - "+datei+" - "+file+" - "+neu);
 				arg0.getDocument().removeDocumentListener(this);
 				//System.out.println("Listener entfernt - Datei nicht geändert"+file);
 				warschoninsave = true;
 			}else if(neu){
-				System.out.println(geaendert+" - "+datei+" - "+file+" - "+neu);
+				//System.out.println(geaendert+" - "+datei+" - "+file+" - "+neu);
 				new Thread(){
 					public void run(){	
 						String nurDatei = datei.substring(datei.replace("\\", "/").lastIndexOf("/")+1);

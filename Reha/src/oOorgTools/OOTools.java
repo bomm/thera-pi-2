@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -93,21 +94,21 @@ public class OOTools{
 	}
 	public static synchronized void loescheLeerenPlatzhalter(ITextDocument textDocument, ITextField placeholders){
 		try{
-		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
-		viewCursor.goToRange(placeholders.getTextRange(), false);
-		XController xController = textDocument.getXTextDocument().getCurrentController();
-		XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
-		xController);
-		XLineCursor xLineCursor = (XLineCursor) UnoRuntime.queryInterface(XLineCursor.class,
-		xTextViewCursorSupplier.getViewCursor());
-		xLineCursor.gotoStartOfLine(false);
-		xLineCursor.gotoEndOfLine(true); 
-		ITextCursor textCursor = viewCursor.getTextCursorFromStart();
-		textCursor.goLeft((short) 1, false);
-		textCursor.gotoRange(viewCursor.getTextCursorFromEnd().getEnd(), true);
-		textCursor.setString("");
+			IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
+			viewCursor.goToRange(placeholders.getTextRange(), false);
+			XController xController = textDocument.getXTextDocument().getCurrentController();
+			XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
+			xController);
+			XLineCursor xLineCursor = (XLineCursor) UnoRuntime.queryInterface(XLineCursor.class,
+			xTextViewCursorSupplier.getViewCursor());
+			xLineCursor.gotoStartOfLine(false);
+			xLineCursor.gotoEndOfLine(true); 
+			ITextCursor textCursor = viewCursor.getTextCursorFromStart();
+			textCursor.goLeft((short) 1, false);
+			textCursor.gotoRange(viewCursor.getTextCursorFromEnd().getEnd(), true);
+			textCursor.setString("");
 		}catch(java.lang.IllegalArgumentException ex){
-			
+			ex.printStackTrace();
 		}
 	}
 	public static synchronized void printAndClose(final ITextDocument textDocument, final int exemplare){
@@ -802,7 +803,7 @@ public class OOTools{
 	/*******************************************************************************************/
 	/*******************************************************************************************/
 
-	public static synchronized void starteTherapieBericht(String url){
+	public static synchronized void starteTherapieBericht_Alt(String url){
 		IDocumentService documentService = null;;
 		////System.out.println("Starte Datei -> "+url);
 		if(!Reha.officeapplication.isActive()){
@@ -816,7 +817,7 @@ public class OOTools{
 			return;
 		}
         IDocumentDescriptor docdescript = new DocumentDescriptor();
-       	docdescript.setHidden(false);
+       	docdescript.setHidden(true);
         docdescript.setAsTemplate(true);
 		IDocument document = null;
 		//ITextTable[] tbl = null;
@@ -835,65 +836,205 @@ public class OOTools{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		try{
+			
+			
+		
+		Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		for (int i = 0; i < placeholders.length; i++) {
+			System.out.println("Durchlauf = "+i+" insgesamt Plazhalter = "+placeholders.length);
 			//boolean loeschen = false;
 			//boolean schonersetzt = false;
 			String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
+			
 
 			////System.out.println(placeholderDisplayText);	
 			////System.out.println("Oiginal-Placeholder-Text = "+placeholders[i].getDisplayText());
 		    /*****************/
-			
+			//int i = 0;
+			//int anzahlplatzhalter = placeholders.length;
+			//String placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();		
+
 			Set<?> entries = SystemConfig.hmAdrBDaten.entrySet();
 		    Iterator<?> it = entries.iterator();
+		    
 		    while (it.hasNext()) {
-		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
-		      String key = entry.getKey().toString().toLowerCase();
-		      if( (key.contains("<bblock") || key.contains("<btitel")) && key.equals(placeholderDisplayText) ){
-		    	  ////System.out.println("enthält block oder titel");
-		    	  int bblock;
-		    	  if(key.contains("<bblock")){
-			    	  ////System.out.println("enthält block");
-		    		  bblock = Integer.valueOf(key.substring((key.length()-2),(key.length()-1)) );
-		    		  if(("<bblock"+bblock+">").equals(placeholderDisplayText)){
-		    			  if(((String)entry.getValue()).trim().equals("")){
-		    				  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
-		    				  break;
-		    			  }else{
-		    				  placeholders[i].getTextRange().setText(((String)entry.getValue()));
-		    				  break;
-		    			  }
-		    		  }
-		    	  }
-		    	  if(key.contains("<btitel")){
-			    	  ////System.out.println("enthält titel");
-		    		  bblock = Integer.valueOf(key.substring((key.length()-2),(key.length()-1)) );
-		    		  if(("<btitel"+bblock+">").equals(placeholderDisplayText)){
-		    			  if(((String)entry.getValue()).trim().equals("")){
-		    				  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
-		    				  break;
-		    			  }else{
-		    				  placeholders[i].getTextRange().setText(((String)entry.getValue()));
-		    				  break;
-		    			  }
-		    		  }
-		    	  }
-		    	  
-		      }else if( (!(key.contains("<bblock") || key.contains("<btitel"))) && key.equals(placeholderDisplayText)  ){
-			      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
-			    	  if((key.contains("<blang")) && ((String)entry.getValue()).trim().equals("") ){
-			    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
-			    	  }else{
-				    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));			    		  
+		    	
+
+		    			
+
+			      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
+			      String key = entry.getKey().toString().toLowerCase();
+			      if( (key.contains("<bblock") || key.contains("<btitel")) && key.equals(placeholderDisplayText) ){
+			    	  ////System.out.println("enthält block oder titel");
+			    	  int bblock;
+			    	  if(key.contains("<bblock")){
+				    	  ////System.out.println("enthält block");
+			    		  bblock = Integer.valueOf(key.substring((key.length()-2),(key.length()-1)) );
+			    		  if(("<bblock"+bblock+">").equals(placeholderDisplayText)){
+			    			  if(((String)entry.getValue()).trim().equals("")){
+			    				  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+			    				  break;			    			  }else{
+			    				  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+			    				  break;
+			    			  }
+			    		  }
 			    	  }
-			    	  break;
+			    	  if(key.contains("<btitel")){
+				    	  ////System.out.println("enthält titel");
+			    		  bblock = Integer.valueOf(key.substring((key.length()-2),(key.length()-1)) );
+			    		  if(("<btitel"+bblock+">").equals(placeholderDisplayText)){
+			    			  if(((String)entry.getValue()).trim().equals("")){
+			    				  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+			    				  break;
+			    			  }else{
+			    				  placeholders[i].getTextRange().setText(((String)entry.getValue()));
+			    				  break;
+
+			    			  }
+			    		  }
+			    	  }
+			    	  
+			      }else if( (!(key.contains("<bblock") || key.contains("<btitel"))) && key.equals(placeholderDisplayText)  ){
+				      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+				    	  if((key.contains("<blang")) && ((String)entry.getValue()).trim().equals("") ){
+				    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+				    	  }else{
+					    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));			    		  
+				    	  }
+	    				  break;
+				      }
+			      }else{
+			    	  System.out.println("in keinem von Beidem "+entry.getKey()+" - "+key+" - "+placeholderDisplayText);
 			      }
-		      }else{
-		    	  ////System.out.println("in keinem von Beidem "+entry.getKey()+" - "+key+" - "+placeholderDisplayText);
-		      }
-		    }
+			      
+				    try {
+						Thread.sleep(25);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+			    }
+
+			
+
 		}
-		textDocument.getFrame().setFocus();
+		
+ 
+
+		}catch(NullPointerException ex){
+				ex.printStackTrace();
+		}
+		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
+		viewCursor.getPageCursor().jumpToFirstPage();
+		final ITextDocument xtextDocument = textDocument;
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+				xtextDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+				xtextDocument.getFrame().setFocus();
+			}
+		});
+
+	}
+
+	
+	/*******************************************************************************************/
+	/*******************************************************************************************/
+
+	public static void starteTherapieBericht(String url){
+		IDocumentService documentService = null;
+		////System.out.println("Starte Datei -> "+url);
+		if(!Reha.officeapplication.isActive()){
+			Reha.starteOfficeApplication();
+		}
+		try {
+			documentService = Reha.officeapplication.getDocumentService();
+		} catch (OfficeApplicationException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Fehler im OpenOffice-System - Therapiebericht kann nicht erstellt werden");
+			return;
+		}
+        IDocumentDescriptor docdescript = new DocumentDescriptor();
+       	docdescript.setHidden(true);
+        docdescript.setAsTemplate(true);
+		IDocument document = null;
+		//ITextTable[] tbl = null;
+		try {
+			document = (IDocument) documentService.loadDocument(url,docdescript);
+		} catch (NOAException e) {
+			e.printStackTrace();
+		}
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		
+		ITextDocument textDocument = (ITextDocument)document;
+		ITextFieldService textFieldService = textDocument.getTextFieldService();
+		ITextField[] placeholders = null;
+		try {
+			placeholders = textFieldService.getPlaceholderFields();
+		} catch (TextException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		try{
+		Vector<String> docPlatzhalter = new Vector<String>();
+		int i; 
+		int anzahlph = placeholders.length;
+		
+		for(i = 0; i < anzahlph;i++){
+			docPlatzhalter.add( placeholders[i].getDisplayText().substring(0,1) + 
+					placeholders[i].getDisplayText().substring(1,2).toUpperCase() + placeholders[i].getDisplayText().substring(2).toLowerCase());
+
+		}
+		
+		String key;
+		String wert;
+
+		for(i = 0; i < anzahlph;i++){
+			
+			if(SystemConfig.hmAdrBDaten.get(docPlatzhalter.get(i)) != null){
+				
+				key = docPlatzhalter.get(i);
+				wert = SystemConfig.hmAdrBDaten.get(docPlatzhalter.get(i));
+				wert = (wert==null ? "" : wert);
+				if( wert.trim().equals("") ){
+					//System.out.println("vor lösche leren Platzhalter -> "+key);
+					OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+					//System.out.println("nach lösche leren Platzhalter -> "+key);
+				}else{
+					placeholders[i].getTextRange().setText(wert);
+					//System.out.println("nach Text setzen -> "+key+" = "+wert);
+				}
+	
+
+			}
+		}	
+
+		}catch(NullPointerException ex){
+				ex.printStackTrace();
+		}
+		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
+		viewCursor.getPageCursor().jumpToFirstPage();
+		final ITextDocument xtextDocument = textDocument;
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+				xtextDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+				xtextDocument.getFrame().setFocus();
+			}
+		});
+		//Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+
 	}
 
 	public static synchronized ITextDocument starteLeerenWriter(){

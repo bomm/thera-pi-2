@@ -481,7 +481,9 @@ public class RVMeldung301 {
 		}
 		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("PNA+BM+","PDI+")+EOL+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+BM+","NAT+")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+		}
 		//Aufnahmemitteilung
 		//*******************//
 		if(aufnahmeart==0){
@@ -672,7 +674,9 @@ public class RVMeldung301 {
 		}
 		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("PNA+BM+","PDI+")+EOL+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+BM+","NAT+")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+		}
 		/******************/
 		buf301Body.append("PRC+ADMIN4'"+NEWLINE);zeilen++;	
 		//buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
@@ -744,7 +748,9 @@ public class RVMeldung301 {
 			}
 			buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
 			buf301Body.append(springeAufUndHole("PNA+BM+","PDI+")+EOL+NEWLINE);zeilen++;
-			buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
+			if( ! (test =  springeAufUndHole("PNA+BM+","NAT+")).equals("")){
+				buf301Body.append(test+EOL+NEWLINE);zeilen++;
+			}
 			/******************/
 			buf301Body.append("PRC+ADMIN4'"+NEWLINE);zeilen++;	
 			//buf301Body.append(springeAufUndHole("PNA+BM+","CIN+").replace(":I0R",":10R")+EOL+NEWLINE);zeilen++;
@@ -849,7 +855,9 @@ public class RVMeldung301 {
 		}
 		buf301Body.append(springeAufUndHole("PNA+BM+","DTM+329:")+EOL+NEWLINE);zeilen++;
 		buf301Body.append(springeAufUndHole("PNA+BM+","PDI+")+EOL+NEWLINE);zeilen++;
-		buf301Body.append(springeAufUndHole("PNA+BM+","NAT+")+EOL+NEWLINE);zeilen++;
+		if( ! (test =  springeAufUndHole("PNA+BM+","NAT+")).equals("")){
+			buf301Body.append(test+EOL+NEWLINE);zeilen++;
+		}		
 		/******************/
 		buf301Body.append("PRC+ADMIN6'"+NEWLINE);zeilen++;	
 		buf301Body.append(springeAufUndHole("PNA+BM+","IMD+")+EOL+NEWLINE);zeilen++;

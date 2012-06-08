@@ -15,6 +15,7 @@ import java.util.Arrays;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -29,6 +30,9 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
 import systemTools.StringTools;
+import terminKalender.DatFunk;
+
+
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
@@ -48,6 +52,92 @@ public class PatientMemoPanel extends JXPanel{
 		
 		add(getMemoPanel(),BorderLayout.CENTER);
 	}
+	public void setNewText(String text){
+		
+		if(text.equals("")){
+			caretAufNull();
+			return;
+		}else{
+			//Variable im Text
+			if(text.indexOf("^") >= 0){
+				String newtext = testeAufPlatzhalter(text);		
+				String oldtext = patientHauptPanel.pmemo[patientHauptPanel.inMemo].getText();
+				patientHauptPanel.pmemo[patientHauptPanel.inMemo].setText(newtext+"\n"+oldtext);
+				caretAufNull();
+			}else{
+				String oldtext = patientHauptPanel.pmemo[patientHauptPanel.inMemo].getText();
+				patientHauptPanel.pmemo[patientHauptPanel.inMemo].setText(text+"\n"+oldtext);
+				caretAufNull();
+			}
+		}
+	}
+	private void caretAufNull(){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				//patientHauptPanel.pmemo[patientHauptPanel.inMemo].setSelectionStart(0);
+				//patientHauptPanel.pmemo[patientHauptPanel.inMemo].setSelectionEnd(0);
+				patientHauptPanel.pmemo[patientHauptPanel.inMemo].setCaretPosition(0);	
+			}
+		});
+	}
+	private String testeAufPlatzhalter(String text){
+		String sret = "";
+		//int lang = text.length();
+		//System.out.println(text);
+		text = text.replace("^Datum^", DatFunk.sHeute()).replace("^User^", Reha.aktUser);
+		String stext = text;
+		int start = 0;
+		//int end = 0;
+		String dummy;
+		int vars = 0;
+		//int sysvar = -1;
+		boolean noendfound = false;
+		while ((start = stext.indexOf("^")) >= 0){
+			noendfound = true;
+			for(int i = 1;i < 350;i++){
+				if(stext.substring(start+i,start+(i+1)).equals("^")){
+					dummy = stext.substring(start,start+(i+1));
+					String sanweisung = dummy.toString().replace("^", "");
+					Object ret = JOptionPane.showInputDialog(null,"<html>Bitte Wert eingeben für: --\u003E<b> "+sanweisung+" </b> &nbsp; </html>","Platzhalter gefunden", 1);
+					if(ret==null){
+						return "";
+							//sucheErsetze(dummy,"");
+					}else{
+						//sucheErsetze(document,dummy,((String)ret).trim(),false);
+						/*
+						if( ((String)ret).trim().length()==10 && ((String)ret).trim().indexOf(".") ==2 &&
+										((String)ret).trim().lastIndexOf(".") == 5 ) {
+
+								
+							try{
+								ret = terminKalender.DatFunk.sDatInSQL((String)ret);
+							}catch(Exception ex){
+								JOptionPane.showMessageDialog(null,"Fehler in der Konvertierung des Datums");
+							}
+							
+						}
+						*/
+						sret = stext.replace(dummy, ((String)ret).trim());
+						stext = sret;
+					}
+					noendfound = false;
+					vars++;
+					break;
+				}
+			}
+			if(noendfound){
+				JOptionPane.showMessageDialog(null,"Der Baustein ist fehlerhaft, eine Übernahme deshalb nicht möglich"+
+						"\n\nVermutete Ursache des Fehlers: es wurde ein Start-/Endezeichen '^' für Variable vergessen\n");
+				return "";
+			}
+		}
+		
+		return (sret.equals("") ? text : sret);
+	}
+	
+	private PatientMemoPanel getInstance(){
+		return this;
+	}
 	public void activateMouseListener(){
 		ml = new MouseListener(){
 			@Override
@@ -57,12 +147,14 @@ public class PatientMemoPanel extends JXPanel{
 			public void mousePressed(MouseEvent e) {
 				if(e.getButton() == 3 && ( (patientHauptPanel.pmemo[0].isEditable()) || (patientHauptPanel.pmemo[1].isEditable())) ){
 					//new Floskeln( (patientHauptPanel.pmemo[0].isEditable() ? 0 : 1), e );
-					Floskeln fl = new Floskeln(Reha.thisFrame,"Floskeln",null);
+					Floskeln fl = new Floskeln(Reha.thisFrame,"Floskeln",getInstance());
 					fl.setBounds(200, 200, 200, 200);
 					fl.setPreferredSize(new Dimension(200,200));
 					fl.setLocation(e.getLocationOnScreen());
 					fl.setVisible(true);
+					fl.setAlwaysOnTop(true);
 					fl.setModal(true);
+					fl.setAlwaysOnTop(false);
 					fl = null;
 					//JXFrame owner,String titel, Component aktFocus
 				}
@@ -152,6 +244,7 @@ public class PatientMemoPanel extends JXPanel{
 			patientHauptPanel.pmemo[0].setEditable(false);
 			patientHauptPanel.memobut[3].setEnabled(true);
 			patientHauptPanel.pmemo[0].setText((String) SqlInfo.holeSatz("pat5", "anamnese", "id='"+patientHauptPanel.autoPatid+"'", Arrays.asList(new String[] {})).get(0) );
+			patientHauptPanel.pmemo[0].setCaretPosition(0);
 			patientHauptPanel.inMemo = -1;
 			return;
 		}
@@ -163,6 +256,7 @@ public class PatientMemoPanel extends JXPanel{
 			patientHauptPanel.pmemo[1].setEditable(false);
 			patientHauptPanel.memobut[0].setEnabled(true);		
 			patientHauptPanel.pmemo[1].setText((String) SqlInfo.holeSatz("pat5", "pat_text", "id='"+patientHauptPanel.autoPatid+"'", Arrays.asList(new String[] {})).get(0) );
+			patientHauptPanel.pmemo[1].setCaretPosition(0);
 			patientHauptPanel.inMemo = -1;
 			return;
 		}

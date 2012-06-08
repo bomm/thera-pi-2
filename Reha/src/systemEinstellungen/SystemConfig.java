@@ -845,7 +845,7 @@ public class SystemConfig {
 				"<Bihrenpat>","<Bdisziplin>","<Bdiagnose>","<Breznr>","<Brezdatum>","<Bblock1>","<Bblock2>","<Bblock3>","<Bblock4>",
 				"<Btitel1>","<Btitel2>","<Btitel3>","<Btitel4>","<Bnname>","<Bvnname>","<Bgeboren>","<Btherapeut>",
 				"<Berstdat>","<Bletztdat>","<Banzahl1>","<Banzahl2>","<Banzahl3>","<Banzahl4>",
-				"<Blang1>","<Blang2>","<Blang3>","<Blang4>"});
+				"<Blang1>","<Blang2>","<Blang3>","<Blang4>","<Barztfax>","<Barztemail>"});
 		for(int i = 0; i < lAdrBDaten.size(); i++){
 			hmAdrBDaten.put(lAdrBDaten.get(i),"");
 		}	

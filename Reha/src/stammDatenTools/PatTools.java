@@ -163,7 +163,7 @@ public class PatTools {
 					branrede = "Sehr geehrte Frau"+(titel.length() > 0 ? " "+titel : "")+" "+nachname;
 					adresse[0] = anrede;
 			}
-			adresse[1]=vorname+(titel.length() > 0 ? " "+titel : "")+" "+nachname;
+			adresse[1]=(titel.length() > 0 ? titel+" " : "")+vorname+" "+nachname;
 			adresse[2]=strasse;
 			adresse[3]=plzort;
 			adresse[4]=branrede;

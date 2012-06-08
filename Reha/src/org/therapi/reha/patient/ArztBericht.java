@@ -555,8 +555,8 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			doBerichtVorbericht(arg0);
 		}
 		if(cmd.equals("berichtdrucken")){
+			Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 			doBerichtDrucken();
-
 		}
 		if(cmd.equals("berichtabbrechen")){
 			this.dispose();
@@ -846,133 +846,143 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 	}
 	
 	public void doBerichtDrucken(){
-		/*
-		List<String> lAdrBDaten = Arrays.asList(new String[]{"<Badr1>","<Badr2>","<Badr3>","<Badr4>","<Badr5>","<Banrede>",
-				"<Bdisziplin>","<Bdiagnose>","<Breznr>","<Brezdatum>","<Bblock1>","<Bblock2>","<Bblock3>","<Bblock4>"});
-				"<Btitel1>","<Btitel2>","<Btitel3>","<Btitel4>"});
-		*/
-		Vector<String> vec = SqlInfo.holeSatz("arzt", 
-				"anrede,titel,nachname,vorname,strasse,plz,ort",
-				" id='"+arztid+"'", 
-				Arrays.asList(new String[] {}));
-		if(vec.size()<=0){
-			JOptionPane.showMessageDialog(null,"Der zugeordnete Arzt ist nicht gültig bitte wählen Sie einen neuen Arzt!");
-			return;
-		}
-		String[] str = AdressTools.machePrivatAdresse(vec.toArray(),false);
-		/*
-		for(int i = 0; i < str.length; i++){
-			//System.out.println("Ergebnis von str"+i+" = "+str[i]);
-		}
-		*/
-		SystemConfig.hmAdrBDaten.put("<Badr1>", str[0]);
-		SystemConfig.hmAdrBDaten.put("<Badr2>", str[1]);
-		SystemConfig.hmAdrBDaten.put("<Badr3>", str[2]);
-		SystemConfig.hmAdrBDaten.put("<Badr4>", str[3]);
-		SystemConfig.hmAdrBDaten.put("<Bbanrede>", str[4]);
-		if(Reha.thisClass.patpanel.patDaten.get(0).toUpperCase().equals("HERR")){
-			SystemConfig.hmAdrBDaten.put("<Bihrenpat>", "Ihren Patienten");
-		}else{
-			SystemConfig.hmAdrBDaten.put("<Bihrenpat>", "Ihre Patientin");
-		}
-		for(int i = 0; i < 4; i++){
-			SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", SystemConfig.berichttitel[i]);
-			if(this.icfblock[i].getText().trim().equals("")){
-				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">", "");	
-				SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", "");
-			}else{
-				String sblock = icfblock[i].getText().replace(System.getProperty("line.separator"),"\n");
-
-				sblock = sblock.replace("\f\r","");
-				sblock = sblock.replace("\f","");
-				sblock = sblock.replace("\n\r","");
-				sblock = sblock.replace("\r\n","");
-				//sblock = sblock.replace("\\r",System.getProperty("line.separator") );
-				sblock = sblock.replace("\r","" );
-
-				sblock = sblock +"\n";
-				/*
-				if(i==1){
-					for(int y = 0; y < sblock.length();y++){
-						System.out.println(sblock.substring(y,y+1));
-						System.out.println((int)sblock.substring(y,y+1).toCharArray()[0]);
-					}
-				}
-				*/
-				//String sblock = icfblock[i].getText()+"\n";
-				SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">",sblock);
-				SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", SystemConfig.berichttitel[i]);
-			}
-			
-		}
-		SystemConfig.hmAdrBDaten.put("<Bnname>", StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(2)));
-		SystemConfig.hmAdrBDaten.put("<Bvname>", StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(3)));
-		SystemConfig.hmAdrBDaten.put("<Bgeboren>", DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)));
-		SystemConfig.hmAdrBDaten.put("<Brezdatum>", DatFunk.sDatInDeutsch(rezdatum));
-		SystemConfig.hmAdrBDaten.put("<Breznr>",reznr);
-		String sblock = diagnose.getText().replaceAll("\\n", "");
-		SystemConfig.hmAdrBDaten.put("<Bdiagnose>",sblock);
-		SystemConfig.hmAdrBDaten.put("<Btherapeut>",(String) verfasser.getSelectedItem());
-		//System.out.println("Berichtsdatei = ------->"+SystemConfig.thberichtdatei);
-
-		/*
-		Set entries = SystemConfig.hmAdrBDaten.entrySet();
-	    Iterator it = entries.iterator();
-	    while (it.hasNext()) {
-	      Map.Entry entry = (Map.Entry) it.next();
-	      //System.out.println("Key = "+(String)entry.getKey()+"\n"+"Wert = "+entry.getValue());
-	    }
-	    */
-		if(aufrufvon==0){
-			//aus aktuellen Rezepten
-			//"<Berstdat>","<Bletztdat>","<Banzahl1>","<Banzahl2>","<Banzahl3>","<Banzahl4>",
-			//"<Bposition1>","<Bposition2>","<Bposition3>","<Bposition4>"});
-			SystemConfig.hmAdrBDaten.put("<Berstdat>",SystemConfig.hmAdrRDaten.get("<Rerstdat>"));
-			SystemConfig.hmAdrBDaten.put("<Bletztdat>",SystemConfig.hmAdrRDaten.get("<Rletztdat>"));
-			SystemConfig.hmAdrBDaten.put("<Banzahl1>",SystemConfig.hmAdrRDaten.get("<Ranzahl1>"));
-			SystemConfig.hmAdrBDaten.put("<Banzahl2>",SystemConfig.hmAdrRDaten.get("<Ranzahl2>"));
-			SystemConfig.hmAdrBDaten.put("<Banzahl3>",SystemConfig.hmAdrRDaten.get("<Ranzahl3>"));
-			SystemConfig.hmAdrBDaten.put("<Banzahl4>",SystemConfig.hmAdrRDaten.get("<Ranzahl4>"));
+		try{
 			/*
-			SystemConfig.hmAdrBDaten.put("<Blang1>",SystemConfig.hmAdrRDaten.get("<Rposition1>"));
-			SystemConfig.hmAdrBDaten.put("<Blang2>",SystemConfig.hmAdrRDaten.get("<Rposition2>"));
-			SystemConfig.hmAdrBDaten.put("<Blang3>",SystemConfig.hmAdrRDaten.get("<Rposition3>"));
-			SystemConfig.hmAdrBDaten.put("<Blang4>",SystemConfig.hmAdrRDaten.get("<Rposition4>"));
+			List<String> lAdrBDaten = Arrays.asList(new String[]{"<Badr1>","<Badr2>","<Badr3>","<Badr4>","<Badr5>","<Banrede>",
+					"<Bdisziplin>","<Bdiagnose>","<Breznr>","<Brezdatum>","<Bblock1>","<Bblock2>","<Bblock3>","<Bblock4>"});
+					"<Btitel1>","<Btitel2>","<Btitel3>","<Btitel4>"});
 			*/
-			String diszi = RezTools.putRezNrGetDisziplin(reznr);
-			regleBHashMap(diszi,Reha.thisClass.patpanel.vecaktrez.get(41),
-					Reha.thisClass.patpanel.vecaktrez.get(8),Reha.thisClass.patpanel.vecaktrez.get(9),
-					Reha.thisClass.patpanel.vecaktrez.get(10),Reha.thisClass.patpanel.vecaktrez.get(11));
-		}else{
-			//
-			String diszi = RezTools.putRezNrGetDisziplin(reznr);
-			Vector<Vector<String>> veclza = SqlInfo.holeFelder("select termine,preisgruppe,anzahl1,anzahl2,"+
-					"anzahl3,anzahl4,art_dbeh1,art_dbeh2,art_dbeh3,art_dbeh4 from verordn where rez_nr='"+reznr+"' LIMIT 1");
-			if( veclza.size() <= 0){
-				veclza = SqlInfo.holeFelder("select termine,preisgruppe,anzahl1,anzahl2,"+
-						"anzahl3,anzahl4,art_dbeh1,art_dbeh2,art_dbeh3,art_dbeh4 from lza where rez_nr='"+reznr+"' LIMIT 1");
+			Vector<String> vec = SqlInfo.holeSatz("arzt", 
+					"anrede,titel,nachname,vorname,strasse,plz,ort,fax,email1",
+					" id='"+arztid+"'", 
+					Arrays.asList(new String[] {}));
+			if(vec.size()<=0){
+				JOptionPane.showMessageDialog(null,"Der zugeordnete Arzt ist nicht gültig bitte wählen Sie einen neuen Arzt!");
+				return;
 			}
-			
-			if(veclza.size()>0){
-				Vector<String> termvec = RezTools.holeEinzelTermineAusRezept("", veclza.get(0).get(0));
-				if(termvec.size()>0){
-					SystemConfig.hmAdrBDaten.put("<Berstdat>",termvec.get(0));
-					SystemConfig.hmAdrBDaten.put("<Bletztdat>",termvec.get(termvec.size()-1));
+			String[] str = AdressTools.machePrivatAdresse(vec.toArray(),false);
+			/*
+			for(int i = 0; i < str.length; i++){
+				//System.out.println("Ergebnis von str"+i+" = "+str[i]);
+			}
+			*/
+			SystemConfig.hmAdrBDaten.put("<Badr1>", str[0]);
+			SystemConfig.hmAdrBDaten.put("<Badr2>", str[1]);
+			SystemConfig.hmAdrBDaten.put("<Badr3>", str[2]);
+			SystemConfig.hmAdrBDaten.put("<Badr4>", str[3]);
+			SystemConfig.hmAdrBDaten.put("<Bbanrede>", str[4]);
+			try{
+				SystemConfig.hmAdrBDaten.put("<Barztfax>", vec.get(7));
+				SystemConfig.hmAdrBDaten.put("<Barztemail>", vec.get(8));
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			if(Reha.thisClass.patpanel.patDaten.get(0).toUpperCase().equals("HERR")){
+				SystemConfig.hmAdrBDaten.put("<Bihrenpat>", "Ihren Patienten");
+			}else{
+				SystemConfig.hmAdrBDaten.put("<Bihrenpat>", "Ihre Patientin");
+			}
+			for(int i = 0; i < 4; i++){
+				SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", SystemConfig.berichttitel[i]);
+				if(this.icfblock[i].getText().trim().equals("")){
+					SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">", "");	
+					SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", "");
 				}else{
-					SystemConfig.hmAdrBDaten.put("<Berstdat>","");
-					SystemConfig.hmAdrBDaten.put("<Bletztdat>","");
-				}
-				SystemConfig.hmAdrBDaten.put("<Banzahl1>",veclza.get(0).get(2));
-				SystemConfig.hmAdrBDaten.put("<Banzahl2>",veclza.get(0).get(3));
-				SystemConfig.hmAdrBDaten.put("<Banzahl3>",veclza.get(0).get(4));
-				SystemConfig.hmAdrBDaten.put("<Banzahl4>",veclza.get(0).get(5));
-				regleBHashMap(diszi,veclza.get(0).get(1),
-						veclza.get(0).get(6),veclza.get(0).get(7),
-						veclza.get(0).get(8),veclza.get(0).get(9));
+					String sblock = icfblock[i].getText().replace(System.getProperty("line.separator"),"\n");
 
+					sblock = sblock.replace("\f\r","");
+					sblock = sblock.replace("\f","");
+					sblock = sblock.replace("\n\r","");
+					sblock = sblock.replace("\r\n","");
+					//sblock = sblock.replace("\\r",System.getProperty("line.separator") );
+					sblock = sblock.replace("\r","" );
+
+					sblock = sblock +"\n";
+					/*
+					if(i==1){
+						for(int y = 0; y < sblock.length();y++){
+							System.out.println(sblock.substring(y,y+1));
+							System.out.println((int)sblock.substring(y,y+1).toCharArray()[0]);
+						}
+					}
+					*/
+					//String sblock = icfblock[i].getText()+"\n";
+					SystemConfig.hmAdrBDaten.put("<Bblock"+(i+1)+">",sblock);
+					SystemConfig.hmAdrBDaten.put("<Btitel"+(i+1)+">", SystemConfig.berichttitel[i]);
+				}
+				
 			}
+			SystemConfig.hmAdrBDaten.put("<Bnname>", StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(2)));
+			SystemConfig.hmAdrBDaten.put("<Bvname>", StringTools.EGross(Reha.thisClass.patpanel.patDaten.get(3)));
+			SystemConfig.hmAdrBDaten.put("<Bgeboren>", DatFunk.sDatInDeutsch(Reha.thisClass.patpanel.patDaten.get(4)));
+			SystemConfig.hmAdrBDaten.put("<Brezdatum>", DatFunk.sDatInDeutsch(rezdatum));
+			SystemConfig.hmAdrBDaten.put("<Breznr>",reznr);
+			String sblock = diagnose.getText().replaceAll("\\n", "");
+			SystemConfig.hmAdrBDaten.put("<Bdiagnose>",sblock);
+			SystemConfig.hmAdrBDaten.put("<Btherapeut>",(String) verfasser.getSelectedItem());
+			//System.out.println("Berichtsdatei = ------->"+SystemConfig.thberichtdatei);
+
+			/*
+			Set entries = SystemConfig.hmAdrBDaten.entrySet();
+		    Iterator it = entries.iterator();
+		    while (it.hasNext()) {
+		      Map.Entry entry = (Map.Entry) it.next();
+		      //System.out.println("Key = "+(String)entry.getKey()+"\n"+"Wert = "+entry.getValue());
+		    }
+		    */
+			if(aufrufvon==0){
+				//aus aktuellen Rezepten
+				//"<Berstdat>","<Bletztdat>","<Banzahl1>","<Banzahl2>","<Banzahl3>","<Banzahl4>",
+				//"<Bposition1>","<Bposition2>","<Bposition3>","<Bposition4>"});
+				SystemConfig.hmAdrBDaten.put("<Berstdat>",SystemConfig.hmAdrRDaten.get("<Rerstdat>"));
+				SystemConfig.hmAdrBDaten.put("<Bletztdat>",SystemConfig.hmAdrRDaten.get("<Rletztdat>"));
+				SystemConfig.hmAdrBDaten.put("<Banzahl1>",SystemConfig.hmAdrRDaten.get("<Ranzahl1>"));
+				SystemConfig.hmAdrBDaten.put("<Banzahl2>",SystemConfig.hmAdrRDaten.get("<Ranzahl2>"));
+				SystemConfig.hmAdrBDaten.put("<Banzahl3>",SystemConfig.hmAdrRDaten.get("<Ranzahl3>"));
+				SystemConfig.hmAdrBDaten.put("<Banzahl4>",SystemConfig.hmAdrRDaten.get("<Ranzahl4>"));
+				/*
+				SystemConfig.hmAdrBDaten.put("<Blang1>",SystemConfig.hmAdrRDaten.get("<Rposition1>"));
+				SystemConfig.hmAdrBDaten.put("<Blang2>",SystemConfig.hmAdrRDaten.get("<Rposition2>"));
+				SystemConfig.hmAdrBDaten.put("<Blang3>",SystemConfig.hmAdrRDaten.get("<Rposition3>"));
+				SystemConfig.hmAdrBDaten.put("<Blang4>",SystemConfig.hmAdrRDaten.get("<Rposition4>"));
+				*/
+				String diszi = RezTools.putRezNrGetDisziplin(reznr);
+				regleBHashMap(diszi,Reha.thisClass.patpanel.vecaktrez.get(41),
+						Reha.thisClass.patpanel.vecaktrez.get(8),Reha.thisClass.patpanel.vecaktrez.get(9),
+						Reha.thisClass.patpanel.vecaktrez.get(10),Reha.thisClass.patpanel.vecaktrez.get(11));
+			}else{
+				//
+				String diszi = RezTools.putRezNrGetDisziplin(reznr);
+				Vector<Vector<String>> veclza = SqlInfo.holeFelder("select termine,preisgruppe,anzahl1,anzahl2,"+
+						"anzahl3,anzahl4,art_dbeh1,art_dbeh2,art_dbeh3,art_dbeh4 from verordn where rez_nr='"+reznr+"' LIMIT 1");
+				if( veclza.size() <= 0){
+					veclza = SqlInfo.holeFelder("select termine,preisgruppe,anzahl1,anzahl2,"+
+							"anzahl3,anzahl4,art_dbeh1,art_dbeh2,art_dbeh3,art_dbeh4 from lza where rez_nr='"+reznr+"' LIMIT 1");
+				}
+				
+				if(veclza.size()>0){
+					Vector<String> termvec = RezTools.holeEinzelTermineAusRezept("", veclza.get(0).get(0));
+					if(termvec.size()>0){
+						SystemConfig.hmAdrBDaten.put("<Berstdat>",termvec.get(0));
+						SystemConfig.hmAdrBDaten.put("<Bletztdat>",termvec.get(termvec.size()-1));
+					}else{
+						SystemConfig.hmAdrBDaten.put("<Berstdat>","");
+						SystemConfig.hmAdrBDaten.put("<Bletztdat>","");
+					}
+					SystemConfig.hmAdrBDaten.put("<Banzahl1>",veclza.get(0).get(2));
+					SystemConfig.hmAdrBDaten.put("<Banzahl2>",veclza.get(0).get(3));
+					SystemConfig.hmAdrBDaten.put("<Banzahl3>",veclza.get(0).get(4));
+					SystemConfig.hmAdrBDaten.put("<Banzahl4>",veclza.get(0).get(5));
+					regleBHashMap(diszi,veclza.get(0).get(1),
+							veclza.get(0).get(6),veclza.get(0).get(7),
+							veclza.get(0).get(8),veclza.get(0).get(9));
+
+				}
+			}
+		    OOTools.starteTherapieBericht(SystemConfig.thberichtdatei);
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
-	    OOTools.starteTherapieBericht(SystemConfig.thberichtdatei);
 
 		
 	}

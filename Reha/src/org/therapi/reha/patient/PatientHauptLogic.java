@@ -60,6 +60,7 @@ public class PatientHauptLogic {
 	private JRtaTextField formularid = new JRtaTextField("NIX",false);
 	private PatNeuDlg neuPat;
 	public PatNeuanlage pneu;
+	public int lastrow = -1;
 	public PatientHauptLogic(PatientHauptPanel patHauptPanel){
 		
 		this.patientHauptPanel = patHauptPanel;
@@ -179,20 +180,37 @@ public class PatientHauptLogic {
 		if (patientHauptPanel.sucheComponent != null){
 			Point thispoint = patientHauptPanel.tfsuchen.getLocationOnScreen();
 			((SuchenDialog) patientHauptPanel.sucheComponent).setLocation(thispoint.x-60, thispoint.y+25);
-			if(! patientHauptPanel.tfsuchen.getText().trim().equals(lastseek)){
+		
+			if(! patientHauptPanel.tfsuchen.getText().trim().equals(lastseek.trim())){
 				((SuchenDialog) patientHauptPanel.sucheComponent).suchDasDing(patientHauptPanel.tfsuchen.getText());
 				lastseek = patientHauptPanel.tfsuchen.getText().trim();
+				((SuchenDialog) patientHauptPanel.sucheComponent).setVisible(true);
+				this.lastrow = -1;
+			}else{
+				lastrow = -1;
+				((SuchenDialog) patientHauptPanel.sucheComponent).setVisible(true);
 			}
-			((SuchenDialog) patientHauptPanel.sucheComponent).setVisible(true);
+			
 		}else{
+			//System.out.println("Lastseek = "+lastseek.trim()+" / aktuelle Suche = "+patientHauptPanel.tfsuchen.getText().trim());
+			if(! patientHauptPanel.tfsuchen.getText().trim().equals(lastseek.trim())){
+				this.setLastRow(-1);
+			}
 			patientHauptPanel.sucheComponent = new SuchenDialog(null,Reha.thisClass.patpanel,
-					patientHauptPanel.tfsuchen.getText(),patientHauptPanel.jcom.getSelectedIndex());
+					patientHauptPanel.tfsuchen.getText(),patientHauptPanel.jcom.getSelectedIndex(),this);
 			Point thispoint = patientHauptPanel.tfsuchen.getLocationOnScreen();
 			((SuchenDialog) patientHauptPanel.sucheComponent).setLocation(thispoint.x-60, thispoint.y+25);
 			((SuchenDialog) patientHauptPanel.sucheComponent).setVisible(true);
 			lastseek = patientHauptPanel.tfsuchen.getText().trim();
 		}
 	}
+	public void setLastRow(int row){
+		this.lastrow = row;
+	}
+	public int getLastRow(){
+		return this.lastrow;
+	}
+
 	class PatientAction extends AbstractAction {
 	    /**
 		 * 

@@ -1430,6 +1430,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcb[cBEGRADR].setSelected((test.equals("T")?true:false));
 		test = StringTools.NullTest(this.vec.get(43));
 		jcb[cHAUSB].setSelected((test.equals("T")?true:false));
+
+		test = StringTools.NullTest(this.vec.get(61));
+		jcb[cVOLLHB].setSelected((test.equals("T")?true:false));
+		
 		test = StringTools.NullTest(this.vec.get(55));
 		jcb[cTBANGEF].setSelected((test.equals("T")?true:false));
 		test = StringTools.NullTest(this.vec.get(3));
@@ -1540,7 +1544,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			if(stest.equals(".  .")){
 				stest = DatFunk.sHeute();
 			}
-			boolean neuerpreis = RezTools.neuePreisNachRezeptdatum(aktuelleDisziplin, preisgruppe, String.valueOf(stest));
+			boolean neuerpreis = RezTools.neuePreisNachRezeptdatumOderStichtag(aktuelleDisziplin, preisgruppe, String.valueOf(stest),false,Reha.thisClass.patpanel.vecaktrez);
 			sbuf.append("rez_datum='"+DatFunk.sDatInSQL(stest)+"', ");
 			int row = Reha.thisClass.patpanel.aktRezept.tabaktrez.getSelectedRow();
 			if(row >= 0){
@@ -1781,7 +1785,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			if(stest.equals(".  .")){
 				stest = DatFunk.sHeute();
 			}
-			boolean neuerpreis = RezTools.neuePreisNachRezeptdatum(aktuelleDisziplin, preisgruppe, String.valueOf(stest));
+			boolean neuerpreis = RezTools.neuePreisNachRezeptdatumOderStichtag(aktuelleDisziplin, preisgruppe, String.valueOf(stest),true,null);
 			//Zunächst ermitteln welche Fristen und ob Kalender oder Werktage gelten
 			//Dann das Rezeptdatum übergeben, Rückgabewert ist spätester Beginn. 
 			sbuf.append("rez_datum='"+DatFunk.sDatInSQL(stest)+"', ");
@@ -1995,6 +1999,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		final int cVAR_RSPLIT = 58;
 		final int cVAR_JAHRFREI = 59;
 
+		final int cVAR_HBVOLL = 61;
 		//Funktion ist immer noch suboptimal, da der Kostenträger des Rezeptes noch nicht übernommen wird. 
 		
 		//String strPat_Intern = jtf[cPATINT].getText();

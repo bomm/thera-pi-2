@@ -1102,8 +1102,8 @@ public static int PosTest(int pos){
 }
 public static void containerHandling(int cont){
 	if(Reha.thisClass.vollsichtbar == -1 || (!SystemConfig.desktopHorizontal)){
-		System.out.println("Location = "+Reha.thisClass.jSplitRechtsOU.getDividerLocation());
-		System.out.println("Width = "+Reha.thisClass.jSplitRechtsOU.getWidth());
+		//System.out.println("Location = "+Reha.thisClass.jSplitRechtsOU.getDividerLocation());
+		//System.out.println("Width = "+Reha.thisClass.jSplitRechtsOU.getWidth());
 		if(cont == 0){
 			if(Reha.thisClass.jSplitRechtsOU.getDividerLocation() == 0 ){
 				Reha.thisClass.setDivider(5);	

@@ -34,6 +34,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
+import org.therapi.reha.patient.PatientHauptLogic;
 
 import systemEinstellungen.SystemConfig;
 import systemTools.StringTools;
@@ -89,16 +90,18 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 	public JComponent focusBack = null;
 	private String fname = "";  //  @jve:decl-index=0:
 	public DefaultTableModel tblDataModel;
-	
+	public boolean jumpok = false;
 	public  int suchart = 0;
 	/**
 	 * @param 
 	 */
-	public SuchenDialog(JXFrame owner,JComponent focusBack,String fname,int art) {
+	private PatientHauptLogic aufrufer = null;
+	public SuchenDialog(JXFrame owner,JComponent focusBack,String fname,int art,PatientHauptLogic xaufrufer) {
 		super(owner, (JComponent)Reha.thisFrame.getGlassPane());
 		this.focusBack = (focusBack == null ? null : focusBack);
 		this.fname = (String) (fname.equals("") ? "" : fname);
 		this.suchart = art;
+		this.aufrufer = xaufrufer;
 		initialize();
 		jTextField.setText(fname);
 		new suchePatient().init(tblDataModel);
@@ -106,6 +109,8 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				setzeFocus();
+				
+				
 			}
 		});
 	}
@@ -116,11 +121,28 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			}
 		});
 	}
+	
 	public void	setzeReihe(Vector<?> vec){
 		tblDataModel.addRow(vec);
 		jtable.validate();
 		
 	}
+	/*
+	public void	setzeZeile(int row){
+		
+		try{
+			jtable.setRowSelectionInterval(row, row);
+			jtable.scrollRowToVisible(row);
+			jtable.repaint();
+			jtable.validate();			
+		}catch(Exception ex){
+			ex.printStackTrace();
+			jtable.repaint();
+			jtable.validate();	
+		}
+
+	}
+	*/
 	public void rehaTPEventOccurred(RehaTPEvent evt) {
 
 		try{
@@ -238,6 +260,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 							@Override
 							protected Void doInBackground() throws Exception {
 								new suchePatient().init(tblDataModel);
+								aufrufer.setLastRow(jtable.getSelectedRow());
 								return null;
 							}
 						}.execute();
@@ -246,6 +269,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 					if (e.getKeyCode() == 27){   // ESC gedrückt
 						e.consume();
 						setVisible(false);
+						aufrufer.setLastRow(-1);
 						sucheBeenden();
 					}
 
@@ -253,10 +277,15 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 						e.consume();
 						if (jtable.getRowCount() > 0){
 							jtable.requestFocus();
-							if(jtable.getSelectedRow()>=0){
+							if(jtable.getSelectedRow() >= 0){
 								jtable.requestFocus();
 							}else{
-								jtable.setRowSelectionInterval(0, 0);	
+								if(jumpok){
+									jtable.setRowSelectionInterval(aufrufer.getLastRow(),aufrufer.getLastRow());	
+								}else{
+									jtable.setRowSelectionInterval(0,0);
+								}
+									
 							}
 						}
 					}
@@ -315,6 +344,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 			jtable.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyPressed(java.awt.event.KeyEvent e) {
 					if (e.getKeyCode() == 10){
+						aufrufer.setLastRow(jtable.getSelectedRow());
 						sucheAbfeuern();
 						e.consume();	
 						setVisible(false);
@@ -339,6 +369,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 				}
 				public void mouseClicked(java.awt.event.MouseEvent e) {
 					if(e.getClickCount() == 2){
+						aufrufer.setLastRow(jtable.getSelectedRow());
 						sucheAbfeuern();
 						e.consume();
 						setVisible(false);
@@ -376,6 +407,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		pEvt.setPatStammEvent("PatSuchen");
 		pEvt.setDetails(s1,s2,fname) ;
 		PatStammEventClass.firePatStammEvent(pEvt);		
+		Reha.thisClass.lastSelectedPat = jtable.getSelectedRow();
 	}
 	public void sucheBeenden(){
 		String s1 = String.valueOf("#SUCHENBEENDEN");
@@ -384,7 +416,8 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		PatStammEvent pEvt = new PatStammEvent(SuchenDialog.this);
 		pEvt.setPatStammEvent("PatSuchen");
 		pEvt.setDetails(s1,s2,fname) ;
-		PatStammEventClass.firePatStammEvent(pEvt);		
+		PatStammEventClass.firePatStammEvent(pEvt);	
+		Reha.thisClass.lastSelectedPat = -1;
 	}
 	// Lemmi 20101212: Merken der Defaultwerte für den nächsten Aufruf
 	// speichere Dimension und Suchart in der INI-Datei für nächsten Aufruf
@@ -676,6 +709,8 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 					rEvt.setRehaEvent("Am Arsch lecken");
 					RehaEventClass.fireRehaEvent(rEvt);
 					SuchenDialog.this.setVisible(false);
+
+					aufrufer.setLastRow(-1);
 					SuchenDialog.this.dispose();
 				}
 			});
@@ -787,7 +822,23 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 					}
 					setzeReihe((Vector<String>)rowVector.clone());
 				}
+
 				setCursor(Reha.thisClass.normalCursor);
+				
+				try{
+					if(jtable.getRowCount() > 0 && aufrufer.getLastRow() >=0 && aufrufer.getLastRow() < jtable.getRowCount()){
+						jtable.setRowSelectionInterval(aufrufer.getLastRow(), aufrufer.getLastRow());
+						jumpok = true;
+						jtable.requestFocus();
+						
+					}else{
+						jumpok = false;
+					}
+				}catch(Exception ex){
+					jumpok = false;
+					aufrufer.setLastRow(-1);
+					ex.printStackTrace();
+				}
 				
 			}catch(SQLException ev){
 				ev.getMessage();

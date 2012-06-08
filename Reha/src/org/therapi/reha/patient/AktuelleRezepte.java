@@ -2522,7 +2522,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		SystemConfig.hmAdrRDaten.put("<Rendbetrag>", "0,00" );
 		SystemConfig.hmAdrRDaten.put("<Rwert>", "0,00" );
 		/*int art = */RezTools.testeRezGebArt(false,false,(String)Reha.thisClass.patpanel.vecaktrez.get(1),(String)Reha.thisClass.patpanel.vecaktrez.get(34));
-		
+		//System.out.println(SystemConfig.hmAdrRDaten);
 		new RezeptGebuehren(this,bereitsbezahlt,false,pt);
 	}
 	public void setZuzahlImage(int imageno){

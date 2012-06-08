@@ -1513,6 +1513,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Ort</td><td class=\"spalte1\">fehlt</td></tr>");
 		}
 		//Aufnahme-/Enlassdatum
+		boolean nochaktuell = (SqlInfo.holeEinzelFeld("select id from verordn where pat_intern = '"+this.pat_intern+"' and rez_nr like'RH%' Limit 1").trim().equals("") ? false : true);
 		if(btf[15].getText().trim().length() < 10){
 			ifehler++;
 			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Aufnahmedatum</td><td class=\"spalte1\">fehlt</td></tr>");
@@ -1522,7 +1523,14 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				buf.append("<tr><td class=\"spalte4\" valign=\"top\"><b>Prüfen:</b></td><td class=\"spalte3\">Aufnahmedatum ist bedenklich, Aufnahmedatum=</td><td class=\"spalte1\">"+btf[15].getText().trim()+"</td></tr>");
 				iwarnung++;
 			}
+			if(nochaktuell){
+				if(!btf[15].getText().trim().equals(SystemConfig.hmAdrRDaten.get("<Rerstdat>"))){
+					buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b>Fehler:</b></td><td class=\"spalte3\">Aufnahmedatum im Bericht und im Rezeptblatt sind unterschiedlich: </td><td class=\"spalte1\">"+btf[15].getText().trim()+ " vs. "+SystemConfig.hmAdrRDaten.get("<Rerstdat>")+"</td></tr>");
+					ifehler++;
+				}
+			}
 		}
+
 		if(btf[16].getText().trim().length() < 10){
 			ifehler++;
 			buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b><u>Fehler:</u></b></td><td class=\"spalte3\">Entlassdatum</td><td class=\"spalte1\">fehlt</td></tr>");
@@ -1533,7 +1541,14 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				buf.append("<tr><td class=\"spalte4\" valign=\"top\"><b>Prüfen:</b></td><td class=\"spalte3\">Entlassdatum ist bedenklich, Entlassdatum=</td><td class=\"spalte1\">"+btf[16].getText().trim()+"</td></tr>");
 				iwarnung++;
 			}
+			if(nochaktuell){
+				if(!btf[16].getText().trim().equals(SystemConfig.hmAdrRDaten.get("<Rletztdat>"))){
+					buf.append("<tr><td class=\"spalte2\" valign=\"top\"><b>Fehler:</b></td><td class=\"spalte3\">Entlassdatum im Bericht und im Rezeptblatt sind unterschiedlich: </td><td class=\"spalte1\">"+btf[16].getText().trim()+ " vs. "+SystemConfig.hmAdrRDaten.get("<Rletztdat>")+"</td></tr>");
+					ifehler++;
+				}
+			}
 		}
+		
 		if(btf[15].getText().trim().length() == 10 && btf[16].getText().trim().length() == 10){
 			long datvergleich = DatFunk.TageDifferenz(btf[15].getText().trim(),btf[16].getText().trim());
 			//System.out.println(datvergleich);

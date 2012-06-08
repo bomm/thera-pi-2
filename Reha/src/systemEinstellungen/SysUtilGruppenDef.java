@@ -295,59 +295,63 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 	}
 
 	private void gruppeEinstellen(){
-		int igruppe,iakt,itag;
-		dtblm.getDataVector().clear();
-		igruppe = cmbGrName.getSelectedIndex();
-		iakt = cmbAktuell.getSelectedIndex();
-		itag = cmbWochenTag.getSelectedIndex();
-		Vector vec1 = new Vector();
-		vec1 = (Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(igruppe)).clone(); //.get(itag).clone();
-		Vector vec2 = new Vector();
-		if(((Vector)vec1.get(iakt)).size() == 0){
-			//System.out.println("iakt = "+iakt+" = null also return");
-			tabellenRefresh();
-			return;
-		}
-		vec2 = (Vector)((Vector)vec1.get(iakt)).clone(); //.get(itag).clone();
-		Vector vec3 = new Vector();
-		if(((Vector)vec2.get(itag)).size() == 0){
-			//System.out.println("tag = "+itag+" = null also return");
-			tabellenRefresh();
-			return;
-		}
-		vec3 = (Vector)((Vector)vec2.get(itag)).clone(); //.get(itag).clone();
-		//System.out.println("Vektor 3 = "+vec3);
-		
-		
-		jTblGruppen.removeAll();
-		
-		for(int i = 0;i<vec3.size();i++){
-			if(((Vector)vec3.get(i)).size()>2){
-				//Text
-				Vector dummy = new Vector();
-				String ttext = (String)((Vector) vec3.get(i)).get(3);
-				dummy.add(ttext);
-				//Druckzeit
-				ttext = (String)((Vector) vec3.get(i)).get(2);
-				dummy.add(ttext);
-				//Beginn im Kalender
-				int val = new Long(  (Long)((Vector) vec3.get(i)).get(0)).intValue();
-				String start = (String) ZeitFunk.MinutenZuZeit(val); 
-				dummy.add(start.substring(0,5) );
-				//Ende im Kalender
-				int val2 = new Long(  (Long)((Vector) vec3.get(i)).get(1)).intValue();
-				String end = (String) ZeitFunk.MinutenZuZeit(val2); 
-				dummy.add(end.substring(0,5) );
-				//Dauer
-				long val3 = new Long(  (String)((Vector) vec3.get(i)).get(4) );
-				dummy.add(val3);
-				//rowVec.add(dummy.clone());
-				dtblm.addRow((Vector)dummy.clone());
+		try{
+			int igruppe,iakt,itag;
+			dtblm.getDataVector().clear();
+			igruppe = cmbGrName.getSelectedIndex();
+			iakt = cmbAktuell.getSelectedIndex();
+			itag = cmbWochenTag.getSelectedIndex();
+			Vector vec1 = new Vector();
+			vec1 = (Vector)((Vector)SystemConfig.oGruppen.gruppeAlle.get(igruppe)).clone(); //.get(itag).clone();
+			Vector vec2 = new Vector();
+			if(((Vector)vec1.get(iakt)).size() == 0){
+				//System.out.println("iakt = "+iakt+" = null also return");
+				tabellenRefresh();
+				return;
 			}
-			tabellenRefresh();
-		}
-		if(jTblGruppen.getRowCount() > 0){
-			jTblGruppen.setRowSelectionInterval(0,0);
+			vec2 = (Vector)((Vector)vec1.get(iakt)).clone(); //.get(itag).clone();
+			Vector vec3 = new Vector();
+			if(((Vector)vec2.get(itag)).size() == 0){
+				//System.out.println("tag = "+itag+" = null also return");
+				tabellenRefresh();
+				return;
+			}
+			vec3 = (Vector)((Vector)vec2.get(itag)).clone(); //.get(itag).clone();
+			//System.out.println("Vektor 3 = "+vec3);
+			
+			
+			jTblGruppen.removeAll();
+			
+			for(int i = 0;i<vec3.size();i++){
+				if(((Vector)vec3.get(i)).size()>2){
+					//Text
+					Vector dummy = new Vector();
+					String ttext = (String)((Vector) vec3.get(i)).get(3);
+					dummy.add(ttext);
+					//Druckzeit
+					ttext = (String)((Vector) vec3.get(i)).get(2);
+					dummy.add(ttext);
+					//Beginn im Kalender
+					int val = new Long(  (Long)((Vector) vec3.get(i)).get(0)).intValue();
+					String start = (String) ZeitFunk.MinutenZuZeit(val); 
+					dummy.add(start.substring(0,5) );
+					//Ende im Kalender
+					int val2 = new Long(  (Long)((Vector) vec3.get(i)).get(1)).intValue();
+					String end = (String) ZeitFunk.MinutenZuZeit(val2); 
+					dummy.add(end.substring(0,5) );
+					//Dauer
+					long val3 = new Long(  (String)((Vector) vec3.get(i)).get(4) );
+					dummy.add(val3);
+					//rowVec.add(dummy.clone());
+					dtblm.addRow((Vector)dummy.clone());
+				}
+				tabellenRefresh();
+			}
+			if(jTblGruppen.getRowCount() > 0){
+				jTblGruppen.setRowSelectionInterval(0,0);
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 
 		
@@ -777,29 +781,33 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		ini.save();
 	}
 	private void loescheTermin(int row){
-		int igruppe = cmbGrName.getSelectedIndex();
-		int iakt = cmbAktuell.getSelectedIndex();
-		int itag = cmbWochenTag.getSelectedIndex();
+		try{
+			int igruppe = cmbGrName.getSelectedIndex();
+			int iakt = cmbAktuell.getSelectedIndex();
+			int itag = cmbWochenTag.getSelectedIndex();
 
-		String sektion = ((String)cmbGrName.getSelectedItem()).trim()+"_"+(iakt+1);
-		//System.out.println("Sektion = "+sektion);
-		//System.out.println("Zum löschen markiert"+((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)));
-		((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)).remove(row);
-		itag = itag+1;
-		INIFile ini = new INIFile(gruppeninidat);
-		ini.setStringProperty(sektion, "WOTA"+itag, Integer.valueOf(jTblGruppen.getRowCount()).toString(), null);
-		for(int i = 0;i<jTblGruppen.getRowCount();i++){
-			String zeit1 = (String)jTblGruppen.getValueAt(i,2);
-			String zeit2 = (String)jTblGruppen.getValueAt(i,3);
-			ini.setStringProperty(sektion, "TA"+itag+"GR"+(i+1), zeit1+"-"+zeit2, null);
-			String druckzeit = (String)jTblGruppen.getValueAt(i,1);
-			ini.setStringProperty(sektion, "TA"+itag+"ZE"+(i+1),druckzeit, null);
-			String text = (String)jTblGruppen.getValueAt(i,0);
-			ini.setStringProperty(sektion, "TA"+itag+"TX"+(i+1),text, null);
-			String dauer = Integer.valueOf((Integer)jTblGruppen.getValueAt(i,4)).toString();
-			ini.setStringProperty(sektion, "TA"+itag+"DA"+(i+1),dauer, null);
+			String sektion = ((String)cmbGrName.getSelectedItem()).trim()+"_"+(iakt+1);
+			//System.out.println("Sektion = "+sektion);
+			//System.out.println("Zum löschen markiert"+((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)));
+			((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)).remove(row);
+			itag = itag+1;
+			INIFile ini = new INIFile(gruppeninidat);
+			ini.setStringProperty(sektion, "WOTA"+itag, Integer.valueOf(jTblGruppen.getRowCount()).toString(), null);
+			for(int i = 0;i<jTblGruppen.getRowCount();i++){
+				String zeit1 = (String)jTblGruppen.getValueAt(i,2);
+				String zeit2 = (String)jTblGruppen.getValueAt(i,3);
+				ini.setStringProperty(sektion, "TA"+itag+"GR"+(i+1), zeit1+"-"+zeit2, null);
+				String druckzeit = (String)jTblGruppen.getValueAt(i,1);
+				ini.setStringProperty(sektion, "TA"+itag+"ZE"+(i+1),druckzeit, null);
+				String text = (String)jTblGruppen.getValueAt(i,0);
+				ini.setStringProperty(sektion, "TA"+itag+"TX"+(i+1),text, null);
+				String dauer = Integer.valueOf((String)jTblGruppen.getValueAt(i,4).toString()).toString();
+				ini.setStringProperty(sektion, "TA"+itag+"DA"+(i+1),dauer, null);
+			}
+			ini.save();
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
-		ini.save();
 	}
 	
 	private void gruppeAendern(String name){

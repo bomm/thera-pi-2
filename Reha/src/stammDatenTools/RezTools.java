@@ -652,21 +652,87 @@ public class RezTools {
 		}
 	}
 */
-	public static boolean neuePreisNachRezeptdatum(String aktDisziplin,int tarifgruppe,String rez_datum){
+	public static boolean neuePreisNachRezeptdatumOderStichtag(String aktDisziplin,int tarifgruppe,String rez_datum,boolean neuanlage,Vector<String> rezvec){
 		try{
 			String datum = SystemPreislisten.hmNeuePreiseAb.get(aktDisziplin).get(tarifgruppe);
 			int regel = SystemPreislisten.hmNeuePreiseRegel.get(aktDisziplin).get(tarifgruppe);
+			Vector<String> tage = null;
+			//Regel 1=nach Behandlungsbeginn, 2=nach Rezeptdatum, 3=irgend eine Behandlung ab Datum //der Rest wird nicht ausgewertet
 			if(!datum.trim().equals("") && regel==2){
 				if(DatFunk.TageDifferenz(datum, rez_datum) < 0){
 					return false;
 				}
 				return true;
+			}else if(!datum.trim().equals("") && regel==1){
+				//Neuanlage
+				if(neuanlage){
+					if(DatFunk.TageDifferenz(datum,DatFunk.sHeute() ) < 0){
+						return false;
+					}
+					return true;
+				}
+				//Tage holen
+				tage = RezTools.holeEinzelTermineAusRezept(null, rezvec.get(34));
+				if(tage.size()==0 ){
+					//keine Tage vorhanden und Datum heute >= Regeldatum
+					if(DatFunk.TageDifferenz(datum,DatFunk.sHeute() ) < 0){
+						return false;
+					}
+					return true;
+				}else if(tage.size() > 0 ){
+					//Tage vorhanden dann Datum testen
+					if(DatFunk.TageDifferenz(datum, tage.get(0)) < 0){
+						return false;
+					}
+					return true;
+				}
+			}else if(!datum.trim().equals("") && regel==3){
+				//Neuanlage
+				if(neuanlage){
+					if(DatFunk.TageDifferenz(datum,DatFunk.sHeute() ) < 0){
+						return false;
+					}
+					return true;
+				}
+				//Tage holen
+				tage = RezTools.holeEinzelTermineAusRezept(null, rezvec.get(34));
+				if(tage.size()==0 ){
+					//keine Tage vorhanden und Datum heute >= Regeldatum
+					if(DatFunk.TageDifferenz(datum,DatFunk.sHeute() ) < 0){
+						return false;
+					}
+					return true;
+				}else if(tage.size() > 0 ){
+					//Tage vorhanden dann Datum testen ob irgend ein Datum >=
+					for(int i = 0; i < tage.size();i++){
+						if(DatFunk.TageDifferenz(datum, tage.get(i)) >= 0){
+							return true;
+						}
+					}
+					return false;
+				}
 			}else{
+				//Neuanlage
+				/*
+				if(neuanlage){
+					if(DatFunk.TageDifferenz(datum,DatFunk.sHeute() ) < 0){
+						return false;
+					}
+					return true;
+				}
+				*/
+				//Bei Regel 4
+				if(!datum.trim().equals("") && regel==4){
+					if(DatFunk.TageDifferenz(datum,DatFunk.sHeute() ) < 0){
+						return false;
+					}
+				}
 				return true;
 			}
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
+			//Bei Regel 0 oder wenn alles nicht zutrifft
 		return true;
 	}
 
@@ -929,6 +995,10 @@ public class RezTools {
 		BigDecimal einzelpreis = null;
 		BigDecimal poswert = null;
 		BigDecimal rezwert = BigDecimal.valueOf(new Double(0.000));
+		BigDecimal preistest = null;
+		String stmt = null;
+		String meldung = null;
+		DecimalFormat dfx = new DecimalFormat( "0.00" );
 		String xdiszi = RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1));
 		int xpreisgr = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41))-1;
 		String xrezdatum = DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)); 
@@ -936,7 +1006,8 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rid>",(String)Reha.thisClass.patpanel.vecaktrez.get(35) );
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)) );	
-		boolean neuerpreis = neuePreisNachRezeptdatum(xdiszi,xpreisgr,xrezdatum);
+		boolean neuerpreis = neuePreisNachRezeptdatumOderStichtag(xdiszi,xpreisgr,xrezdatum,false,Reha.thisClass.patpanel.vecaktrez);
+		//System.out.println("Neuer Preis = "+neuerpreis+"\n");
 
 		for(i = 0;i < 4;i++){
 			anzahl[i] = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(i+3));
@@ -948,7 +1019,28 @@ public class RezTools {
 					preise[i] = BigDecimal.valueOf(new Double("0.00"));
 				}
 			}else{
-				preise[i] = BigDecimal.valueOf(new Double((String)Reha.thisClass.patpanel.vecaktrez.get(i+18)));	
+				try{
+					if(artdbeh[i] > 0){
+						preistest = BigDecimal.valueOf(new Double((String)Reha.thisClass.patpanel.vecaktrez.get(i+18)));
+						preise[i] = BigDecimal.valueOf(new Double(RezTools.getPreisAktFromID(Integer.toString(artdbeh[i]), Integer.toString(xpreisgr), SystemPreislisten.hmPreise.get(xdiszi).get(xpreisgr))));
+						if( (preistest.compareTo(preise[i]) != 0) ){
+							meldung = "Achtung Unterschiedliche Preise!!!\n\n"+
+							"Im Rezept gespeicherter Preis für Position "+(String)Reha.thisClass.patpanel.vecaktrez.get(48+i)+" = "+dfx.format(preistest)+"\n"+
+							"In der Preisliste gespeicherter Preis für Position "+(String)Reha.thisClass.patpanel.vecaktrez.get(48+i)+" = "+dfx.format(preise[i])+"\n\n"+
+							"Vermutete Ursache: Die Preisliste wurde nach der Rezeptanlage aktualisiert\n"+
+							"Berechung erfolgt mit dem Preis aus der Preisliste, Rezept wird aktualisiert!";
+							JOptionPane.showMessageDialog(null,meldung);
+							stmt = "update verordn set preise"+Integer.toString(i+1)+"='"+dfx.format(preise[i]).replace(",",".")+"' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35)+"' LIMIT 1";
+							///System.out.println(stmt);
+							SqlInfo.sqlAusfuehren(stmt);
+						}
+					}else{
+						preise[i] = BigDecimal.valueOf(new Double("0.00"));
+					}
+				}catch(Exception ex){
+					preise[i] = BigDecimal.valueOf(new Double((String)Reha.thisClass.patpanel.vecaktrez.get(i+18)));	
+				}
+					
 			}
 			
 		}
@@ -956,7 +1048,7 @@ public class RezTools {
 		rezgeb = 10.00;
 		////System.out.println("nach 10.00 zuweisung " +rezgeb.toString());		
 //		String runden;
-		DecimalFormat dfx = new DecimalFormat( "0.00" );
+		
 		BigDecimal endpos;
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rpatid>",(String)Reha.thisClass.patpanel.vecaktrez.get(0) );
@@ -1120,7 +1212,7 @@ public class RezTools {
 		String xdiszi = RezTools.putRezNrGetDisziplin(Reha.thisClass.patpanel.vecaktrez.get(1));
 		int xpreisgr = Integer.parseInt(Reha.thisClass.patpanel.vecaktrez.get(41))-1;
 		String xrezdatum = DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)); 
-		boolean neuerpreis = neuePreisNachRezeptdatum(xdiszi,xpreisgr,xrezdatum);
+		boolean neuerpreis = neuePreisNachRezeptdatumOderStichtag(xdiszi,xpreisgr,xrezdatum,false,Reha.thisClass.patpanel.vecaktrez);
 
 		
 		////System.out.println("nach nullzuweisung " +xrezgeb.toString());
@@ -1339,8 +1431,8 @@ public class RezTools {
 		Object[] retobj = {null,null,null};
 		String disziplin = putRezNrGetDisziplin(vec.get(1));
 		String pos = "";
-		Double preis =0.00;
-		Double wgkm = 0.00;
+		Double preis = 0.00;
+		Double wgkm = (vec.get(7).equals("") ? 0.00 : Double.parseDouble(vec.get(7)) );
 		
 		@SuppressWarnings("unused")
 		String pospauschale = "";
@@ -1383,7 +1475,11 @@ public class RezTools {
 				 kms = kms.multiply(BigDecimal.valueOf(wgkm));
 
 				 pospauschale = SystemPreislisten.hmHBRegeln.get(disziplin).get(preisgruppe-1).get(3);
-				 preispauschale = Double.parseDouble(RezTools.getPreisAktFromPos(pos, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1)));
+				 preispauschale = Double.parseDouble(RezTools.getPreisAktFromPos(pospauschale, Integer.toString(preisgruppe), SystemPreislisten.hmPreise.get(disziplin).get(preisgruppe-1)));
+				 //System.out.println("kms="+kms);
+				 //System.out.println(BigDecimal.valueOf(preispauschale).multiply(BigDecimal.valueOf(Double.parseDouble(Integer.toString(anzahl)))));
+				 //System.out.println("pospauschale="+pospauschale);
+				 //System.out.println("preispauschale="+preispauschale);
 				 if(kms.doubleValue() > BigDecimal.valueOf(preispauschale).multiply(BigDecimal.valueOf(Double.parseDouble(Integer.toString(anzahl)))).doubleValue()){
 					 retobj[1] = kms.doubleValue();
 				 }else{

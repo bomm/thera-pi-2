@@ -320,7 +320,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2012-05-21-DB=";
+	public static String aktuelleVersion = "V=2012-06-06-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -352,6 +352,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public Player player = null;
 	
 	public static JComponent dragDropComponent = null;
+	
+	public int lastSelectedPat = -1;
+	public String lastSelectedValue = "";
+	public int lastSelectedFloskel = -1;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -1961,12 +1965,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             Map <String, Object>config = new HashMap<String, Object>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
             config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
+            
             /*
             config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
-            		new String[] {"-nologo",
-            		"-norestore",
-            		"-nofirststartwizard",
-            		"-invisible"
+            		new String[] {"--nodefault",
+            		"--headless",
+            		"--nodefault",
+            		"--nofirststartwizard",
+            		""
             		});
             */		
             
@@ -2033,6 +2039,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					}
             	  }
             	});
+            	
             Reha.thisClass.Rehaprogress.setIndeterminate(false);
             /*
             new SwingWorker<Void,Void>(){
@@ -2352,6 +2359,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             public void eventDispatched(AWTEvent event)  {
                 if(event instanceof FocusEvent) {
                     //FocusEvent focusEvent = (FocusEvent) event;
+                	//System.out.println( ((FocusEvent) event).getComponent().hasFocus());
                 }
             }
         }, mask);
