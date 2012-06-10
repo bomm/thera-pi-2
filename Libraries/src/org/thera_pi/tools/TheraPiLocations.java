@@ -199,7 +199,7 @@ public class TheraPiLocations {
 	public static String getKeystoreDir(String IK)
 	{
 		String normalizedIK = normalizeIkOrInitial(IK);
-		return keystoreBase + normalizedIK + separator + normalizedIK + ".p12";
+		return keystoreBase + normalizedIK;
 	}
 
 	/**
