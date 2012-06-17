@@ -37,7 +37,7 @@ import org.thera_pi.tools.StringTools;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import org.thera_pi.swingx.JCompTools;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

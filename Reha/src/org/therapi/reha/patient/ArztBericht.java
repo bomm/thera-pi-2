@@ -51,7 +51,7 @@ import systemEinstellungen.SystemPreislisten;
 import systemTools.AdressTools;
 import systemTools.Colors;
 import systemTools.JRtaComboBox;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import terminKalender.ParameterLaden;
 import textBlockTherapeuten.ThTextBlock;
 

@@ -12,6 +12,8 @@ import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
+import org.thera_pi.tools.date.DatFunk;
+
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
@@ -483,7 +485,7 @@ public class TermineErfassen implements Runnable {
 
 		}else if(!unter18 && vorjahrfrei){
 			String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(8)+"'" );
-			//String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
+			//String bef_dat = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
 			if(!bef_dat.equals("T")){
 				if(DatFunk.DatumsWert("31.12."+vec.get(8)) < DatFunk.DatumsWert(DatFunk.sHeute()) ){
 					//System.out.println("In Variante 4");

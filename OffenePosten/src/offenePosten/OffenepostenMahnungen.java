@@ -41,7 +41,7 @@ import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.tools.StringTools;
 
 import Tools.ButtonTools;
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.JRtaCheckBox;
 import Tools.JRtaRadioButton;
 import Tools.OOTools;

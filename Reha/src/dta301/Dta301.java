@@ -50,7 +50,7 @@ import systemTools.Colors;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.TextException;

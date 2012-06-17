@@ -45,7 +45,7 @@ import org.thera_pi.swingx.JRtaTextField;
 import RehaIO.RehaIOMessages;
 import RehaIO.SocketClient;
 import Tools.ButtonTools;
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.DblCellEditor;
 import Tools.DoubleTableCellRenderer;
 import org.thera_pi.swingx.JCompTools;

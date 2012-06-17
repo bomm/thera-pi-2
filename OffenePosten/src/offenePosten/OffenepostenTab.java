@@ -18,7 +18,7 @@ import org.jdesktop.swingx.JXTitledPanel;
 
 import rehaBillEdit.RehaBillPanel;
 
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 

@@ -15,7 +15,7 @@ import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 public class ZuzahlTools {
 	public static boolean zzStatusEdit(String pat_int,String geboren, String rez_nr,String frei, String kassid){
@@ -91,7 +91,7 @@ public class ZuzahlTools {
 				}
 				////System.out.println("Differenz an Tagen zwischen Behandlung vom "+tage.get(i)+
 						//" und dem Geburtstag "+geburtstag+" = "+
-						//datFunk.TageDifferenz(geburtstag ,stichtag));
+						//DatFunk.TageDifferenz(geburtstag ,stichtag));
 				
 			}
 			if( (aktzzstatus.equals("3") || aktzzstatus.equals("0") || aktzzstatus.equals("2"))&& einergroesser){
@@ -176,7 +176,7 @@ public class ZuzahlTools {
 				/*
 				//System.out.println("Differenz an Tagen zwischen Behandlung vom "+tage.get(i)+
 						" und dem Geburtstag "+geburtstag+" = "+
-						datFunk.TageDifferenz(geburtstag ,stichtag));
+						DatFunk.TageDifferenz(geburtstag ,stichtag));
 				*/		
 			}
 			if(aktzzstatus.equals("3") && einergroesser){

@@ -38,7 +38,7 @@ import org.thera_pi.tools.numbers.IntegerTools;
 import reha301.Reha301;
 import reha301.Reha301Tab;
 import Tools.ButtonTools;
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.SqlInfo;
 
 import com.freeware.inifiles.INIFile;

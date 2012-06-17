@@ -57,7 +57,7 @@ import reha301.Reha301Tab;
 import reha301.SocketClient;
 import Tools.ButtonTools;
 import Tools.Colors;
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.FileTools;
 import Tools.OOTools;
 import Tools.RezTools;

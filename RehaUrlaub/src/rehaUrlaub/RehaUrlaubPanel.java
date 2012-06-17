@@ -50,7 +50,7 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.tools.StringTools;
 
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import org.thera_pi.swingx.JCompTools;
 import Tools.JRtaComboBox;
 import Tools.MitteRenderer;

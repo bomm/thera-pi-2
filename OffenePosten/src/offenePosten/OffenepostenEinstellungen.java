@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import org.jdesktop.swingx.JXPanel;
 import org.thera_pi.swingx.JRtaTextField;
 
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.JRtaCheckBox;
 import Tools.JRtaComboBox;
 

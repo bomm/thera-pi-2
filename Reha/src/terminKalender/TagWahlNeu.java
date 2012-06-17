@@ -35,6 +35,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.thera_pi.swingx.JRtaTextField;
+import org.thera_pi.tools.date.DatFunk;
 
 import systemTools.ListenerTools;
 import systemTools.WinNum;
@@ -423,7 +424,7 @@ public void keyPressed(KeyEvent arg0) {
 			akttag = DatFunk.sDatPlusTage(akttag,1);
 			datePick.setDate(machePickerDatum(akttag));
 			datum.setText(akttag);
-			//wochentag.setText(datFunk.WochenTag(akttag));
+			//wochentag.setText(DatFunk.WochenTag(akttag));
 			wochentag.setText(DatFunk.WochenTag(akttag) );
 			kalwoche.setText("KW-"+DatFunk.KalenderWoche(akttag) );
 			datum.setCaretPosition(0);
@@ -436,7 +437,7 @@ public void keyPressed(KeyEvent arg0) {
 			akttag = DatFunk.sDatPlusTage(akttag,-1);
 			datePick.setDate(machePickerDatum(akttag));
 			datum.setText(akttag);
-			//wochentag.setText(datFunk.WochenTag(akttag));
+			//wochentag.setText(DatFunk.WochenTag(akttag));
 			wochentag.setText(DatFunk.WochenTag(akttag) );
 			kalwoche.setText("KW-"+DatFunk.KalenderWoche(akttag) );
 			datum.setCaretPosition(0);

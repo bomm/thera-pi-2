@@ -30,7 +30,7 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.thera_pi.swingx.JCompTools;
 
 import Tools.ButtonTools;
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.JRtaComboBox;
 import Tools.OOTools;
 import Tools.SqlInfo;

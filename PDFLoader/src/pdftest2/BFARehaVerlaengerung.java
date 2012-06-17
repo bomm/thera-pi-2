@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.SqlInfo;
 
 public class BFARehaVerlaengerung {

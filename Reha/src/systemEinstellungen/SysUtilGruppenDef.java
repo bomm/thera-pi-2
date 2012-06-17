@@ -43,7 +43,7 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.thera_pi.swingx.JRtaTextField;
 
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import terminKalender.ZeitFunk;
 
 import com.freeware.inifiles.INIFile;

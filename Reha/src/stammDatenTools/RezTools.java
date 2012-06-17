@@ -21,7 +21,7 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import terminKalender.BestaetigungsDaten;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import terminKalender.TerminBestaetigenAuswahlFenster;
 import terminKalender.TermineErfassen;
 
@@ -745,8 +745,8 @@ public class RezTools {
 		boolean bMitJahresWechsel = false;
 		ZuzahlModell zm = new ZuzahlModell();
 		//Vector<String> patvec = SqlInfo.holeSatz("pat5", "geboren,jahrfrei", "pat_intern='"+xvec.get(1)+"'", Arrays.asList(new String[] {}));
-		//String patGeboren = datFunk.sDatInDeutsch(patvec.get(0));
-		//String patJahrfrei = datFunk.sDatInDeutsch(patvec.get(0));
+		//String patGeboren = DatFunk.sDatInDeutsch(patvec.get(0));
+		//String patJahrfrei = DatFunk.sDatInDeutsch(patvec.get(0));
 		//
 		
 		

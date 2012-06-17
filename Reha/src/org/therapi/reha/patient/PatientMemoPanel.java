@@ -30,7 +30,7 @@ import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import org.thera_pi.swingx.JCompTools;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 

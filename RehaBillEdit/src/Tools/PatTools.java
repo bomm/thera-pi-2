@@ -5,6 +5,7 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 
 import org.thera_pi.tools.StringTools;
+import org.thera_pi.tools.date.DatFunk;
 
 import rehaBillEdit.RehaBillEdit;
 

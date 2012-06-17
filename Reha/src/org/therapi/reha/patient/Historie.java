@@ -70,7 +70,7 @@ import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.IconListRenderer;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

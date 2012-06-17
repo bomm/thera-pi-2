@@ -67,7 +67,7 @@ import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import Tools.ButtonTools;
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.DateTableCellRenderer;
 import Tools.DblCellEditor;
 import Tools.DoubleTableCellRenderer;

@@ -77,6 +77,7 @@ import org.jdesktop.swingx.renderer.StringValues;
 import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.tools.StringTools;
+import org.thera_pi.tools.date.DatFunk;
 
 import patientenFenster.KeinRezept;
 import patientenFenster.RezNeuanlage;
@@ -95,7 +96,6 @@ import systemEinstellungen.SystemPreislisten;
 import systemTools.Colors;
 import systemTools.IconListRenderer;
 import systemTools.ListenerTools;
-import terminKalender.DatFunk;
 import abrechnung.AbrechnungPrivat;
 import abrechnung.AbrechnungRezept;
 import abrechnung.RezeptGebuehrRechnung;

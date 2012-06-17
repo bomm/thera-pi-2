@@ -23,7 +23,7 @@ import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 import org.thera_pi.nebraska.gui.utils.ButtonTools;
-import org.thera_pi.nebraska.gui.utils.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import org.thera_pi.nebraska.gui.utils.MultiLineLabel;
 import org.thera_pi.swingx.JRtaTextField;
 

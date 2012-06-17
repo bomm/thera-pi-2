@@ -73,7 +73,7 @@ import rechteTools.Rechte;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.ZeitFunk;
 
@@ -2392,7 +2392,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 								if( (abteilnr = SystemConfig.oGruppen.gruppenNamen.indexOf(sabteilung)) >= 0){
 									defdauer = Long.valueOf(SystemConfig.oGruppen.gruppenGueltig.get(abteilnr)[2]).intValue();
 									//defdauer = (int) new Long(SystemConfig.oGruppen.gruppenGueltig.get(abteilnr)[2]).intValue();
-									////System.out.println("G�ltig ab:"+ datFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(abteilnr)[0]));
+									////System.out.println("G�ltig ab:"+ DatFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(abteilnr)[0]));
 									//ermitteln ob alte oder neue Definition verwendet werden soll // in Variable ablegen
 									//dann Sprung in die Tests
 								}else{
@@ -3054,7 +3054,7 @@ class WorkerSuchenInKalenderTagen extends SwingWorker<Void,Void>{
 		return vec;
 	}
 	private Vector<Object> sucheNachGruppenFreien(ResultSet rs,String name,String nummer,String skollege,int ikollege,int ii,int defdauer,int gruppennr,Vector<?> grupdat,boolean suchleer) throws SQLException{
-//		//System.out.println("Gültig ab:"+ datFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(gruppennr)[0]));
+//		//System.out.println("Gültig ab:"+ DatFunk.WertInDatum(SystemConfig.oGruppen.gruppenGueltig.get(gruppennr)[0]));
 		Vector<Object> vec = null;
 		vec = macheGruppenVector(rs,name,nummer,skollege,ikollege,ii,defdauer,grupdat,suchleer);
 		return vec;

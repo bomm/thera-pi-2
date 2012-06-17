@@ -14,7 +14,7 @@ import org.jdesktop.swingworker.SwingWorker;
 
 import oOorgTools.OOTools;
 import sqlTools.SqlInfo;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;

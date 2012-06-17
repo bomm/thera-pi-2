@@ -7,7 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Vector;
 
-import tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.freeware.inifiles.INIFile;
 import com.hexiong.jdbf.DBFWriter;

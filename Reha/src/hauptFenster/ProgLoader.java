@@ -41,7 +41,7 @@ import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemInit;
 import systemTools.PassWort;
 import systemTools.WinNum;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import terminKalender.TerminFenster;
 import urlaubBeteiligung.Beteiligung;
 import urlaubBeteiligung.Urlaub;

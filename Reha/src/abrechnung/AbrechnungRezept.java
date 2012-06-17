@@ -88,6 +88,7 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.tools.StringTools;
+import org.thera_pi.tools.date.DatFunk;
 import org.therapi.reha.patient.AktuelleRezepte;
 
 import patientenFenster.KassenAuswahl;
@@ -99,7 +100,6 @@ import systemTools.AdressTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.ListenerTools;
-import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.text.TextException;

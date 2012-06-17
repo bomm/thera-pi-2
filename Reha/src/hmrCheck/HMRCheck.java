@@ -16,7 +16,7 @@ import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 public class HMRCheck {
 	Vector<Integer> anzahl = null;

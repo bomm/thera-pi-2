@@ -24,7 +24,7 @@ import javax.swing.text.MaskFormatter;
 
 import rehaMail.DateFieldDocument;
 
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 
 

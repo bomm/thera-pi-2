@@ -25,7 +25,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import Tools.ButtonTools;
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.OOTools;
 import Tools.SqlInfo;
 import Tools.SystemPreislisten;

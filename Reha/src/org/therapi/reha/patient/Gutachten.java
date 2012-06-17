@@ -47,7 +47,7 @@ import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.IconListRenderer;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -202,7 +202,7 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 		dummypan.add(jscr,BorderLayout.CENTER);
 		return dummypan;
 	}
-//	Gutachten.gutachten.aktualisiereGutachten(datFunk.sHeute(),(empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht"),empf,"Rehaarzt",berichtid);
+//	Gutachten.gutachten.aktualisiereGutachten(DatFunk.sHeute(),(empf.contains("DRV") ? "DRV E-Bericht" : "GKV E-Bericht"),empf,"Rehaarzt",berichtid);
 	
 	public void aktualisiereGutachten(String editdat,String bertype,String empf,String verfasser,int berid,String patintern){
 		String cmd = "update berhist set berichttyp='"+bertype+"', empfaenger='"+empf+"', editdat='"+

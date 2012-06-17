@@ -17,7 +17,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.thera_pi.swingx.JRtaTextField;
 
 import Tools.ButtonTools;
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import org.thera_pi.swingx.JCompTools;
 import Tools.SqlInfo;
 
