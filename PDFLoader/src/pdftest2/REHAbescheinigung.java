@@ -12,7 +12,7 @@ import java.util.Vector;
 
 import org.thera_pi.tools.StringTools;
 
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.SqlInfo;
 
 

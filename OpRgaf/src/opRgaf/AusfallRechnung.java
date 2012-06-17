@@ -30,7 +30,7 @@ import javax.swing.JPanel;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.JRtaCheckBox;
 import Tools.LeistungTools;
 import Tools.OOTools;

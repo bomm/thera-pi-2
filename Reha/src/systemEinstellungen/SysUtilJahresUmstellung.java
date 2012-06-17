@@ -29,7 +29,7 @@ import org.jdesktop.swingx.JXPanel;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemTools.ButtonTools;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

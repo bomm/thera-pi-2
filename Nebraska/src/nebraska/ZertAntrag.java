@@ -38,7 +38,7 @@ import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import pdfDrucker.PDFDrucker;
-import utils.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import utils.JRtaCheckBox;
 import utils.JRtaRadioButton;
 

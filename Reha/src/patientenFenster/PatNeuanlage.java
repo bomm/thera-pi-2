@@ -72,7 +72,7 @@ import org.thera_pi.swingx.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.ListenerTools;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;

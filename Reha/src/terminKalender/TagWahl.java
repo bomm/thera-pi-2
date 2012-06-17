@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import org.thera_pi.swingx.JRtaTextField;
+import org.thera_pi.tools.date.DatFunk;
 
 public class TagWahl {
 
@@ -60,7 +61,7 @@ public class TagWahl {
 	 * @return javax.swing.JPanel	
 	 */
 	private JPanel getJContentPane(String sDatText,String tag) {
-		//datFunk df = new datFunk();
+		//DatFunk df = new DatFunk();
 		if (jContentPane == null) {
 			jLabel3 = new JLabel();
 			jLabel3.setBounds(new Rectangle(160, 54, 86, 16));
@@ -126,7 +127,7 @@ public class TagWahl {
 		return jTextField;
 	}
 	public void TagEinstellen(java.awt.event.KeyEvent e,String sTag){
-		//datFunk dat = new datFunk();
+		//DatFunk dat = new DatFunk();
 		////System.out.println(e);		
 		switch(e.getKeyCode()){
 			case 33: //Bild auf

@@ -31,7 +31,7 @@ import stammDatenTools.RezTools;
 import systemTools.ButtonTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import terminKalender.ParameterLaden;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;

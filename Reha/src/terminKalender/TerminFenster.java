@@ -72,6 +72,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.thera_pi.swingx.JRtaTextField;
+import org.thera_pi.tools.date.DatFunk;
 import org.therapi.reha.patient.AktuelleRezepte;
 
 import rechteTools.Rechte;

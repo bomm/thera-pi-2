@@ -6,7 +6,7 @@ import java.util.Vector;
 
 import com.freeware.inifiles.INIFile;
 
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import terminKalender.ZeitFunk;
 
 public class GruppenEinlesen{

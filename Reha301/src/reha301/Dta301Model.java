@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 import org.jdesktop.swingx.JXTable;
 import org.thera_pi.tools.StringTools;
 
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.SqlInfo;
 
 public class Dta301Model {

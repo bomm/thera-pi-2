@@ -23,7 +23,7 @@ import com.freeware.inifiles.INIFile;
 
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.ZeitFunk;
 

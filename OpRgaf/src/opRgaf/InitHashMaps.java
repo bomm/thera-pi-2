@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 
 import org.thera_pi.tools.StringTools;
 
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 
 public class InitHashMaps {

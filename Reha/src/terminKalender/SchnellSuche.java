@@ -34,6 +34,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
 import org.thera_pi.swingx.JRtaTextField;
+import org.thera_pi.tools.date.DatFunk;
 
 import rehaContainer.RehaTP;
 import systemTools.RezeptFahnder;

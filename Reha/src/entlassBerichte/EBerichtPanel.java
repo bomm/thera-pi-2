@@ -63,7 +63,7 @@ import systemTools.IconListRenderer;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.ListenerTools;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import abrechnung.AbrechnungDlg;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentException;

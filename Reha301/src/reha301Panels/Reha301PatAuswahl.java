@@ -17,7 +17,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.thera_pi.tools.StringTools;
 
 import Tools.ButtonTools;
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.JRtaComboBox;
 import Tools.SqlInfo;
 import com.jgoodies.forms.layout.CellConstraints;

@@ -7,7 +7,7 @@ import javax.swing.JTabbedPane;
 
 import org.thera_pi.swingx.JCompTools;
 
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
@@ -69,7 +69,7 @@ public class EBerichtTab {
 		titel = titel+ bisher;
 		titel = titel+"<b><font color='#ff0000'> [Patient: "+PatGrundPanel.thisClass.patDaten.get(2)+", "+
 		PatGrundPanel.thisClass.patDaten.get(3)+" geb. am:"+
-		datFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4))+ 
+		DatFunk.sDatInDeutsch(PatGrundPanel.thisClass.patDaten.get(4))+ 
 		(eltern.neu ? " (Neuanlage)]</font></b></html>" : " (Bericht-ID:"+eltern.berichtid+")]</font></b></html>");
 		eltern.jry.setTitle(titel);
 		*/

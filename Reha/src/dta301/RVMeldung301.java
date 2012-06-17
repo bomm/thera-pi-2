@@ -24,7 +24,7 @@ import org.thera_pi.tools.numbers.IntegerTools;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import emailHandling.EmailSendenExtern;
 import entlassBerichte.EBerichtPanel;
 

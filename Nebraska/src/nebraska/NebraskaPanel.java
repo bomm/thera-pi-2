@@ -45,7 +45,7 @@ import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.thera_pi.swingx.JCompTools;
 
-import utils.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

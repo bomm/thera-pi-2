@@ -58,6 +58,7 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.tools.date.DatFunk;
 
 import wartenFenster.WartenFenster;
 
@@ -1131,7 +1132,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 							  ps.setBytes(3, (byte[]) ((String)htmlvec.get(2)).getBytes() );
 							  ps.setBytes(4, (byte[])htmlvec.get(3) );
 							  ps.setString(5, (String)htmlvec.get(4));
-							  ps.setString(6, datFunk.sDatInSQL(datFunk.sHeute()) );
+							  ps.setString(6, DatFunk.sDatInSQL(DatFunk.sHeute()) );
 							  //ps.setString(2, "vorschau");
 							  ps.execute();
 							  
@@ -1171,7 +1172,7 @@ public class helpFenster extends JXPanel implements TableModelListener,Component
 
 							  ps.setBytes(4, (byte[])htmlvec.get(3) );
 							  
-							  ps.setString(5, datFunk.sDatInSQL(datFunk.sHeute()) );
+							  ps.setString(5, DatFunk.sDatInSQL(DatFunk.sHeute()) );
 							  
 							  ps.setInt(6, new Integer( ((Vector)htmlvec).get(5).toString()) );
 
@@ -1372,7 +1373,7 @@ final class HtmlSpeichern extends SwingWorker<Void,Void>{
 						  ps.setString(3, (String)htmlvec.get(2) );
 						  ps.setBytes(4, (byte[])htmlvec.get(3) );
 						  ps.setString(5, (String)htmlvec.get(4));
-						  ps.setString(6, datFunk.sDatInSQL(datFunk.sHeute()) );
+						  ps.setString(6, DatFunk.sDatInSQL(DatFunk.sHeute()) );
 						  //ps.setString(2, "vorschau");
 						  ps.execute();
 						  
@@ -1411,7 +1412,7 @@ final class HtmlSpeichern extends SwingWorker<Void,Void>{
 
 						  ps.setBytes(4, (byte[])htmlvec.get(3) );
 						  
-						  ps.setString(5, datFunk.sDatInSQL(datFunk.sHeute()) );
+						  ps.setString(5, DatFunk.sDatInSQL(DatFunk.sHeute()) );
 						  
 						  ps.setInt(6, new Integer( ((Vector)htmlvec).get(5).toString()) );
 

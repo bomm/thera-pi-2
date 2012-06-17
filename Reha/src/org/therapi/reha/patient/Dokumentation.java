@@ -93,7 +93,7 @@ import systemTools.Colors;
 import systemTools.FileTools;
 import systemTools.GrafikTools;
 import systemTools.IconListRenderer;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import uk.co.mmscomputing.device.scanner.Scanner;
 import uk.co.mmscomputing.device.scanner.ScannerDevice;
 import uk.co.mmscomputing.device.scanner.ScannerIOException;
@@ -2151,7 +2151,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				ps.setBytes(6,   //format - integer
 				ps.setBytes(7,   //dokutext - longtext								
 				ps.setBytes(8,   //dokublob - longblog /bin�r
-				new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
+				new String[] {DatFunk.sDatInSQL(DatFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
 			   */
 			  //System.out.println("Setze InputStream "+dateiname);
 			  ps.setInt(1, dokuid);
@@ -2318,7 +2318,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				ps.setBytes(9,   //groesse - longtext								
 				ps.setBytes(10,   //datei - longblog /bin�r
 				
-				new String[] {datFunk.sDatInSQL(datFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
+				new String[] {DatFunk.sDatInSQL(DatFunk.sHeute()),"Eingescannte Papierdokumentation",Reha.aktUser,""},				
 			   */
 			  //System.out.println("Setze InputStream "+dateiname);
 			  ps.setInt(1, dokuid);

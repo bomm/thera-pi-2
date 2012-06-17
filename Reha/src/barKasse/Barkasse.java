@@ -24,7 +24,7 @@ import org.thera_pi.swingx.JRtaTextField;
 import rehaInternalFrame.JBarkassenInternal;
 import sqlTools.SqlInfo;
 import systemTools.ButtonTools;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;

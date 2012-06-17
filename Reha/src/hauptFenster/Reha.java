@@ -137,7 +137,7 @@ import systemTools.FileTools;
 import systemTools.RehaPainters;
 import systemTools.RezeptFahnder;
 import systemTools.TestePatStamm;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
 import urlaubBeteiligung.Beteiligung;

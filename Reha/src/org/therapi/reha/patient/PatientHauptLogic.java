@@ -40,7 +40,7 @@ import stammDatenTools.ArztTools;
 import stammDatenTools.KasseTools;
 import stammDatenTools.PatTools;
 import systemEinstellungen.SystemConfig;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.freeware.inifiles.INIFile;
 

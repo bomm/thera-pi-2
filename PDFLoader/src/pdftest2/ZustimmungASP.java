@@ -14,7 +14,7 @@ import java.util.Vector;
 
 import javax.swing.JTextField;
 
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.SqlInfo;
 
 

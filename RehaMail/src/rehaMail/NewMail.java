@@ -60,7 +60,7 @@ import org.jdesktop.swingx.painter.MattePainter;
 import org.thera_pi.swingx.JRtaTextField;
 
 import Tools.ButtonTools;
-import Tools.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import Tools.JRtaComboBox;
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.desktop.IFrame;

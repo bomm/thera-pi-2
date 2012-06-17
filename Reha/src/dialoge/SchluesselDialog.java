@@ -26,7 +26,7 @@ import org.thera_pi.swingx.JRtaTextField;
 
 import sqlTools.SqlInfo;
 import systemTools.ListenerTools;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

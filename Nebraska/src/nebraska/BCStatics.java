@@ -57,7 +57,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
-import utils.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import utils.NUtils;
 
 

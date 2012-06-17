@@ -6,7 +6,7 @@ import org.thera_pi.tools.StringTools;
 
 import hauptFenster.Reha;
 import systemEinstellungen.SystemConfig;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 public class PatTools {
 	

@@ -58,7 +58,7 @@ import systemTools.JRtaCheckBox;
 import systemTools.JRtaRadioButton;
 import systemTools.ListenerTools;
 import systemTools.WinNum;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import terminKalender.ParameterLaden;
 
 import com.jgoodies.forms.builder.PanelBuilder;

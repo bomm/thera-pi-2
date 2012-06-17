@@ -1,5 +1,4 @@
-package therapiHilfe;
-
+package org.thera_pi.tools.date;
 import java.util.*;
 import java.text.DateFormat;
 import java.util.Date;
@@ -9,7 +8,9 @@ import java.text.SimpleDateFormat;
 //import java.text.ParseException;
 //import javax.swing.JFormattedTextField;
 
-public class datFunk {
+import javax.swing.JOptionPane;
+
+public class DatFunk {
 
 
 //private String sDatumJava = "";
@@ -19,26 +20,36 @@ public class datFunk {
 		if(sJavaDat==null){
 			return "  .  .    ";
 		}
-		//if(sJavaDat.length() != 10){
-		//	return "  .  .    ";
-		//}
+		if(sJavaDat.trim().length() != 10 ){
+			return "  .  .    ";
+		}
 		String[] splittArray = sJavaDat.split("-");
-		return splittArray[2]+"."+splittArray[1]+"."+splittArray[0];
+		try{
+			return splittArray[2]+"."+splittArray[1]+"."+splittArray[0];
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler in der Datumsumwandlung -> Datumsformat = deutsches Datumsformat");
+		}
+		return null;
 	}
 	
 	public static String sDatInSQL(String sDeutschDat){
-		//String sDatumSQL= new String();
+		//String sDatumSQL= String.valueOf();
 		String[] splittArray = sDeutschDat.split("\\.");
 		//sDatumSQL = splittArray[2]+"-"+splittArray[1]+"-"+splittArray[0]; 
-		////System.out.println(sDatumSQL);
-		return  splittArray[2]+"-"+splittArray[1]+"-"+splittArray[0];
+		//System.out.println(sDatumSQL);
+		try{
+			return  splittArray[2]+"-"+splittArray[1]+"-"+splittArray[0];
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler in der Datumsumwandlung -> Datumsformat = Sql-Datumsformat");
+		}
+		return null;
 	}
 
 	public static String sHeute(){
 		DateFormat df = DateFormat.getDateTimeInstance( DateFormat.MEDIUM,
 				DateFormat.MEDIUM,  
                 Locale.GERMANY );
-		String s = new String(df.format(new java.util.Date()));
+		String s = df.format(new java.util.Date());
 		s = s.substring(0,s.indexOf( ' ' )); 
 	    return s;
 
@@ -48,7 +59,10 @@ public class datFunk {
 		long anz_milli_1 = 0;
 		long anz_milli_2 = 0;
 		long anz_milli_3 = 0;
-		boolean deutsch = false;
+		//boolean deutsch = false;
+		if(Tage==0){
+			return datum;
+		}
 		String[] datsplit = datum.split("\\."); 
 		Date dDatum;
 		String s;
@@ -65,11 +79,12 @@ public class datFunk {
 					Locale.GERMANY);
 
 		if (anz_milli_2==0){
-			dDatum = new Date();
+			//dDatum = new Date();
+			dDatum = new Date(DatFunk.DatumsWert(datum));
 		}else{
 			dDatum = new Date(anz_milli_3);
 		}
-		s = new String(df.format(dDatum));
+		s = df.format(dDatum);
 		s = s.substring(0,s.indexOf( ' ' )); 
 		return s;
 	}
@@ -88,7 +103,7 @@ public class datFunk {
 	return asErgebnis[0];
 	}
 	
-	@SuppressWarnings("deprecation")
+	
 	public static int TagDerWoche(String sdatum) {
 		int tag=0;
 		String[] datsplit = sdatum.split("\\.");
@@ -103,17 +118,17 @@ public class datFunk {
 		return tag;
 	}
 
-	public static long TageDifferenz(String sdatum1,String sdatum2){
+	public static long TageDifferenz(String saltdatum,String sneudatum){
 		long mul1 = 0;
 		long mul2 = 0;
 		long mul3 = 0;
 
-		String[] datsplit1 = sdatum1.split("\\.");
-		String[] datsplit2 = sdatum2.split("\\.");
+		String[] datsplit1 = saltdatum.split("\\.");
+		String[] datsplit2 = sneudatum.split("\\.");
 		Calendar cal1 = new GregorianCalendar();
 		Calendar cal2 = new GregorianCalendar();
-		cal1.set( Integer.parseInt(datsplit1[2]), Integer.parseInt(datsplit1[1])-1, Integer.parseInt(datsplit1[0]) ); 
-		cal2.set( Integer.parseInt(datsplit2[2]), Integer.parseInt(datsplit2[1])-1, Integer.parseInt(datsplit2[0]) );
+		cal1.set( Integer.parseInt(datsplit1[2]), Integer.parseInt(datsplit1[1])-1, Integer.parseInt(datsplit1[0]),0,0,0 ); 
+		cal2.set( Integer.parseInt(datsplit2[2]), Integer.parseInt(datsplit2[1])-1, Integer.parseInt(datsplit2[0]),0,0,0 );
 
 		mul1 = cal1.getTimeInMillis();
 		mul2 = cal2.getTimeInMillis();
@@ -122,7 +137,9 @@ public class datFunk {
 		if(mul3==0){
 			return 0;
 		}
-		return  mul3/(24*60*60*1000L);
+		//return  mul3/(24*60*60*1000L);
+		return Math.round( (double)mul3 / (24. * 60.*60.*1000.) );  
+		
 	}
 
 	public static String WocheErster(String sdatum){
@@ -145,11 +162,11 @@ public class datFunk {
 		tag   = cal1.get(Calendar.DATE);
 		monat = cal1.get(Calendar.MONTH)+1;
 		jahr  = cal1.get(Calendar.YEAR);
-		String a = (new Integer(tag)).toString();
+		String a = (Integer.valueOf(tag)).toString();
 		a= (a.length()<2 ? "0"+a : a);
-		String b = (new Integer(monat)).toString();
+		String b = (Integer.valueOf(monat)).toString();
 		b= (b.length()<2 ? "0"+b : b);
-		return a+"."+b+"."+new Integer(jahr).toString();
+		return a+"."+b+"."+Integer.toString(jahr);
 	}
 	public static String WocheLetzter(String sdatum){
 		long mul = 0;
@@ -166,9 +183,9 @@ public class datFunk {
 		tag   = cal1.get(Calendar.DATE);
 		monat = cal1.get(Calendar.MONTH)+1;
 		jahr  = cal1.get(Calendar.YEAR);
-		String a = (new Integer(tag)).toString();
+		String a = Integer.toString(tag);
 		a= (a.length()<2 ? "0"+a : a);
-		String b = (new Integer(monat)).toString();
+		String b = Integer.toString(monat);
 		b= (b.length()<2 ? "0"+b : b);
 		return a+"."+b+"."+jahr;
 	}
@@ -204,9 +221,18 @@ public class datFunk {
 		}else{
 			dDatum = new Date(ldatum);
 		}
-		s = new String(df.format(dDatum));
+		s =df.format(dDatum);
 		s = s.substring(0,s.indexOf( ' ' )); 
 	    return s;
+	}
+	public static String datumOk(String datum){
+		if(datum==null){
+			return null;
+		}
+		if(datum.trim().equals("") || datum.trim().equals(".  .") || datum.trim().equals("-  -")){
+			return null;
+		}
+		return DatFunk.sDatInDeutsch(datum);
 	}
 	
 	public static boolean GeradeWoche(String sdatum){
@@ -214,8 +240,8 @@ public class datFunk {
 	}
 	public static boolean Unter18(String bezugdat,String geburtstag){
 		String[] datsplit = bezugdat.split("\\.");
-		int jahr = new Integer(datsplit[2]) - 18;
-		String testdatum = datsplit[0]+"."+datsplit[1]+"."+new Integer(jahr).toString();
+		int jahr = Integer.valueOf(datsplit[2]) - 18;
+		String testdatum = datsplit[0]+"."+datsplit[1]+"."+Integer.toString(jahr);
 		if(DatumsWert(testdatum) < DatumsWert(geburtstag)){
 			return true;
 		}else{
@@ -225,30 +251,34 @@ public class datFunk {
 	
 	public static boolean Schaltjahr(int jahr) {
 		if( jahr == 0 ) {
-		    ////System.out.println("Es gibt kein Jahr 0!");
+		    //System.out.println("Es gibt kein Jahr 0!");
 			return false;
 		} else {
 			if( jahr % 4 == 0 ) {
 				if( jahr % 100 == 0 ) {
 					if( jahr % 400 == 0 ) {
-						////System.out.println("Schaltjahr!");
+						//System.out.println("Schaltjahr!");
 						return true;
 					} else {
-						////System.out.println("Kein Schaltjahr!");
+						//System.out.println("Kein Schaltjahr!");
 						return false;
 					}
 				} else {
-			    ////System.out.println("Schaltjahr!");
+			    //System.out.println("Schaltjahr!");
 				return true;
 				}
 			} else {
-				////System.out.println("Kein Schaltjahr!");
+				//System.out.println("Kein Schaltjahr!");
 				return false;
 			}
 		}
 	}
 
-
+	public static int JahreDifferenz(String sAktuellesJahr,String sInputJahr) {
+		int aktuell = Integer.valueOf(sAktuellesJahr.substring(6));
+		int input = Integer.valueOf(sInputJahr.substring(6));
+		return (aktuell-input);
+	}
 
 	/********************Klassen-Klammer*************/
 }

@@ -42,7 +42,7 @@ import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

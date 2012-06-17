@@ -24,7 +24,7 @@ import javax.swing.JOptionPane;
 import org.jdesktop.swingworker.SwingWorker;
 
 import systemEinstellungen.SystemConfig;
-import terminKalender.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import terminKalender.TermineErfassen;
 import dialoge.SchluesselDialog;
 

@@ -86,7 +86,7 @@ import org.bouncycastle.openssl.PEMWriter;
 import org.jdesktop.swingx.JXTable;
 import org.thera_pi.swingx.JCompTools;
 
-import utils.DatFunk;
+import org.thera_pi.tools.date.DatFunk;
 import utils.MitteRenderer;
 import utils.NUtils;
 import utils.OOorgTools;
