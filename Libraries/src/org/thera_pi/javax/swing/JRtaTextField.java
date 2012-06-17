@@ -40,14 +40,11 @@ import org.thera_pi.tools.numbers.IntegerTools;
 
 public class JRtaTextField extends JFormattedTextField implements PropertyChangeListener,FocusListener,KeyListener{
 	private String type=""; 
-	private String muster="";
 	//private Container feld = null;
 	private boolean selectWhenFocus;
-	private String gleitkomma ="";
 	private NumberFormat gleitDisplayFormat;
 	private NumberFormat gleitEditFormat;
 	private int nachkommas = 0;
-	private KeyListener kl;
 
 	/**
 	 * 
@@ -135,10 +132,6 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		return;
 	}
 
-	private void setDisabledForeground(JFormattedTextField jcomp,Color c){
-		jcomp.setDisabledTextColor(c);
-	}
-
 	public void listenerLoeschen(){
 		this.removeFocusListener(this);
 		this.removeKeyListener(this);
@@ -215,11 +208,6 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 
 	}
 
-	public void setGleitType(String type,JRtaTextField feld, boolean selectWhenFocus,String gleitkomma){
-		this.type = type;
-		this.selectWhenFocus = selectWhenFocus;
-		this.gleitkomma = gleitkomma;
-	}
 	public void setupFormat(int digits){
 		gleitDisplayFormat = NumberFormat.getInstance(Locale.GERMAN);
 		gleitDisplayFormat.setMinimumFractionDigits(digits);
@@ -485,7 +473,8 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 				|| code == KeyEvent.VK_ENTER || code == 40) {
 			// if no valid data entered in field, consume event
 			// so that it won't be passed on to focus manager
-			if(1==1) {
+			//if(1==1)
+			{
 				event.consume();
 				focusNachUnten();
 
@@ -624,12 +613,9 @@ class NurGrossDocument extends javax.swing.text.PlainDocument
 	 * 
 	 */
 	private static final long serialVersionUID = -1708532746033381872L;
-	private JTextField textField;
-	private String text;
 
 	public NurGrossDocument(JFormattedTextField tf)
 	{
-		textField = tf;
 	}
 
 	public void insertString(int offs, String str, javax.swing.text.AttributeSet a)
@@ -639,7 +625,6 @@ class NurGrossDocument extends javax.swing.text.PlainDocument
 		{
 			//	super.insertString(offs, str, a);
 			//System.out.println("Offset: "+offs);
-			text = textField.getText();
 			/*
 			if(!str.contains("ß")){
 				super.insertString(offs,str.toUpperCase(), a);
@@ -669,12 +654,9 @@ class NurKleinDocument extends javax.swing.text.PlainDocument
 	 * 
 	 */
 	private static final long serialVersionUID = -1708532746033381872L;
-	private JTextField textField;
-	private String text;
 
 	public NurKleinDocument(JFormattedTextField tf)
 	{
-		textField = tf;
 	}
 
 	public void insertString(int offs, String str, javax.swing.text.AttributeSet a)
@@ -684,7 +666,6 @@ class NurKleinDocument extends javax.swing.text.PlainDocument
 		{
 			//	super.insertString(offs, str, a);
 			//System.out.println("Offset: "+offs);
-			text = textField.getText();
 			super.insertString(offs,str.toLowerCase(), a);
 			return;
 			//Integer.parseInt(text);
