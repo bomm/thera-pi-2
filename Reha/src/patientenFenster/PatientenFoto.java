@@ -6,7 +6,6 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -19,19 +18,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.media.Buffer;
-import javax.media.Manager;
 import javax.media.control.FrameGrabbingControl;
 import javax.media.format.VideoFormat;
 import javax.media.util.BufferToImage;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
@@ -40,15 +33,12 @@ import javax.swing.event.ChangeListener;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
-import org.thera_pi.nebraska.gui.utils.ButtonTools;
+import org.thera_pi.swingx.ButtonTools;
+
+import systemEinstellungen.SystemConfig;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-import systemEinstellungen.SystemConfig;
-import systemTools.ListenerTools;
-
-
 
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
@@ -265,10 +255,10 @@ public class PatientenFoto  extends RehaSmartDialog{
 		jsl.setSnapToTicks(true);
 
 		pan.add(jsl,cc.xy(2,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
-		buts[0] = ButtonTools.macheBut("Schuß", "schuss", al);
+		buts[0] = ButtonTools.macheButton("Schuß", "schuss", al);
 		buts[0].setIcon(SystemConfig.hmSysIcons.get("camera"));
 		pan.add(buts[0],cc.xy(4,2,CellConstraints.DEFAULT,CellConstraints.CENTER));
-		buts[1] = ButtonTools.macheBut("abbrechen", "abbrechen", al);
+		buts[1] = ButtonTools.macheButton("abbrechen", "abbrechen", al);
 		pan.add(buts[1],cc.xy(6,2,CellConstraints.DEFAULT,CellConstraints.FILL));
 
 		pan.validate();

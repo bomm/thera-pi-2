@@ -26,6 +26,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
+import org.thera_pi.swingx.ButtonTools;
 import org.thera_pi.tools.crypto.Verschluesseln;
 
 import com.jgoodies.forms.layout.CellConstraints;

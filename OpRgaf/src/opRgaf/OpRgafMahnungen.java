@@ -37,12 +37,12 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.swingx.ButtonTools;
 import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.tools.StringTools;
-
-import Tools.ButtonTools;
 import org.thera_pi.tools.date.DatFunk;
+
 import Tools.JRtaCheckBox;
 import Tools.JRtaRadioButton;
 import Tools.OOTools;

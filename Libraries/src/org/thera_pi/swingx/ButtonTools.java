@@ -1,4 +1,4 @@
-package therapiDBAdmin;
+package org.thera_pi.swingx;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;

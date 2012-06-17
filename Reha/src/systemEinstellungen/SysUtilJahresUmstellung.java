@@ -24,12 +24,11 @@ import javax.swing.JProgressBar;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-
+import org.thera_pi.swingx.ButtonTools;
+import org.thera_pi.tools.date.DatFunk;
 
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
-import systemTools.ButtonTools;
-import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -126,7 +125,7 @@ public class SysUtilJahresUmstellung extends JXPanel implements KeyListener, Act
 		/*
 		preisgruppen = new JLabel("");
 		builder.add(preisgruppen, cc.xy(2,19,CellConstraints.FILL,CellConstraints.DEFAULT));
-		buts[2] = ButtonTools.macheBut("preisgr.", "tarifemachen", this);
+		buts[2] = ButtonTools.macheButton("preisgr.", "tarifemachen", this);
 		builder.add(buts[2], cc.xy(4,19,CellConstraints.FILL,CellConstraints.DEFAULT));
 		infolab = new JLabel("");
 		builder.add(infolab, cc.xy(2,21,CellConstraints.FILL,CellConstraints.DEFAULT));

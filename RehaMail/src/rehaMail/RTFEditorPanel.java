@@ -23,9 +23,8 @@ import javax.swing.text.StyledEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
 
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.swingx.ButtonTools;
 import org.thera_pi.swingx.JCompTools;
-
-import Tools.ButtonTools;
 
 public class RTFEditorPanel extends JXPanel implements FocusListener{
 	/**

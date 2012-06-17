@@ -22,10 +22,10 @@ import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
-import org.thera_pi.nebraska.gui.utils.ButtonTools;
-import org.thera_pi.tools.date.DatFunk;
 import org.thera_pi.nebraska.gui.utils.MultiLineLabel;
+import org.thera_pi.swingx.ButtonTools;
 import org.thera_pi.swingx.JRtaTextField;
+import org.thera_pi.tools.date.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -103,25 +103,25 @@ public class NebraskaRequestDlg extends JDialog{
 		labs[0] = new JLabel(pathtokeystoredir);
 		labs[0].setForeground(Color.RED);
 		jpan.add(labs[0],cc.xy(5, 2));
-		jpan.add( (buts[0]=ButtonTools.macheBut("ändern", "edit", al)),cc.xy(7,2) );
+		jpan.add( (buts[0]=ButtonTools.macheButton("ändern", "edit", al)),cc.xy(7,2) );
 		buts[0].setEnabled(false);
 		mlabs[1] = new MultiLineLabel("2. Passwort für die Zertifikatsdatenbank eingeben\n(sofort notieren und sorgfältig aufbewahren!!!)",0,0);
 		mlabs[1].setAlignment(MultiLineLabel.RIGHT);
 		jpan.add(mlabs[1],cc.xy(3, 4,CellConstraints.RIGHT,CellConstraints.CENTER));
 		pw = new JRtaTextField("nix",true);
 		jpan.add(pw,cc.xy(5,4));
-		jpan.add( (buts[1]=ButtonTools.macheBut("fixieren", "fixit", al)),cc.xy(7,4) );
+		jpan.add( (buts[1]=ButtonTools.macheButton("fixieren", "fixit", al)),cc.xy(7,4) );
 		
 		mlabs[2] = new MultiLineLabel("3. Sodele.... jetzt das geheime Schlüsselpaar erzeugen und speichern",0,0);
 		mlabs[2].setEnabled(false);
 		jpan.add(mlabs[2],cc.xyw(3,6,3,CellConstraints.RIGHT,CellConstraints.CENTER));
-		jpan.add( (buts[2]=ButtonTools.macheBut("und los...", "generatekeypair", al)),cc.xy(7,6) );
+		jpan.add( (buts[2]=ButtonTools.macheButton("und los...", "generatekeypair", al)),cc.xy(7,6) );
 		buts[2].setEnabled(false);
 		
 		mlabs[3] = new MultiLineLabel("4. Abschließend den Zertifikats-Request für die ITSG erzeugen\nund fertig ist die Laube",0,0);
 		mlabs[3].setAlignment(MultiLineLabel.RIGHT);
 		jpan.add(mlabs[3],cc.xyw(3,8,3,CellConstraints.RIGHT,CellConstraints.CENTER));
-		jpan.add( (buts[3]=ButtonTools.macheBut("und los...", "generaterequest", al)),cc.xy(7,8) );
+		jpan.add( (buts[3]=ButtonTools.macheButton("und los...", "generaterequest", al)),cc.xy(7,8) );
 		buts[3].setEnabled(false);
 		jpan.validate();
 		return jpan;

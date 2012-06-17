@@ -40,15 +40,15 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.swingx.ButtonTools;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
+import org.thera_pi.tools.date.DatFunk;
 
 import RehaIO.RehaIOMessages;
 import RehaIO.SocketClient;
-import Tools.ButtonTools;
-import org.thera_pi.tools.date.DatFunk;
 import Tools.DblCellEditor;
 import Tools.DoubleTableCellRenderer;
-import org.thera_pi.swingx.JCompTools;
 import Tools.JRtaCheckBox;
 import Tools.JRtaComboBox;
 import Tools.OOTools;
