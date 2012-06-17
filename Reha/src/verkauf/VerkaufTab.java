@@ -20,7 +20,7 @@ import javax.swing.event.ChangeListener;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.thera_pi.javax.swing.JRtaTextField;
+import org.thera_pi.swingx.JRtaTextField;
 
 import rechteTools.Rechte;
 import rehaInternalFrame.JVerkaufInternal;

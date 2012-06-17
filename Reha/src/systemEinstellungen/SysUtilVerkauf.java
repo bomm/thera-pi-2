@@ -20,8 +20,8 @@ import javax.swing.filechooser.FileFilter;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.thera_pi.javax.swing.JRtaTextField;
 import org.thera_pi.nebraska.gui.utils.ButtonTools;
+import org.thera_pi.swingx.JRtaTextField;
 
 import systemTools.JRtaCheckBox;
 

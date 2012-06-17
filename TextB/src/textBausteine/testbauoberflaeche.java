@@ -30,7 +30,7 @@ import javax.swing.table.TableModel;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.thera_pi.javax.swing.JRtaTextField;
+import org.thera_pi.swingx.JRtaTextField;
 
 import sqlTools.SqlInfo;
 import sqlTools.SystemEinstellungen;
