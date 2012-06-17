@@ -38,7 +38,7 @@ import org.thera_pi.tools.numbers.IntegerTools;
 
 
 
-public class JRtaTextField extends JFormattedTextField implements PropertyChangeListener,FocusListener,KeyListener{
+public class JRtaTextField extends JFormattedTextField implements PropertyChangeListener, FocusListener, KeyListener{
 	private String type=""; 
 	//private Container feld = null;
 	private boolean selectWhenFocus;
@@ -51,31 +51,39 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	 */
 	private static final long serialVersionUID = 6776374376473011458L;
 
-
-	public JRtaTextField(String type,boolean selectWhenFocus){
-
-		super();
-		//new JFormattedTextField();
-		setRtaType(type,this,selectWhenFocus);
-
-		this.addFocusListener(this);
-		this.addKeyListener(this);
-
-		setDisabledTextColor(Color.RED);
+	public JRtaTextField(String type, boolean selectWhenFocus){
+		this(type, selectWhenFocus, null);
 	}
 
-	public JRtaTextField(String type,boolean selectWhenFocus,String text){
+	public JRtaTextField(String type, boolean selectWhenFocus, String text){
+		this(type, selectWhenFocus, text, null, null);
+	}
 
+	public JRtaTextField(String type, boolean selectWhenFocus, String gleitkomma, String xalign){
+		this(type, selectWhenFocus, null, gleitkomma, xalign);
+	}
+
+	private JRtaTextField(String type, boolean selectWhenFocus, String text,
+			String gleitkomma,String xalign){
 		super();
-		//new JFormattedTextField();
-		setRtaType(type,this,selectWhenFocus);
-		//this.addFocusListener(this);
-		setText(text);
+
+		if(gleitkomma != null) {
+			this.nachkommas = Integer.parseInt(gleitkomma.split("\\.")[1]); 
+		}
+		//setupFormat(nachkommas);
+
+		if("RECHTS".equals(xalign)){
+			setHorizontalAlignment(SwingConstants.RIGHT);
+		}	
+		this.type = type;
+		this.selectWhenFocus = selectWhenFocus;
+		setupRtaType();
 		this.addFocusListener(this);
 		this.addKeyListener(this);
-
-		setDisabledTextColor(Color.RED);
+		this.addPropertyChangeListener("value",this);
+		setDisabledTextColor(Color.RED);		
 	}
+
 	/*****************/
 	public static String toRtaUpper(String s){
 		StringBuffer sbuf = new StringBuffer();
@@ -93,23 +101,6 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		return sbuf.toString();
 	}
 	/*****************/
-	public JRtaTextField(String type,boolean selectWhenFocus,String gleitkomma,String xalign){
-		super();
-		this.nachkommas = Integer.valueOf(gleitkomma.split("\\.")[1]); 
-		//setupFormat(nachkommas);
-
-		new JFormattedTextField(createFormatter("#########0.00"));
-		if(xalign.equals("RECHTS")){
-			setHorizontalAlignment(SwingConstants.RIGHT);
-			//setAlignmentX(JFormattedTextField.RIGHT_ALIGNMENT);
-		}	
-		this.type = type;
-		this.selectWhenFocus = selectWhenFocus;
-		this.addFocusListener(this);
-		this.addKeyListener(this);
-		this.addPropertyChangeListener("value",this);
-		setDisabledTextColor(Color.RED);		
-	}
 	public double getDValueFromS(){
 		String test;
 		test = getText();
@@ -161,51 +152,35 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		//return comp;
 	}
 	 */
-	public void setRtaType(String type,JRtaTextField feld, boolean selectWhenFocus){
-		this.type = type;
-		this.selectWhenFocus = selectWhenFocus;
-
-		for (int i = 0;i<1;i++){
-			if(type.equals("GROSS")){
-				this.setDocument(new NurGrossDocument(this));
-				break;
-			}
-			if(type.equals("KLEIN")){
-				this.setDocument(new NurKleinDocument(this));
-				break;
-			}
-			if(type.equals("NORMAL")){
-				//this.setDocument(new NurNormalDocument(this));
-				break;
-			}
-			if(type.equals("ZAHLEN")){
-				this.setDocument(new NurZahlenDocument(this));
-				break;
-			}
-			if(type.equals("STUNDEN")){
-				this.setDocument(new NurStundenDocument(this));
-				break;
-			}
-			if(type.equals("MINUTEN")){
-				this.setDocument(new NurMinutenDocument(this));
-				break;
-			}
-			if(type.equals("DATUM")){
-				this.setDocument(new DateFieldDocument(this,false));
-				this.setInputVerifier(new DateInputVerifier());
-				break;
-			}
-			if(type.equals("D")){
-				this.setDocument(new NurZahlenDocument(this));
-				break;
-			}
-			if(type.equals("FL")){ //Fließkomma
-				this.setDocument(new NurZahlenDocument(this));
-				break;
-			}
-
+	private void setupRtaType(){
+		if(type.equals("GROSS")){
+			setDocument(new NurGrossDocument(this));
 		}
-
+		else if(type.equals("KLEIN")){
+			setDocument(new NurKleinDocument(this));
+		}
+		else if(type.equals("NORMAL")){
+			//this.setDocument(new NurNormalDocument(this));
+		}
+		else if(type.equals("ZAHLEN")){
+			setDocument(new NurZahlenDocument(this));
+		}
+		else if(type.equals("STUNDEN")){
+			setDocument(new NurStundenDocument(this));
+		}
+		else if(type.equals("MINUTEN")){
+			setDocument(new NurMinutenDocument(this));
+		}
+		else if(type.equals("DATUM")){
+			setDocument(new DateFieldDocument(this,false));
+			setInputVerifier(new DateInputVerifier());
+		}
+		else if(type.equals("D")){
+			setDocument(new NurZahlenDocument(this));
+		}
+		else if(type.equals("FL")){ //Fließkomma
+			setDocument(new NurZahlenDocument(this));
+		}
 	}
 
 	public void setupFormat(int digits){
