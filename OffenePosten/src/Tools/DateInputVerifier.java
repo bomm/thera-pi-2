@@ -16,6 +16,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
+import org.thera_pi.tools.numbers.IntegerTools;
+
 
 
 
