@@ -105,7 +105,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		String test;
 		test = getText();
 		if(test.equals("")){
-			return Double.parseDouble("0.00");
+			return 0.00;
 		}
 		if(test.indexOf(".") < 0 && test.indexOf(",") < 0 ){
 			return (Double.parseDouble(test.trim()+".00"));
@@ -119,7 +119,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		//System.out.println(wert);
 
 		DecimalFormat df = new DecimalFormat ( "#########0.00" );
-		setText( (wert.trim().equals("") ? df.format(Double.parseDouble("0.00")) : df.format(Double.parseDouble(wert)) )  );
+		setText( (wert.trim().equals("") ? df.format(0.00) : df.format(Double.parseDouble(wert)) )  );
 		return;
 	}
 
