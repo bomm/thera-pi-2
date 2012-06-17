@@ -50,6 +50,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import rehaInternalFrame.JArztInternal;
@@ -58,7 +59,6 @@ import sqlTools.SqlInfo;
 import stammDatenTools.ArztTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
-import systemTools.JCompTools;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;

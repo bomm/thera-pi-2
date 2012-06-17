@@ -38,6 +38,7 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.tools.StringTools;
 
@@ -49,7 +50,6 @@ import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.AdressTools;
 import systemTools.Colors;
-import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;

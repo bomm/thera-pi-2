@@ -1,4 +1,4 @@
-package Tools;
+package org.thera_pi.swingx;
 
 import java.awt.Component;
 import java.awt.LayoutManager;
@@ -29,7 +29,7 @@ public class JCompTools {
 		jscr.validate();
 		return jscr;
 	}
-	
+
 	public static JScrollPane getTransparent2ScrollPane(JScrollPane jpan){
 		JScrollPane jscr = new JScrollPane();
 		jscr.setOpaque(false);
@@ -53,3 +53,4 @@ public class JCompTools {
 	}
 
 }
+

@@ -63,6 +63,7 @@ import org.thera_pi.nebraska.crypto.NebraskaEncryptor;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import rehaInternalFrame.JKasseInternal;
@@ -72,7 +73,6 @@ import stammDatenTools.KasseTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.FileTools;
-import systemTools.JCompTools;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;

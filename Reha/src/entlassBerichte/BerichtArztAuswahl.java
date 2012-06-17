@@ -24,12 +24,12 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import patientenFenster.ArztAuswahl;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
-import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 
 import com.jgoodies.forms.builder.PanelBuilder;

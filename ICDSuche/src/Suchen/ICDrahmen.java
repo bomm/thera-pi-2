@@ -15,6 +15,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.swingx.JCompTools;
 
 
 

@@ -37,6 +37,7 @@ import jxTableTools.TableTool;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import patientenFenster.GutachtenWahl;
@@ -46,7 +47,6 @@ import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.IconListRenderer;
-import systemTools.JCompTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;

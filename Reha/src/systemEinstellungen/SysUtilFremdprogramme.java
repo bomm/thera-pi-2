@@ -26,7 +26,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;

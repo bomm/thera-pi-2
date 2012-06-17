@@ -84,9 +84,9 @@ import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.openssl.PEMWriter;
 import org.jdesktop.swingx.JXTable;
+import org.thera_pi.swingx.JCompTools;
 
 import utils.DatFunk;
-import utils.JCompTools;
 import utils.MitteRenderer;
 import utils.NUtils;
 import utils.OOorgTools;

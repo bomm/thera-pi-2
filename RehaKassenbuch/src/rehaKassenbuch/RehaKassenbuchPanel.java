@@ -18,7 +18,7 @@ import org.thera_pi.swingx.JRtaTextField;
 
 import Tools.ButtonTools;
 import Tools.DatFunk;
-import Tools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import Tools.SqlInfo;
 
 import com.jgoodies.forms.layout.CellConstraints;

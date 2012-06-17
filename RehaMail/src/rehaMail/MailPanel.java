@@ -63,6 +63,7 @@ import javax.swing.text.BadLocationException;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import Tools.ButtonTools;
@@ -71,7 +72,6 @@ import Tools.DateTableCellRenderer;
 import Tools.DblCellEditor;
 import Tools.DoubleTableCellRenderer;
 import Tools.IconListRenderer;
-import Tools.JCompTools;
 import Tools.MitteRenderer;
 import Tools.OOTools;
 import Tools.ReaderStart;

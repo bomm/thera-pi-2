@@ -38,7 +38,7 @@ import org.thera_pi.swingx.JRtaTextField;
 
 import sqlTools.PLServerAuslesen;
 import sqlTools.SqlInfo;
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;

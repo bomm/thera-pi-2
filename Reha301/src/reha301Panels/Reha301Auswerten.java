@@ -47,6 +47,7 @@ import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.tools.StringTools;
 
@@ -58,7 +59,6 @@ import Tools.ButtonTools;
 import Tools.Colors;
 import Tools.DatFunk;
 import Tools.FileTools;
-import Tools.JCompTools;
 import Tools.OOTools;
 import Tools.RezTools;
 import Tools.SqlInfo;

@@ -61,7 +61,7 @@ import Tools.DateTableCellRenderer;
 import Tools.DblCellEditor;
 import Tools.DoubleTableCellRenderer;
 import Tools.IconListRenderer;
-import Tools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import Tools.MitteRenderer;
 import Tools.OOTools;
 import Tools.ReaderStart;

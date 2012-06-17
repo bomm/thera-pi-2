@@ -45,7 +45,7 @@ import org.therapi.reha.patient.ArztBericht;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;

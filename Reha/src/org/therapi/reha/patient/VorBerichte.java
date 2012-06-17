@@ -34,7 +34,7 @@ import org.jdesktop.swingx.painter.MattePainter;
 import org.thera_pi.swingx.JRtaTextField;
 import org.therapi.reha.patient.TherapieBerichte.MyBerichtTableModel;
 
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import systemTools.ListenerTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;

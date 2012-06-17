@@ -40,7 +40,7 @@ import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.Colors;
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.ListenerTools;

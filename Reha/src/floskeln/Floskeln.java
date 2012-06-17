@@ -4,7 +4,6 @@ import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -32,16 +31,15 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
-import org.thera_pi.nebraska.gui.utils.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import org.therapi.reha.patient.PatientMemoPanel;
-
-import com.freeware.inifiles.INIFile;
 
 import systemEinstellungen.SystemConfig;
 
+import com.freeware.inifiles.INIFile;
+
 import dialoge.DragWin;
 import dialoge.PinPanel;
-
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 import events.RehaTPEventListener;

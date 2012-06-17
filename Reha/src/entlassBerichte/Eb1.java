@@ -34,12 +34,12 @@ import javax.swing.text.DocumentFilter;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.tools.StringTools;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import terminKalender.DatFunk;

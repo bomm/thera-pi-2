@@ -74,6 +74,7 @@ import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValues;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.tools.StringTools;
 
@@ -93,7 +94,6 @@ import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.Colors;
 import systemTools.IconListRenderer;
-import systemTools.JCompTools;
 import systemTools.ListenerTools;
 import terminKalender.DatFunk;
 import abrechnung.AbrechnungPrivat;

@@ -30,6 +30,7 @@ import org.thera_pi.nebraska.crypto.NebraskaDecryptor;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.tools.StringTools;
 import org.thera_pi.tools.crypto.Verschluesseln;
 import org.thera_pi.tools.numbers.IntegerTools;
@@ -38,7 +39,6 @@ import reha301.Reha301;
 import reha301.Reha301Tab;
 import Tools.ButtonTools;
 import Tools.DatFunk;
-import Tools.JCompTools;
 import Tools.SqlInfo;
 
 import com.freeware.inifiles.INIFile;

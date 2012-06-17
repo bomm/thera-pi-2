@@ -29,7 +29,7 @@ import org.thera_pi.tools.StringTools;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
