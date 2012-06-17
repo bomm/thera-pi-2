@@ -32,7 +32,7 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
-import org.thera_pi.javax.swing.JRtaTextField;
+import org.thera_pi.swingx.JRtaTextField;
 import org.therapi.reha.patient.AktuelleRezepte;
 
 import sqlTools.SqlInfo;

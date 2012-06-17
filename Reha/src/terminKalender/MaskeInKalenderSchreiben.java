@@ -27,7 +27,7 @@ import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
-import org.thera_pi.javax.swing.JRtaTextField;
+import org.thera_pi.swingx.JRtaTextField;
 
 import rehaContainer.RehaTP;
 import sqlTools.SqlInfo;

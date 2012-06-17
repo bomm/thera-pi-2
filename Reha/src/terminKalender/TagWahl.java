@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-import org.thera_pi.javax.swing.JRtaTextField;
+import org.thera_pi.swingx.JRtaTextField;
 
 public class TagWahl {
 

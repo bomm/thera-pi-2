@@ -85,7 +85,7 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.MutableTreeTableNode;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableNode;
-import org.thera_pi.javax.swing.JRtaTextField;
+import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.tools.StringTools;
 import org.therapi.reha.patient.AktuelleRezepte;
 

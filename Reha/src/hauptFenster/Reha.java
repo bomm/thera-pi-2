@@ -118,7 +118,7 @@ import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
-import org.thera_pi.javax.swing.JRtaTextField;
+import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.updates.TestForUpdates;
 import org.therapi.reha.patient.LadeProg;
 import org.therapi.reha.patient.PatientHauptPanel;

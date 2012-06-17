@@ -22,7 +22,7 @@ import javax.swing.JScrollPane;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.thera_pi.javax.swing.JRtaTextField;
+import org.thera_pi.swingx.JRtaTextField;
 
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;

@@ -29,7 +29,7 @@ import javax.swing.JSplitPane;
 import javax.swing.border.SoftBevelBorder;
 
 import org.jdesktop.swingx.JXPanel;
-import org.thera_pi.javax.swing.JRtaTextField;
+import org.thera_pi.swingx.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.thera_pi.javax.swing.JRtaTextField;
+import org.thera_pi.swingx.JRtaTextField;
 
 import sqlTools.SqlInfo;
 import terminKalender.ParameterLaden;

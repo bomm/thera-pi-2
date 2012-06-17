@@ -1,4 +1,4 @@
-package org.thera_pi.javax.swing;
+package org.thera_pi.swingx;
 
 import java.awt.Color;
 import java.awt.Toolkit;

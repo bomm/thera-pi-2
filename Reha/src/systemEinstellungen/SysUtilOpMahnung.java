@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
-import org.thera_pi.javax.swing.JRtaTextField;
+import org.thera_pi.swingx.JRtaTextField;
 
 import sqlTools.SqlInfo;
 import systemTools.ButtonTools;

@@ -18,7 +18,6 @@ import javax.swing.JOptionPane;
 
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
-import org.thera_pi.javax.swing.JRtaTextField;
 import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
 import org.thera_pi.nebraska.crypto.NebraskaFileException;
 import org.thera_pi.nebraska.crypto.NebraskaKeystore;
@@ -26,6 +25,7 @@ import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 import org.thera_pi.nebraska.gui.utils.ButtonTools;
 import org.thera_pi.nebraska.gui.utils.DatFunk;
 import org.thera_pi.nebraska.gui.utils.MultiLineLabel;
+import org.thera_pi.swingx.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
