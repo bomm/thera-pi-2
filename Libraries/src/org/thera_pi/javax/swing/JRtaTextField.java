@@ -677,7 +677,7 @@ class NurStundenDocument extends javax.swing.text.PlainDocument
 			super.insertString(offs, str, a);
 			//System.out.println("Offset: "+offs);
 			text = textField.getText();
-			if (Integer.valueOf(text) > 24){
+			if (Integer.parseInt(text) > 24){
 				super.remove(offs, 1);
 				//Toolkit.getDefaultToolkit().beep();
 				return;
@@ -716,7 +716,7 @@ class NurMinutenDocument extends javax.swing.text.PlainDocument
 			super.insertString(offs, str, a);
 			//System.out.println("Offset: "+offs);
 			text = textField.getText();
-			if (Integer.valueOf(text) > 59){
+			if (Integer.parseInt(text) > 59){
 				super.remove(offs, 1);
 				//Toolkit.getDefaultToolkit().beep();				
 				return;
@@ -833,7 +833,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 			}
 			if(offset==1) {                          // Tage 32-39 unterbinden
 				if(textComponent.getText().substring(0, 1).equals("3")) {
-					int tag = Integer.valueOf(zeichen).intValue();
+					int tag = Integer.parseInt(zeichen);
 					if(tag>1) {
 						//Toolkit.getDefaultToolkit().beep();
 						return;
@@ -842,7 +842,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 			}
 			if(offset==1) {                          // Tag 00 unterbinden
 				if(textComponent.getText().substring(0, 1).equals("0")) {
-					int tag = Integer.valueOf(zeichen).intValue();
+					int tag = Integer.parseInt(zeichen);
 					if(tag==0) {
 						//Toolkit.getDefaultToolkit().beep();
 						return;
@@ -865,7 +865,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 			}
 			if(offset==4) {                         // Monate 13-19 unterbinden
 				if(textComponent.getText().substring(3, 4).equals("1")) {
-					int monat = Integer.valueOf(zeichen).intValue();
+					int monat = Integer.parseInt(zeichen);
 					if(monat>2) {
 						//Toolkit.getDefaultToolkit().beep();
 						return;
@@ -874,7 +874,7 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 			}
 			if(offset==4) {                         // Monat 00 unterbinden
 				if(textComponent.getText().substring(3, 4).equals("0")) {
-					int monat = Integer.valueOf(zeichen).intValue();
+					int monat = Integer.parseInt(zeichen);
 					if(monat==0) {
 						//Toolkit.getDefaultToolkit().beep();
 						return;
