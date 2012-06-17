@@ -39,9 +39,9 @@ import nebraska.FileStatics;
 
 import org.jdesktop.swingx.JXPanel;
 import org.thera_pi.nebraska.gui.utils.DatFunk;
-import org.thera_pi.nebraska.gui.utils.JCompTools;
 import org.thera_pi.nebraska.gui.utils.JRtaCheckBox;
 import org.thera_pi.nebraska.gui.utils.JRtaRadioButton;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import pdfDrucker.PDFDrucker;

@@ -25,7 +25,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
 import sqlTools.SqlInfo;
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
 

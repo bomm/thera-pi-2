@@ -81,6 +81,7 @@ import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValues;
+import org.thera_pi.swingx.JCompTools;
 
 import patientenFenster.KeinRezept;
 import patientenFenster.MyAccessory;
@@ -92,7 +93,6 @@ import systemTools.Colors;
 import systemTools.FileTools;
 import systemTools.GrafikTools;
 import systemTools.IconListRenderer;
-import systemTools.JCompTools;
 import terminKalender.DatFunk;
 import uk.co.mmscomputing.device.scanner.Scanner;
 import uk.co.mmscomputing.device.scanner.ScannerDevice;

@@ -68,7 +68,7 @@ import stammDatenTools.ArztTools;
 import stammDatenTools.ZuzahlTools;
 import sun.awt.image.ImageFormatException;
 import systemEinstellungen.SystemConfig;
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.ListenerTools;

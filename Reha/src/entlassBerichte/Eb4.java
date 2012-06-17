@@ -19,10 +19,10 @@ import javax.swing.JViewport;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import sqlTools.SqlInfo;
-import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 import terminKalender.DatFunk;
 

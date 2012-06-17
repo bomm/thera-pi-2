@@ -35,12 +35,12 @@ import javax.swing.text.MaskFormatter;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.JCompTools;
 import systemTools.JRtaComboBox;
 
 import com.jgoodies.forms.builder.PanelBuilder;

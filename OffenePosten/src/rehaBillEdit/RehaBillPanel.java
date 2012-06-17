@@ -43,11 +43,11 @@ import offenePosten.OffenepostenTab;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import Tools.ButtonTools;
 import Tools.DatFunk;
-import Tools.JCompTools;
 import Tools.JRtaCheckBox;
 import Tools.PatTools;
 import Tools.RezTools;

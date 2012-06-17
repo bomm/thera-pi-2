@@ -48,7 +48,7 @@ import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.DblCellEditor;
 import Tools.DoubleTableCellRenderer;
-import Tools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import Tools.JRtaCheckBox;
 import Tools.JRtaComboBox;
 import Tools.OOTools;

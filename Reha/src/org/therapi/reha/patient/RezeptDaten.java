@@ -34,7 +34,7 @@ import stammDatenTools.KasseTools;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import systemTools.JRtaLabel;
 import terminKalender.TerminFenster;
 

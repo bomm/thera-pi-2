@@ -36,7 +36,7 @@ import org.thera_pi.swingx.JRtaTextField;
 
 import sqlTools.SqlInfo;
 import systemTools.ButtonTools;
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.ZeitFunk;

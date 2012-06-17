@@ -34,7 +34,7 @@ import org.thera_pi.swingx.JRtaTextField;
 
 import sqlTools.SqlInfo;
 import sqlTools.SystemEinstellungen;
-import Tools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import Tools.JRtaRadioButton;
 
 import com.jgoodies.forms.builder.PanelBuilder;

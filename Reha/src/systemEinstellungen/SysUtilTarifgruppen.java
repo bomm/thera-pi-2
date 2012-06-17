@@ -44,7 +44,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
 import preisListenHandling.MachePreisListe;
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import systemTools.JRtaComboBox;
 
 import com.freeware.inifiles.INIFile;

@@ -36,13 +36,13 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.swingx.JCompTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import RehaIO.RehaIOMessages;
 import RehaIO.SocketClient;
 import Tools.ButtonTools;
 import Tools.DatFunk;
-import Tools.JCompTools;
 import Tools.JRtaComboBox;
 import Tools.SqlInfo;
 

@@ -32,7 +32,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.thera_pi.swingx.JRtaTextField;
 
 import rehaInternalFrame.JPatientInternal;
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

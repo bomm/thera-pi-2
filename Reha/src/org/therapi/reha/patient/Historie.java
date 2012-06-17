@@ -50,7 +50,6 @@ import javax.swing.table.TableCellRenderer;
 
 import jxTableTools.DateTableCellEditor;
 import jxTableTools.TableTool;
-
 import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -61,7 +60,7 @@ import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValues;
 import org.jdesktop.swingx.renderer.MappedValue;
 import org.jdesktop.swingx.renderer.StringValues;
-
+import org.thera_pi.swingx.JCompTools;
 
 import patientenFenster.HistorDaten;
 import patientenFenster.KeinRezept;
@@ -71,7 +70,6 @@ import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.IconListRenderer;
-import systemTools.JCompTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;

@@ -51,7 +51,7 @@ import org.thera_pi.swingx.JRtaTextField;
 import org.thera_pi.tools.StringTools;
 
 import Tools.DatFunk;
-import Tools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import Tools.JRtaComboBox;
 import Tools.MitteRenderer;
 import Tools.SqlInfo;

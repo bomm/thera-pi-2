@@ -32,7 +32,7 @@ import rehaInternalFrame.JAnmeldungenInternal;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemTools.ButtonTools;
-import systemTools.JCompTools;
+import org.thera_pi.swingx.JCompTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;

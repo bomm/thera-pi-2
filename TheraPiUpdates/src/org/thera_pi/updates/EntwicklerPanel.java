@@ -21,6 +21,7 @@ import javax.swing.JTextArea;
 import org.apache.commons.net.ftp.FTPFile;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.swingx.JCompTools;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
