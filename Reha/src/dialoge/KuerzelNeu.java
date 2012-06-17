@@ -22,10 +22,10 @@ import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
+import org.thera_pi.swingx.ButtonTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import systemEinstellungen.SysUtilKuerzel;
-import systemTools.ButtonTools;
 import systemTools.JRtaCheckBox;
 
 import com.jgoodies.forms.layout.CellConstraints;

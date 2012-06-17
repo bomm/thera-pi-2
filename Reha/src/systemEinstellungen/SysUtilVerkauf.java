@@ -20,7 +20,7 @@ import javax.swing.filechooser.FileFilter;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.thera_pi.nebraska.gui.utils.ButtonTools;
+import org.thera_pi.swingx.ButtonTools;
 import org.thera_pi.swingx.JRtaTextField;
 
 import systemTools.JRtaCheckBox;
@@ -84,8 +84,8 @@ public class SysUtilVerkauf extends JXPanel {
 	}
 	
 	private JPanel getKnopfPanel(){
-		abbruch = ButtonTools.macheBut("abbrechen", "abbrechen", al);
-		speichern = ButtonTools.macheBut("speichern", "speicher", al);
+		abbruch = ButtonTools.macheButton("abbrechen", "abbrechen", al);
+		speichern = ButtonTools.macheButton("speichern", "speicher", al);
 		/*
 		abbruch = new JButton("abbrechen");
 		abbruch.setActionCommand("abbrechen");

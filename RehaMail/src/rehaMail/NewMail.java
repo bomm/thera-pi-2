@@ -57,10 +57,10 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.thera_pi.swingx.ButtonTools;
 import org.thera_pi.swingx.JRtaTextField;
-
-import Tools.ButtonTools;
 import org.thera_pi.tools.date.DatFunk;
+
 import Tools.JRtaComboBox;
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.desktop.IFrame;
