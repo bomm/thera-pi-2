@@ -22,9 +22,9 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import sqlTools.ExUndHop;
-import systemTools.JRtaTextField;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;

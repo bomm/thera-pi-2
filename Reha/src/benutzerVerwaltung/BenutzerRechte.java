@@ -43,6 +43,7 @@ import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.thera_pi.tools.crypto.Verschluesseln;
 
 import rehaInternalFrame.JBenutzerInternal;
@@ -52,7 +53,6 @@ import systemTools.ButtonTools;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
 import terminKalender.ParameterLaden;
 
 import com.jgoodies.forms.layout.CellConstraints;

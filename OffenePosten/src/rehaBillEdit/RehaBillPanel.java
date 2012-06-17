@@ -37,36 +37,22 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-
-
-
-
 import offenePosten.OffenePosten;
 import offenePosten.OffenepostenTab;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-
-
-
-
-
-
-
-
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.JCompTools;
 import Tools.JRtaCheckBox;
-import Tools.JRtaTextField;
 import Tools.PatTools;
 import Tools.RezTools;
 import Tools.SqlInfo;
 import Tools.TableTool;
-
-
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;

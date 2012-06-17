@@ -21,9 +21,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.thera_pi.tools.crypto.Verschluesseln;
-
-import systemTools.JRtaTextField;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;

@@ -20,11 +20,11 @@ import javax.swing.JPanel;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import sqlTools.SqlInfo;
 import systemTools.ButtonTools;
 import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;

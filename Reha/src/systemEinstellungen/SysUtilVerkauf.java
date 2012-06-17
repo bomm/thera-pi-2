@@ -3,7 +3,6 @@ package systemEinstellungen;
 import hauptFenster.Reha;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterJob;
@@ -21,11 +20,10 @@ import javax.swing.filechooser.FileFilter;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.thera_pi.nebraska.gui.utils.ButtonTools;
 
-import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
-import systemTools.JRtaTextField;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;

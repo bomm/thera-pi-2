@@ -1,7 +1,6 @@
 package hauptFenster;
 
 import java.awt.AWTEvent;
-
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -118,6 +117,7 @@ import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.thera_pi.updates.TestForUpdates;
 import org.therapi.reha.patient.LadeProg;
 import org.therapi.reha.patient.PatientHauptPanel;
@@ -133,7 +133,6 @@ import systemEinstellungen.SystemInit;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.Colors;
 import systemTools.FileTools;
-import systemTools.JRtaTextField;
 import systemTools.RehaPainters;
 import systemTools.RezeptFahnder;
 import systemTools.TestePatStamm;
@@ -151,8 +150,6 @@ import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.event.IEvent;
-import ag.ion.bion.officelayer.event.IEventListener;
 import ag.ion.bion.officelayer.event.ITerminateEvent;
 import ag.ion.bion.officelayer.event.VetoTerminateListener;
 import anmeldungUmsatz.Anmeldungen;
@@ -175,7 +172,6 @@ import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
 import geraeteInit.BarCodeScanner;
-//@SuppressWarnings("unused")
 
 public class Reha implements FocusListener,ComponentListener,ContainerListener,MouseListener,MouseMotionListener,KeyListener,RehaEventListener, WindowListener, WindowStateListener, ActionListener  {
 

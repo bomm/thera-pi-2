@@ -47,12 +47,12 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.thera_pi.tools.StringTools;
 
 import Tools.DatFunk;
 import Tools.JCompTools;
 import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
 import Tools.MitteRenderer;
 import Tools.SqlInfo;
 import ag.ion.bion.officelayer.NativeView;

@@ -30,9 +30,8 @@ import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.thera_pi.tools.StringTools;
-
-import com.freeware.inifiles.INIFile;
 
 import patientenFenster.PatNeuanlage;
 import rechteTools.Rechte;
@@ -41,8 +40,10 @@ import stammDatenTools.ArztTools;
 import stammDatenTools.KasseTools;
 import stammDatenTools.PatTools;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
+
+import com.freeware.inifiles.INIFile;
+
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
 import events.PatStammEvent;

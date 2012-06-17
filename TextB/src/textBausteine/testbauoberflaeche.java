@@ -30,12 +30,12 @@ import javax.swing.table.TableModel;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import sqlTools.SqlInfo;
 import sqlTools.SystemEinstellungen;
 import Tools.JCompTools;
 import Tools.JRtaRadioButton;
-import Tools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

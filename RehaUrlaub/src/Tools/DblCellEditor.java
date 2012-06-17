@@ -11,12 +11,11 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellEditor;
 
-import Tools.JRtaTextField;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 
 

@@ -27,12 +27,12 @@ import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import rehaContainer.RehaTP;
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaCheckBox;
-import systemTools.JRtaTextField;
 import systemTools.WinNum;
 
 import com.jgoodies.forms.layout.CellConstraints;

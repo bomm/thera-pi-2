@@ -41,8 +41,8 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.table.TableColumnExt;
+import org.thera_pi.javax.swing.JRtaTextField;
 
-import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
 import terminKalender.ZeitFunk;
 

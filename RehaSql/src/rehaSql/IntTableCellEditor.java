@@ -14,7 +14,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellEditor;
 
-import Tools.JRtaTextField;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 public class IntTableCellEditor extends AbstractCellEditor implements KeyListener,TableCellEditor {
     /**

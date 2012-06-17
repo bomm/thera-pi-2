@@ -34,6 +34,7 @@ import jxTableTools.TableTool;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import sqlTools.PLServerAuslesen;
 import sqlTools.SqlInfo;
@@ -41,7 +42,6 @@ import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
-import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
 
 import com.freeware.inifiles.INIFile;

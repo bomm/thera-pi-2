@@ -28,13 +28,10 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-
-
-
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import Tools.Colors;
 import Tools.JCompTools;
-import Tools.JRtaTextField;
 import Tools.SqlInfo;
 
 import com.jgoodies.forms.layout.CellConstraints;

@@ -57,6 +57,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.thera_pi.nebraska.crypto.NebraskaCryptoException;
 import org.thera_pi.nebraska.crypto.NebraskaDecryptor;
 import org.thera_pi.nebraska.crypto.NebraskaEncryptor;
@@ -72,7 +73,6 @@ import systemEinstellungen.SystemConfig;
 import systemTools.Colors;
 import systemTools.FileTools;
 import systemTools.JCompTools;
-import systemTools.JRtaTextField;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;

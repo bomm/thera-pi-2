@@ -8,10 +8,10 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import Tools.ButtonTools;
 import Tools.DatFunk;
-import Tools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

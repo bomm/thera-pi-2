@@ -21,12 +21,12 @@ import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import rehaInternalFrame.JUmsaetzeInternal;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemTools.ButtonTools;
-import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;

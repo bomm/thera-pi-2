@@ -53,6 +53,7 @@ import javax.swing.text.BadLocationException;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import Tools.ButtonTools;
 import Tools.DatFunk;
@@ -61,7 +62,6 @@ import Tools.DblCellEditor;
 import Tools.DoubleTableCellRenderer;
 import Tools.IconListRenderer;
 import Tools.JCompTools;
-import Tools.JRtaTextField;
 import Tools.MitteRenderer;
 import Tools.OOTools;
 import Tools.ReaderStart;

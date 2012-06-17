@@ -21,11 +21,11 @@ import javax.swing.JRadioButton;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import rehaContainer.RehaTP;
 import systemEinstellungen.SysUtilGruppenDef;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

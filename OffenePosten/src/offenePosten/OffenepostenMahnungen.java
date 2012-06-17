@@ -36,6 +36,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.thera_pi.tools.StringTools;
 
 import Tools.ButtonTools;
@@ -43,7 +44,6 @@ import Tools.DatFunk;
 import Tools.JCompTools;
 import Tools.JRtaCheckBox;
 import Tools.JRtaRadioButton;
-import Tools.JRtaTextField;
 import Tools.OOTools;
 import Tools.SqlInfo;
 import Tools.TableTool;

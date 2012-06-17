@@ -27,9 +27,9 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import systemTools.JRtaCheckBox;
-import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;

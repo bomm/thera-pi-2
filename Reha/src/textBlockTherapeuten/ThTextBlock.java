@@ -40,12 +40,12 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.therapi.reha.patient.ArztBericht;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.JCompTools;
-import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
