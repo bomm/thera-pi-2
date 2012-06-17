@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.InputVerifier;
@@ -30,7 +29,6 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.MaskFormatter;
 
 import org.thera_pi.tools.StringTools;
 import org.thera_pi.tools.numbers.IntegerTools;
@@ -52,11 +50,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	private static final long serialVersionUID = 6776374376473011458L;
 
 	public JRtaTextField(String type, boolean selectWhenFocus){
-		this(type, selectWhenFocus, null);
-	}
-
-	public JRtaTextField(String type, boolean selectWhenFocus, String text){
-		this(type, selectWhenFocus, text, null, null);
+		this(type, selectWhenFocus, null, null, null);
 	}
 
 	public JRtaTextField(String type, boolean selectWhenFocus, String gleitkomma, String xalign){
@@ -85,7 +79,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	}
 
 	/*****************/
-	public static String toRtaUpper(String s){
+	private static String toRtaUpper(String s){
 		StringBuffer sbuf = new StringBuffer();
 		char[] cha = s.toCharArray();
 		int i,len=s.length();
@@ -129,29 +123,6 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		this.removePropertyChangeListener(this);
 	}
 
-
-	protected MaskFormatter createFormatter(String s) {
-		MaskFormatter formatter = null;
-		try {
-			formatter = new MaskFormatter(s);
-
-		} catch (java.text.ParseException exc) {
-			System.err.println("formatter is bad: " + exc.getMessage());
-			System.exit(-1);
-		}
-		return formatter;
-	}
-
-
-	/*
-	public JRtaTextField JRtaTextField(String muster,String type,Container con){
-
-
-		JFormattedTextField comp = new JFormattedTextField();
-		return this;
-		//return comp;
-	}
-	 */
 	private void setupRtaType(){
 		if(type.equals("GROSS")){
 			setDocument(new NurGrossDocument(this));
@@ -196,14 +167,14 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	public String getRtaType(){
 		return this.type;
 	}
-	public boolean getSelectOnFocus(){
+	private boolean getSelectOnFocus(){
 		return this.selectWhenFocus;
 	}
-	public void focusNachUnten(){
+	private void focusNachUnten(){
 		this.transferFocus();
 		return;
 	}
-	public void focusNachOben(){
+	private void focusNachOben(){
 		this.transferFocusBackward();
 		return;
 	}	
@@ -219,48 +190,6 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		}
 	}
 	/***********************************************************/	
-	protected MaskFormatter getDateMask () {
-		MaskFormatter formatter = null;
-		try {
-			if (Locale.getDefault ().getLanguage ().equals (Locale.GERMANY.getLanguage())) {
-				//System.out.println("Formatter - Locale = Germany");
-				formatter = new MaskFormatter ("##.##.####");
-			}
-			else {
-				formatter = new MaskFormatter ("####-##-##");
-			}
-			if (this.getPlaceHolder() != null) {
-				formatter.setPlaceholderCharacter (this.getPlaceHolder());
-			}
-		}
-		catch (final ParseException ignored) {
-			Logger.getLogger(this.getClass().getName()).throwing (this.getClass().getName(),"getDateMask", ignored);
-		}
-		return formatter;
-	}
-
-
-	private Character placeholder = null;
-	/**
-	 * Set an Empty Character for delete the Input. If Empty Character is null,
-	 * a valid value need to input.
-	 * @param c Character
-	 */
-	public void setPlaceholder (final Character c) {
-		this.placeholder = c;
-	}
-
-	/**
-	 * Return the char for delete the input or null if delete not allowed.
-	 * @return Character
-	 */
-	public Character getPlaceHolder () {
-		return this.placeholder;
-	}
-
-
-
-	/*************************************************/
 
 
 	protected static class DateInputVerifier extends InputVerifier {
@@ -318,21 +247,6 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 				return true;
 			}
 			catch (final ParseException notValidOrDelete) {
-				if (input.getPlaceHolder() != null) {
-					String noMaskValue = null;
-					if (Locale.getDefault ().getLanguage ().equals (Locale.GERMANY.getLanguage ())) {
-						//System.out.println("InputVerifier - Locale = Germany");
-						noMaskValue = input.getText().replace ('.',input.getPlaceHolder ());
-					}
-					else {
-						noMaskValue = input.getText().replace ('-',input.getPlaceHolder ());
-						//System.out.println("InputVerifier - Locale = English");
-					}
-					for (char c : noMaskValue.toCharArray()) {
-						if (c != input.getPlaceHolder()) return false;
-					}
-					return true;
-				}
 				//JOptionPane.showMessageDialog(null,"Unzulässige Datumseingabe");
 
 				return false;
@@ -495,7 +409,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 
 
 	/*************************************************/
-	class NurZahlenDocument extends javax.swing.text.PlainDocument
+	private class NurZahlenDocument extends javax.swing.text.PlainDocument
 	{
 		/**
 		 * 
@@ -531,7 +445,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	}
 	/*************************************************/
 
-	class NurNormalDocument extends javax.swing.text.PlainDocument
+	private class NurNormalDocument extends javax.swing.text.PlainDocument
 	{
 		/**
 		 * 
@@ -580,7 +494,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 
 	/*************************************************/
 
-	class NurGrossDocument extends javax.swing.text.PlainDocument
+	private class NurGrossDocument extends javax.swing.text.PlainDocument
 	{
 		/**
 		 * 
@@ -621,7 +535,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 
 	/*************************************************/
 
-	class NurKleinDocument extends javax.swing.text.PlainDocument
+	private class NurKleinDocument extends javax.swing.text.PlainDocument
 	{
 		/**
 		 * 
@@ -653,7 +567,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	}
 	/*************************************************/
 
-	class NurStundenDocument extends javax.swing.text.PlainDocument
+	private class NurStundenDocument extends javax.swing.text.PlainDocument
 	{
 		/**
 		 * 
@@ -692,7 +606,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 		}
 	}
 	/*************************************************/
-	class NurMinutenDocument extends javax.swing.text.PlainDocument
+	private class NurMinutenDocument extends javax.swing.text.PlainDocument
 	{
 		/**
 		 * 
@@ -733,7 +647,7 @@ public class JRtaTextField extends JFormattedTextField implements PropertyChange
 	/*************************************************/
 
 	/*****************************************************************/
-	class DateFieldDocument extends javax.swing.text.PlainDocument {
+	private class DateFieldDocument extends javax.swing.text.PlainDocument {
 		/**
 		 * 
 		 */
