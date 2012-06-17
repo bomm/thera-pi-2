@@ -19,9 +19,9 @@ import javax.swing.JPanel;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

@@ -14,11 +14,11 @@ import javax.swing.JScrollPane;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import Tools.ButtonTools;
 import Tools.DatFunk;
 import Tools.JCompTools;
-import Tools.JRtaTextField;
 import Tools.SqlInfo;
 
 import com.jgoodies.forms.layout.CellConstraints;

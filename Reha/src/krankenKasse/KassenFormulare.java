@@ -31,8 +31,8 @@ import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
-import systemTools.JRtaTextField;
 import dialoge.DragWin;
 import dialoge.PinPanel;
 import events.RehaTPEvent;

@@ -16,8 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import org.jdesktop.swingx.JXPanel;
-
-import systemTools.JRtaTextField;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;

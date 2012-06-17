@@ -20,11 +20,11 @@ import javax.swing.event.ChangeListener;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import rechteTools.Rechte;
 import rehaInternalFrame.JVerkaufInternal;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

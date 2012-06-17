@@ -18,19 +18,19 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import org.jdesktop.swingworker.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import patientenFenster.ArztAuswahl;
 import sqlTools.ExUndHop;
 import sqlTools.SqlInfo;
 import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
-import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

@@ -33,9 +33,9 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import rehaContainer.RehaTP;
-import systemTools.JRtaTextField;
 import systemTools.RezeptFahnder;
 
 import com.jgoodies.forms.layout.CellConstraints;

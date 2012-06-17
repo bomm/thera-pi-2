@@ -26,15 +26,14 @@ import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import rehaInternalFrame.JAnmeldungenInternal;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemTools.ButtonTools;
 import systemTools.JCompTools;
-import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
-
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

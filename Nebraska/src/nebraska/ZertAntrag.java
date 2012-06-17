@@ -34,14 +34,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import pdfDrucker.PDFDrucker;
-
 import utils.DatFunk;
 import utils.JCompTools;
 import utils.JRtaCheckBox;
 import utils.JRtaRadioButton;
-import utils.JRtaTextField;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;

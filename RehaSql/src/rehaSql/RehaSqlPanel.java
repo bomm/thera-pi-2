@@ -40,6 +40,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import RehaIO.RehaIOMessages;
 import RehaIO.SocketClient;
@@ -50,7 +51,6 @@ import Tools.DoubleTableCellRenderer;
 import Tools.JCompTools;
 import Tools.JRtaCheckBox;
 import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
 import Tools.OOTools;
 import Tools.SqlInfo;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
@@ -64,7 +64,6 @@ import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.noa.NOAException;
 
 import com.freeware.inifiles.INIFile;
-
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.sun.star.beans.PropertyVetoException;

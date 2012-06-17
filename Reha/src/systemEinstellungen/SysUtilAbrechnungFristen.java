@@ -23,12 +23,12 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import systemTools.ButtonTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
-import systemTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

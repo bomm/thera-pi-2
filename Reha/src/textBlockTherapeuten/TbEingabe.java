@@ -9,11 +9,10 @@ import java.util.Vector;
 import javax.swing.JPanel;
 
 import org.jdesktop.swingx.JXFrame;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.FormLayout;
-
-import systemTools.JRtaTextField;
 
 import dialoge.RehaSmartDialog;
 import events.RehaTPEventListener;

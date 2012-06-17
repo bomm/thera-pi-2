@@ -39,9 +39,9 @@ import jxTableTools.TableTool;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import systemTools.JCompTools;
-import systemTools.JRtaTextField;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.builder.PanelBuilder;

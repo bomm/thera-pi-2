@@ -17,9 +17,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingworker.SwingWorker;
+import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
+import rehaInternalFrame.JBarkassenInternal;
+import sqlTools.SqlInfo;
+import systemTools.ButtonTools;
+import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
@@ -32,12 +37,6 @@ import ag.ion.noa.NOAException;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-import rehaInternalFrame.JBarkassenInternal;
-import sqlTools.SqlInfo;
-import systemTools.ButtonTools;
-import systemTools.JRtaTextField;
-import terminKalender.DatFunk;
 
 public class Barkasse extends JXPanel{
 

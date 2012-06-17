@@ -41,6 +41,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import RehaIO.RehaIOMessages;
 import RehaIO.SocketClient;
@@ -49,7 +50,6 @@ import Tools.DatFunk;
 import Tools.JCompTools;
 import Tools.JRtaCheckBox;
 import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
 import Tools.SqlInfo;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;

@@ -26,8 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
-import systemTools.JRtaTextField;
 import terminKalender.ParameterLaden;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;

@@ -38,8 +38,8 @@ import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.thera_pi.tools.StringTools;
-
 
 import rehaInternalFrame.JDta301Internal;
 import sqlTools.SqlInfo;
@@ -50,9 +50,7 @@ import systemTools.JCompTools;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaComboBox;
 import systemTools.JRtaRadioButton;
-import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
-
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.TextException;

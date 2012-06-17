@@ -31,10 +31,10 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.therapi.reha.patient.TherapieBerichte.MyBerichtTableModel;
 
 import systemTools.JCompTools;
-import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;

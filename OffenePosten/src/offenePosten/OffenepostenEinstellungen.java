@@ -11,11 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import Tools.DatFunk;
 import Tools.JRtaCheckBox;
 import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
 
 import com.freeware.inifiles.INIFile;
 import com.jgoodies.forms.layout.CellConstraints;

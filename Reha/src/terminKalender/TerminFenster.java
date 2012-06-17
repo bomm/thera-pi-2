@@ -36,8 +36,6 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -67,14 +65,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 
 import kurzAufrufe.KurzAufrufe;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
+import org.thera_pi.javax.swing.JRtaTextField;
 import org.therapi.reha.patient.AktuelleRezepte;
 
 import rechteTools.Rechte;
@@ -82,7 +79,6 @@ import rehaInternalFrame.JRehaInternal;
 import sqlTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import events.PatStammEvent;
 import events.PatStammEventClass;

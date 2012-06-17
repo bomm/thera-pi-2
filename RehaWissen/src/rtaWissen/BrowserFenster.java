@@ -63,8 +63,8 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.javax.swing.JRtaTextField;
 
-import rehaWissen.JRtaTextField;
 import rehaWissen.RehaWissen;
 import rehaWissen.SystemConfig;
 import rehaWissen.UIFSplitPane;

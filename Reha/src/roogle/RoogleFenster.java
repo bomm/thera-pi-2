@@ -51,11 +51,11 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import systemEinstellungen.SystemConfig;
 import systemTools.JRtaCheckBox;
 import systemTools.JRtaRadioButton;
-import systemTools.JRtaTextField;
 import systemTools.ListenerTools;
 import systemTools.WinNum;
 import terminKalender.DatFunk;

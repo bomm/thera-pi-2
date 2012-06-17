@@ -18,9 +18,9 @@ import javax.swing.JRadioButton;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import rehaContainer.RehaTP;
-import systemTools.JRtaTextField;
 import terminKalender.TerminFenster;
 
 import com.jgoodies.forms.builder.PanelBuilder;

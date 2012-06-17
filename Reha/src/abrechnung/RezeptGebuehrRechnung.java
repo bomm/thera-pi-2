@@ -33,10 +33,10 @@ import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
+import org.thera_pi.javax.swing.JRtaTextField;
 
 import sqlTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
