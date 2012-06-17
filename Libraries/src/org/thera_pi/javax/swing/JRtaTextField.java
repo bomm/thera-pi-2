@@ -876,14 +876,14 @@ class DateFieldDocument extends javax.swing.text.PlainDocument {
 			}
 			if(offset==2) {                         // Monate auf 0x-1x prüfen
 				// (Caret links vom Trenner)
-				if( MONAT.indexOf( zeichen.valueOf(zeichen.charAt(0) ) ) == -1 ) {
+				if( MONAT.indexOf( String.valueOf(zeichen.charAt(0) ) ) == -1 ) {
 					//Toolkit.getDefaultToolkit().beep();
 					return;
 				}
 			}
 			if(offset==3) {                         // Monate auf 0x-1x prüfen
 				// (Caret rechts vom Trenner)
-				if( MONAT.indexOf( zeichen.valueOf(zeichen.charAt(0) ) ) == -1 ) {
+				if( MONAT.indexOf( String.valueOf(zeichen.charAt(0) ) ) == -1 ) {
 					//Toolkit.getDefaultToolkit().beep();
 					return;
 				}
