@@ -224,6 +224,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	private String[] voBreak = {"","K","U","T","A"};
 	//private String[] voPreis = {"akt. Tarif","alter Tarif"};
 	JEditorPane htmlPane = null;
+	JScrollPane scrHtml = null;
 	
 	private JXTTreeTableNode aktNode;
 	private int aktRow;
@@ -259,6 +260,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	boolean inworker = false;
 	
 	boolean notready = false;
+	
+	boolean tagedrucken = false;
+	
+	JRtaCheckBox cbtagedrucken = new JRtaCheckBox("Behandlungstage drucken");
 	
 	JRtaTextField[] aKasse = {new JRtaTextField("nix",false),
 			new JRtaTextField("nix",false),
@@ -302,46 +307,58 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
         htmlPane.setOpaque(false);
         htmlPane.addHyperlinkListener(this);
         parseHTML(null);
-        JScrollPane jscr = JCompTools.getTransparentScrollPane(htmlPane);
-        jscr.validate();
-		return jscr;
+        scrHtml = JCompTools.getTransparentScrollPane(htmlPane);
+        scrHtml.validate();
+		return scrHtml;
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void setKuerzelVec(String xreznummer,String preisgr){
 		if(xreznummer.startsWith("KG")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("KG", Integer.parseInt(preisgr.trim())-1);
-			disziplinIndex = "2";
-			disziplinGruppe = "22";
+			//disziplinIndex = "2";
+			disziplinIndex = SystemConfig.hmHmPosIndex.get("KG");			
+			//disziplinGruppe = "22";
+			disziplinGruppe = SystemConfig.hmHmPraefix.get("KG");
 			preisregelIndex = 0;
 			aktDisziplin = "Physio";
 		}else if(xreznummer.startsWith("MA")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("MA", Integer.parseInt(preisgr.trim())-1);
-			disziplinIndex = "1";
-			disziplinGruppe = "21";
+			//disziplinIndex = "1";
+			disziplinIndex = SystemConfig.hmHmPosIndex.get("MA");
+			//disziplinGruppe = "21";
+			disziplinGruppe = SystemConfig.hmHmPraefix.get("MA");
 			preisregelIndex = 1;
 			aktDisziplin = "Massage";			
 		}else if(xreznummer.startsWith("ER")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("ER", Integer.parseInt(preisgr.trim())-1);
-			disziplinIndex = "5";
-			disziplinGruppe = "26";
+			//disziplinIndex = "5";
+			disziplinIndex = SystemConfig.hmHmPosIndex.get("ER");
+			//disziplinGruppe = "26";
+			disziplinGruppe = SystemConfig.hmHmPraefix.get("ER");
 			preisregelIndex = 2;
 			aktDisziplin = "Ergo";			
 		}else if(xreznummer.startsWith("LO")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("LO", Integer.parseInt(preisgr.trim())-1);
-			disziplinIndex = "3";
-			disziplinGruppe = "23";
+			//disziplinIndex = "3";
+			disziplinIndex = SystemConfig.hmHmPosIndex.get("LO");
+			//disziplinGruppe = "23";
+			disziplinGruppe = SystemConfig.hmHmPraefix.get("LO");
 			preisregelIndex = 3;
 			aktDisziplin = "Logo";			
 		}else if(xreznummer.startsWith("RH")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("RH", Integer.parseInt(preisgr.trim())-1);
-			disziplinIndex = "8";
-			disziplinGruppe = "29";
+			//disziplinIndex = "8";
+			disziplinIndex = SystemConfig.hmHmPosIndex.get("RH");
+			//disziplinGruppe = "29";
+			disziplinGruppe = SystemConfig.hmHmPraefix.get("RH");
 			preisregelIndex = 4;
 			aktDisziplin = "Reha";
 		}else if(xreznummer.startsWith("PO")){
 			preisvec = (Vector<Vector<String>>)RezTools.holePreisVector("PO", Integer.parseInt(preisgr.trim())-1);
-			disziplinIndex = "7";
-			disziplinGruppe = "71";
+			//disziplinIndex = "7";
+			disziplinIndex = SystemConfig.hmHmPosIndex.get("PO");
+			//disziplinGruppe = "71";
+			disziplinGruppe = SystemConfig.hmHmPraefix.get("PO");
 			preisregelIndex = 5;
 			aktDisziplin = "Podo";
 		}
@@ -382,6 +399,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 		*/
 		
+	}
+	public boolean getTageDrucken(){
+		return this.tagedrucken;
+	}
+	public void setTageDrucken(boolean drucken){
+		this.tagedrucken = drucken;
 	}
 	public boolean setNewRez(String rez,boolean schonfertig,String aktDisziplin){
 		//try{
@@ -939,6 +962,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			}
 		}else{
 			eltern.abrechnungsModus = eltern.ABR_MODE_302;
+			this.setTageDrucken(false);
 			tog.setIcon(SystemConfig.hmSysIcons.get("abrdreizwei"));
 			//eltern.hmAlternativeKasse.clear();
 			if(this.jXTreeTable.getRowCount() > 0){
@@ -2288,6 +2312,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		/*******/
 		if(eltern.abrechnungsModus.equals(eltern.ABR_MODE_IV)){
 			buf1.append(getIVKassenAdresse());
+			//this.htmlPane.add(this.cbtagedrucken);
 		}
 //Double rezeptWert;
 //Double zuzahlungWert;
@@ -2349,6 +2374,16 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				eltern.hmAlternativeKasse.get("<Ivort>"));
 		buf3.append("</td>");
 		buf3.append("</tr>");
+		
+		buf3.append("<tr>");
+		buf3.append("<th rowspan=\"4\" valign=\"top\"><a href=\"http://tagedrucken.de\"><img src='file:///"+Reha.proghome+"icons/vcalendar.png' width=52 height=52 border=0></a></th>");
+		buf3.append("<td class=\"spalte1\" align=\"right\">");
+		buf3.append("<b>Behandlungstage</b>");
+		buf3.append("</td><td class=\"spalte2\" align=\"left\">");
+		buf3.append((this.tagedrucken ? "<b><font color=#FF0000>auf Rechnung drucken</font></b>" : "nicht ausdrucken" ));
+		buf3.append("</td>");
+		buf3.append("</tr>");
+		
 		return buf3.toString();
 	}
 	private String getNoZuZahl(){
@@ -2415,7 +2450,30 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	    		doNeueKasseFuerIV();
 	    	}
 
+	    	if(event.getURL().toString().contains("tagedrucken.de")){
+	    		if(!this.tagedrucken){
+	    			this.tagedrucken = true;
+	    			parseHTML(vec_rez.get(0).get(1).trim());
+	    			htmlPaneScrollToEnd();
+	    			return;
+	    		}
+	    		this.tagedrucken = false;
+	    		parseHTML(vec_rez.get(0).get(1).trim());
+	    		htmlPaneScrollToEnd();
+	    		return;
+	    	}
+
 	      }
+	}
+	private void htmlPaneScrollToEnd(){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				final JViewport viewport = scrHtml.getViewport();
+			    final JComponent view = (JComponent) viewport.getView();
+			    final int h = view.getHeight();
+			    view.scrollRectToVisible(new Rectangle(0, h, 1, h));	    		
+			}
+		});
 	}
 	private void doNeueKasseFuerIV(){
 		aKasse[0].setText(eltern.hmAlternativeKasse.get("<Ivnam1>").trim());
@@ -2480,6 +2538,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}else{
 			adressParams = getAdressParams(adrvec.get(0).get(1));
 		}
+		System.out.println("Zuzhlungwert = "+zuzahlungWert);
 		hmRezgeb.put("<rgreznum>",aktRezNum.getText());
 		hmRezgeb.put("<rgbehandlung>",behandl);
 		hmRezgeb.put("<rgdatum>",DatFunk.sDatInDeutsch(vec_rez.get(0).get(2)));

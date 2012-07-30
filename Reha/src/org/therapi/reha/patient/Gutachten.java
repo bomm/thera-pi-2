@@ -276,7 +276,11 @@ public class Gutachten extends JXPanel implements ActionListener, TableModelList
 								}
 							}
 							anz = dtblm.getRowCount();
-							Reha.thisClass.patpanel.getTab().setTitleAt(4,macheHtmlTitel(anz,"Gutachten"));
+							try{
+								Reha.thisClass.patpanel.getTab().setTitleAt(4,macheHtmlTitel(anz,"Gutachten"));
+							}catch(Exception extiming){
+								System.out.println("Timingprobleme beim setzen des Reitertitels - Reiter: Gutachten");
+							}
 							anzahlGutachten.setText("Anzahl sozialmed. Gutachten: "+anz);
 							if(anz > 0){
 								setzeGutachtenPanelAufNull(false);

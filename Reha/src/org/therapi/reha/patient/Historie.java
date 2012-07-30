@@ -733,7 +733,11 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
                 }.start();
 			}
 		}
-		Reha.thisClass.patpanel.getTab().setTitleAt(1,macheHtmlTitel(anz,"Rezept-Historie"));
+		try{
+			Reha.thisClass.patpanel.getTab().setTitleAt(1,macheHtmlTitel(anz,"Rezept-Historie"));
+		}catch(Exception extiming){
+			System.out.println("Timingprobleme beim setzen des Reitertitels - Reiter: Historie");
+		}
 		if(anz > 0){
 			setzeHistoriePanelAufNull(false);
 			if(xrez_nr.length() > 0){

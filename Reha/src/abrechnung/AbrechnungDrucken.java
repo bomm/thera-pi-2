@@ -17,6 +17,7 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 
 import sqlTools.SqlInfo;
+import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -30,11 +31,17 @@ import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.ITextTableCell;
 import ag.ion.bion.officelayer.text.ITextTableCellProperties;
+import ag.ion.bion.officelayer.text.ITextTableColumn;
+import ag.ion.bion.officelayer.text.ITextTableRow;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.internal.printing.PrintProperties;
 
+import com.sun.star.beans.Property;
 import com.sun.star.beans.XPropertySet;
+import com.sun.star.table.XCell;
+import com.sun.star.text.XTextTable;
+import com.sun.star.text.XTextTableCursor;
 
 @SuppressWarnings("unused")
 public class AbrechnungDrucken {
@@ -53,9 +60,15 @@ public class AbrechnungDrucken {
 	HashMap<String,String> hmAdresse = new HashMap<String,String>();
 	AbrechnungGKV eltern = null;
 	int anzahlRezepte = 0;
+	int rezepte = 0;
+	ITextTableCell[] origincell = null;
 	public AbrechnungDrucken(AbrechnungGKV eltern,String url) throws Exception{
 		this.eltern = eltern;
 		starteDokument(url);
+		if(eltern.getTageDrucken()){
+			//hier die Tabellenstruktur der ursprünglichen Tabelle abspeichern!
+			origincell = textTable.getRow(0).getCells().clone();
+		}
 	}
 	public synchronized void setIKundRnr(String papierIk,String rnr,HashMap<String,String> hmap){
 		this.papierIK = papierIk;
@@ -109,6 +122,7 @@ public class AbrechnungDrucken {
 			boolean mitPauschale) throws Exception{
 			BigDecimal netto;
 		positionen = posvec.size();
+		rezepte++;
 		int anz;
 		anzahlRezepte++;
 		String dummy;
@@ -116,7 +130,38 @@ public class AbrechnungDrucken {
 		BigDecimal gesamtZuzahlung =new BigDecimal(Double.valueOf("0.00"));
 		BigDecimal gesamtNetto = new BigDecimal(Double.valueOf("0.00"));
 		
-		textTable.addRow(positionen+2);
+		textTable.addRow(positionen+2+(eltern.getTageDrucken() ? 1 : 0));
+		/*
+		if(rezepte > 1 && eltern.getTageDrucken()){
+			
+			for(int x = aktuellePosition+1; x < (aktuellePosition+1)+positionen;x++){
+				XTextTableCursor cursor = textTable.getXTextTable().createCursorByCellName(textTable.getCell(0,x).getName().getName().intern());
+				cursor.gotoCellByName(textTable.getCell(0,x).getName().getName().intern(), false);
+				cursor.splitRange((short)1,false);
+				ITextTableCell cell = (ITextTableCell) textTable.getCell(textTable.getCell(0,0).getName().getName().intern());
+				ITextTableCellProperties props = cell.getProperties();
+				
+				XPropertySet xpropset = props.getXPropertySet();
+				Property[] prop = xpropset.getPropertySetInfo().getProperties();
+			      for(int i = 0; i < prop.length;i++){
+			    	  System.out.println(prop[i].Name);
+			    	  System.out.println(prop[i].Attributes);
+			      }
+			    XTextTable xttl = textTable.getXTextTable() ;
+
+			    
+			      
+				
+			    //System.out.println("Value für Width = "+xpropset.getPropertyValue("Width"));
+				//OOTools.setOneCellWidth(textTable.getCell(0,x), (short)Integer.parseInt(xpropset.getPropertyValue("Width").toString()));
+				OOTools.setOneCellProperty(textTable.getCell(0,x),false,false,false,0x00,8.f);
+				OOTools.setOneCellProperty(textTable.getCell(1,x),false,false,false,0x00,8.f);
+				
+			}
+			
+			//XCell xcell  = textTable.getXTextTable().getCellByName(origincell[0].getName().getName().intern());
+		}
+		*/
 		ITextTableCell[] tcells = null;
 
 		tcells = textTable.getRow(aktuellePosition+1).getCells();
@@ -155,8 +200,37 @@ public class AbrechnungDrucken {
 		textTable.getCell(5,aktuellePosition+(i+2)).getTextService().getText().setText(dummy);
 		dummy = dfx.format(gesamtNetto.doubleValue());
 		textTable.getCell(6,aktuellePosition+(i+2)).getTextService().getText().setText(dummy);
-		/****************/		
-		aktuellePosition += (positionen+2);
+		/****************/
+		//Hier muß die Einzeltage-Geschichte abgehandelt werden.
+		//textTable.getCell(0,aktuellePosition+(i+2)).getName();
+		if(eltern.getTageDrucken()){
+			Vector<String> tagevec = RezTools.holeEinzelTermineAusRezept(rezNr, "");
+			dummy = "Behandlungstage: ";
+			for(int ii = 0; ii < tagevec.size();ii++){
+				if(ii == 0){
+					dummy = dummy + tagevec.get(ii);
+				}else{
+					dummy = dummy + ", " + tagevec.get(ii);
+				}
+			}
+			
+			OOTools.setOneCellProperty(textTable.getCell(0,aktuellePosition+(i+2)),false,false,false,0x00,7.f);
+			OOTools.setOneCellProperty(textTable.getCell(1,aktuellePosition+(i+2)),false,false,false,0x00,7.f);
+			//setOneCellProperty(textTable.getCell(1,aktuellePosition+(i+2)));
+			
+			XTextTableCursor cursor = OOTools.doMergeCellsInTextTabel(textTable.getXTextTable(), 
+					textTable.getCell(0,aktuellePosition+(i+2)).getName().getName().intern(), 
+					textTable.getCell(1,aktuellePosition+(i+2)).getName().getName().intern() );
+					
+					
+			textTable.getCell(0,aktuellePosition+(i+2)).getTextService().getText().setText(dummy);
+			
+			tcells = textTable.getRow(aktuellePosition+(i+2)+1).getCells();
+			setPositionenCells(false,tcells);
+			
+		}
+		/****************/
+		aktuellePosition += (positionen+2+(eltern.getTageDrucken() ? 1 : 0));
 	}
 	public void setRechnungsBetrag() throws TextException{
 		textEndbetrag.getCell(2,0).getTextService().getText().setText(dfx.format(rechnungsGesamt.doubleValue())+" EUR");
@@ -184,6 +258,12 @@ public class AbrechnungDrucken {
 			}
 		}
 
+	}
+	private void setOneCellProperty(ITextTableCell cell) throws Exception{
+		ITextTableCellProperties props = cell.getProperties();
+		XPropertySet xprops = props.getXPropertySet();
+		cell.getCharacterProperties().setFontItalic(false);
+		cell.getCharacterProperties().setFontBold(false);
 	}
 	public void druckeRechnung(int anzahl){
 		

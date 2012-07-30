@@ -197,7 +197,12 @@ public class TherapieBerichte  extends JXPanel implements ListSelectionListener,
 						}
 					}
 					anz = dtblm.getRowCount();
-					Reha.thisClass.patpanel.getTab().setTitleAt(2,macheHtmlTitel(anz,"Therapieberichte"));
+					try{
+						Reha.thisClass.patpanel.getTab().setTitleAt(2,macheHtmlTitel(anz,"Therapieberichte"));
+					}catch(Exception extiming){
+						System.out.println("Timingprobleme beim setzen des Reitertitels - Reiter: Therapieberichte");
+					}
+
 					if(anz > 0){
 						setzeBerichtPanelAufNull(false);
 						if(xrez_nr.equals("")){

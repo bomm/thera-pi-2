@@ -409,7 +409,14 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		//int lang = SystemConfig.vPreisGruppen.size();
 		int lang = tarife.getRowCount();
 		String diszi = (String)disziplin.getSelectedItem();
-		String[] disziindex = {"2","1","5","3","8","7"};
+		//String[] disziindex = {"2","1","5","3","8","7"};
+		String[] disziindex = {SystemConfig.hmHmPosIndex.get("KG"),
+				SystemConfig.hmHmPosIndex.get("MA"),
+				SystemConfig.hmHmPosIndex.get("ER"),
+				SystemConfig.hmHmPosIndex.get("LO"),
+				SystemConfig.hmHmPosIndex.get("RH"),
+				SystemConfig.hmHmPosIndex.get("PO")	};
+		
 		int idiszi = disziplin.getSelectedIndex();
 		String swert = "";
 		

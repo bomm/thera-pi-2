@@ -216,6 +216,11 @@ public class SystemConfig {
 	
 	public static boolean logVTermine = false;
 	public static boolean logAlleTermine = false;
+	
+	public static HashMap<String,String> hmHmPraefix = new HashMap<String,String>();
+	public static HashMap<String,String> hmHmPosIndex = new HashMap<String,String>();
+	
+	public static Vector <Vector<String>> vOwnDokuTemplate = new Vector <Vector<String>>();
 	                     
 	public SystemConfig(){
 	
@@ -1042,7 +1047,30 @@ public class SystemConfig {
 		}else{
 			AngelegtVonUser = (inif.getStringProperty("Sonstiges", "AngelegtVonUser").equals("0") ? false : true);
 		}
-		//System.out.println(rezeptKlassenAktiv);
+		String[] hmPraefixArt =  {"KG","MA","ER","LO","RH","PO","RS"};
+		String[] hmPraefixZahl = {"22","21","26","23","67","71","61"};
+		String[] hmIndexZahl = 	 {"2", "1", "5", "3", "6", "7","6"};
+		//hmHmPraefix
+		
+		if(inif.getStringProperty("HMRPraefix", "KG") == null || inif.getStringProperty("HMRPosindex", "KG") == null){
+			for(int i = 0; i < hmPraefixArt.length;i++){
+				inif.setStringProperty("HMRPraefix",hmPraefixArt[i] ,hmPraefixZahl[i],null);
+				inif.setStringProperty("HMRPosindex",hmPraefixArt[i] ,hmIndexZahl[i],null);
+				hmHmPraefix.put(hmPraefixArt[i] ,hmPraefixZahl[i]);	
+				hmHmPosIndex.put(hmPraefixArt[i],hmIndexZahl[i]);
+			}
+			//System.out.println("Aus Direktzuweisung\n"+hmHmPraefix);
+			//System.out.println("Aus Direktzuweisung\n"+hmHmPosIndex);
+			inif.save();
+		}else{
+			for(int i = 0; i < hmPraefixArt.length;i++){
+				hmHmPraefix.put(hmPraefixArt[i] ,inif.getStringProperty("HMRPraefix",hmPraefixArt[i]));
+				hmHmPosIndex.put(hmPraefixArt[i],inif.getStringProperty("HMRPosindex",hmPraefixArt[i]));				
+			}
+			//System.out.println("Aus INI-Datei\n"+hmHmPraefix);
+			//System.out.println("Aus INI-Datei\n"+hmHmPosIndex);
+		}
+		
 	}
 	@SuppressWarnings("unchecked")
 	public static void TherapBausteinInit() {
@@ -1101,7 +1129,31 @@ public class SystemConfig {
 			JOptionPane.showMessageDialog(null,"Die Datei 'offeneposten.ini' zur aktuellen IK-Nummer kann nicht gelesen werden.");
 		}
 	}
-	
+	public static void EigeneDokuvorlagenLesen(){
+		try{
+			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/eigenedoku.ini");
+			String dokus = null;
+			vOwnDokuTemplate.clear();
+			// Prüfung auf Existenz
+			if ( (dokus = inif.getStringProperty("EigeneDokus", "DokuAnzahl")) == null ){
+				inif.setStringProperty("EigeneDokus", "DokuAnzahl","0",null);
+				inif.setStringProperty("EigeneDokus", "DokuText1","",null);
+				inif.setStringProperty("EigeneDokus", "DokuDatei1","",null);
+				inif.save();
+			}else{
+				Vector<String> vdummy = new Vector<String>(); 
+				for(int i = 0; i < Integer.parseInt(dokus); i++){
+					vdummy.clear();
+					vdummy.add( inif.getStringProperty("EigeneDokus", "DokuText"+Integer.toString(i+1)));
+					vdummy.add( inif.getStringProperty("EigeneDokus", "DokuDatei"+Integer.toString(i+1)));
+					vOwnDokuTemplate.add((Vector<String>)vdummy.clone());
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+	}
 
 	// Lemmi 20101223 Steuerparanmeter für den Patienten-Suchen-Dialog aus der INI zentral einlesen
 	public static void BedienungIni_ReadFromIni(){

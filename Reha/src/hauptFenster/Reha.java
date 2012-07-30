@@ -15,6 +15,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.KeyboardFocusManager;
 import java.awt.LinearGradientPaint;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -320,7 +321,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "V=2012-06-06-DB=";
+	public static String aktuelleVersion = "(S)=2012-06-21-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -2020,7 +2021,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			
 			
 			
-            
+            try{
+            	
+
             officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
             	  public void queryTermination(ITerminateEvent terminateEvent) {
             	    super.queryTermination(terminateEvent);
@@ -2039,7 +2042,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					}
             	  }
             	});
-            	
+            
+            }catch(NullPointerException ex){
+            	ex.printStackTrace();
+            }
             Reha.thisClass.Rehaprogress.setIndeterminate(false);
             /*
             new SwingWorker<Void,Void>(){
@@ -2358,8 +2364,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
             public void eventDispatched(AWTEvent event)  {
                 if(event instanceof FocusEvent) {
-                    //FocusEvent focusEvent = (FocusEvent) event;
-                	//System.out.println( ((FocusEvent) event).getComponent().hasFocus());
+                	/*
+                    FocusEvent focusEvent = (FocusEvent) event;
+                    System.out.println("\n*************************************************");
+                    System.out.println("***Klasse = "+ ((FocusEvent) event).getComponent().getClass().toString());
+                    System.out.println("***Name = "+ ((FocusEvent) event).getComponent().getName());
+                	System.out.println("***hat Focus = " +((FocusEvent) event).getComponent().hasFocus());
+                	System.out.println("***Name des Focused Windows = "+KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow().getName());
+                    System.out.println("*************************************************");
+                    */
                 }
             }
         }, mask);
@@ -3093,6 +3106,7 @@ final class DatenbankStarten implements Runnable{
 				//notwendig bis alle Überhangsrezepte der BKK-Gesundheit abgearbeitet sind.
 				SystemConfig.ArschGeigenTest();
 
+				SystemConfig.EigeneDokuvorlagenLesen();
 				
 				new Thread(new PreisListenLaden()).start();
 				

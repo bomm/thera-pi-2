@@ -762,6 +762,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		if(e.getActionCommand().equals("rezeptklasse") && klassenReady){
 			this.ladePreisliste(jcmb[cRKLASSE].getSelectedItem().toString().trim(), preisgruppen[jcmb[cRKLASSE].getSelectedIndex()]);			
 			this.fuelleIndis((String)jcmb[cRKLASSE].getSelectedItem());
+			
 			return;
 		}
 		/*********************/		
@@ -1128,6 +1129,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			ladePreise(artdbeh);	
 		}else{
 			ladePreise(null);
+		}
+		if(this.neu && SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppe) == 1){
+			if(aktuelleDisziplin.equals("Physio") || aktuelleDisziplin.equals("Massage") || aktuelleDisziplin.equals("Ergo")){
+				jcmb[cBARCOD].setSelectedItem("Muster 13/18");
+			}else if(aktuelleDisziplin.equals("Logo")){
+				jcmb[cBARCOD].setSelectedItem("Muster 14");
+			}else if(aktuelleDisziplin.equals("Reha")){
+				jcmb[cBARCOD].setSelectedItem("DIN A4 (REHA)");
+			}else{
+				jcmb[cBARCOD].setSelectedItem("Muster 13/18");
+			}
 		}
 		
 	}

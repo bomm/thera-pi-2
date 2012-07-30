@@ -293,7 +293,9 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		this.abrRez.setRechtsAufNull();
 		return abrRez;
 	}
-
+	public boolean getTageDrucken(){
+		return this.abrRez.getTageDrucken();
+	}
 	@Override
 	public void patStammEventOccurred(PatStammEvent evt) {
 		// TODO Auto-generated method stub

@@ -957,7 +957,11 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 							setzeDokuPanelAufNull(true);
 							dokubut[5].setEnabled(false);
 						}
-						Reha.thisClass.patpanel.getTab().setTitleAt(3,macheHtmlTitel(tabdokus.getRowCount(),"Dokumentation"));
+						try{
+							Reha.thisClass.patpanel.getTab().setTitleAt(3,macheHtmlTitel(tabdokus.getRowCount(),"Dokumentation"));
+						}catch(Exception extiming){
+							System.out.println("Timingprobleme beim setzen des Reitertitels - Reiter: Dokumentation");
+						}
 					}
 					return null;
 				}
@@ -2195,8 +2199,8 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 		
 	}
-	public void	oooDokuNeu(int art){
-		String[] welcheArt = {"OpenOffice-Writer","OpenOffice-Calc"};
+	public void	oooDokuNeu(int art, int vecnum){
+		String[] welcheArt = {"OpenOffice-Writer","OpenOffice-Calc","Eigene Writer-Doku","Eigene Calc-Doku"};
 		String value = (String)JOptionPane.showInputDialog(null,
 				"Bitte einen Titel für die Dokumentation eingeben\n\n", "Benutzereingabe erforderlich....", JOptionPane.PLAIN_MESSAGE, null,
 				null, "Neue "+welcheArt[art]+" Dokumentation");
@@ -2217,10 +2221,34 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, "Fehler kann neues WriterDokument nicht erzeugen");
 			}
-		}else{
+		}else if(art==1){
 			String src = Reha.proghome+"vorlagen/"+Reha.aktIK+"/EmptyCalcDoku.ots";
 			dest = Reha.proghome+"temp/"+Reha.aktIK+"/"+value+".ods";
 			
+			try {
+				FileTools.copyFile(new File(src), new File(dest), 8192,true);
+				ISpreadsheetDocument ispread = new OOTools().starteCalcMitDatei(dest);
+				ispread.addDocumentListener(new OoListener(Reha.officeapplication,dest,"",this));
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Fehler kann neues CalcDokument nicht erzeugen");
+			}
+		}else if(art==2){
+			String src = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.vOwnDokuTemplate.get(vecnum).get(1);
+			dest = Reha.proghome+"temp/"+Reha.aktIK+"/"+value+".odt";
+			try {
+				FileTools.copyFile(new File(src), new File(dest), 8192,true);
+				ITextDocument itext = new OOTools().starteWriterMitDatei(dest);
+				OOTools.erstzeNurPlatzhalter(itext);
+				itext.addDocumentListener(new OoListener(Reha.officeapplication,dest,"",this));
+			} catch (IOException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Fehler kann neues WriterDokument nicht erzeugen");
+			}		
+		}else if(art==3){
+			String src = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.vOwnDokuTemplate.get(vecnum).get(1);
+			dest = Reha.proghome+"temp/"+Reha.aktIK+"/"+value+".ods";
 			try {
 				FileTools.copyFile(new File(src), new File(dest), 8192,true);
 				ISpreadsheetDocument ispread = new OOTools().starteCalcMitDatei(dest);
@@ -2370,6 +2398,17 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 		}
 		
 	}
+	private void doEigenDoku(int welchedoku){
+		if(SystemConfig.vOwnDokuTemplate.get(welchedoku).get(1).contains(".ods") ||
+				SystemConfig.vOwnDokuTemplate.get(welchedoku).get(1).contains(".ots")){
+			oooDokuNeu(3,welchedoku);
+			
+		}else if(SystemConfig.vOwnDokuTemplate.get(welchedoku).get(1).contains(".odt") ||
+				SystemConfig.vOwnDokuTemplate.get(welchedoku).get(1).contains(".ott")){
+			oooDokuNeu(2,welchedoku);
+		}
+
+	}
 /****************************/
 
 	class ToolsDlgDokumentation{
@@ -2382,18 +2421,47 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 			icons.put("PDF-Dokument aufnehmen", pdfplus /*SystemConfig.hmSysIcons.get("pdf")*/);
 			icons.put("Neue OO-Writer-Doku erstellen",oowriterplus/*SystemConfig.hmSysIcons.get("ooowriter")*/);
 			icons.put("Neue OO-Calc-Doku erstellen",oocalcplus/*SystemConfig.hmSysIcons.get("ooocalc")*/);
-
-			// create a list with some test data
+			int owndoku = SystemConfig.vOwnDokuTemplate.size();
+			for(int i = 0; i < owndoku; i++){
+				if(SystemConfig.vOwnDokuTemplate.get(i).get(1).contains(".ods") ||
+						SystemConfig.vOwnDokuTemplate.get(i).get(1).contains(".ots")){
+					icons.put(SystemConfig.vOwnDokuTemplate.get(i).get(0),oocalcplus/*SystemConfig.hmSysIcons.get("ooocalc")*/);
+					
+				}else if(SystemConfig.vOwnDokuTemplate.get(i).get(1).contains(".odt") ||
+						SystemConfig.vOwnDokuTemplate.get(i).get(1).contains(".ott")){
+					icons.put(SystemConfig.vOwnDokuTemplate.get(i).get(0),oowriterplus/*SystemConfig.hmSysIcons.get("ooocalc")*/);
+				}
+				
+			}
+			Object[] obj1 = {"Scanner einstellungen",
+					"Photo von DigiCam holen", 
+					"Office-Dokument aufnehmen",
+					"PDF-Dokument aufnehmen",
+					"Neue OO-Writer-Doku erstellen",
+					"Neue OO-Calc-Doku erstellen"};
+			Object[] obj2 = new Object[6+owndoku];
+			for(int i = 0; i < obj2.length;i++){
+				if(i < 6){
+					obj2[i] = obj1[i];
+				}else{
+					obj2[i] = (Object) SystemConfig.vOwnDokuTemplate.get(i-6).get(0);
+				}
+			}
+			JList list = new JList(obj2);
+					// create a list with some test data
+			/*
 			JList list = new JList(	new Object[] {"Scanner einstellungen",
 					"Photo von DigiCam holen", 
 					"Office-Dokument aufnehmen",
 					"PDF-Dokument aufnehmen",
 					"Neue OO-Writer-Doku erstellen",
 					"Neue OO-Calc-Doku erstellen"});
+			*/
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
+			
 			ToolsDialog tDlg = new ToolsDialog(Reha.thisFrame,"Werkzeuge: Dokumentation",list);
-			tDlg.setPreferredSize(new Dimension(220,220+
+			tDlg.setPreferredSize(new Dimension(240,220+(owndoku>3 ? 3*20 : owndoku*20)+
 					((Boolean)SystemConfig.hmPatientenWerkzeugDlgIni.get("ToolsDlgShowButton")? 25 : 0) ));
 			tDlg.setLocation(pt.x-70,pt.y+30);
 			tDlg.pack();
@@ -2438,7 +2506,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				if(!Rechte.hatRecht(Rechte.Doku_ooorg, true)){
 					return;
 				}
-				oooDokuNeu(0);
+				oooDokuNeu(0,-1);
 				break;
 			case 5:
 				if(Reha.thisClass.patpanel.aktPatID.equals("")){
@@ -2449,7 +2517,7 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				if(!Rechte.hatRecht(Rechte.Doku_ooorg, true)){
 					return;
 				}
-				oooDokuNeu(1);
+				oooDokuNeu(1,-1);
 				break;
 			case 3:
 				if(Reha.thisClass.patpanel.aktPatID.equals("")){
@@ -2463,6 +2531,14 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				pdfSpeichernDoku();
 				break;
 			}
+
+			if(Reha.toolsDlgRueckgabe > 5){
+				if(!Rechte.hatRecht(Rechte.Doku_ooorg, true)){
+					return;
+				}
+				doEigenDoku(Reha.toolsDlgRueckgabe-6);
+			}
+			
 			tDlg = null;
 			////System.out.println("Rückgabewert = "+tDlg.rueckgabe);
 		}

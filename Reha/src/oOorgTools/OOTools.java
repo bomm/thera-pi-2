@@ -37,6 +37,8 @@ import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.ITextRange;
+import ag.ion.bion.officelayer.text.ITextTableCell;
+import ag.ion.bion.officelayer.text.ITextTableCellProperties;
 import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
@@ -78,6 +80,8 @@ import com.sun.star.text.XTextDocument;
 import com.sun.star.text.XTextField;
 import com.sun.star.text.XTextFieldsSupplier;
 import com.sun.star.text.XTextRange;
+import com.sun.star.text.XTextTable;
+import com.sun.star.text.XTextTableCursor;
 import com.sun.star.text.XTextViewCursor;
 import com.sun.star.text.XTextViewCursorSupplier;
 import com.sun.star.uno.Exception;
@@ -111,6 +115,32 @@ public class OOTools{
 			ex.printStackTrace();
 		}
 	}
+	public static XTextTableCursor doMergeCellsInTextTabel(XTextTable table,String startCell,String endCell){
+		//System.out.println(startCell+" / "+endCell);
+		XTextTableCursor cursor = table.createCursorByCellName(startCell);
+		cursor.gotoCellByName(endCell, true);
+		cursor.mergeRange(); 
+		return cursor;
+	}
+	public static void setOneCellProperty(ITextTableCell cell,boolean italic,boolean bold,boolean underline,int color,float size) throws Exception{
+		//ITextTableCellProperties props = cell.getProperties();
+		//XPropertySet xprops = props.getXPropertySet();
+		try {
+			cell.getCharacterProperties().setFontItalic(italic);
+			cell.getCharacterProperties().setFontBold(bold);
+			cell.getCharacterProperties().setFontUnderline(underline);
+			cell.getCharacterProperties().setFontColor(color);
+			cell.getCharacterProperties().setFontSize(size);
+		} catch (TextException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	public static void setOneCellWidth(ITextTableCell cell,short width) throws Exception{
+		ITextTableCellProperties props = cell.getProperties();
+		XPropertySet xpropset = props.getXPropertySet();
+		xpropset.setPropertyValue("Width", width);		
+	}	
 	public static synchronized void printAndClose(final ITextDocument textDocument, final int exemplare){
 		
 			new SwingWorker<Void,Void>(){
@@ -377,6 +407,129 @@ public class OOTools{
 			}
 		});
 
+
+	}
+	/**************************************************************************************/
+	public static void erstzeNurPlatzhalter(ITextDocument textDocument) {
+		/**********************/
+		ITextFieldService textFieldService = textDocument.getTextFieldService();
+
+		ITextField[] placeholders = null;
+		try {
+			placeholders = textFieldService.getPlaceholderFields();
+
+		} catch (TextException e) {
+			e.printStackTrace();
+		}
+
+		String placeholderDisplayText = "";
+		try{
+		for (int i = 0; i < placeholders.length; i++) {
+			boolean schonersetzt = false;
+			try{
+				placeholderDisplayText = placeholders[i].getDisplayText().toLowerCase();
+			}catch(com.sun.star.uno.RuntimeException ex){
+				//System.out.println("************catch()*******************");
+				ex.printStackTrace();
+				System.out.println("Fehler bei Placehoder "+i);
+				System.out.println("Insgesamt Placeholderanzahl = "+placeholders.length);
+			}
+
+		    /*****************/			
+			Set<?> entries = SystemConfig.hmAdrPDaten.entrySet();
+		    Iterator<?> it = entries.iterator();
+		    while (it.hasNext()) {
+		      Map.Entry<?,?> entry = (Map.Entry<?, ?>) it.next();
+		      if(entry.getKey().toString().toLowerCase().equals(placeholderDisplayText)){
+		    	  if(entry.getValue().toString().trim().equals("")){
+		    		  placeholders[i].getTextRange().setText("\b");
+		    	  }else{
+			    	  placeholders[i].getTextRange().setText(entry.getValue().toString());		    		  
+		    	  }
+		    	  schonersetzt = true;
+		    	  break;
+		      }
+		    }
+		    /*****************/
+		    entries = SystemConfig.hmAdrKDaten.entrySet();
+		    it = entries.iterator();
+		    while (it.hasNext() && (!schonersetzt)) {
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
+		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+		    	  if(((String)entry.getValue()).trim().equals("")){
+		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    	  }else{
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+		    	  }
+		    	  schonersetzt = true;
+		    	  break;
+		      }
+		    }
+		    /*****************/
+		    entries = SystemConfig.hmAdrADaten.entrySet();
+		    it = entries.iterator();
+		    while (it.hasNext() && (!schonersetzt)) {
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
+		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+		    	  if(((String)entry.getValue()).trim().equals("")){
+		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    	  }else{
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+		    	  }
+		    	  schonersetzt = true;
+		    	  break;
+		      }
+		    }
+		    /*****************/
+		    entries = SystemConfig.hmAdrRDaten.entrySet();
+		    it = entries.iterator();
+		    while (it.hasNext() && (!schonersetzt)) {
+		      Map.Entry<?,?> entry = (Map.Entry<?,?>) it.next();
+		      if(((String)entry.getKey()).toLowerCase().equals(placeholderDisplayText)){
+
+		    	  if(((String)entry.getValue()).trim().equals("")){
+		    		  placeholders[i].getTextRange().setText("");
+		    		  OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    	  }else{
+			    	  placeholders[i].getTextRange().setText(((String)entry.getValue()));		    		  
+		    	  }
+		    	  schonersetzt = true;
+		    	  break;
+		      }
+		    }
+		    if(!schonersetzt){
+		    	OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+		    }
+		    /*****************/
+		}
+		}catch(java.lang.IllegalArgumentException ex){
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Fehler in der Dokumentvorlage");
+			if(textDocument != null){
+				textDocument.close();
+				try {
+					Reha.officeapplication.deactivate();
+				} catch (OfficeApplicationException e) {
+					e.printStackTrace();
+				}
+				Reha.officeapplication.dispose();
+				return;
+			}
+		}
+		
+		/*****/
+		sucheNachPlatzhalter(textDocument);
+		
+		IViewCursor viewCursor = textDocument.getViewCursorService().getViewCursor();
+		viewCursor.getPageCursor().jumpToFirstPage();
+		final ITextDocument xtextDocument = textDocument;
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+				xtextDocument.getFrame().getXFrame().getContainerWindow().setVisible(true);
+				xtextDocument.getFrame().setFocus();
+			}
+		});
 
 	}
 	/**************************************************************************************/
