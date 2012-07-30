@@ -577,6 +577,7 @@ public class Reha301Einlesen{
 				dbHmap.put("ort",teile[3]);
 				if(pnaHaActive){
 					dbHmap.put("haadresse", String.valueOf(teile[3]));
+					pnaHaActive = false;
 				}
 			}catch(Exception ex){
 				ex.printStackTrace();
@@ -605,9 +606,7 @@ public class Reha301Einlesen{
 				dbHmap.put("diagschluessel", zeile);
 				erstdiagnose = true;
 			}else{
-				String meldung = "Achtung mehrere Reharelevante Diagnosen\n\nDiagnose "+Integer.toString(anzahldiagnosen)+
-				" = "+rvgkv;
-				//JOptionPane.showMessageDialog(null, meldung);
+				dbHmap.put("diagschluessel",dbHmap.get("diagschluessel")+"@"+zeile);
 			}
 			return ret;
 		}

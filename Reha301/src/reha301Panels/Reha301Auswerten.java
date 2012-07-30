@@ -576,8 +576,18 @@ public class Reha301Auswerten extends JXPanel{
 		rVTraeger = testeDTAIni(ktraeger,diaggruppe);
 		
 		diag1 = SqlInfo.holeEinzelFeld("select diagschluessel from dta301 where id ='"+id+"' LIMIT 1");
-		String[] diag2 = diag1.split("\\+");
-		String diagnose = diag2[2].split(":")[0];
+		
+		String[] diag2 = null;
+		String diagnose = "";
+		String[] diags = diag1.split("@");
+		try{
+			for(int i = 0; i < diags.length;i++){
+				diag2 = diags[i].split("\\+");
+				diagnose = diagnose+(i > 0 ? "\n" : "")+diag2[2].split(":")[0];
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 		String fallart = SqlInfo.holeEinzelFeld("select leistung from dta301 where id ='"+id+"' LIMIT 1");
 		String eilfall = SqlInfo.holeEinzelFeld("select eilfall from dta301 where id ='"+id+"' LIMIT 1");
 		String preisgruppe = SqlInfo.holeEinzelFeld("select preisgruppe from kass_adr where ik_kostent ='"+ktraeger+"' LIMIT 1");
