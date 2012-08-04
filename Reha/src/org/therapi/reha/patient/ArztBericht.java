@@ -335,9 +335,11 @@ public class ArztBericht extends RehaSmartDialog implements RehaTPEventListener,
 			name = (String)Reha.thisClass.patpanel.vecaktrez.get(15);
 			arztid = Integer.valueOf((String)Reha.thisClass.patpanel.vecaktrez.get(16));
 		}else if((! this.reznr.equals("")) && (this.aufrufvon == 1)){
-			name = (String)Reha.thisClass.patpanel.patDaten.get(25);
 			try{
-				arztid = Integer.valueOf((String)Reha.thisClass.patpanel.patDaten.get(26));
+				name = SqlInfo.holeEinzelFeld("select arzt from lza where rez_nr = '"+this.reznr+"' LIMIT 1");
+				//name = (String)Reha.thisClass.patpanel.historie..patDaten.get(25);
+				arztid = Integer.valueOf(SqlInfo.holeEinzelFeld("select arztid from lza where rez_nr = '"+this.reznr+"' LIMIT 1"));
+				//arztid = Integer.valueOf((String)Reha.thisClass.patpanel.patDaten.get(26));
 			}catch(java.lang.NumberFormatException ex){
 				arztid = Integer.valueOf(-1);
 			}
