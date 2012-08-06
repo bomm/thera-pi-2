@@ -1294,6 +1294,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				protected Void doInBackground() throws java.lang.Exception {
 					try{
 						INIFile updateini = new INIFile(Reha.proghome+"ini/tpupdate.ini");
+						if(updateini.getStringProperty("TheraPiUpdates", "ProxyIP") != null && updateini.getStringProperty("TheraPiUpdates", "ProxyPort") != null && updateini.getStringProperty("TheraPiUpdates", "NoProxy") != null &&
+								updateini.getStringProperty("TheraPiUpdates", "ProxyIP").equals("") && updateini.getStringProperty("TheraPiUpdates", "ProxyPort").equals("") && updateini.getStringProperty("TheraPiUpdates", "NoProxy").equals("")) {
+							System.setProperty("http.proxyHost", updateini.getStringProperty("TheraPiUpdates", "ProxyIP"));
+							System.setProperty("http.proxyPort", updateini.getStringProperty("TheraPiUpdates", "ProxyPort"));
+							System.setProperty("http.nonProxyHosts", updateini.getStringProperty("TheraPiUpdates", "NoProxy"));
+							System.setProperty("ftp.proxyHost", updateini.getStringProperty("TheraPiUpdates", "ProxyIP"));
+							System.setProperty("ftp.proxyPort", updateini.getStringProperty("TheraPiUpdates", "ProxyPort"));
+							System.setProperty("ftp.nonProxyHosts", updateini.getStringProperty("TheraPiUpdates", "NoProxy"));
+						}
 						try{
 							Reha.updatesChecken = (updateini.getIntegerProperty("TheraPiUpdates", "UpdateChecken") > 0 ? true : false);
 						}catch(NullPointerException ex){
