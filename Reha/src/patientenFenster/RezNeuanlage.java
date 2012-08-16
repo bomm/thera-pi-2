@@ -1140,6 +1140,12 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else{
 				jcmb[cBARCOD].setSelectedItem("Muster 13/18");
 			}
+		}else if(this.neu && aktuelleDisziplin.equals("Reha")){
+			jcmb[cBARCOD].setSelectedItem("DIN A4 (REHA)");
+		}else{
+			if(this.neu){
+				jcmb[cBARCOD].setSelectedItem("Muster 13/18");
+			}
 		}
 		
 	}

@@ -1047,14 +1047,33 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
             }
         }
         if(klappt){
-        	buf1.append("<tr><td class='spalte1' align='left'><br><b>Gratulation der 302-er Test wurde bestanden.</b><br><br>Wollen Sie im Anschluß "+
-        			"eine Probeverschlüsselung durchführen?</td></tr>");
+        	buf1.append("<tr><td class='spalte1' align='left'><br>Gratulation alle erforderlichen 302-er Daten sind vorhanden.<br><br><b>Sie müssen "+
+        			"jetzt noch abschließend eine Probeverschlüsselung durchführen!</b></td></tr>");
             buf1.append("</table>");
             buf1.append("<br>");
             buf1.append("</html>");
+            Object[] options = {"mach ich doch glatt","nö, kein Interesse"};
+            int frage = JOptionPane.showOptionDialog(null,
+            		buf1.toString(),
+            		"Test der Krankenkasse auf 302-Fähigkeit",
+            			JOptionPane.YES_NO_OPTION,
+            			JOptionPane.QUESTION_MESSAGE,
+            			null, 
+            			options, 
+            			options[0]);
+            /*
             int frage = JOptionPane.showConfirmDialog(null, buf1.toString(),
-            		"Test der Krankenkasse auf 302-Fähigkeit",JOptionPane.YES_NO_OPTION);
+            		"Test der Krankenkasse auf 302-Fähigkeit",JOptionPane.YES_NO_OPTION);*/
+
             if(frage != JOptionPane.YES_OPTION){
+            	
+            	buf1.setLength(0);
+            	buf1.trimToSize();
+            	buf1.append("<html>Ach so, Sie haben also kein Interesse an einer Probeverschlüsselung,<br>tja wenn das so ist....<br><br>");
+            	buf1.append("Dann beschweren Sie sich aber bitte nicht, selbst wenn Ihr<br>");
+            	buf1.append("Verschlüsseler einen Mist zusammenverschlüsselt daß die Heidi wackelt<br>");
+            	buf1.append("Wir haben uns doch richtig verstanden, oder?<html>");
+            	JOptionPane.showMessageDialog(null,buf1.toString());
             	return;
             }
             String datei = Reha.proghome+"edifact/"+Reha.aktIK+"/"+testHm.get("kassen_ik");
@@ -1071,11 +1090,11 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			
 			int[] ret = doVerschluesseln(datei,testHm);
 			if(ret[0] < 0){
-				JOptionPane.showMessageDialog(null,"Fehler in der Verschlüsselung");
+				JOptionPane.showMessageDialog(null,"Fehler in der Verschlüsselung, eine maschinelle Kassenabrechnung\nkann nicht(!!!) durchgeführt werden");
 				return;
 			}
 			if(ret[1] < 0){
-				JOptionPane.showMessageDialog(null,"Fehler in der Entschlüsselung");
+				JOptionPane.showMessageDialog(null,"Fehler in der Verschlüsselung, eine maschinelle Kassenabrechnung\nkann nicht(!!!) durchgeführt werden");
 				return;
 			}
 			if(ret[1] != Integer.parseInt(Long.toString(size))){
@@ -1091,7 +1110,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			"ist absolut identisch ("+Integer.toString(ret[1])+" Bytes)";
 			JOptionPane.showMessageDialog(null,text);
         }else{
-        	buf1.append("<tr><td class='spalte1' align='left'><br><b>Der 302-er Test wurde nicht bestanden(!!!)</b><br><br>Mit dieser Kassen-Konfiguration kann "+
+        	buf1.append("<tr><td class='spalte1' align='left'><br><b>Der 302-er Datentest wurde nicht bestanden(!!!)</b><br><br>Mit dieser Kassen-Konfiguration kann "+
     		"keine maschinenlesbare Abrechnung nach §302 SGB V<br>durchgeführt werden!</td></tr>");
         	buf1.append("</table>");
         	buf1.append("<br>");
