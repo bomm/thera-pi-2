@@ -63,10 +63,12 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 import java.util.TooManyListenersException;
@@ -148,15 +150,19 @@ import verkauf.VerkaufTab;
 import wecker.Wecker;
 import abrechnung.AbrechnungGKV;
 import abrechnung.AbrechnungReha;
+import ag.ion.bion.officelayer.application.IApplicationAssistant;
+import ag.ion.bion.officelayer.application.ILazyApplicationInfo;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
+import ag.ion.bion.officelayer.application.connection.SimpleConnection;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.event.IEvent;
 import ag.ion.bion.officelayer.event.IEventListener;
 import ag.ion.bion.officelayer.event.ITerminateEvent;
 import ag.ion.bion.officelayer.event.VetoTerminateListener;
+import ag.ion.bion.officelayer.internal.application.ApplicationAssistant;
 import anmeldungUmsatz.Anmeldungen;
 import anmeldungUmsatz.Umsaetze;
 import arztFenster.ArztPanel;
@@ -321,7 +327,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2012-08-04-DB=";
+	public static String aktuelleVersion = "2012-08-14-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -357,6 +363,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public int lastSelectedPat = -1;
 	public String lastSelectedValue = "";
 	public int lastSelectedFloskel = -1;
+	
+	public boolean isLibreOffice = false;
+	
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -1294,6 +1303,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				protected Void doInBackground() throws java.lang.Exception {
 					try{
 						INIFile updateini = new INIFile(Reha.proghome+"ini/tpupdate.ini");
+						try{
 						if(updateini.getStringProperty("TheraPiUpdates", "ProxyIP") != null && updateini.getStringProperty("TheraPiUpdates", "ProxyPort") != null && updateini.getStringProperty("TheraPiUpdates", "NoProxy") != null &&
 								updateini.getStringProperty("TheraPiUpdates", "ProxyIP").equals("") && updateini.getStringProperty("TheraPiUpdates", "ProxyPort").equals("") && updateini.getStringProperty("TheraPiUpdates", "NoProxy").equals("")) {
 							System.setProperty("http.proxyHost", updateini.getStringProperty("TheraPiUpdates", "ProxyIP"));
@@ -1302,6 +1312,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 							System.setProperty("ftp.proxyHost", updateini.getStringProperty("TheraPiUpdates", "ProxyIP"));
 							System.setProperty("ftp.proxyPort", updateini.getStringProperty("TheraPiUpdates", "ProxyPort"));
 							System.setProperty("ftp.nonProxyHosts", updateini.getStringProperty("TheraPiUpdates", "NoProxy"));
+						}
+						}catch(NullPointerException ex){
+							ex.printStackTrace();
 						}
 						try{
 							Reha.updatesChecken = (updateini.getIntegerProperty("TheraPiUpdates", "UpdateChecken") > 0 ? true : false);
@@ -1972,13 +1985,100 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         	}
         	//System.out.println("**********Open-Office wird gestartet***************");
             String path = OPEN_OFFICE_ORG_PATH;
+            
+            List<String> list = Arrays.asList("LibreOffice 3.5","OpenOffice.org 3.4");
+
+            ILazyApplicationInfo info =  OfficeApplicationRuntime.getApplicationAssistant(SystemConfig.OpenOfficeNativePfad).findLocalApplicationInfo(SystemConfig.OpenOfficePfad);
+            String[] names = info.getProperties().getPropertyNames();
+            
+            for(int i = 0; i < names.length;i++){
+            	System.out.println(names[i]+" = "+info.getProperties().getPropertyValue(names[i]));
+            	if(info.getProperties().getPropertyValue(names[i]).contains("LibreOffice")){
+            		Reha.thisClass.isLibreOffice = true;
+            	}
+            }
+            
+
+            
             Map <String, Object>config = new HashMap<String, Object>();
-            config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
+            config.put(IOfficeApplication.APPLICATION_HOME_KEY, SystemConfig.OpenOfficePfad);
             config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
+            if(Reha.thisClass.isLibreOffice){
+                config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
+                		new String[] {"--nodefault","nologo",
+                		"--nofirststartwizard",
+                		"--nocrashreport",
+                		"--norestore"
+                		});
+
+            }else{
+                config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
+                		new String[] {"-nodefault","-nologo",
+                		"-nofirststartwizard",
+                		"-nocrashreport",
+                		"-norestore"
+                		});
+            	
+            }
+            
+            System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,SystemConfig.OpenOfficeNativePfad);
+            /*
+            config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
+            		new String[] {"--nodefault","--nologo","--nofirststartwizard","--writer"});
+            */		
+            /*
+            config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
+            		new String[] {"-accept=socket,host=localhost,port=8100;urp;","-nologo","-nodefault"
+            		});
+			*/
+            /*
+            List<String> list = Arrays.asList("LibreOffice 3.5","OpenOffice.org 3.4");
+            officeapplication = OfficeApplicationRuntime.getApplication(config);
+            ILazyApplicationInfo info =  OfficeApplicationRuntime.getApplicationAssistant(SystemConfig.OpenOfficeNativePfad).findLocalApplicationInfo(SystemConfig.OpenOfficePfad);
+            String[] names = info.getProperties().getPropertyNames();
+            Reha.thisClass.loaooArschgeigen = false;
+            for(int i = 0; i < names.length;i++){
+            	System.out.println(names[i]+" = "+info.getProperties().getPropertyValue(names[i]));
+            	if(list.contains(info.getProperties().getPropertyValue(names[i]))){
+            		Reha.thisClass.loaooArschgeigen = true;
+            	}
+            }
+            */
+            try{
+            	officeapplication = OfficeApplicationRuntime.getApplication(config);	
+            //officeapplication.setConfiguration(config);
+            }catch(NullPointerException ex){
+            	ex.printStackTrace();
+            }
+            
+            officeapplication.activate();
+
+            
+            //final boolean swingarschgeigen = arschgeigen;
+            /*
+            new SwingWorker<Void,Void>(){
+				@Override
+				protected Void doInBackground() throws java.lang.Exception {
+					Thread.sleep(3000);
+					if(swingarschgeigen){
+		            	try {
+							officeapplication.getDocumentService().getCurrentDocuments()[0].close();
+						} catch (DocumentException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		            }
+					return null;
+				}
+            	
+            }.execute();
+            */
+            
+            
             
             /*
             config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
-            		new String[] {"--nodefault",
+            		new String[] {"--nologo",
             		"--headless",
             		"--nodefault",
             		"--nofirststartwizard",
@@ -2003,9 +2103,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             }
 			*/
             
-            System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,SystemConfig.OpenOfficeNativePfad);
+            
+            /*
+
+            
             officeapplication = OfficeApplicationRuntime.getApplication(config);
+            
             officeapplication.activate();
+            
+            */
             //Nachfolgende try/catch nur dann einschalten
             //wenn Sie über die neueste ag.ion.noa_2.2.3.jar vom 20.06.2011
             //verfügen!!!!! sonst läuft nix mehr /st.
@@ -2032,15 +2138,27 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			
             try{
             	
-
+            	
             officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
             	  public void queryTermination(ITerminateEvent terminateEvent) {
             	    super.queryTermination(terminateEvent);
             	    try {
             	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
-            	      if (docs.length == 1) { 
+            	     /*
+            	      for(int i = 0; i < docs.length;i++){
+            	    	  System.out.println("Dokumenttyp = "+docs[i].getDocumentType());  
+            	      }
+               	      if (docs.length == (!Reha.thisClass.loaooArschgeigen ? 1 : 2) ) { 
             	        docs[0].close();
             	      }
+
+            	      */
+            	      
+            	      if (docs.length ==  1  ) { 
+              	        docs[0].close();
+              	      }
+
+            	      
             	    }
             	    catch (DocumentException e) {
             	    	e.printStackTrace();
@@ -2051,6 +2169,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					}
             	  }
             	});
+            	
             
             }catch(NullPointerException ex){
             	ex.printStackTrace();
