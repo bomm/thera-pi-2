@@ -1,7 +1,6 @@
 package hauptFenster;
 
 import java.awt.AWTEvent;
-
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,7 +14,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.KeyboardFocusManager;
 import java.awt.LinearGradientPaint;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -150,19 +148,14 @@ import verkauf.VerkaufTab;
 import wecker.Wecker;
 import abrechnung.AbrechnungGKV;
 import abrechnung.AbrechnungReha;
-import ag.ion.bion.officelayer.application.IApplicationAssistant;
 import ag.ion.bion.officelayer.application.ILazyApplicationInfo;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
-import ag.ion.bion.officelayer.application.connection.SimpleConnection;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.event.IEvent;
-import ag.ion.bion.officelayer.event.IEventListener;
 import ag.ion.bion.officelayer.event.ITerminateEvent;
 import ag.ion.bion.officelayer.event.VetoTerminateListener;
-import ag.ion.bion.officelayer.internal.application.ApplicationAssistant;
 import anmeldungUmsatz.Anmeldungen;
 import anmeldungUmsatz.Umsaetze;
 import arztFenster.ArztPanel;
@@ -182,7 +175,6 @@ import events.RehaEvent;
 import events.RehaEventClass;
 import events.RehaEventListener;
 import geraeteInit.BarCodeScanner;
-//@SuppressWarnings("unused")
 
 public class Reha implements FocusListener,ComponentListener,ContainerListener,MouseListener,MouseMotionListener,KeyListener,RehaEventListener, WindowListener, WindowStateListener, ActionListener  {
 
@@ -327,7 +319,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2012-08-14-DB=";
+	public static String aktuelleVersion = "2012-08-22-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1605,7 +1597,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		    
 		     DragSource dragSource = new DragSource();
 		     
-		     DragGestureRecognizer dgr = dragSource.createDefaultDragGestureRecognizer(
+		     @SuppressWarnings("unused")
+			DragGestureRecognizer dgr = dragSource.createDefaultDragGestureRecognizer(
 		    	    		copyLabel, 
 		    	    		DnDConstants.ACTION_COPY, 
 		    	    		dragGestureListener);
@@ -1984,9 +1977,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
         		JOptionPane.showMessageDialog(null,"Zur Info die UNO-Runtime wird neu gestartet!");
         	}
         	//System.out.println("**********Open-Office wird gestartet***************");
-            String path = OPEN_OFFICE_ORG_PATH;
+            @SuppressWarnings("unused")
+			String path = OPEN_OFFICE_ORG_PATH;
             
-            List<String> list = Arrays.asList("LibreOffice 3.5","OpenOffice.org 3.4");
+            @SuppressWarnings("unused")
+			List<String> list = Arrays.asList("LibreOffice 3.5","OpenOffice.org 3.4");
 
             ILazyApplicationInfo info =  OfficeApplicationRuntime.getApplicationAssistant(SystemConfig.OpenOfficeNativePfad).findLocalApplicationInfo(SystemConfig.OpenOfficePfad);
             String[] names = info.getProperties().getPropertyNames();
@@ -2005,7 +2000,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
             config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
             if(Reha.thisClass.isLibreOffice){
                 config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
-                		new String[] {"--nodefault","nologo",
+                		new String[] {"--nodefault","--nologo",
                 		"--nofirststartwizard",
                 		"--nocrashreport",
                 		"--norestore"
