@@ -4,6 +4,12 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -103,5 +109,35 @@ public class TheraPiUpdates implements WindowListener {
 		// TODO Auto-generated method stub
 		
 	}
+	public static void RunAjax(String partUrl,String indatei,String testdatei){
+		InetAddress dieseMaschine = null;
+		try {
+			dieseMaschine = java.net.InetAddress.getLocalHost();
+		} catch (UnknownHostException e1) {
+			e1.printStackTrace();
+		}
+		String url = null;
+		if(!dieseMaschine.toString().contains("192.168.2.2")){
+			url = partUrl+"?indatei="+indatei+"&tester="+dieseMaschine.toString()+"&datei="+testdatei;
+		}
 
+
+		try {
+			URL tester = new URL(url);
+			HttpURLConnection httpURLConnection = (HttpURLConnection) tester.openConnection();
+			httpURLConnection.setAllowUserInteraction(false);
+	        httpURLConnection.setRequestMethod("POST");
+	        httpURLConnection.getResponseMessage();
+	        //System.out.println(httpURLConnection.getResponseMessage());
+	        httpURLConnection.setRequestProperty("Accept", "true");
+	        httpURLConnection.setDoOutput(true);
+	        httpURLConnection.setUseCaches(false);
+	        httpURLConnection.disconnect();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 }

@@ -263,11 +263,17 @@ public class UpdatePanel extends JXPanel{
 							}catch(Exception ex){
 								JOptionPane.showMessageDialog(null, "Fehler beim Umbenennen der Datei "+updatefiles.get(ix).get(1));
 							}
+							System.out.println("hole Datei -> "+updatefiles.get(ix).get(1)+" Schleifendurchlauf -> "+ix);
 							ftpt = new FTPTools();
 							ftpt.holeDatei(xupdate, nurvz, true, getInstance(),xgross);
 							ftpt = null;
 							pbar.setValue(0);
-							System.out.println("hole Datei -> "+updatefiles.get(ix).get(1)+" Schleifendurchlauf -> "+ix);
+							SwingUtilities.invokeLater(new Runnable(){
+								public void run(){
+									TheraPiUpdates.RunAjax("http://www.thera-pi.org/html/updates.php", "updated.txt", xupdate);
+								}
+							});
+							
 							tabmod.setValueAt((ImageIcon) icokeinupdate,xrow, 3);
 							return null;
 						}
