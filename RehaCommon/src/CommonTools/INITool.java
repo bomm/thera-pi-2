@@ -12,6 +12,22 @@ public class INITool {
 	public static String[] getDBInis(){
 		return dbInis;
 	}
+	public static void init(String pfad){
+		INIFile file = new INIFile(pfad+"inicontrol.ini");
+		try{
+			int anzahl = file.getIntegerProperty("INIinDB", "INIAnzahl");
+			if(anzahl == 0){
+				dbInis = new String[] {"nix"};
+			}else{
+				dbInis = new String[anzahl];
+				for(int i = 0; i < dbInis.length;i++){
+					dbInis[i] = String.valueOf(file.getStringProperty("INIinDB", "DBIni"+Integer.toString(i+1)));
+				}
+			}
+		}catch(Exception ex){
+			dbInis = new String[] {"nix"};
+		}
+	}
 	public static INIFile openIni(String path,String iniToOpen){
 		INIFile inif = null;
 		try{
