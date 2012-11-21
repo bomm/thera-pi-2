@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,7 +35,7 @@ import opencard.core.terminal.CommandAPDU;
 import opencard.core.terminal.ResponseAPDU;
 import opencard.opt.util.PassThruCardService;
 import systemEinstellungen.SystemConfig;
-import systemTools.StringTools;
+import CommonTools.StringTools;
 
 
 public class OcKVK {
@@ -190,7 +191,11 @@ public class OcKVK {
 			    	sc.close();
 			    }
 		    }else{
-		    	ptcs.getCard().reset(true);
+		    	try{
+		    		ptcs.getCard().reset(true);
+		    	}catch(Exception ex){
+		    		ex.printStackTrace();
+		    	}
 		    	//Hier testen ob es eine eGK ist
 		    	command.setLength(0);
 				command.append(CMD_SELECT_EGK_HDC);
@@ -237,6 +242,7 @@ public class OcKVK {
 			        	
 			        	
 			        	in = new ByteArrayInputStream(resultpd); 
+			        	InDatei(Reha.proghome+"temp/"+Reha.aktIK+"/eGKpd.zip",resultpd);
 			        	out = Unzip("",in);
 			        	in.close();
 			        	out.flush();
@@ -310,6 +316,7 @@ public class OcKVK {
 			        }
 			        try{
 			        	in = new ByteArrayInputStream(resultvd); 
+			        	InDatei(Reha.proghome+"temp/"+Reha.aktIK+"/eGKvd.zip",resultvd);
 			        	out = Unzip("",in);
 			        	in.close();
 			        	out.flush();
@@ -356,6 +363,16 @@ public class OcKVK {
 		    sc.close();
 		    return ret;    
 		}
+	private void InDatei(String datei, byte[] bytes){
+		   
+	     try{
+	    	 FileOutputStream fos = new FileOutputStream(datei);
+	    	 fos.write(bytes);
+	    	 fos.close();
+	     }catch(Exception ex){
+	    	 
+	     }
+	}
 	private boolean createLineBrake(String string){
 
 		int aktindex = 0;

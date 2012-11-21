@@ -32,7 +32,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import dialoge.DragWin;
 import dialoge.PinPanel;
 import events.RehaTPEvent;

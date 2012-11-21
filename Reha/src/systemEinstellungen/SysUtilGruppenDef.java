@@ -42,9 +42,12 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.table.TableColumnExt;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 import terminKalender.ZeitFunk;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -85,7 +88,8 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 	public static String neuGruppenDauer = "";
 	static String editGruppenName = null;
 	static String editGruppenGueltigAb = null;
-	static String gruppeninidat = Reha.proghome+"ini/"+Reha.aktIK+"/gruppen.ini";
+	static String gruppeninidat = "gruppen.ini";
+	static String gruppeninipfad = Reha.proghome+"ini/"+Reha.aktIK+"/";
 	
 	boolean ltermneu = false,ltermedit=false;
 	boolean lgruppeneu = false,lgruppeedit=false;
@@ -715,7 +719,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 	private void macheGruppeNeu(){
 		
 		
-		INIFile ini = new INIFile(gruppeninidat);
+		INIFile ini = INITool.openIni(gruppeninipfad, gruppeninidat);
 		int anzahl = SystemConfig.oGruppen.gruppenNamen.size()+1;
 		ini.setStringProperty("Gruppen", "GruppenAnzahl", Integer.valueOf(anzahl).toString(), null);
 		ini.setStringProperty("Gruppen", "GruppenName"+anzahl,neuGruppenName , null);
@@ -729,7 +733,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				ini.setStringProperty(sektion,"WOTA"+v,"0",null);
 			}
 		}
-		ini.save();
+		INITool.saveIni(ini);
 		SystemConfig.GruppenLesen();
 		cmbGrName.addItem(neuGruppenName);
 		cmbGrName.setSelectedItem(neuGruppenName);
@@ -772,13 +776,13 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		String sektion = ((String)cmbGrName.getSelectedItem()).trim()+"_"+(iakt+1);
 		//System.out.println("Sektion = "+sektion);
 		itag = itag+1;
-		INIFile ini = new INIFile(gruppeninidat);
+		INIFile ini = INITool.openIni(gruppeninipfad, gruppeninidat);
 		ini.setStringProperty(sektion, "WOTA"+itag, Integer.valueOf(jTblGruppen.getRowCount()).toString(), null);
 		ini.setStringProperty(sektion, "TA"+itag+"GR"+(row+1), plan1+"-"+plan2, null);
 		ini.setStringProperty(sektion, "TA"+itag+"ZE"+(row+1),druck, null);
 		ini.setStringProperty(sektion, "TA"+itag+"TX"+(row+1),text, null);
 		ini.setStringProperty(sektion, "TA"+itag+"DA"+(row+1),Integer.valueOf(dauer).toString(), null);
-		ini.save();
+		INITool.saveIni(ini);
 	}
 	private void loescheTermin(int row){
 		try{
@@ -791,7 +795,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 			//System.out.println("Zum löschen markiert"+((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)));
 			((Vector)((Vector)((Vector) SystemConfig.oGruppen.gruppeAlle.get(igruppe)).get(iakt)).get(itag)).remove(row);
 			itag = itag+1;
-			INIFile ini = new INIFile(gruppeninidat);
+			INIFile ini = INITool.openIni(gruppeninipfad, gruppeninidat);
 			ini.setStringProperty(sektion, "WOTA"+itag, Integer.valueOf(jTblGruppen.getRowCount()).toString(), null);
 			for(int i = 0;i<jTblGruppen.getRowCount();i++){
 				String zeit1 = (String)jTblGruppen.getValueAt(i,2);
@@ -804,14 +808,14 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 				String dauer = Integer.valueOf((String)jTblGruppen.getValueAt(i,4).toString()).toString();
 				ini.setStringProperty(sektion, "TA"+itag+"DA"+(i+1),dauer, null);
 			}
-			ini.save();
+			INITool.saveIni(ini);
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
 	}
 	
 	private void gruppeAendern(String name){
-		INIFile ini = new INIFile(gruppeninidat);
+		INIFile ini = INITool.openIni(gruppeninipfad, gruppeninidat);
 		int anzahl = cmbGrName.getSelectedIndex();
 		ini.setStringProperty("Gruppen", "GruppenName"+(anzahl+1),neuGruppenName , null);
 		ini.setStringProperty("Gruppen", "Gruppe"+(anzahl+1)+"NeuAb",neuGruppenGueltigAb , null);
@@ -819,7 +823,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		ini.setStringProperty("Gruppen", "Gruppe"+(anzahl+1)+"Dauer",(neuGruppenDauer.trim().equals("") ? "0" : neuGruppenDauer.trim() ) , null);
 		ini.renameSection(((String)cmbGrName.getSelectedItem()).trim()+"_1",neuGruppenName+"_1",null);
 		ini.renameSection(((String)cmbGrName.getSelectedItem()).trim()+"_2",neuGruppenName+"_2",null);
-		ini.save();
+		INITool.saveIni(ini);
 		cmbGrName.insertItemAt(neuGruppenName,anzahl);
 		cmbGrName.removeItemAt(anzahl+1);
 		cmbGrName.setSelectedIndex(anzahl);
@@ -861,7 +865,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		((Vector)SystemConfig.oGruppen.gruppenGueltig).trimToSize();
 		
 		
-		INIFile ini = new INIFile(gruppeninidat);
+		INIFile ini = INITool.openIni(gruppeninipfad, gruppeninidat);
 		int neuzahl = ((Vector)SystemConfig.oGruppen.gruppenNamen).size();
 		ini.setStringProperty("Gruppen", "GruppenAnzahl",Integer.valueOf(neuzahl).toString(),null);
 		for(int i = 0;i<neuzahl;i++){
@@ -878,7 +882,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		}
 		ini.removeSection(gruppe+"_1");
 		ini.removeSection(gruppe+"_2");
-		ini.save();
+		INITool.saveIni(ini);
 		cmbGrName.removeItemAt(akt);
 		cmbGrName.setSelectedItem(((Vector)SystemConfig.oGruppen.gruppenNamen).get(0));
 		//System.out.println("Neue Position = "+neupos);
@@ -891,7 +895,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 		Vector vec = ((Vector)((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle).get(akt)).get(0));
 		((Vector)((Vector)SystemConfig.oGruppen.gruppeAlle).get(akt)).set(1, vec.clone());
 
-		INIFile ini = new INIFile(gruppeninidat);
+		INIFile ini = INITool.openIni(gruppeninipfad, gruppeninidat);
 		for(int i = 0;i<7;i++){
 			int anzahl = ((Vector)vec.get(i)).size();
 			//System.out.println("Anzahl Termine am Tag "+(i+1)+" = "+anzahl);
@@ -910,7 +914,7 @@ public class SysUtilGruppenDef extends JXPanel implements KeyListener, ActionLis
 			}
 			
 		}
-		ini.save();
+		INITool.saveIni(ini);
 
 	}
 /****************************************/	

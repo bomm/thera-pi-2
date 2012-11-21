@@ -27,7 +27,7 @@ import ocf.OcKVK;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.IntegerTools;

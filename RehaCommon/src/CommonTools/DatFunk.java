@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 
 
 
+
+
 public class DatFunk {
 
 
@@ -220,7 +222,15 @@ public class DatFunk {
 		s = s.substring(0,s.indexOf( ' ' )); 
 	    return s;
 	}
-	
+	public static String datumOk(String datum){
+		if(datum==null){
+			return null;
+		}
+		if(datum.trim().equals("") || datum.trim().equals(".  .") || datum.trim().equals("-  -")){
+			return null;
+		}
+		return DatFunk.sDatInDeutsch(datum);
+	}	
 	public static boolean GeradeWoche(String sdatum){
 		return ((KalenderWoche(sdatum) % 2)!= 0 ? false : true);
 	}

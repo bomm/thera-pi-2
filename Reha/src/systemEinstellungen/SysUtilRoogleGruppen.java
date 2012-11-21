@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import terminKalender.ParameterLaden;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -282,70 +282,75 @@ public class SysUtilRoogleGruppen extends JXPanel implements ActionListener,KeyL
 		}
 		
 		private void speichernHandeln(){
-			boolean abbruch = false;
-			if(RGmembers.getRowCount()==0){
-				JOptionPane.showMessageDialog(null, "Eine RoogleGruppe ohne Mitglieder kann nicht abgespeichert werden!");
-				return;
-			}
-			if(RGname.getText().equals("")){
-				JOptionPane.showMessageDialog(null, "Eine RoogleGruppe braucht einen Gruppennamen!");
-				return;
-			}
-			int anzahl =  gruppenname.length;
-			int i;
-			String setXname = RGname.getText(); 
-			if(lneu){
-				for(i=0;i<anzahl;i++){
-					if(  gruppenname[i].trim().equals(setXname) ){
-						abbruch = true;
-						break;
-					}
-				}				
-			}else{
-				for(i=0;i<anzahl;i++){
-					if( (gruppenname[i].trim().equals(setXname)) &&  (i != jcomboWahl.getSelectedIndex())){
-						abbruch = true;
-						break;
-					}
-				}				
-			}
-			if(abbruch){
-				JOptionPane.showMessageDialog(null, "Die RoogleGruppe "+setXname+" ist bereits vorhanden.\n"+
-				"Jeder Gruppen-Name darf nur einmal vorkommen");
-				return;
-			}
-			
-			String inigruppe = "",inimitglied="",inianzahl="",iniakt="";
-			inianzahl = (!lneu ? Integer.valueOf(jcomboWahl.getItemCount()).toString() : Integer.valueOf(jcomboWahl.getItemCount()+1).toString() );
-			////System.out.println(inianzahl);
-			iniakt = (lneu ? 
-						Integer.valueOf( Integer.valueOf(inianzahl)).toString() :  
-						Integer.valueOf( jcomboWahl.getSelectedIndex()+1).toString() );
-			for(i = 0; i < RGmembers.getRowCount();i++){
-				if(i==0){
-					inimitglied = inimitglied+RGmembers.getValueAt(i,0);
-				}else{
-					inimitglied = inimitglied+","+RGmembers.getValueAt(i,0);
+			try{
+				boolean abbruch = false;
+				if(RGmembers.getRowCount()==0){
+					JOptionPane.showMessageDialog(null, "Eine RoogleGruppe ohne Mitglieder kann nicht abgespeichert werden!");
+					return;
 				}
+				if(RGname.getText().equals("")){
+					JOptionPane.showMessageDialog(null, "Eine RoogleGruppe braucht einen Gruppennamen!");
+					return;
+				}
+				int anzahl =  gruppenname.length;
+				int i;
+				String setXname = RGname.getText(); 
+				if(lneu){
+					for(i=0;i<anzahl;i++){
+						if(  gruppenname[i].trim().equals(setXname) ){
+							abbruch = true;
+							break;
+						}
+					}				
+				}else{
+					for(i=0;i<anzahl;i++){
+						if( (gruppenname[i].trim().equals(setXname)) &&  (i != jcomboWahl.getSelectedIndex())){
+							abbruch = true;
+							break;
+						}
+					}				
+				}
+				if(abbruch){
+					JOptionPane.showMessageDialog(null, "Die RoogleGruppe "+setXname+" ist bereits vorhanden.\n"+
+					"Jeder Gruppen-Name darf nur einmal vorkommen");
+					return;
+				}
+				
+				String inigruppe = "",inimitglied="",inianzahl="",iniakt="";
+				inianzahl = (!lneu ? Integer.valueOf(jcomboWahl.getItemCount()).toString() : Integer.valueOf(jcomboWahl.getItemCount()+1).toString() );
+				////System.out.println(inianzahl);
+				iniakt = (lneu ? 
+							Integer.valueOf( Integer.valueOf(inianzahl)).toString() :  
+							Integer.valueOf( jcomboWahl.getSelectedIndex()+1).toString() );
+				for(i = 0; i < RGmembers.getRowCount();i++){
+					if(i==0){
+						inimitglied = inimitglied+RGmembers.getValueAt(i,0);
+					}else{
+						inimitglied = inimitglied+","+RGmembers.getValueAt(i,0);
+					}
+				}
+				if(lneu){
+					SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleAnzahlGruppen", Integer.valueOf(inianzahl).toString());
+				}
+				SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleNameGruppen"+iniakt, setXname);
+				SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleFelderGruppen"+iniakt, inimitglied);
+				SystemConfig.RoogleGruppen();
+				if(lneu){
+					comboFuellen(Integer.valueOf(iniakt)-1);
+				}else{
+					comboFuellen(iaktItem);
+				}
+				comboAuswerten();
+				RGmembers.setEnabled(false);
+				Source.setEnabled(false);
+				jcomboWahl.setEnabled(true);
+				RGname.setEnabled(false);
+				knopfGedoense(new int[]{1,1,1,0,0, 0,0});
+				lneu = false;
+				JOptionPane.showMessageDialog(null,"Konfiguration wurde erfolgreich in terminkalender.ini gespreichert.");
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Fehler beim speichern der Konfiguration in terminkalender.ini!!!");				
 			}
-			if(lneu){
-				SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleAnzahlGruppen", Integer.valueOf(inianzahl).toString());
-			}
-			SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleNameGruppen"+iniakt, setXname);
-			SystemConfig.UpdateIni("terminkalender.ini","RoogleEinstellungen", "RoogleFelderGruppen"+iniakt, inimitglied);
-			SystemConfig.RoogleGruppen();
-			if(lneu){
-				comboFuellen(Integer.valueOf(iniakt)-1);
-			}else{
-				comboFuellen(iaktItem);
-			}
-			comboAuswerten();
-			RGmembers.setEnabled(false);
-			Source.setEnabled(false);
-			jcomboWahl.setEnabled(true);
-			RGname.setEnabled(false);
-			knopfGedoense(new int[]{1,1,1,0,0, 0,0});
-			lneu = false;
 		}
 
 		@Override

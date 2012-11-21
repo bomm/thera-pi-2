@@ -9,7 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import sqlTools.SqlInfo;
+import CommonTools.INIFile;
+import CommonTools.INITool;
+
+import CommonTools.SqlInfo;
 
 public class SystemPreislisten {
 	public static Vector<Vector<Vector<String>>> vKGPreise = new Vector<Vector<Vector<String>>>();
@@ -62,9 +65,9 @@ public class SystemPreislisten {
 			return;
 		}
 
-		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
+		inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "preisgruppen.ini");
 		int tarife = inif.getIntegerProperty("PreisGruppen_"+diszis[treffer], "AnzahlPreisGruppen");
-		fristenini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/fristen.ini");
+		fristenini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "fristen.ini");
 		
 		
 
@@ -392,7 +395,7 @@ public class SystemPreislisten {
 			modusdummy.add(Integer.parseInt(sdummy));
 		}
 		if(mustsave){
-			f.save();
+			INITool.saveIni(f);
 		}
 	}
 	public static void getHMRAbrechnung(INIFile f,String disziplin,int tarife){
@@ -534,13 +537,6 @@ public class SystemPreislisten {
 	
 	/***
 	 * 
-	 *	if(sask==null){
-			System.out.println("Erstelle Parameter 'ZuzahlmodusNormal'");
-			inif.setStringProperty("GemeinsameParameter", "ZuzahlmodusNormal","1",null);
-			inif.save();
-		}
-		hmAbrechnung.put("hmnormalzuzahl", inif.getStringProperty("GemeinsameParameter", "ZuzahlmodusNormal"));
-
 	 * 
 	 * @param kategorie
 	 * @param item
@@ -555,7 +551,7 @@ public class SystemPreislisten {
 			}else{
 				fristenini.setIntegerProperty(kategorie,item,1,null);
 			}
-			fristenini.save();
+			INITool.saveIni(fristenini);
 		}
 		if(retint){
 			return fristenini.getIntegerProperty(kategorie,item);

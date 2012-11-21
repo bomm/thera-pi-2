@@ -30,7 +30,7 @@ import javax.swing.border.SoftBevelBorder;
 
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -111,6 +111,7 @@ public class Zeitfenster extends JDialog implements KeyListener,FocusListener,Ac
 			
 			jContentPane.add(grundSplit(), BorderLayout.CENTER);
 			jContentPane.addKeyListener(this);
+			
 		}
 		jSplitLR.setDividerLocation(399);
 		return jContentPane;

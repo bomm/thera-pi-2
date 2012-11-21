@@ -11,6 +11,7 @@ import offenePosten.OffenePosten;
 
 
 
+import CommonTools.OOTools;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.document.IDocumentDescriptor;
@@ -68,7 +69,7 @@ public class BegleitzettelDrucken {
 
 		/**********************/
 		textDocument = (ITextDocument)document;
-		Tools.OOTools.druckerSetzen(textDocument, OffenePosten.hmAbrechnung.get("hmgkvrechnungdrucker"));
+		OOTools.druckerSetzen(textDocument, OffenePosten.hmAbrechnung.get("hmgkvrechnungdrucker"));
 	}
 	
 	private void ersetzePlatzhalter(){

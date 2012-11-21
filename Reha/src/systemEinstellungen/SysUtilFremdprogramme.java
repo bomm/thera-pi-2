@@ -26,7 +26,10 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
-import systemTools.JCompTools;
+import CommonTools.JCompTools;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -293,7 +296,7 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 	
 	private void doSpeichern(){
 		String wert = "";
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "fremdprog.ini");
 		wert = adobepfad.getText().trim();
 		inif.setStringProperty("FestProg", "FestProgPfad1", wert, null);
 		//SystemConfig.hmFremdProgs.put("AcrobatReader",wert);
@@ -307,16 +310,17 @@ public class SysUtilFremdprogramme extends JXPanel implements KeyListener, Actio
 			inif.setStringProperty("FremdProgramme", "FremdProgrammName"+(i+1), (String)modprog.getValueAt(i,0), null);
 			inif.setStringProperty("FremdProgramme", "FremdProgrammPfad"+(i+1), (String)modprog.getValueAt(i,1), null);
 		}
-		inif.save();		
+		INITool.saveIni(inif);
+		
  
-		inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 		wert = oopfad.getText().trim();
 		inif.setStringProperty("OpenOffice.org", "OfficePfad", wert, null);
 		SystemConfig.OpenOfficePfad = wert;
 		wert = Reha.proghome+"Libraries/lib/openofficeorg";
 		inif.setStringProperty("OpenOffice.org", "OfficeNativePfad", wert, null);
 		SystemConfig.OpenOfficeNativePfad = wert;
-		inif.save();
+		INITool.saveIni(inif);
 		SystemConfig.FremdProgs();
 		JOptionPane.showMessageDialog(null,"Einstellungen Fremdprogramme wurden erfolgreich gespeichert");
 	}

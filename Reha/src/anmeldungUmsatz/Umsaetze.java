@@ -23,10 +23,10 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import rehaInternalFrame.JUmsaetzeInternal;
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemTools.ButtonTools;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
@@ -448,7 +448,7 @@ public class Umsaetze extends JXPanel{
 			progress1.setValue(i);
 			behandler = (Integer) kalUsers.get(i).get(1);
 			vec = 
-				sqlTools.SqlInfo.holeFelder("select * from flexkc where datum >='"+
+				SqlInfo.holeFelder("select * from flexkc where datum >='"+
 					datum_von+
 					"' AND datum <='"+
 					datum_bis+

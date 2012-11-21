@@ -4,7 +4,7 @@ import javax.swing.JOptionPane;
 
 import hauptFenster.Reha;
 import systemEinstellungen.SystemConfig;
-import systemTools.StringTools;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
 
 public class PatTools {

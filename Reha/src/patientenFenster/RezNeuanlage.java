@@ -33,17 +33,17 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import rechteTools.Rechte;
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.Colors;
-import systemTools.JCompTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
+import CommonTools.Colors;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 import systemTools.ListenerTools;
-import systemTools.StringTools;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;

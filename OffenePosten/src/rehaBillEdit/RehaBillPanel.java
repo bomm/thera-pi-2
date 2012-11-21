@@ -56,15 +56,18 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 
 
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.JCompTools;
-import Tools.JRtaCheckBox;
-import Tools.JRtaTextField;
+import CommonTools.ButtonTools;
+import CommonTools.DatFunk;
+import CommonTools.DateTableCellEditor;
+import CommonTools.DblCellEditor;
+import CommonTools.DoubleTableCellRenderer;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaTextField;
 import Tools.PatTools;
 import Tools.RezTools;
-import Tools.SqlInfo;
-import Tools.TableTool;
+import CommonTools.SqlInfo;
+import CommonTools.TableTool;
 
 
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -91,6 +94,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 	JXPanel content = null;
 	JRtaTextField[] tfs = {null,null,null,null,null,null,null,null};
 	JRtaCheckBox originalChb = null;
+	JRtaCheckBox mittageChb = null;
 	
 	KeyListener kl = null;
 	ActionListener al = null;
@@ -181,8 +185,8 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		
 		//                1       2     3     4        5    6     7
 		String xwerte = "5dlu:g,60dlu:g,2dlu,75dlu:g,2dlu,40dlu:g,5dlu:g";
-		//                1    2  3   4  5  6   7   8  9  10  11 12 13   14 15  16  17  18 19   20  21 22  23 24  25  26 27
-		String ywerte = "15dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,10dlu,p,2dlu,p,10dlu,p,15dlu,p,2dlu,p,2dlu,p,2dlu,p,15dlu";
+		//                1    2  3   4  5  6   7   8  9  10  11 12 13   14 15  16  17 18 19   20  21  22  23 24  25 26  27 28  29 
+		String ywerte = "15dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,2dlu,p,10dlu,p,2dlu,p,2dlu,p,2dlu,p,15dlu,p,2dlu,p,2dlu,p,2dlu,p,15dlu";
 		
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
@@ -241,8 +245,11 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		originalChb = new JRtaCheckBox("Originaldatum für Ausdruck verwenden");
 		jpan.add(originalChb,cc.xyw(4,16,3));
 		
+		mittageChb = new JRtaCheckBox("Behandlungstage drucken (IV)");
+		jpan.add(mittageChb,cc.xyw(4,18,3));
+		
 		but = ButtonTools.macheButton("Rechnung in OpenOffice starten", "drucken", al);
-		jpan.add(but,cc.xyw(4,18,3));
+		jpan.add(but,cc.xyw(4,20,3));
 		/*
 		String rbetragAlt = "";
 		String rbetragNeu = "";
@@ -250,19 +257,21 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 		*/
 
 		lab = new JLabel("R-Nummer:");
-		jpan.add(lab,cc.xy(2,20));
+		jpan.add(lab,cc.xy(2,22));
 		rnummerAlt = new JLabel("");
-		jpan.add(rnummerAlt,cc.xy(4,20));
+		jpan.add(rnummerAlt,cc.xy(4,22));
 		
 		lab = new JLabel("R-Betrag alt:");
-		jpan.add(lab,cc.xy(2,22));
+		jpan.add(lab,cc.xy(2,24));
 		rbetragAlt = new JLabel("0,00");
-		jpan.add(rbetragAlt,cc.xy(4,22));
+		jpan.add(rbetragAlt,cc.xy(4,24));
 
 		lab = new JLabel("R-Betrag neu:");
-		jpan.add(lab,cc.xy(2,24));
+		jpan.add(lab,cc.xy(2,26));
 		rbetragNeu = new JLabel("0,00");
-		jpan.add(rbetragNeu,cc.xy(4,24));
+		jpan.add(rbetragNeu,cc.xy(4,26));
+		
+		jpan.validate();
 		/*
 		lab = new JLabel("R-Datum alt:");
 		jpan.add(lab,cc.xy(2,26));
@@ -307,8 +316,8 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 
 		for(int i = 0; i < feldNamen.size();i++){
 			if(feldNamen.get(i).get(1).contains("decimal(")){
-				tab.getColumn(i).setCellRenderer(new Tools.DoubleTableCellRenderer());
-				tab.getColumn(i).setCellEditor(new Tools.DblCellEditor());
+				tab.getColumn(i).setCellRenderer(new DoubleTableCellRenderer());
+				tab.getColumn(i).setCellEditor(new DblCellEditor());
 			}else if(feldNamen.get(i).get(1).contains("date")){
 				tab.getColumn(i).setCellEditor(tble);
 			}
@@ -1194,7 +1203,8 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 					"vorlagen/"+
 					OffenePosten.aktIK+
 					"/"+
-					OffenePosten.hmAbrechnung.get("hmgkvformular")+".Kopie.ott");
+					OffenePosten.hmAbrechnung.get("hmgkvformular")+".Kopie.ott",
+					mittageChb.isSelected());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1274,6 +1284,7 @@ public class RehaBillPanel extends JXPanel implements ListSelectionListener, Act
 				mitpauschale = ((Double)tabmod.getValueAt(i, 20) > 0. ? true : false);
 			}
 		}
+		System.out.println("Mittage bei Aufruf = "+mittageChb.isSelected());
 		druckKopie.setIKundRnr(OffenePosten.aktIK,rnummerAlt.getText(),hmAdresse);
 	}
 	

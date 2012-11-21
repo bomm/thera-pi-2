@@ -17,6 +17,8 @@ import org.jdesktop.swingx.painter.GlossPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.Painter;
 
+import CommonTools.Colors;
+
 public final class RehaPainters {
 
 	@SuppressWarnings("unchecked")

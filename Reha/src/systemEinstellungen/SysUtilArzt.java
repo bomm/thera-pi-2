@@ -40,8 +40,11 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -125,7 +128,7 @@ public class SysUtilArzt extends JXPanel implements KeyListener, ActionListener 
 			gruppen.setRowSelectionInterval(0, 0);			
 		}
 		gruppen.validate();
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arzt.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "arzt.ini");
 		int forms = inif.getIntegerProperty("Formulare", "ArztFormulareAnzahl");
 		vec = new Vector<String>();
 		for(int i = 1; i <= forms; i++){
@@ -388,45 +391,50 @@ private JPanel getKnopfPanel(){
 	}
 	
 	private void doSpeichern(){
-		String wert = "";
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arzt.ini");
-		//System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
-		wert = (unten.isSelected() ? "1" : "0");
-		SystemConfig.hmContainer.put("Arzt", Integer.valueOf(wert));
-		inif.setStringProperty("Container", "StarteIn",wert , null);
-		
-		wert = (optimize.isSelected() ? "1" : "0");
-		SystemConfig.hmContainer.put("ArztOpti",Integer.valueOf(wert));
-		inif.setStringProperty("Container", "ImmerOptimieren",wert , null);
+		try{
+			String wert = "";
+			INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "arzt.ini");
+			//System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
+			wert = (unten.isSelected() ? "1" : "0");
+			SystemConfig.hmContainer.put("Arzt", Integer.valueOf(wert));
+			inif.setStringProperty("Container", "StarteIn",wert , null);
+			
+			wert = (optimize.isSelected() ? "1" : "0");
+			SystemConfig.hmContainer.put("ArztOpti",Integer.valueOf(wert));
+			inif.setStringProperty("Container", "ImmerOptimieren",wert , null);
 
-		int rows = vorlagen.getRowCount();
-		
-		formok = true;
-		for(int i = 0;i<rows;i++){
-			String test = (String)vorlagen.getValueAt(i, 0);
-			if(test.equals("")){
-				String datei = (String)vorlagen.getValueAt(i, 1);
-				String msg = "Für Vorlagendatei "+datei+" wurde kein Titel eingegeben!\nDie Vorlagen werden nicht(!!!) gespeichert.";
-				JOptionPane.showMessageDialog(null,msg);
-				formok = false;
-				break;
-			}else{
-				formok = true;
-				inif.setStringProperty("Formulare", "ArztFormulareAnzahl",Integer.valueOf(rows).toString() , null);				
-			}
-		}
-		if(formok){
+			int rows = vorlagen.getRowCount();
+			
+			formok = true;
 			for(int i = 0;i<rows;i++){
-				inif.setStringProperty("Formulare", "AFormularText"+(i+1),(String)vorlagen.getValueAt(i, 0) , null);
-				inif.setStringProperty("Formulare", "AFormularName"+(i+1),(String)vorlagen.getValueAt(i, 1) , null);
+				String test = (String)vorlagen.getValueAt(i, 0);
+				if(test.equals("")){
+					String datei = (String)vorlagen.getValueAt(i, 1);
+					String msg = "Für Vorlagendatei "+datei+" wurde kein Titel eingegeben!\nDie Vorlagen werden nicht(!!!) gespeichert.";
+					JOptionPane.showMessageDialog(null,msg);
+					formok = false;
+					break;
+				}else{
+					formok = true;
+					inif.setStringProperty("Formulare", "ArztFormulareAnzahl",Integer.valueOf(rows).toString() , null);				
+				}
 			}
+			if(formok){
+				for(int i = 0;i<rows;i++){
+					inif.setStringProperty("Formulare", "AFormularText"+(i+1),(String)vorlagen.getValueAt(i, 0) , null);
+					inif.setStringProperty("Formulare", "AFormularName"+(i+1),(String)vorlagen.getValueAt(i, 1) , null);
+				}
+			}
+			rows = gruppen.getRowCount();
+			inif.setStringProperty("ArztGruppen", "AnzahlGruppen",Integer.valueOf(rows).toString() , null);		
+			for(int i = 0;i<rows;i++){
+				inif.setStringProperty("ArztGruppen", "Gruppe"+(i+1),(String)gruppen.getValueAt(i, 0) , null);
+			}
+			INITool.saveIni(inif);
+			JOptionPane.showMessageDialog(null, "Konfiguration wurd erfolgreich in arzt.ini gespeichert.");
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler beim speichern der Konfiguration!!!!");
 		}
-		rows = gruppen.getRowCount();
-		inif.setStringProperty("ArztGruppen", "AnzahlGruppen",Integer.valueOf(rows).toString() , null);		
-		for(int i = 0;i<rows;i++){
-			inif.setStringProperty("ArztGruppen", "Gruppe"+(i+1),(String)gruppen.getValueAt(i, 0) , null);
-		}
-		inif.save();
 	}	
 	
 	private void startCellEditing(JXTable table,int row){

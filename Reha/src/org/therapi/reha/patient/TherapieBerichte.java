@@ -34,10 +34,10 @@ import org.jdesktop.swingx.event.TableColumnModelExtListener;
 
 import patientenFenster.KeinRezept;
 import rechteTools.Rechte;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JCompTools;
+import CommonTools.JCompTools;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

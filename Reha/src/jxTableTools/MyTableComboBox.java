@@ -10,7 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
-import systemTools.JRtaComboBox;
+import CommonTools.JRtaComboBox;
 
 public class MyTableComboBox extends AbstractCellEditor implements TableCellEditor{ 
 	// This is the component that will handle the editing of the cell value 

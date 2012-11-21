@@ -42,10 +42,10 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.therapi.reha.patient.ArztBericht;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;

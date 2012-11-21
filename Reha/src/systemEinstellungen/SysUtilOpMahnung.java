@@ -26,11 +26,14 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemTools.ButtonTools;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -452,7 +455,7 @@ public class SysUtilOpMahnung extends JXPanel implements KeyListener, ActionList
 
 	
 	private void doSpeichern(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/offeneposten.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "offeneposten.ini");
 	
 		SystemConfig.hmZusatzInOffenPostenIni.put("RGRinOPverwaltung", Integer.parseInt(tfs[0].getText()) );
 		SystemConfig.hmZusatzInOffenPostenIni.put("AFRinOPverwaltung", Integer.parseInt(tfs[1].getText()) );
@@ -462,8 +465,8 @@ public class SysUtilOpMahnung extends JXPanel implements KeyListener, ActionList
 
 		// Die sysetmspezifischen Daten müssen eigentlich in die Tabelle 'ini' weggespeichert werden
 		
-		inif.save();  // Daten wegschreiben
-		
+		// Daten wegschreiben
+		INITool.saveIni(inif);
 		// Merken der aktuell vorhandenen Textfelder
 		SaveChangeStatus();
 

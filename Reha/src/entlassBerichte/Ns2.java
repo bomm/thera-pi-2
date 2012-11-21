@@ -24,11 +24,11 @@ import javax.swing.JTextArea;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import sqlTools.SqlInfo;
-import systemTools.JCompTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
+import CommonTools.SqlInfo;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;

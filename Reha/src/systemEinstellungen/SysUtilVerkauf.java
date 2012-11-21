@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
@@ -21,11 +22,15 @@ import javax.swing.filechooser.FileFilter;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.thera_pi.nebraska.gui.utils.ButtonTools;
 
-import systemTools.JCompTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaTextField;
+
+import CommonTools.ButtonTools;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaTextField;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -74,9 +79,9 @@ public class SysUtilVerkauf extends JXPanel {
 	     jscr.setViewportView(getContent());
 	     jscr.validate();
 	    
-
+	     inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "verkauf.ini");
 		
-		inif = new INIFile(Reha.proghome + "ini/" + Reha.aktIK + "/verkauf.ini" );
+		
 		//add(getContent(),BorderLayout.CENTER);
 		ladeEinstellungen();
 		this.add(jscr,BorderLayout.CENTER);
@@ -85,8 +90,8 @@ public class SysUtilVerkauf extends JXPanel {
 	}
 	
 	private JPanel getKnopfPanel(){
-		abbruch = ButtonTools.macheBut("abbrechen", "abbrechen", al);
-		speichern = ButtonTools.macheBut("speichern", "speicher", al);
+		abbruch = ButtonTools.macheButton("abbrechen", "abbrechen", al);
+		speichern = ButtonTools.macheButton("speichern", "speicher", al);
 		/*
 		abbruch = new JButton("abbrechen");
 		abbruch.setActionCommand("abbrechen");
@@ -363,40 +368,45 @@ public class SysUtilVerkauf extends JXPanel {
 	}
 	
 	private void speicherEinstellungen() {
+		try{
+			inif.setBooleanProperty("Bon", "SeitenLaengeAendern", bonAnpassen.isSelected(), null);
+			
+			inif.setBooleanProperty("Bon", "SofortDrucken", sofortDrucken.isSelected(), null);
+			inif.setBooleanProperty("Rechnung", "SofortDrucken", sofortDrucken.isSelected(), null);
+			
+			inif.setStringProperty("Rechnung", "Spalte1", (String) rechnungSpalte1.getSelectedItem(), null);
+			inif.setStringProperty("Rechnung", "Spalte2", (String) rechnungSpalte2.getSelectedItem(), null);
+			inif.setStringProperty("Rechnung", "Spalte3", (String) rechnungSpalte3.getSelectedItem(), null);
+			inif.setStringProperty("Rechnung", "Spalte4", (String) rechnungSpalte4.getSelectedItem(), null);
+			inif.setStringProperty("Rechnung", "Spalte5", (String) rechnungSpalte5.getSelectedItem(), null);
+			inif.setStringProperty("Rechnung", "Spalte6", (String) rechnungSpalte6.getSelectedItem(), null);
+			
+			inif.setStringProperty("Bon", "Spalte1", (String) bonSpalte1.getSelectedItem(), null);
+			inif.setStringProperty("Bon", "Spalte2", (String) bonSpalte2.getSelectedItem(), null);
+			inif.setStringProperty("Bon", "Spalte3", (String) bonSpalte3.getSelectedItem(), null);
+			inif.setStringProperty("Bon", "Spalte4", (String) bonSpalte4.getSelectedItem(), null);
+			inif.setStringProperty("Bon", "Spalte5", (String) bonSpalte5.getSelectedItem(), null);
+			inif.setStringProperty("Bon", "Spalte6", (String) bonSpalte6.getSelectedItem(), null);
+			
+			inif.setStringProperty("Rechnung", "Drucker", (String) rechnungDrucker.getSelectedItem(), null);
+			inif.setStringProperty("Bon", "Drucker", (String) bonDrucker.getSelectedItem(), null);
+			
+			inif.setStringProperty("Rechnung", "Spaltenanzahl", String.valueOf(rechnungSpalten.getSelectedItem()), null);
+			inif.setStringProperty("Bon", "Spaltenanzahl", String.valueOf(bonSpalten.getSelectedItem()), null);
+			
+			inif.setStringProperty("Rechnung", "Vorlage", rechnungVorlage.getText(), null);
+			inif.setStringProperty("Bon", "Voralge", bonVorlage.getText(), null);
+			
+			inif.setStringProperty("Rechnung", "Exemplare", rechnungExemplare.getText(), null);
+			
+			inif.setStringProperty("Bon", "ProArtikelSeitenLaenge", bonSeitenlaenge.getText(), null);
+			
+			INITool.saveIni(inif);
+			JOptionPane.showMessageDialog(null,"Konfiguration erfolgreich in verkauf.ini gespeichert.");
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Fehler beim speichern der Konfiguration in verkauf.ini!!!");
+		}
 		
-		inif.setBooleanProperty("Bon", "SeitenLaengeAendern", bonAnpassen.isSelected(), null);
-		
-		inif.setBooleanProperty("Bon", "SofortDrucken", sofortDrucken.isSelected(), null);
-		inif.setBooleanProperty("Rechnung", "SofortDrucken", sofortDrucken.isSelected(), null);
-		
-		inif.setStringProperty("Rechnung", "Spalte1", (String) rechnungSpalte1.getSelectedItem(), null);
-		inif.setStringProperty("Rechnung", "Spalte2", (String) rechnungSpalte2.getSelectedItem(), null);
-		inif.setStringProperty("Rechnung", "Spalte3", (String) rechnungSpalte3.getSelectedItem(), null);
-		inif.setStringProperty("Rechnung", "Spalte4", (String) rechnungSpalte4.getSelectedItem(), null);
-		inif.setStringProperty("Rechnung", "Spalte5", (String) rechnungSpalte5.getSelectedItem(), null);
-		inif.setStringProperty("Rechnung", "Spalte6", (String) rechnungSpalte6.getSelectedItem(), null);
-		
-		inif.setStringProperty("Bon", "Spalte1", (String) bonSpalte1.getSelectedItem(), null);
-		inif.setStringProperty("Bon", "Spalte2", (String) bonSpalte2.getSelectedItem(), null);
-		inif.setStringProperty("Bon", "Spalte3", (String) bonSpalte3.getSelectedItem(), null);
-		inif.setStringProperty("Bon", "Spalte4", (String) bonSpalte4.getSelectedItem(), null);
-		inif.setStringProperty("Bon", "Spalte5", (String) bonSpalte5.getSelectedItem(), null);
-		inif.setStringProperty("Bon", "Spalte6", (String) bonSpalte6.getSelectedItem(), null);
-		
-		inif.setStringProperty("Rechnung", "Drucker", (String) rechnungDrucker.getSelectedItem(), null);
-		inif.setStringProperty("Bon", "Drucker", (String) bonDrucker.getSelectedItem(), null);
-		
-		inif.setStringProperty("Rechnung", "Spaltenanzahl", String.valueOf(rechnungSpalten.getSelectedItem()), null);
-		inif.setStringProperty("Bon", "Spaltenanzahl", String.valueOf(bonSpalten.getSelectedItem()), null);
-		
-		inif.setStringProperty("Rechnung", "Vorlage", rechnungVorlage.getText(), null);
-		inif.setStringProperty("Bon", "Voralge", bonVorlage.getText(), null);
-		
-		inif.setStringProperty("Rechnung", "Exemplare", rechnungExemplare.getText(), null);
-		
-		inif.setStringProperty("Bon", "ProArtikelSeitenLaenge", bonSeitenlaenge.getText(), null);
-		
-		inif.save();
 	}
 
 	private void activateListener() {

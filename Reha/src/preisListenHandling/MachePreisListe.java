@@ -1,7 +1,7 @@
 package preisListenHandling;
 
-import sqlTools.SqlInfo;
-import systemTools.StringTools;
+import CommonTools.SqlInfo;
+import CommonTools.StringTools;
 
 public class MachePreisListe {
 	

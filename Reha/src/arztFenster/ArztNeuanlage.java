@@ -38,12 +38,12 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JCompTools;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

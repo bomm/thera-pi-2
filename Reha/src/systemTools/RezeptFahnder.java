@@ -12,7 +12,7 @@ import org.therapi.reha.patient.AktuelleRezepte;
 import events.PatStammEvent;
 import events.PatStammEventClass;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 
 public class RezeptFahnder {
 	public RezeptFahnder(boolean showDialog){

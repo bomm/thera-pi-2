@@ -3,7 +3,7 @@ package verkauf.model;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 
 public class Artikel {
 	private double preis;

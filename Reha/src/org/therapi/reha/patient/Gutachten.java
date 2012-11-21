@@ -41,12 +41,12 @@ import org.jdesktop.swingx.JXTable;
 import patientenFenster.GutachtenWahl;
 import patientenFenster.KeinRezept;
 import rechteTools.Rechte;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.IconListRenderer;
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;

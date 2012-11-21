@@ -61,13 +61,10 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.TimerTask;
 import java.util.TooManyListenersException;
 import java.util.Vector;
@@ -127,15 +124,13 @@ import rechteTools.Rechte;
 import rehaInternalFrame.JRehaInternal;
 import rehaInternalFrame.OOODesktopManager;
 import roogle.RoogleFenster;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
-import systemEinstellungen.INIFile;
+import CommonTools.ExUndHop;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemInit;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.Colors;
-import systemTools.FileTools;
-import systemTools.JRtaTextField;
+import CommonTools.Colors;
+import CommonTools.FileTools;
+import CommonTools.JRtaTextField;
 import systemTools.RehaPainters;
 import systemTools.RezeptFahnder;
 import systemTools.TestePatStamm;
@@ -146,16 +141,14 @@ import urlaubBeteiligung.Beteiligung;
 import urlaubBeteiligung.Urlaub;
 import verkauf.VerkaufTab;
 import wecker.Wecker;
+import CommonTools.INIFile;
+import CommonTools.INITool;
+import CommonTools.SqlInfo;
+import CommonTools.StartOOApplication;
 import abrechnung.AbrechnungGKV;
 import abrechnung.AbrechnungReha;
-import ag.ion.bion.officelayer.application.ILazyApplicationInfo;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.event.ITerminateEvent;
-import ag.ion.bion.officelayer.event.VetoTerminateListener;
 import anmeldungUmsatz.Anmeldungen;
 import anmeldungUmsatz.Umsaetze;
 import arztFenster.ArztPanel;
@@ -319,7 +312,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2012-08-22-DB=";
+	public static String aktuelleVersion = "2012-11-08-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -357,6 +350,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public int lastSelectedFloskel = -1;
 	
 	public boolean isLibreOffice = false;
+	public SqlInfo sqlInfo = null;
 	
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -376,6 +370,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		System.out.println("Programmverzeichnis = "+Reha.proghome);
 		
 		String javaPfad = java.lang.System.getProperty("java.home").replaceAll("\\\\","/");
+		/*
+		INITool.setDBInis(new String[] {"preisgruppen.ini","terminkalender.ini","gruppen.ini","icons.ini","fristen.ini","color.ini",
+			"dta301.ini","firmen.ini","gutachten.ini","ktraeger.ini","offeneposten.ini","oprgaf.ini","sqlmodul.ini","thbericht.ini"});
+		*/
+		
 		if(args.length > 0){
 			String[] split = args[0].split("@");
 			aktIK = split[0];
@@ -390,11 +389,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				}
 			}
 		}else{
-			INIFile inif = new INIFile(Reha.proghome+"ini/mandanten.ini");
+			INIFile inif = new INIFile(Reha.proghome+"ini/mandanten.ini"); 
 			int DefaultMandant = inif.getIntegerProperty("TheraPiMandanten", "DefaultMandant");
 			aktIK = inif.getStringProperty("TheraPiMandanten", "MAND-IK"+DefaultMandant);
 			aktMandant = inif.getStringProperty("TheraPiMandanten", "MAND-NAME"+DefaultMandant);			
 		}
+		INITool.init(proghome+"ini/"+aktIK+"/");
+		System.out.println("Insgesamt sind "+Integer.toString(INITool.getDBInis().length)+" INI-Dateien in der Tabelle inidatei abgelegt");
+
 		Titel2 = "  -->  [Mandant: "+aktMandant+"]";
 		//System.out.println(Titel2);
 		/**************************/
@@ -477,10 +479,17 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}else{
 			////System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
 		}
-
+		
 		new Thread(){
 			public void run(){
 				new SocketClient().setzeInitStand("System-Icons laden");
+				while(! Reha.DbOk){
+					try {
+						Thread.sleep(25);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 				SystemConfig.SystemIconsInit();
 				iconsOk = true;
 				new SocketClient().setzeInitStand("System-Config initialisieren");
@@ -564,9 +573,16 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		//new ListUIManagerValues();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				try{
 				Reha application = new Reha();
+				application.sqlInfo = new SqlInfo();
+				application.sqlInfo.setDieseMaschine(SystemConfig.dieseMaschine);
 				rehaBackImg = new ImageIcon(Reha.proghome+"icons/therapieMT1.gif");
+				thisClass = application;
+				new Thread(new DatenbankStarten()).start();
 				application.getJFrame();
+
+				
 				Reha.thisFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( Reha.proghome+"icons/pi.png" ) );
 				
 				if(!dividerOk){
@@ -591,6 +607,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			    		}
 			    	}
 			    });
+				}catch(NullPointerException ex){
+					ex.printStackTrace();
+					System.out.println("Fehler beim Systemstart");
+				}
 				
 			}
 		});
@@ -612,7 +632,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini"); 
 		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
 		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
 		SystemConfig.UpdateIni(inif, "HauptFenster", "TP1Offen",(Object)(LinkeTaskPane.tp1.isCollapsed() ? "1" : "0"),null );
@@ -667,7 +687,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				
 			}
 		}
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
 		SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
 		SystemConfig.UpdateIni(inif, "HauptFenster", "TP1Offen",(Object)(LinkeTaskPane.tp1.isCollapsed() ? "1" : "0"),null );
@@ -685,6 +705,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 			@Override
 			protected Void doInBackground() throws Exception {
+				try{
 				CompoundPainter<Object> cp = null;
 				MattePainter mp = null;
 				LinearGradientPaint p = null;
@@ -943,6 +964,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 			    /*****************/			    
 			    progLoader = new ProgLoader();
+			    
+				}catch(NullPointerException ex){
+					ex.printStackTrace();
+				}
 				return null;
 			}
 			
@@ -960,7 +985,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						if(!RehaIOServer.rehaMailIsActive){
 							nachrichtenInBearbeitung = true;
 							/**************/
-								if( (!Reha.aktUser.equals("")) && (checkForMails()) ){
+								if( (!Reha.aktUser.equals("")) && (checkForMails()) && (Reha.officeapplication != null)){
 									nachrichtenRegeln();
 								}
 							/*************/	
@@ -1083,7 +1108,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					  super.setAlwaysOnTop(false);
 				}	
 			};*/	
-			thisClass = this;
+			sqlInfo.setFrame(jFrame);
+			//thisClass = this;
 			jFrame.addWindowListener(this);
 			jFrame.addWindowStateListener(this);			
 			jFrame.addComponentListener(this);
@@ -1103,7 +1129,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			jFrame.setTitle(Titel+Titel2);
 			jFrame.setJMenuBar(getJJMenuBar());
 			jFrame.setStatusBar(getJXStatusBar());
-
+			Reha.thisClass.shiftLabel.setText("Prog-User ok!");
 			Reha.RehaPainter[0] = RehaPainters.getBlauPainter();
 			Reha.RehaPainter[1] = RehaPainters.getSchwarzGradientPainter();
 			Reha.RehaPainter[2] = RehaPainters.getBlauGradientPainter() ;
@@ -1266,6 +1292,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			jSplitRechtsOU.setOneTouchExpandable(true);
 			jxRechts.add(jSplitRechtsOU,BorderLayout.CENTER); //bislang o.k.
 
+
 			
 			jxRechts.addComponentListener(this);
 			jxRechts.validate();
@@ -1273,13 +1300,22 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			/**
 			 * Jetzt erstellen wir die TaskPanes der linken Seite
 			 */
+			while((!Reha.iconsOk) ){
+				try {
+					Thread.sleep(25);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			jxLinks.add(new LinkeTaskPane(),BorderLayout.CENTER);
+			jxLinks.validate();
+			jFrame.getContentPane().validate();
+			/*
 			new  Thread(){
 				public void run(){
-					int i=0;
-					while((!iconsOk) && (i < 50)){
-					try {
-						Thread.sleep(100);
-						i++;
+					while((!Reha.iconsOk) && (!Reha.DbOk)){
+						try {
+							Thread.sleep(25);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -1289,12 +1325,12 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					jFrame.getContentPane().validate();
 				}
 			}.start();
-			
+			*/
 			new SwingWorker<Void,Void>(){
 				@Override
 				protected Void doInBackground() throws java.lang.Exception {
 					try{
-						INIFile updateini = new INIFile(Reha.proghome+"ini/tpupdate.ini");
+						INIFile updateini = INITool.openIni(Reha.proghome+"ini/", "tpupdate.ini");
 						try{
 						if(updateini.getStringProperty("TheraPiUpdates", "ProxyIP") != null && updateini.getStringProperty("TheraPiUpdates", "ProxyPort") != null && updateini.getStringProperty("TheraPiUpdates", "NoProxy") != null &&
 								updateini.getStringProperty("TheraPiUpdates", "ProxyIP").equals("") && updateini.getStringProperty("TheraPiUpdates", "ProxyPort").equals("") && updateini.getStringProperty("TheraPiUpdates", "NoProxy").equals("")) {
@@ -1339,10 +1375,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		
 		thisFrame = jFrame;
 		
-		jxLinks.setAlpha(0.3f);
-		jxRechts.setAlpha(0.3f);
+		jxLinks.setAlpha(1.0f);
+		jxRechts.setAlpha(1.0f);
+
+		//jxLinks.setAlpha(0.3f);
+		//jxRechts.setAlpha(0.3f);
 		
-		new Thread(new DatenbankStarten()).start();
+		//new Thread(new DatenbankStarten()).start();
 
 		jFrame.setExtendedState(JXFrame.MAXIMIZED_BOTH);
 
@@ -1794,6 +1833,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.setActionCommand("sqlmodul");
 			men.addActionListener(this);
 			toolsMenu.add(men);
+			men = new JMenuItem("INI-Editor");
+			men.setActionCommand("iniedit");
+			men.addActionListener(this);
+			toolsMenu.add(men);
 			toolsMenu.addSeparator();
 			men = new JMenuItem("§301 Reha Fall-Steuerung");
 			men.setActionCommand("fallsteuerung");
@@ -1914,7 +1957,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 							}
 						}
 
-						INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+						INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 						SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
 						SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
 						SystemConfig.UpdateIni(inif, "HauptFenster", "TP1Offen",(Object)(LinkeTaskPane.tp1.isCollapsed() ? "1" : "0"),null );
@@ -1968,33 +2011,33 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 
 	
     public static void starteOfficeApplication(){ 
-
-    	final String OPEN_OFFICE_ORG_PATH = SystemConfig.OpenOfficePfad;
-
         try
         {
+			officeapplication = (IOfficeApplication)new StartOOApplication(SystemConfig.OpenOfficePfad,SystemConfig.OpenOfficeNativePfad).start(false);
+			 System.out.println("OpenOffice ist gestartet und Active ="+officeapplication.isActive());
+			 Reha.thisClass.Rehaprogress.setIndeterminate(false);
+        }catch (OfficeApplicationException e) {
+            e.printStackTrace();
+            Reha.thisClass.messageLabel = new JLabel("OO.org nicht verfügbar!!!");
+        }
+
+    	/*
+    	final String OPEN_OFFICE_ORG_PATH = SystemConfig.OpenOfficePfad;
+        try{
         	if(Reha.isStarted){
         		JOptionPane.showMessageDialog(null,"Zur Info die UNO-Runtime wird neu gestartet!");
         	}
-        	//System.out.println("**********Open-Office wird gestartet***************");
             @SuppressWarnings("unused")
 			String path = OPEN_OFFICE_ORG_PATH;
-            
-            @SuppressWarnings("unused")
-			List<String> list = Arrays.asList("LibreOffice 3.5","OpenOffice.org 3.4");
 
             ILazyApplicationInfo info =  OfficeApplicationRuntime.getApplicationAssistant(SystemConfig.OpenOfficeNativePfad).findLocalApplicationInfo(SystemConfig.OpenOfficePfad);
             String[] names = info.getProperties().getPropertyNames();
-            
             for(int i = 0; i < names.length;i++){
             	System.out.println(names[i]+" = "+info.getProperties().getPropertyValue(names[i]));
             	if(info.getProperties().getPropertyValue(names[i]).contains("LibreOffice")){
             		Reha.thisClass.isLibreOffice = true;
             	}
             }
-            
-
-            
             Map <String, Object>config = new HashMap<String, Object>();
             config.put(IOfficeApplication.APPLICATION_HOME_KEY, SystemConfig.OpenOfficePfad);
             config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
@@ -2015,147 +2058,23 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
                 		});
             	
             }
-            
             System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,SystemConfig.OpenOfficeNativePfad);
-            /*
-            config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
-            		new String[] {"--nodefault","--nologo","--nofirststartwizard","--writer"});
-            */		
-            /*
-            config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
-            		new String[] {"-accept=socket,host=localhost,port=8100;urp;","-nologo","-nodefault"
-            		});
-			*/
-            /*
-            List<String> list = Arrays.asList("LibreOffice 3.5","OpenOffice.org 3.4");
-            officeapplication = OfficeApplicationRuntime.getApplication(config);
-            ILazyApplicationInfo info =  OfficeApplicationRuntime.getApplicationAssistant(SystemConfig.OpenOfficeNativePfad).findLocalApplicationInfo(SystemConfig.OpenOfficePfad);
-            String[] names = info.getProperties().getPropertyNames();
-            Reha.thisClass.loaooArschgeigen = false;
-            for(int i = 0; i < names.length;i++){
-            	System.out.println(names[i]+" = "+info.getProperties().getPropertyValue(names[i]));
-            	if(list.contains(info.getProperties().getPropertyValue(names[i]))){
-            		Reha.thisClass.loaooArschgeigen = true;
-            	}
-            }
-            */
             try{
             	officeapplication = OfficeApplicationRuntime.getApplication(config);	
-            //officeapplication.setConfiguration(config);
             }catch(NullPointerException ex){
             	ex.printStackTrace();
             }
-            
             officeapplication.activate();
-
-            
-            //final boolean swingarschgeigen = arschgeigen;
-            /*
-            new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws java.lang.Exception {
-					Thread.sleep(3000);
-					if(swingarschgeigen){
-		            	try {
-							officeapplication.getDocumentService().getCurrentDocuments()[0].close();
-						} catch (DocumentException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		            }
-					return null;
-				}
-            	
-            }.execute();
-            */
-            
-            
-            
-            /*
-            config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
-            		new String[] {"--nologo",
-            		"--headless",
-            		"--nodefault",
-            		"--nofirststartwizard",
-            		""
-            		});
-            */		
-            
-            /*
-            if(path.indexOf("LibreOffice") >= 0){
-            	
-            	System.out.println("Nehme die neue Variante");
-            	
-                config.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, 
-                		new String[] {"--nodefault",
-                		"--nofirststartwizard",
-                		"--nologo",
-                		"--norestore",
-                		"--headless"
-                		});
-                System.out.println("Nehme LibreOffice Configuration ");
-                
-            }
-			*/
-            
-            
-            /*
-
-            
-            officeapplication = OfficeApplicationRuntime.getApplication(config);
-            
-            officeapplication.activate();
-            
-            */
-            //Nachfolgende try/catch nur dann einschalten
-            //wenn Sie über die neueste ag.ion.noa_2.2.3.jar vom 20.06.2011
-            //verfügen!!!!! sonst läuft nix mehr /st.
-
-            
-            try {
-            	/*
-				if(((IOfficeApplication) officeapplication).getOfficeConnection() != null){
-					System.out.println("OfficeConnection o.k.");
-					officeapplication.getOfficeConnection().addBridgeEventListener(new IEventListener(){
-						@Override
-						public void disposing(IEvent arg0) {
-							JOptionPane.showMessageDialog(null,"Bridge zu OpenOffice unterbrochen");
-						}
-						
-					});
-				}
-				*/
-			} catch (java.lang.Exception e1) {
-				e1.printStackTrace();
-			}
-			
-			
-			
             try{
-            	
-            	
-            officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
-            	  public void queryTermination(ITerminateEvent terminateEvent) {
-            	    super.queryTermination(terminateEvent);
+            	officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
+            	public void queryTermination(ITerminateEvent terminateEvent) {
+            		super.queryTermination(terminateEvent);
             	    try {
             	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
-            	     /*
-            	      for(int i = 0; i < docs.length;i++){
-            	    	  System.out.println("Dokumenttyp = "+docs[i].getDocumentType());  
-            	      }
-               	      if (docs.length == (!Reha.thisClass.loaooArschgeigen ? 1 : 2) ) { 
-            	        docs[0].close();
-            	      }
-
-            	      */
-            	      
             	      if (docs.length ==  1  ) { 
               	        docs[0].close();
-              	      }
-
-            	      
-            	    }
-            	    catch (DocumentException e) {
+            	      }
+            	    }catch (DocumentException e) {
             	    	e.printStackTrace();
             	    	Reha.thisClass.messageLabel = new JLabel("OO.org nicht Verfügbar!!!");
             	    } catch (OfficeApplicationException e) {
@@ -2164,42 +2083,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 					}
             	  }
             	});
-            	
-            
             }catch(NullPointerException ex){
             	ex.printStackTrace();
             }
             Reha.thisClass.Rehaprogress.setIndeterminate(false);
-            /*
-            new SwingWorker<Void,Void>(){
-				@Override
-				protected Void doInBackground() throws Exception {
-            		Reha.thisClass.Rehaprogress.setIndeterminate(false);
-            	    if(Reha.DbOk){
-            	    	for(int i = 1;i<6;i++){
-            	    		new MachePreisListe("kgtarif"+i);
-            	    		new MachePreisListe("matarif"+i);
-            	    		new MachePreisListe("ertarif"+i);
-            	    		new MachePreisListe("lotarif"+i);
-            	    		new MachePreisListe("rhtarif"+i);
-            	    	}
-            	    }
-            		
-            		try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-			
-					return null;
-				}
-            }.execute();
-            */
-        }
-        catch (OfficeApplicationException e) {
+        }catch (OfficeApplicationException e) {
 			Reha.thisClass.messageLabel = new JLabel("OO.org nicht Verfügbar!!!");
             e.printStackTrace();
         }
+        */
     }
 
     private void setKeyboardActions() {
@@ -2675,7 +2567,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}
 
 			
-			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+			INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 			SystemConfig.UpdateIni(inif, "HauptFenster", "Divider1",(Object)jSplitLR.getDividerLocation(),null );
 			SystemConfig.UpdateIni(inif, "HauptFenster", "Divider2",(Object)jSplitRechtsOU.getDividerLocation(),null );
 			SystemConfig.UpdateIni(inif, "HauptFenster", "TP1Offen",(Object)(LinkeTaskPane.tp1.isCollapsed() ? "1" : "0"),null );
@@ -2970,6 +2862,15 @@ public void actionPerformed(ActionEvent arg0) {
 		//Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		return;
 	}
+	if(cmd.equals("iniedit")){
+		if(!Rechte.hatRecht(Rechte.Sonstiges_sqlmodul, true)){
+			return;
+		}
+		new LadeProg(Reha.proghome+"RehaIniedit.jar "+
+				" "+Reha.proghome+" "+Reha.aktIK );
+		return;
+		
+	}
 	
 	
 }
@@ -3063,12 +2964,30 @@ final class DatenbankStarten implements Runnable{
 						SystemConfig.vDatenBank.get(0).get(3),SystemConfig.vDatenBank.get(0).get(4));
 				}	
 				int nurmaschine = SystemConfig.dieseMaschine.toString().lastIndexOf("/");
+				obj.sqlInfo.setConnection(obj.conn);
 				new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine.toString().substring(0, nurmaschine)+"%'");
-				if(obj.dbLabel != null){
-					String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
-					db = db.substring(0,db.indexOf("/"));
-					obj.dbLabel.setText(Reha.aktuelleVersion+db);
-				}
+
+				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
+				db = db.substring(0,db.indexOf("/"));
+				final String xdb = db;
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground()
+							throws java.lang.Exception {
+						try{
+							while(Reha.thisFrame == null || Reha.thisFrame.getStatusBar()==null || Reha.thisClass.dbLabel == null){
+								Thread.sleep(25);
+							}
+							Reha.thisClass.dbLabel.setText(Reha.aktuelleVersion+xdb);
+						}catch(NullPointerException ex){
+							ex.printStackTrace();
+						}
+						return null;
+					}
+					
+				}.execute();
+					
+
 				Reha.DbOk = true;
 				Reha.testeNummernKreis();
 		}catch (final SQLException ex) {
@@ -3113,12 +3032,12 @@ final class DatenbankStarten implements Runnable{
 				ParameterLaden.Init();
 				new SocketClient().setzeInitStand("Systemparameter laden");
 				
-				Reha.thisClass.shiftLabel.setText("Term-User ok!");
+
 				Reha.sysConf.SystemInit(3);
 				ParameterLaden.Passwort();
 				new SocketClient().setzeInitStand("Systemparameter ok");
 				
-				Reha.thisClass.shiftLabel.setText("Prog-User ok!");
+
 
 				new SocketClient().setzeInitStand("Native Interface ok");
 				
@@ -3280,6 +3199,7 @@ final class DbNachladen implements Runnable{
 				db = db.substring(0,db.indexOf("/"));
 				obj.dbLabel.setText(Reha.aktuelleVersion+db);
 			}
+			obj.sqlInfo.setConnection(obj.conn);
     		Reha.DbOk = true;
 
     	} 
@@ -3313,7 +3233,7 @@ final class ErsterLogin implements Runnable{
 				Reha.thisFrame.setPreferredSize(new Dimension(800,600));
 				Reha.thisFrame.setExtendedState(JXFrame.MAXIMIZED_BOTH);
 				Reha.thisFrame.setVisible(true);
-				INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+				INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 				if(inif.getIntegerProperty("HauptFenster", "Divider1") != null){
 					Reha.thisClass.jSplitLR.setDividerLocation((Reha.divider1=inif.getIntegerProperty("HauptFenster", "Divider1")));
 					Reha.thisClass.jSplitRechtsOU.setDividerLocation((Reha.divider2=inif.getIntegerProperty("HauptFenster", "Divider2")));
@@ -3403,6 +3323,7 @@ final class ErsterLogin implements Runnable{
 
 final class PreisListenLaden implements Runnable{
 	private void Einlesen(){
+
 		/*
 		ParameterLaden.PreiseEinlesen("KG");
 
@@ -3417,15 +3338,23 @@ final class PreisListenLaden implements Runnable{
 		MachePreisListe.preiseFuellenNeu();	
 		
 		*/
-
-		Reha.thisClass.jxLinks.setAlpha(1.0f);
-		Reha.thisClass.jxRechts.setAlpha(1.0f);
-		/*
-		for(int i = 1; i < 7;i++){
-			new MachePreisListe("potarif"+Integer.toString(i));
+		try{
+			
+		while(Reha.thisClass == null || Reha.thisClass.jxLinks == null || Reha.thisClass.jxRechts == null){
+			long zeit = System.currentTimeMillis();
+			try {
+				Thread.sleep(50);
+				if(System.currentTimeMillis()-zeit > 20000){
+					JOptionPane.showMessageDialog(null,"Fehler beim Starten des Systems ");
+					System.exit(0);
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		*/
-		//long zeit = System.currentTimeMillis();
+		//Reha.thisClass.jxLinks.setAlpha(1.0f);
+		//Reha.thisClass.jxRechts.setAlpha(1.0f);
+	
 		new SocketClient().setzeInitStand("Preisliste Physio einlesen");
 		SystemPreislisten.ladePreise("Physio");
 		new SocketClient().setzeInitStand("Preisliste Massage einlesen");
@@ -3440,63 +3369,12 @@ final class PreisListenLaden implements Runnable{
 		SystemPreislisten.ladePreise("Podo");
 		SystemPreislisten.ladePreise("Common");
 		new SocketClient().setzeInitStand("System-Init abgeschlossen!");
-		/*
-		System.out.println("******************");
-		System.out.println(SystemPreislisten.hmFristen.get("Physio"));
-		System.out.println("******************");
-		System.out.println(SystemPreislisten.hmFristen.get("Massage"));
-		System.out.println("******************");
-		System.out.println(SystemPreislisten.hmFristen.get("Ergo"));
-		System.out.println("******************");
-		System.out.println(SystemPreislisten.hmFristen.get("Logo"));
-		System.out.println("******************");
-		System.out.println(SystemPreislisten.hmFristen.get("Reha"));
-		System.out.println("******************");
-		System.out.println(SystemPreislisten.hmFristen.get("Podo"));
-		System.out.println("******************");
-		*/
-		/*
-		//System.out.println(SystemPreislisten.vKGPreise);
-		//System.out.println(SystemPreislisten.vKGPreise.get(0));
-		//System.out.println(SystemPreislisten.vKGPreise.get(0).get(0));
-		//System.out.println(SystemPreislisten.vKGPreise.get(0).get(0).get(0));
-		//System.out.println("*************************************************************");
-		//System.out.println(SystemPreislisten.hmPreise.get("Physio"));
-		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0));
-		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0));
-		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0).get(0));
-		//System.out.println("******Benötigte Zeit zum Einlesen aller Preislisten = "+(System.currentTimeMillis()-zeit)+" Millisekunden");
-		*/
-		/*
-		//System.out.println(SystemPreislisten.vKGPreise);
-		//System.out.println(SystemPreislisten.vKGPreise.get(0));
-		//System.out.println(SystemPreislisten.vKGPreise.get(1));
-		//System.out.println(SystemPreislisten.vKGPreise.get(2));
-		//System.out.println(SystemPreislisten.vKGPreise.get(3));
-		//System.out.println(SystemPreislisten.vKGPreise.get(4));
-
-		//System.out.println(SystemPreislisten.vKGPreise);
-		//System.out.println(SystemPreislisten.vKGPreise.get(0));
-		//System.out.println(SystemPreislisten.vKGPreise.get(0).get(0));
-		//System.out.println(SystemPreislisten.vKGPreise.get(0).get(0).get(0));
-		//System.out.println("*************************************************************");
-		//System.out.println(SystemPreislisten.hmPreise.get("Physio"));
-		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0));
-		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0));
-		//System.out.println(SystemPreislisten.hmPreise.get("Physio").get(0).get(0).get(0));
-
-		//System.out.println(SystemPreislisten.hmPreisGruppen.get("Physio"));
-		//System.out.println(SystemPreislisten.hmPreisBereich.get("Physio"));
-		//System.out.println(SystemPreislisten.hmZuzahlRegeln.get("Physio"));
-		//System.out.println(SystemPreislisten.hmHMRAbrechnung.get("Physio"));
-		//System.out.println(SystemPreislisten.hmNeuePreiseAb.get("Physio"));
-		//System.out.println(SystemPreislisten.hmNeuePreiseRegel.get("Physio"));
-		//System.out.println(SystemPreislisten.hmHBRegeln.get("Physio"));
-		//System.out.println(SystemPreislisten.hmBerichtRegeln.get("Physio"));
-		*/
-
 		Reha.thisClass.setzeInitEnde();
 		Reha.thisClass.initok = true;
+		System.out.println("Preislisten einlesen abgeschlossen");
+		}catch(NullPointerException ex){
+			ex.printStackTrace();
+		}
 	}
 	public void run() {
 		Einlesen();

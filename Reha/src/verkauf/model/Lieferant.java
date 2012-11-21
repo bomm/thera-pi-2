@@ -2,7 +2,7 @@ package verkauf.model;
 
 import java.util.Vector;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 
 public class Lieferant {
 	

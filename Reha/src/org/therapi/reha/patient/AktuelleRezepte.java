@@ -82,21 +82,23 @@ import patientenFenster.RezTestPanel;
 import patientenFenster.RezeptGebuehren;
 import patientenFenster.RezeptVorlage;
 import rechteTools.Rechte;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 import stammDatenTools.KasseTools;
 import stammDatenTools.RezTools;
 import stammDatenTools.ZuzahlTools;
-import systemEinstellungen.INIFile;
+
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.Colors;
+import CommonTools.Colors;
 import systemTools.IconListRenderer;
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
 import systemTools.ListenerTools;
-import systemTools.StringTools;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
+import CommonTools.INIFile;
+import CommonTools.INITool;
 import abrechnung.AbrechnungPrivat;
 import abrechnung.AbrechnungRezept;
 import abrechnung.RezeptGebuehrRechnung;
@@ -1563,7 +1565,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			@Override
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
-				INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini");
+				INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rezept.ini");
 				int forms = inif.getIntegerProperty("Formulare", "RezeptFormulareAnzahl");
 				for(int i = 1; i <= forms; i++){
 					titel.add(inif.getStringProperty("Formulare","RFormularText"+i));			

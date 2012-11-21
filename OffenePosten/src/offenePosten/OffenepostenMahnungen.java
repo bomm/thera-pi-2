@@ -37,16 +37,19 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.JCompTools;
-import Tools.JRtaCheckBox;
-import Tools.JRtaRadioButton;
-import Tools.JRtaTextField;
-import Tools.OOTools;
-import Tools.SqlInfo;
-import Tools.StringTools;
-import Tools.TableTool;
+import CommonTools.ButtonTools;
+import CommonTools.DatFunk;
+import CommonTools.DblCellEditor;
+import CommonTools.DoubleTableCellRenderer;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaRadioButton;
+import CommonTools.JRtaTextField;
+import CommonTools.MitteRenderer;
+import CommonTools.OOTools;
+import CommonTools.SqlInfo;
+import CommonTools.StringTools;
+import CommonTools.TableTool;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -153,14 +156,14 @@ public class OffenepostenMahnungen extends JXPanel{
 		tabmod.setColumnIdentifiers(spalten);
 		tab = new JXTable(tabmod);
 		tab.setHorizontalScrollEnabled(true);
-		tab.getColumn(0).setCellRenderer(new Tools.MitteRenderer());
-		tab.getColumn(4).setCellRenderer(new Tools.MitteRenderer());
-		tab.getColumn(5).setCellRenderer(new Tools.DoubleTableCellRenderer());
-		tab.getColumn(6).setCellRenderer(new Tools.DoubleTableCellRenderer());
-		tab.getColumn(8).setCellRenderer(new Tools.DoubleTableCellRenderer());
-		tab.getColumn(5).setCellEditor(new Tools.DblCellEditor());
-		tab.getColumn(6).setCellEditor(new Tools.DblCellEditor());
-		tab.getColumn(8).setCellEditor(new Tools.DblCellEditor());
+		tab.getColumn(0).setCellRenderer(new MitteRenderer());
+		tab.getColumn(4).setCellRenderer(new MitteRenderer());
+		tab.getColumn(5).setCellRenderer(new DoubleTableCellRenderer());
+		tab.getColumn(6).setCellRenderer(new DoubleTableCellRenderer());
+		tab.getColumn(8).setCellRenderer(new DoubleTableCellRenderer());
+		tab.getColumn(5).setCellEditor(new DblCellEditor());
+		tab.getColumn(6).setCellEditor(new DblCellEditor());
+		tab.getColumn(8).setCellEditor(new DblCellEditor());
 		tab.getSelectionModel().addListSelectionListener( new MahnungListSelectionHandler());
 		tab.setHighlighters(HighlighterFactory.createSimpleStriping(HighlighterFactory.CLASSIC_LINE_PRINTER));
 		
@@ -853,7 +856,7 @@ public class OffenepostenMahnungen extends JXPanel{
 			e.printStackTrace();
 		}
 		textDocument = (ITextDocument)document;
-		Tools.OOTools.druckerSetzen(textDocument, (String)OffenePosten.mahnParameter.get("drucker"));
+		OOTools.druckerSetzen(textDocument, (String)OffenePosten.mahnParameter.get("drucker"));
 		ITextFieldService textFieldService = textDocument.getTextFieldService();
 		ITextField[] placeholders = null;
 		try {

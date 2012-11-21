@@ -52,14 +52,17 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import rehaInternalFrame.JArztInternal;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 import stammDatenTools.ArztTools;
-import systemEinstellungen.INIFile;
+
 import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.Colors;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -596,7 +599,7 @@ public class ArztPanel extends JXPanel implements PropertyChangeListener,TableMo
 			@Override
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
-				INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arzt.ini");
+				INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "arzt.ini"); 
 				int forms = inif.getIntegerProperty("Formulare", "ArztFormulareAnzahl");
 				for(int i = 1; i <= forms; i++){
 					titel.add(inif.getStringProperty("Formulare","AFormularText"+i));			

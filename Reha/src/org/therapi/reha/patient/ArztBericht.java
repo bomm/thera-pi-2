@@ -45,17 +45,17 @@ import org.jdesktop.swingx.painter.MattePainter;
 
 import patientenFenster.ArztAuswahl;
 
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import systemTools.AdressTools;
-import systemTools.Colors;
-import systemTools.JCompTools;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
-import systemTools.StringTools;
+import CommonTools.Colors;
+import CommonTools.JCompTools;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import textBlockTherapeuten.ThTextBlock;

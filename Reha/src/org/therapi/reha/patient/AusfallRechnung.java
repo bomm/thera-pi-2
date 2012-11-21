@@ -29,9 +29,9 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaCheckBox;
+import CommonTools.JRtaCheckBox;
 import systemTools.LeistungTools;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
@@ -285,7 +285,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		buf.append("rgesamt='"+(String)SystemConfig.hmAdrAFRDaten.get("<AFRgesamt>").replace(",",".")+"', ");
 		buf.append("roffen='"+(String)SystemConfig.hmAdrAFRDaten.get("<AFRgesamt>").replace(",",".")+"', ");
 		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
-		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());
+		SqlInfo.sqlAusfuehren(buf.toString());
 	}
 	private void macheMemoEintrag(){
 		StringBuffer sb = new StringBuffer();
@@ -346,7 +346,7 @@ public class AusfallRechnung extends RehaSmartDialog implements RehaTPEventListe
 		}
 		SystemConfig.hmAdrAFRDaten.put("<AFRgesamt>",df.format( gesamt));
 		/// Hier muß noch die Rechnungsnummer bezogen und eingetragen werden
-		afrNummer = "AFR-"+Integer.toString(sqlTools.SqlInfo.erzeugeNummer("afrnr"));
+		afrNummer = "AFR-"+Integer.toString(SqlInfo.erzeugeNummer("afrnr"));
 		SystemConfig.hmAdrAFRDaten.put("<AFRnummer>",afrNummer);
 	}
 	public void keyPressed(KeyEvent event) {

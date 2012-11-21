@@ -23,8 +23,11 @@ import javax.swing.JPasswordField;
 
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import systemTools.Verschluesseln;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -265,7 +268,7 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 			JOptionPane.showMessageDialog(null,stext);
 		}
 
-		INIFile dbini = new INIFile(Reha.proghome+"ini/"+siniverz+"/rehajava.ini");
+		INIFile dbini = INITool.openIni(Reha.proghome+"ini/"+siniverz+"/", "rehajava.ini");
 		dbini.setStringProperty("DatenBank", "DBType1", ss1, null);
 		dbini.setStringProperty("DatenBank", "DBTreiber1", ss2, null);
 		dbini.setStringProperty("DatenBank", "DBServer1", ss3, null);
@@ -280,13 +283,15 @@ public class SysUtilDBdaten extends JXPanel implements KeyListener, ActionListen
 		String skontakt = "jdbc:"+ss1+"://"+ss3+":"+ss4+"/"+ss5;
 		dbini.setStringProperty("DatenBank", "DBKontakt1", skontakt, null);
 		//jdbc:mysql://192.168.2.2:3306/dbf
-		dbini.save();
+		INITool.saveIni(dbini);
 		SystemConfig.MandantenEinlesen();
 		String saktmandant = ((String)mandant.getSelectedItem()).trim(); 
 		if(saktmandant.equals(Reha.aktMandant)){
 			JOptionPane.showMessageDialog(null, "Die Datenbankeinstellungen für den aktuellen Mandant,\n"+
 					"werden erst nach dem Neustart der ->Software<- wirksam\n\n"+
 					"Ein Neustart des Computers ist nicht notwendig.");
+		}else{
+			JOptionPane.showMessageDialog(null, "Die Datenbankeinstellungen wurden erfolgreich gespeichert");
 		}
 	}
 	private void neuerDBMandant(){

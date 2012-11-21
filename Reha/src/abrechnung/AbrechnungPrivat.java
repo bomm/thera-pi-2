@@ -40,13 +40,13 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaRadioButton;
-import systemTools.StringTools;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaRadioButton;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;

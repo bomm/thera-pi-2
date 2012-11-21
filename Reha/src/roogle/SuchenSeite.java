@@ -104,16 +104,16 @@ import org.therapi.reha.patient.LadeProg;
 
 import rechteTools.Rechte;
 import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
+import CommonTools.Colors;
 import systemTools.IntegerTools;
-import systemTools.JRtaTextField;
-import systemTools.StringTools;
+import CommonTools.JRtaTextField;
+import CommonTools.StringTools;
 import terminKalender.ParameterLaden;
 import terminKalender.DatFunk;
 import terminKalender.ZeitFunk;
 
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

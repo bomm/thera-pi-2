@@ -53,8 +53,8 @@ import org.therapi.reha.patient.AktuelleRezepte;
 import org.therapi.reha.patient.LadeProg;
 
 import rechteTools.Rechte;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.TestePatStamm;
 import terminKalender.TerminFenster;
@@ -790,8 +790,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			}
 			if (cmd.equals("piTextb")){
 				new LadeProg(Reha.proghome+"TBedit.jar "+
-						Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini"+" "+
-						Reha.proghome+"ini/"+Reha.aktIK+"/thbericht.ini");	
+						Reha.proghome+" "+Reha.aktIK);	
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
@@ -818,7 +817,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				new Thread(){
 					public void run(){
 						new LadeProg(Reha.proghome+"ArztBaustein.jar "+
-								Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");	
+								Reha.proghome+" "+Reha.aktIK);	
 					}
 				}.start();
 				

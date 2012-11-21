@@ -24,7 +24,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

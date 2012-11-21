@@ -27,18 +27,20 @@ import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
-import org.thera_pi.nebraska.gui.utils.ButtonTools;
-import org.thera_pi.nebraska.gui.utils.JCompTools;
-import org.thera_pi.nebraska.gui.utils.StringTools;
 
-import sqlTools.SqlInfo;
-import systemEinstellungen.INIFile;
+import CommonTools.SqlInfo;
+
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaRadioButton;
-import systemTools.JRtaTextField;
+import CommonTools.ButtonTools;
+import CommonTools.JCompTools;
+import CommonTools.JRtaRadioButton;
+import CommonTools.JRtaTextField;
+import CommonTools.StringTools;
 import verkauf.model.Artikel;
 import verkauf.model.ArtikelVerkauf;
 import verkauf.model.Verkauf;
+import CommonTools.INIFile;
+import CommonTools.INITool;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -95,7 +97,7 @@ public class VerkaufGUI extends JXPanel{
 		this.add(this.getContent1(), BorderLayout.CENTER);
 		verkauf = new Verkauf();
 		df = new DecimalFormat("0.00");
-		settings = new INIFile(Reha.proghome +"ini/"+ Reha.aktIK +"/verkauf.ini");
+		settings = INITool.openIni(Reha.proghome +"ini/"+ Reha.aktIK +"/", "verkauf.ini");
 
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
@@ -259,9 +261,9 @@ public class VerkaufGUI extends JXPanel{
 		
 		
 		/******Steuerbuttons********/
-		pan.add( (buts[1] = ButtonTools.macheBut("Barzahlung", "bonEnde", al)),cc.xy(12, 14));
+		pan.add( (buts[1] = ButtonTools.macheButton("Barzahlung", "bonEnde", al)),cc.xy(12, 14));
 		buts[1].setMnemonic(KeyEvent.VK_B);
-		pan.add( (buts[2] = ButtonTools.macheBut("Rechnung", "rechnungEnde", al)),cc.xy(14, 14));
+		pan.add( (buts[2] = ButtonTools.macheButton("Rechnung", "rechnungEnde", al)),cc.xy(14, 14));
 		buts[2].setMnemonic(KeyEvent.VK_N);
 		/*************/
 		

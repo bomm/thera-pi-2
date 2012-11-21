@@ -62,20 +62,23 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
 import rechteTools.Rechte;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 import stammDatenTools.ArztTools;
 import stammDatenTools.ZuzahlTools;
 import sun.awt.image.ImageFormatException;
-import systemEinstellungen.INIFile;
+
 import systemEinstellungen.SystemConfig;
-import systemTools.JCompTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 import systemTools.ListenerTools;
-import systemTools.StringTools;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.CC;
@@ -1925,8 +1928,9 @@ public class PatNeuanlage extends JXPanel implements RehaTPEventListener,
 			@Override
 			protected Void doInBackground() throws Exception {
 				try {
-					INIFile inif = new INIFile(Reha.proghome + "ini/"
-							+ Reha.aktIK + "/arzt.ini");
+					INIFile inif = INITool.openIni(Reha.proghome + "ini/"
+							+ Reha.aktIK + "/", "arzt.ini"); 
+							//+ Reha.aktIK + "/arzt.ini");
 					int forms = inif.getIntegerProperty("Formulare",
 							"ArztFormulareAnzahl");
 					for (int i = 1; i <= forms; i++) {

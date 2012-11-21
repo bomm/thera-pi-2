@@ -3,7 +3,7 @@ package dta301;
 import java.util.Arrays;
 import java.util.List;
 
-import systemTools.StringTools;
+import CommonTools.StringTools;
 
 public class Dta301CodeListen {
 	private static List<String> fettListe = Arrays.asList(new String[] {
@@ -82,7 +82,7 @@ public class Dta301CodeListen {
 	private static String[][] codeB02 = {
 		{"1","Arbeitsfähig entlassen"},
 		{"2","Arbeitsunfähig entlassen"},
-		{"3","Arbeitsfähig mit Schungszeit entlassen (BGE)"},
+		{"3","Arbeitsfähig mit Schonungszeit entlassen (BGE)"},
 		{"9","Meldung nicht erforderlich (Altersrentner,Angehöriger)"}
 	};
 	//AU-Zeiten der letzten 12 Monate (nur RV)
@@ -91,7 +91,7 @@ public class Dta301CodeListen {
 		{"1","Bis unter 3 Monate arbeitsunfähig"},
 		{"2","3 bis unter 6 Monate arbeitsunfähig"},
 		{"3","6 und mehr Monate arbeitsunfähig"},
-		{"9","Nicht erwererbstätig (Altersrentner,Vorruhestantsgeldempfänger)"}
+		{"9","Nicht erwerbstätig (Altersrentner,Vorruhestantsgeldempfänger)"}
 	};
 	//Art der Fahrtkostenerstattung
 	private static String[][] codeB04 = {

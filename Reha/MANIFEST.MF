@@ -15,7 +15,6 @@ Class-Path: Libraries/lib/sql/adsjdbc.jar
  Libraries/lib/openofficeorg/unoloader.jar 
  Libraries/lib/openofficeorg/ag.ion.noa_2.2.3.jar 
  Libraries/lib/openofficeorg/bootstrapconnector.jar 
- Libraries/lib/openofficeorg/java_uno.jar 
  Libraries/lib/openofficeorg/java_uno_accessbridge.jar 
  Libraries/lib/openofficeorg/juh.jar 
  Libraries/lib/openofficeorg/junit-4.5.jar 
@@ -40,5 +39,6 @@ Class-Path: Libraries/lib/sql/adsjdbc.jar
  Libraries/lib/jmf/jmf.jar 
  Nebraska.jar 
  TheraPiUpdates.jar 
+ RehaCommon.jar 
 
  

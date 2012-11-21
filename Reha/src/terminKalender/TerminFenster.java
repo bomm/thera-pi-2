@@ -81,10 +81,10 @@ import org.therapi.reha.patient.AktuelleRezepte;
 
 import rechteTools.Rechte;
 import rehaInternalFrame.JRehaInternal;
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import systemTools.ListenerTools;
 import events.PatStammEvent;
 import events.PatStammEventClass;

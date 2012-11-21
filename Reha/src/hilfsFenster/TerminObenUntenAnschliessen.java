@@ -20,7 +20,7 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
 import rehaContainer.RehaTP;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import terminKalender.TerminFenster;
 
 import com.jgoodies.forms.builder.PanelBuilder;

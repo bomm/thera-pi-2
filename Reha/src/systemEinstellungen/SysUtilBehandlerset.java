@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import terminKalender.ParameterLaden;
 
 import com.jgoodies.forms.builder.PanelBuilder;

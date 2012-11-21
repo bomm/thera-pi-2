@@ -22,8 +22,11 @@ import javax.swing.JScrollPane;
 
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import systemTools.Verschluesseln;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -111,7 +114,7 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		POPhost = new JRtaTextField("", true);
 		POPhost.setText(SystemConfig.hmEmailExtern.get("Pop3Host"));
 		Authent = new JCheckBox();
-		Authent.setSelected((SystemConfig.hmEmailExtern.get("SmtpAuth")=="0" ? false : true));
+		Authent.setSelected((SystemConfig.hmEmailExtern.get("SmtpAuth").equals("0") ? false : true));
 /*
 			hmEmailExtern = new HashMap<String,String>();
 			hmEmailExtern.put("SmtpHost",String.valueOf(ini.getStringProperty("EmailExtern","SmtpHost")));
@@ -228,37 +231,43 @@ public class SysUtilEmailparameter extends JXPanel implements KeyListener, Actio
 		
 	}
 	private void datenSpeichern(HashMap<String,String> mailmap,String postfach ){
-		String sender = Mailadresse.getText().trim();
-		String bestaetigung  = (EmpfBest.isSelected() ? "1" : "0");
-		String benutzer = Benutzer.getText().trim();
-		String pass1 = String.valueOf(Pass1.getPassword()).trim();
-		String pass2 = String.valueOf(Pass2.getPassword()).trim();
-		if(!pass1.equals(pass2)){
-			JOptionPane.showMessageDialog(null,"Die Passwort-Wiederholung stimmt nicht überein");
-			return;
+		try{
+			String sender = Mailadresse.getText().trim();
+			String bestaetigung  = (EmpfBest.isSelected() ? "1" : "0");
+			String benutzer = Benutzer.getText().trim();
+			String pass1 = String.valueOf(Pass1.getPassword()).trim();
+			String pass2 = String.valueOf(Pass2.getPassword()).trim();
+			if(!pass1.equals(pass2)){
+				JOptionPane.showMessageDialog(null,"Die Passwort-Wiederholung stimmt nicht überein");
+				return;
+			}
+			Verschluesseln man = Verschluesseln.getInstance();
+			man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
+			String encrypted = man.encrypt(pass1);
+			String smtphost = SMTPhost.getText().trim();
+			String pophost = POPhost.getText().trim();
+			String authent = ( Authent.isSelected() ? "1" : "0");
+			mailmap.put("SenderAdresse", sender);
+			mailmap.put("Bestaetigen", bestaetigung); 
+			mailmap.put("Username", benutzer);
+			mailmap.put("Password", pass1);		
+			mailmap.put("SmtpHost", smtphost);
+			mailmap.put("Pop3Host", pophost);
+			mailmap.put("SmtpAuth", authent);		
+			INIFile ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "email.ini");
+			ini.setStringProperty(postfach, "SenderAdresse", sender, null);
+			ini.setStringProperty(postfach, "EmpfangBestaetigen", bestaetigung, null);	
+			ini.setStringProperty(postfach, "Username",benutzer , null);		
+			ini.setStringProperty(postfach, "Password",encrypted , null);		
+			ini.setStringProperty(postfach, "SmtpHost",smtphost , null);		
+			ini.setStringProperty(postfach, "Pop3Host",pophost , null);		
+			ini.setStringProperty(postfach, "SmtpAuth",authent , null);		
+			INITool.saveIni(ini);
+			JOptionPane.showMessageDialog(null, "Emailparameter für --> "+Postfach.getSelectedItem().toString()+" <-- wurden erfolgreich gespeichert");
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null, "Fehler beim speichern der Emailparameter für --> "+Postfach.getSelectedItem().toString()+" <-- !!!!!");			
 		}
-		Verschluesseln man = Verschluesseln.getInstance();
-		man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
-		String encrypted = man.encrypt(pass1);
-		String smtphost = SMTPhost.getText().trim();
-		String pophost = POPhost.getText().trim();
-		String authent = ( Authent.isSelected() ? "1" : "0");
-		mailmap.put("SenderAdresse", sender);
-		mailmap.put("Bestaetigen", bestaetigung); 
-		mailmap.put("Username", benutzer);
-		mailmap.put("Password", pass1);		
-		mailmap.put("SmtpHost", smtphost);
-		mailmap.put("Pop3Host", pophost);
-		mailmap.put("SmtpAuth", authent);		
-		INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/email.ini");
-		ini.setStringProperty(postfach, "SenderAdresse", sender, null);
-		ini.setStringProperty(postfach, "EmpfangBestaetigen", bestaetigung, null);	
-		ini.setStringProperty(postfach, "Username",benutzer , null);		
-		ini.setStringProperty(postfach, "Password",encrypted , null);		
-		ini.setStringProperty(postfach, "SmtpHost",smtphost , null);		
-		ini.setStringProperty(postfach, "Pop3Host",pophost , null);		
-		ini.setStringProperty(postfach, "SmtpAuth",authent , null);		
-		ini.save();
+
 	
 	}
 	@SuppressWarnings("unchecked")

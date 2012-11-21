@@ -31,16 +31,19 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
+import CommonTools.INIFile;
+import CommonTools.INITool;
+
 import patientenFenster.PatNeuanlage;
 import rechteTools.Rechte;
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.ArztTools;
 import stammDatenTools.KasseTools;
 import stammDatenTools.PatTools;
-import systemEinstellungen.INIFile;
+
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
-import systemTools.StringTools;
+import CommonTools.JRtaTextField;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;
@@ -378,7 +381,7 @@ public class PatientHauptLogic {
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
+				INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "patient.ini");
 				int forms = inif.getIntegerProperty("Formulare", "PatientFormulareAnzahl");
 				for(int i = 1; i <= forms; i++){
 					titel.add(inif.getStringProperty("Formulare","PFormularText"+i));			

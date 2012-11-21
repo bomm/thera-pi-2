@@ -45,7 +45,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import rehaContainer.RehaTP;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import systemTools.RezeptFahnder;
 import systemTools.Verschluesseln;
 import dialoge.PinPanel;

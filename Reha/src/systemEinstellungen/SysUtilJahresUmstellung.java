@@ -26,7 +26,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemTools.ButtonTools;
 import terminKalender.DatFunk;

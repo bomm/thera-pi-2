@@ -32,10 +32,14 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledPanel;
-import org.thera_pi.nebraska.gui.utils.JCompTools;
+
 import org.therapi.reha.patient.PatientMemoPanel;
 
-import systemEinstellungen.INIFile;
+import CommonTools.INIFile;
+import CommonTools.INITool;
+import CommonTools.JCompTools;
+
+
 import systemEinstellungen.SystemConfig;
 
 import dialoge.DragWin;
@@ -144,8 +148,8 @@ public class Floskeln extends JXDialog implements FocusListener, ActionListener,
 	}
 
 	private void fuellen(){
-		String pfad = Reha.proghome+"ini/"+Reha.aktIK+"/floskeln.ini";
-		INIFile ini = new INIFile(pfad);
+		//String pfad = Reha.proghome+"ini/"+Reha.aktIK+"/floskeln.ini";
+		INIFile ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "floskeln.ini"); 
 		int floskeln = Integer.parseInt(ini.getStringProperty("Floskeln", "FloskelAnzahl"));
 		Vector<String> vec = new Vector<String>();
 		for(int i = 0; i < floskeln;i++){

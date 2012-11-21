@@ -8,9 +8,9 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.StringTools;
+import CommonTools.StringTools;
 
 public class KasseTools {
 	public static void constructKasseHMap(String id){

@@ -33,10 +33,10 @@ import javax.swing.event.HyperlinkListener;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JCompTools;
-import systemTools.StringTools;
+import CommonTools.JCompTools;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;

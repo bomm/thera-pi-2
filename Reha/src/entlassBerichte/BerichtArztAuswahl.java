@@ -26,11 +26,11 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
 import patientenFenster.ArztAuswahl;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
-import systemTools.JCompTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaTextField;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

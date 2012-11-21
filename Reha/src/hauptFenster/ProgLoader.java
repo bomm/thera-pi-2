@@ -928,6 +928,17 @@ public void loeschePatient(){
 }
 /**************Passwortverwaltung Echtfunktion*************************/
 public static void PasswortDialog(int setPos) {
+	long zeit = System.currentTimeMillis();
+	while(Reha.thisFrame == null){
+		try {
+			Thread.sleep(25);
+			if(System.currentTimeMillis()-zeit > 15000){
+				System.exit(0);
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 	Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);	
 	String name = "PasswortDialog"+WinNum.NeueNummer();
 	RehaTP jtp = new RehaTP(setPos); 

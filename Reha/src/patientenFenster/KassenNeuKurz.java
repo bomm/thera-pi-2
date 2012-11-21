@@ -32,12 +32,12 @@ import krankenKasse.KTraegerTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.JCompTools;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

@@ -26,13 +26,15 @@ import oOorgTools.OOTools;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import systemEinstellungen.INIFile;
+
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
 import systemTools.LeistungTools;
 import uk.co.mmscomputing.device.scanner.Scanner;
 import uk.co.mmscomputing.device.scanner.ScannerIOException;
+import CommonTools.INIFile;
+import CommonTools.INITool;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -294,7 +296,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 	private void doSpeichernScanner(){
 		String item = "";
 		if(jcbscan[1].isSelected()){
-			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/geraete.ini");
+			INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "geraete.ini");
 
 			item = (String) jcmbscan[0].getSelectedItem();
 			SystemConfig.sDokuScanner = item;
@@ -316,7 +318,7 @@ public class ScannerUtil extends RehaSmartDialog implements RehaTPEventListener,
 			item = (jcbscan[0].isSelected() ? "1" : "0");
 			SystemConfig.hmDokuScanner.put("dialog", item);
 			inif.setStringProperty("DokumentenScanner","DokumentenScannerDialog" , item , null);		
-			inif.save();
+			INITool.saveIni(inif);
 		}else{
 			item = (String) jcmbscan[0].getSelectedItem();
 			SystemConfig.sDokuScanner = item;

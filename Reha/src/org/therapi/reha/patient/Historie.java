@@ -66,12 +66,12 @@ import org.jdesktop.swingx.renderer.StringValues;
 import patientenFenster.HistorDaten;
 import patientenFenster.KeinRezept;
 import rechteTools.Rechte;
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
+import CommonTools.Colors;
 import systemTools.IconListRenderer;
-import systemTools.JCompTools;
+import CommonTools.JCompTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.layout.CellConstraints;

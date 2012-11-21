@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 
 
+
 import offenePosten.OffenePosten;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -21,6 +22,10 @@ import org.jdesktop.swingworker.SwingWorker;
 
 
 
+
+
+import CommonTools.SqlInfo;
+import CommonTools.OOTools;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -37,6 +42,7 @@ import ag.ion.noa.NOAException;
 import ag.ion.noa.internal.printing.PrintProperties;
 
 import com.sun.star.beans.XPropertySet;
+import com.sun.star.text.XTextTableCursor;
 
 @SuppressWarnings("unused")
 public class AbrechnungDrucken {
@@ -53,16 +59,20 @@ public class AbrechnungDrucken {
 	BigDecimal rechnungsGesamt = new BigDecimal(Double.valueOf("0.00"));
 	BigDecimal rechnungsRezgeb = new BigDecimal(Double.valueOf("0.00"));
 	HashMap<String,String> hmAdresse = new HashMap<String,String>();
+	boolean mitTage = false;
 	//AbrechnungGKV eltern = null;
 	int anzahlRezepte = 0;
-	public AbrechnungDrucken(/*AbrechnungGKV eltern,*/String url) throws Exception{
+	public AbrechnungDrucken(/*AbrechnungGKV eltern,*/String url,boolean mittage) throws Exception{
 		//this.eltern = eltern;
+		
 		starteDokument(url);
+		this.mitTage = mittage;
 	}
 	public void setIKundRnr(String papierIk,String rnr,HashMap<String,String> hmap){
 		this.papierIK = papierIk;
 		this.rechnungNummer = rnr;
 		this.hmAdresse = hmap;
+		
 		try {
 			setRechnungsBetrag();
 			ersetzePlatzhalter();
@@ -94,10 +104,10 @@ public class AbrechnungDrucken {
 		BigDecimal gesamtZuzahlung =new BigDecimal(Double.valueOf("0.00"));
 		BigDecimal gesamtNetto = new BigDecimal(Double.valueOf("0.00"));
 		
-		textTable.addRow(positionen+2);
+		textTable.addRow(positionen+2 +(mitTage ? 1 : 0));
 		ITextTableCell[] tcells = null;
 
-		tcells = textTable.getRow(aktuellePosition+1).getCells();
+		tcells = textTable.getRow(aktuellePosition+1 ).getCells();
 		setPositionenCells(false,tcells);
 		textTable.getCell(0,aktuellePosition+1).getTextService().getText().setText(nameVorname);
 		textTable.getCell(0,aktuellePosition+2).getTextService().getText().setText(status+" - "+rezNr);
@@ -133,8 +143,42 @@ public class AbrechnungDrucken {
 		textTable.getCell(5,aktuellePosition+(i+2)).getTextService().getText().setText(dummy);
 		dummy = dfx.format(gesamtNetto.doubleValue());
 		textTable.getCell(6,aktuellePosition+(i+2)).getTextService().getText().setText(dummy);
+		/****************/
+		//Hier muß die Einzeltage-Geschichte abgehandelt werden.
+		//textTable.getCell(0,aktuellePosition+(i+2)).getName();
+		System.out.println("Mittage = "+mitTage);
+		if(mitTage){
+			String terms = SqlInfo.holeEinzelFeld("select termine from lza where rez_nr='"+rezNr+"' LIMIT 1");
+			Vector<String> tagevec = Tools.RezTools.holeEinzelTermineAusRezept(null, terms);
+			dummy = "Behandlungstage: ";
+			for(int ii = 0; ii < tagevec.size();ii++){
+				if(ii == 0){
+					dummy = dummy + tagevec.get(ii);
+				}else{
+					dummy = dummy + ", " + tagevec.get(ii);
+				}
+			}
+			
+			OOTools.setOneCellProperty(textTable.getCell(0,aktuellePosition+(i+2)),false,false,false,0x00,7.f);
+			OOTools.setOneCellProperty(textTable.getCell(1,aktuellePosition+(i+2)),false,false,false,0x00,7.f);
+			//setOneCellProperty(textTable.getCell(1,aktuellePosition+(i+2)));
+			
+			XTextTableCursor cursor = OOTools.doMergeCellsInTextTabel(textTable.getXTextTable(), 
+					textTable.getCell(0,aktuellePosition+(i+2)).getName().getName().intern(), 
+					textTable.getCell(1,aktuellePosition+(i+2)).getName().getName().intern() );
+					
+					
+			textTable.getCell(0,aktuellePosition+(i+2)).getTextService().getText().setText(dummy);
+
+			tcells = textTable.getRow(aktuellePosition+(i+2)+1).getCells();
+			setPositionenCells(false,tcells);
+			
+			
+		}
+		/****************/
+
 		/****************/		
-		aktuellePosition += (positionen+2);
+		aktuellePosition += (positionen+2 +  (mitTage ? 1 : 0)  );
 	}
 	public void setRechnungsBetrag() throws TextException{
 		textEndbetrag.getCell(2,0).getTextService().getText().setText(dfx.format(rechnungsGesamt.doubleValue())+" EUR");
@@ -176,7 +220,7 @@ public class AbrechnungDrucken {
 		document = documentService.loadDocument(url,docdescript);
 		/**********************/
 		textDocument = (ITextDocument)document;
-		Tools.OOTools.druckerSetzen(textDocument, OffenePosten.hmAbrechnung.get("hmgkvrechnungdrucker"));
+		OOTools.druckerSetzen(textDocument, OffenePosten.hmAbrechnung.get("hmgkvrechnungdrucker"));
 		textTable = textDocument.getTextTableService().getTextTable("Tabelle1");
 		textEndbetrag = textDocument.getTextTableService().getTextTable("Tabelle2");
 	}

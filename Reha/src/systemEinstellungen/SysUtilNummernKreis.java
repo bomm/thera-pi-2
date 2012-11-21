@@ -21,8 +21,8 @@ import javax.swing.JScrollPane;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import sqlTools.SqlInfo;
-import systemTools.JRtaTextField;
+import CommonTools.SqlInfo;
+import CommonTools.JRtaTextField;
 
 
 import com.jgoodies.forms.builder.PanelBuilder;

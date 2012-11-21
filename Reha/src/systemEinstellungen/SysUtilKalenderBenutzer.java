@@ -33,7 +33,7 @@ import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import terminKalender.ParameterLaden;
 import terminKalender.TerminFenster;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;

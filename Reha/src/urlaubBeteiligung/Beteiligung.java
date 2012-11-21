@@ -25,12 +25,12 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import rehaInternalFrame.JBeteiligungInternal;
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemTools.ButtonTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;

@@ -43,7 +43,7 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
+import CommonTools.Colors;
 import systemTools.WinNum;
 import dialoge.PinPanel;
 import dialoge.RehaSmartDialog;

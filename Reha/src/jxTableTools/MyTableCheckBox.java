@@ -11,7 +11,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellEditor;
 
-import systemTools.JRtaCheckBox;
+import CommonTools.JRtaCheckBox;
 
 public class MyTableCheckBox extends AbstractCellEditor implements TableCellEditor,ActionListener{ 
 	// This is the component that will handle the editing of the cell value 

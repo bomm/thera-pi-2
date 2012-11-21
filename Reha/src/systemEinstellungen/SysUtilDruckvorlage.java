@@ -33,7 +33,9 @@ import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
+import CommonTools.INIFile;
+import CommonTools.INITool;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
@@ -416,7 +418,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 			return;
 		}
 		
-		INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminliste.ini");
+		INIFile ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "terminliste.ini");
 		ini.setStringProperty("TerminListe1", "AnzahlTabellen", Integer.valueOf( test1).toString(), null);
 		SystemConfig.oTerminListe.AnzahlTerminTabellen = test1;
 		
@@ -456,7 +458,7 @@ public class SysUtilDruckvorlage extends JXPanel implements KeyListener, ActionL
 			ini.setStringProperty("TerminListe1", "DirektDruck", "0", null);
 			SystemConfig.oTerminListe.DirektDruck = false;			
 		}
-		ini.save();
+		INITool.saveIni(ini);
 		thisClass.setCursor(Reha.thisClass.normalCursor);
 	}
 	/*

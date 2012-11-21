@@ -12,11 +12,12 @@ import javax.swing.JOptionPane;
 
 import org.jdesktop.swingx.JXPanel;
 
-import Tools.DatFunk;
-import Tools.INIFile;
-import Tools.JRtaCheckBox;
-import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
+import CommonTools.DatFunk;
+import CommonTools.INIFile;
+import CommonTools.INITool;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -142,7 +143,7 @@ public class OffenepostenEinstellungen extends JXPanel{
 		if( ! (anfrage == JOptionPane.YES_OPTION) ){
 			return;
 		}
-		INIFile inif = new INIFile(OffenePosten.progHome+"ini/"+OffenePosten.aktIK+"/offeneposten.ini");
+		INIFile inif = INITool.openIni(OffenePosten.progHome+"ini/"+OffenePosten.aktIK+"/", "offeneposten.ini");
 
 		int iwert = Integer.parseInt( (tfs[0].getText().equals("") ? "31" : tfs[0].getText() ) );
 		inif.setIntegerProperty("General", "TageBisMahnung1", iwert, null);
@@ -180,22 +181,10 @@ public class OffenepostenEinstellungen extends JXPanel{
 		}
 		inif.setStringProperty("General", "AuswahlErstAb", (String) swert, null);
 		OffenePosten.mahnParameter.put("erstsuchenab",(String)swert);
-		inif.save();
+		INITool.saveIni(inif);
 		JOptionPane.showMessageDialog(null,"Einstellungen ind offeneposten.ini erfolgreich gespeichert");
 	}
-	/*
-	inif = new INIFile(args[0]+"ini/"+args[1]+"/offeneposten.ini");
-	mahnParameter.put("frist1", (Integer) inif.getIntegerProperty("General","TageBisMahnung1") );
-	mahnParameter.put("frist2", (Integer) inif.getIntegerProperty("General","TageBisMahnung2") );
-	mahnParameter.put("frist3", (Integer) inif.getIntegerProperty("General","TageBisMahnung3") );
-	
-	mahnParameter.put("einzelmahnung", (Boolean) (inif.getIntegerProperty("General","EinzelMahnung").equals("1") ? Boolean.TRUE : Boolean.FALSE) );
-	mahnParameter.put("drucker", (String) inif.getStringProperty("General","MahnungDrucker") );
-	mahnParameter.put("exemplare", (Integer) inif.getIntegerProperty("General","MahnungExemplare") );
-	mahnParameter.put("inofficestarten", (Boolean) (inif.getIntegerProperty("General","InOfficeStarten").equals("1") ? Boolean.TRUE : Boolean.FALSE) );
-	mahnParameter.put("erstsuchenab", (String) inif.getStringProperty("General","AuswahlErstAb") );
 
-	 */
 	
 
 }

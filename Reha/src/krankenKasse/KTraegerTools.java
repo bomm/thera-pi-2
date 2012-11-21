@@ -2,7 +2,7 @@ package krankenKasse;
 
 import java.util.Vector;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 
 public class KTraegerTools {
 

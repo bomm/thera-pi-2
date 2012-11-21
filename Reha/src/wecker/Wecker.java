@@ -33,10 +33,10 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemTools.ButtonTools;
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
 import terminKalender.ZeitFunk;

@@ -5,7 +5,7 @@ import hauptFenster.Reha;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import systemTools.JCompTools;
+import CommonTools.JCompTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;

@@ -11,8 +11,8 @@ import javax.swing.JOptionPane;
 
 
 
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
 import terminKalender.DatFunk;

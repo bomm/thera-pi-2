@@ -31,7 +31,7 @@ import org.jdesktop.swingx.JXPanel;
 
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.JRtaCheckBox;
+import CommonTools.JRtaCheckBox;
 import systemTools.ListenerTools;
 import systemTools.WinNum;
 

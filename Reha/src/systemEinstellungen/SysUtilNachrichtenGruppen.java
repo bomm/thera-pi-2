@@ -23,8 +23,8 @@ import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
-import sqlTools.SqlInfo;
-import systemTools.JRtaTextField;
+import CommonTools.SqlInfo;
+import CommonTools.JRtaTextField;
 import terminKalender.ParameterLaden;
 
 import com.jgoodies.forms.builder.PanelBuilder;

@@ -26,8 +26,8 @@ import org.jdesktop.swingx.JXTitledPanel;
 
 import systemEinstellungen.SysUtilKuerzel;
 import systemTools.ButtonTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

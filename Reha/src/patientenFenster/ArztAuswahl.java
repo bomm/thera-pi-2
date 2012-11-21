@@ -31,10 +31,10 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
-import sqlTools.SqlInfo;
-import systemTools.Colors;
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.SqlInfo;
+import CommonTools.Colors;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -66,6 +66,8 @@ JXPanel content = null;
 ArztNeuKurz ank = null;
 public JXPanel grundPanel = null;
 public String arztbisher;
+final int cNachname=0,cVorname=1,cStrasse=2,cOrt=3,cArztnum=4,cBs=5,cId=6;
+
 /*************/
 //PinPanel pinPanel;
 private RehaTPEventClass rtp = null;
@@ -210,7 +212,7 @@ private RehaTPEventClass rtp = null;
 		jpan.add(neupan,cc.xyw(6,2,2));
 		/************************/		
 		arztwahlmod = new MyArztWahlModel();
-		String[] column = 	{"Name","Vorname","Strasse","Ort", "LANR",""};
+		String[] column = 	{"Name","Vorname","Strasse","Ort", "LANR","BSNR",""};
 		arztwahlmod.setColumnIdentifiers(column);
 		arztwahltbl = new JXTable(arztwahlmod);
 		arztwahltbl.addKeyListener(akl);
@@ -228,8 +230,8 @@ private RehaTPEventClass rtp = null;
 		arztwahltbl.setSortable(true);
 		arztwahltbl.setSelectionMode(0);
 		arztwahltbl.getColumn(0).setMinWidth(100);
-		arztwahltbl.getColumn(5).setMinWidth(0);
-		arztwahltbl.getColumn(5).setMaxWidth(0);
+		arztwahltbl.getColumn(6).setMinWidth(0);
+		arztwahltbl.getColumn(6).setMaxWidth(0);
 		arztwahltbl.setHorizontalScrollEnabled(true);
 		if( (this.suchid.length()) > 0 && (!this.suchid.equals("-1")) ){
 			new SwingWorker<Void,Void>(){
@@ -294,7 +296,7 @@ private RehaTPEventClass rtp = null;
 			"%' or klinik like '%"+suchkrit+ "%' or arztnum like '%"+suchkrit+"%' or ort like '%"+suchkrit+"%' order by nachname";			
 		}
 
-		Vector<Vector<String>> vec = SqlInfo.holeSaetze("arzt", "nachname,vorname,strasse,ort,arztnum,id", krit ,Arrays.asList(new String[]{}));
+		Vector<Vector<String>> vec = SqlInfo.holeSaetze("arzt", "nachname,vorname,strasse,ort,arztnum,bsnr,id", krit ,Arrays.asList(new String[]{}));
 		int bis = vec.size();
 		int i;
 		for(i = 0; i < bis; i++){
@@ -304,7 +306,7 @@ private RehaTPEventClass rtp = null;
 	public void fuelleIdTabelle(String suchid){
 		arztwahlmod.setRowCount(0);
 		arztwahltbl.validate();
-		Vector<Vector<String>> vec = SqlInfo.holeSaetze("arzt", "nachname,vorname,strasse,ort,arztnum,id", "id='"+suchid+"'" ,Arrays.asList(new String[]{}));
+		Vector<Vector<String>> vec = SqlInfo.holeSaetze("arzt", "nachname,vorname,strasse,ort,arztnum,bsnr,id", "id='"+suchid+"'" ,Arrays.asList(new String[]{}));
 		int bis = vec.size();
 		int i;
 		for(i = 0; i < bis; i++){
@@ -315,9 +317,9 @@ private RehaTPEventClass rtp = null;
 		int i = arztwahltbl.getSelectedRow();
 		if(i >= 0){
 			int model = arztwahltbl.convertRowIndexToModel(i);
-			elterntfs[0].setText((String)arztwahlmod.getValueAt(model, 0));			
-			elterntfs[1].setText((String)arztwahlmod.getValueAt(model, 4));	
-			elterntfs[2].setText((String)arztwahlmod.getValueAt(model, 5));
+			elterntfs[0].setText((String)arztwahlmod.getValueAt(model, this.cNachname));			
+			elterntfs[1].setText((String)arztwahlmod.getValueAt(model, this.cArztnum));	
+			elterntfs[2].setText((String)arztwahlmod.getValueAt(model, this.cId));
 			if(rtp != null){
 				rtp.removeRehaTPEventListener((RehaTPEventListener) this);
 				rtp = null;
@@ -352,7 +354,8 @@ private RehaTPEventClass rtp = null;
 			vec.add(jtfs[3].getText());
 			vec.add(jtfs[4].getText());
 			vec.add(jtfs[6].getText());
-			vec.add(jtfs[7].getText());			
+			vec.add(jtfs[7].getText());		
+			vec.add(jtfs[8].getText());
 			vec.add(jtfs[14].getText());	
 			arztwahlmod.addRow(vec);
 			arztwahltbl.validate();

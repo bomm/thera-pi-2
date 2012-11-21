@@ -46,6 +46,9 @@ import org.jdesktop.swingx.renderer.StringValue;
 import rechteTools.Rechte;
 import terminKalender.TerminFenster;
 
+import CommonTools.INIFile;
+import CommonTools.INITool;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -62,7 +65,7 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 	JButton defaultSave = null;
 	KalenderFarbenModel ftm;
 	JScrollPane jscroll = null;	
-	static String colorini = Reha.proghome+"ini/"+Reha.aktIK+"/color.ini";	
+	static String colorini = "color.ini";	
 	public SysUtilKalenderfarben(){
 		super(new GridLayout(1,1));
 		//System.out.println("Aufruf SysUtilKalenderfarben");
@@ -304,8 +307,9 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 			if(def==0){
 				defName = "UserFarben";
 			}
+			
+			INIFile ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", colorini);
 
-			INIFile ini = new INIFile(colorini);
 			for(int i = 0; i<lang;i++){
 				hg = ((Color)FarbTab.getValueAt(i, 2));
 				vg = ((Color)FarbTab.getValueAt(i, 3));
@@ -327,7 +331,7 @@ public class SysUtilKalenderfarben extends JXPanel implements KeyListener, Actio
 			}
 			TerminFenster.setDurchlass(Float.parseFloat((String)alphawahl.getSelectedItem()) );
 			SystemConfig.UpdateIni("terminkalender.ini", "Kalender", "KalenderHintergrundAlpha", (String)alphawahl.getSelectedItem());
-			ini.save();
+			INITool.saveIni(ini);
 			ini = null;
 			JOptionPane.showMessageDialog(null,"Konfiguration in color.ini erfolgreich gespeichert");
 		}catch(Exception ex){

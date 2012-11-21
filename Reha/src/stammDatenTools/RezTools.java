@@ -16,10 +16,10 @@ import javax.swing.JOptionPane;
 
 import org.jdesktop.swingworker.SwingWorker;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.StringTools;
+import CommonTools.StringTools;
 import terminKalender.BestaetigungsDaten;
 import terminKalender.DatFunk;
 import terminKalender.TerminBestaetigenAuswahlFenster;

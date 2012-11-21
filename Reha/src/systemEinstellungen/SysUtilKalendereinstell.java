@@ -28,8 +28,11 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import sqlTools.ExUndHop;
-import systemTools.JRtaTextField;
+import CommonTools.ExUndHop;
+import CommonTools.JRtaTextField;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -195,14 +198,15 @@ public class SysUtilKalendereinstell extends JXPanel implements KeyListener, Act
 				JOptionPane.showMessageDialog(null, "Die Funktion Kalenderzeiten verändern, wird während der Softwarentwicklung nicht aufgerufen!");
 			}
 			try{
-				INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
+				INIFile ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "terminkalender.ini");
 				ini.setStringProperty("Kalender", "KalenderBarcode",(scan.isSelected() ? "1" : "0"),null);
-				ini.save();
-				ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kalender.ini");
+				INITool.saveIni(ini);
+				
+				ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "kalender.ini");
 				ini.setStringProperty("Kalender", "LangesMenue", (langmenu.isSelected() ? "1" : "0"), null);
 				ini.setStringProperty("Kalender", "ZeitLabelZeigen", (zeitzeigen.isSelected() ? "1" : "0"), null);
 				ini.setStringProperty("Kalender", "ZeitLinieZeigen", (timelinezeigen.isSelected() ? "1" : "0"), null);
-				ini.save();
+				INITool.saveIni(ini);
 				SystemConfig.KalenderBarcode = scan.isSelected();
 				SystemConfig.KalenderLangesMenue = langmenu.isSelected();
 				SystemConfig.KalenderZeitLabelZeigen = Boolean.valueOf(zeitzeigen.isSelected());

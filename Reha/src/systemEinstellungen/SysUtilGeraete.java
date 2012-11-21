@@ -12,6 +12,7 @@ import java.awt.event.KeyListener;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -28,6 +29,9 @@ import org.jdesktop.swingx.JXPanel;
 
 import uk.co.mmscomputing.device.scanner.Scanner;
 import uk.co.mmscomputing.device.scanner.ScannerIOException;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -265,6 +269,7 @@ private JPanel getKnopfPanel(){
 		String reader = null;
 		String api = null;
 		boolean ocAktive = false;
+		
 		//Damit der ganze Scheiß nicht abstürtzt muß hier noch eine
 		//Routine eingebaut werden die überprüft ob die angegebene .dll bzw. .so überhaupt existiert.
 		try {
@@ -305,7 +310,7 @@ private JPanel getKnopfPanel(){
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Card-Reader konnte nicht angesprochen werden oder keine KV-Karte im Reader - Fehler:3");
 			ocKVK = null;
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		if(ocAktive){
 			try {
@@ -320,7 +325,7 @@ private JPanel getKnopfPanel(){
 	
 	
 	private void doSpeichern(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/geraete.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "geraete.ini");
 
 		SystemConfig.sReaderAktiv = (kvkakt.isSelected() ? "1" : "0");
 		inif.setStringProperty("KartenLeser", "KartenLeserAktivieren",SystemConfig.sReaderAktiv , null);
@@ -359,7 +364,7 @@ private JPanel getKnopfPanel(){
 		SystemConfig.sWebCamSize[1] = (webcamsize.getSelectedIndex() == 0 ? 480 : 240);
 		inif.setIntegerProperty("WebCam", "WebCamY",SystemConfig.sWebCamSize[1] , null);
 
-		inif.save();
+		INITool.saveIni(inif);
 		
 		JOptionPane.showMessageDialog(null, "Gerätekonfiguration wurde erfolgrich gespeichert und steht nach dem nächsten\nStart der Software zur Verfügung");
 	}

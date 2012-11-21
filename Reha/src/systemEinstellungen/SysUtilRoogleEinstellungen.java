@@ -16,13 +16,17 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -173,25 +177,30 @@ public class SysUtilRoogleEinstellungen extends JXPanel implements KeyListener, 
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("speichern")){
-			INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
-			for(int i = 0;i<7;i++){
-				ini.setStringProperty("RoogleEinstellungen", "Tag"+(i+1),(tage[i].isSelected() ? "1" : "0"),null);
-				SystemConfig.RoogleTage[i] = tage[i].isSelected();
+			try{
+				INIFile ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/","terminkalender.ini");
+				for(int i = 0;i<7;i++){
+					ini.setStringProperty("RoogleEinstellungen", "Tag"+(i+1),(tage[i].isSelected() ? "1" : "0"),null);
+					SystemConfig.RoogleTage[i] = tage[i].isSelected();
+				}
+				String szeit = (range.getText().trim().equals("") ? "0" : range.getText().trim()); 
+				ini.setStringProperty("RoogleEinstellungen", "Zeitraum",szeit,null);
+				ini.setStringProperty("RoogleEinstellungen", "KG",((String)zeiten[0].getSelectedItem()).trim(),null);
+				ini.setStringProperty("RoogleEinstellungen", "MA",((String)zeiten[1].getSelectedItem()).trim(),null);
+				ini.setStringProperty("RoogleEinstellungen", "ER",((String)zeiten[2].getSelectedItem()).trim(),null);
+				ini.setStringProperty("RoogleEinstellungen", "LO",((String)zeiten[3].getSelectedItem()).trim(),null);
+				ini.setStringProperty("RoogleEinstellungen", "SP",((String)zeiten[4].getSelectedItem()).trim(),null);
+				SystemConfig.RoogleZeiten.put("KG", ((String)zeiten[0].getSelectedItem()));
+				SystemConfig.RoogleZeiten.put("MA", ((String)zeiten[1].getSelectedItem()));
+				SystemConfig.RoogleZeiten.put("ER", ((String)zeiten[2].getSelectedItem()));
+				SystemConfig.RoogleZeiten.put("LO", ((String)zeiten[3].getSelectedItem()));
+				SystemConfig.RoogleZeiten.put("SP", ((String)zeiten[4].getSelectedItem()));			
+				INITool.saveIni(ini);
+				SystemConfig.RoogleZeitraum = Integer.valueOf(szeit);
+				JOptionPane.showMessageDialog(null,"Konfiguration wurde erfolgreich in terminkalender.ini gespeichert.");
+			}catch(Exception ex){
+				JOptionPane.showMessageDialog(null,"Fehler beim speichern der Konfiguration in terminkalender!!!!!");				
 			}
-			String szeit = (range.getText().trim().equals("") ? "0" : range.getText().trim()); 
-			ini.setStringProperty("RoogleEinstellungen", "Zeitraum",szeit,null);
-			ini.setStringProperty("RoogleEinstellungen", "KG",((String)zeiten[0].getSelectedItem()).trim(),null);
-			ini.setStringProperty("RoogleEinstellungen", "MA",((String)zeiten[1].getSelectedItem()).trim(),null);
-			ini.setStringProperty("RoogleEinstellungen", "ER",((String)zeiten[2].getSelectedItem()).trim(),null);
-			ini.setStringProperty("RoogleEinstellungen", "LO",((String)zeiten[3].getSelectedItem()).trim(),null);
-			ini.setStringProperty("RoogleEinstellungen", "SP",((String)zeiten[4].getSelectedItem()).trim(),null);
-			SystemConfig.RoogleZeiten.put("KG", ((String)zeiten[0].getSelectedItem()));
-			SystemConfig.RoogleZeiten.put("MA", ((String)zeiten[1].getSelectedItem()));
-			SystemConfig.RoogleZeiten.put("ER", ((String)zeiten[2].getSelectedItem()));
-			SystemConfig.RoogleZeiten.put("LO", ((String)zeiten[3].getSelectedItem()));
-			SystemConfig.RoogleZeiten.put("SP", ((String)zeiten[4].getSelectedItem()));			
-			ini.save();
-			SystemConfig.RoogleZeitraum = Integer.valueOf(szeit);
 
 		}
 		if(e.getActionCommand().equals("abbruch")){

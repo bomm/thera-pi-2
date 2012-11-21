@@ -44,8 +44,11 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
 import preisListenHandling.MachePreisListe;
-import systemTools.JCompTools;
-import systemTools.JRtaComboBox;
+import CommonTools.JCompTools;
+import CommonTools.JRtaComboBox;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -404,7 +407,8 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 	
 	private void doSpeichern(){
 		//String wert = "";
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
+		
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/","preisgruppen.ini");
 
 		//int lang = SystemConfig.vPreisGruppen.size();
 		int lang = tarife.getRowCount();
@@ -426,9 +430,9 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		String[] resultwgpausch = {"",disziindex[idiszi]+"9903",disziindex[idiszi]+"9906"};
 		String[] resultarztbericht = {"",disziindex[idiszi]+"9701"};
 
-
+		boolean erroronsave = false;
 		for(int i = 0;i<lang;i++){
-			try{
+				try{
 				//Preisgruppen-Name
 				swert = String.valueOf((String) tarife.getValueAt(i, 0));
 				//SystemConfig.vPreisGruppen.set(i, swert);
@@ -557,15 +561,20 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 					SystemPreislisten.fristenini.setIntegerProperty("Fristen_"+diszi, "BeginnKalendertage"+Integer.toString(i+1),1,null);
 					SystemPreislisten.fristenini.setIntegerProperty("Fristen_"+diszi, "FristUnterbrechung"+Integer.toString(i+1),14,null);
 					SystemPreislisten.fristenini.setIntegerProperty("Fristen_"+diszi, "UnterbrechungKalendertage"+Integer.toString(i+1),1,null);
-					SystemPreislisten.fristenini.save();
+					INITool.saveIni(SystemPreislisten.fristenini);
 				}
 				
 			}catch(Exception ex){
+				erroronsave = true;
 				ex.printStackTrace();
 			}
 		}
-		inif.save();
-		JOptionPane.showMessageDialog(null,"Konfiguration für -> "+diszi+" <- wurde erfolgreich gespeichert");
+		if(erroronsave){
+			JOptionPane.showMessageDialog(null,"Fehler beim speichern der Konfiguration für -> "+diszi+" <- !!!!!");
+		}else{
+			INITool.saveIni(inif);
+			JOptionPane.showMessageDialog(null,"Konfiguration für -> "+diszi+" <- wurde erfolgreich gespeichert");
+		}
 	}
 	private int stringPosErmitteln(String[] str,String vergleich){
 		for(int i = 0;i < str.length;i++){
@@ -663,32 +672,36 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		}
 	}
 	private void setzeIniEintraege(int position,String commonname){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
-		inif.setIntegerProperty("PreisGruppen_Common", "AnzahlPreisGruppen", position, null);
-		inif.setStringProperty("PreisGruppen_Common", "PGName"+Integer.toString(position), commonname, null);
-		inif.setStringProperty("PreisGruppen_Common", "PGBereich"+Integer.toString(position), "00", null);
-		String[] diszis = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
-		for(int i = 0; i < diszis.length;i++){
-			inif.setIntegerProperty("PreisGruppen_"+diszis[i], "AnzahlPreisGruppen", position, null);
-			inif.setStringProperty("PreisGruppen_"+diszis[i], "PGName"+Integer.toString(position), commonname, null);
-			inif.setStringProperty("PreisGruppen_"+diszis[i], "PGBereich"+Integer.toString(position), "00", null);
-			
-			inif.setStringProperty("PreisRegeln_"+diszis[i], "PreisAb"+Integer.toString(position), "", null);
-			inif.setStringProperty("PreisRegeln_"+diszis[i], "PreisRegel"+Integer.toString(position), "0", null);
-			
-			inif.setStringProperty("ZuzahlRegeln_"+diszis[i], "ZuzahlRegel"+Integer.toString(position), "0", null);
-			
-			inif.setStringProperty("BerichtRegeln_"+diszis[i], "Bericht"+Integer.toString(position), "", null);
-			
-			inif.setStringProperty("HBRegeln_"+diszis[i], "HBPosVoll"+Integer.toString(position), "", null);
-			inif.setStringProperty("HBRegeln_"+diszis[i], "HBPosMit"+Integer.toString(position), "", null);
-			inif.setStringProperty("HBRegeln_"+diszis[i], "HBKilometer"+Integer.toString(position), "", null);
-			inif.setStringProperty("HBRegeln_"+diszis[i], "HBPauschal"+Integer.toString(position), "", null);
-			inif.setStringProperty("HBRegeln_"+diszis[i], "HBHeimMitZuZahl"+Integer.toString(position), "", null);
-			
-			inif.setStringProperty("HMRAbrechnung_"+diszis[i], "HMRAbrechnung"+Integer.toString(position), "0", null);
+		try{
+			INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "preisgruppen.ini");
+			inif.setIntegerProperty("PreisGruppen_Common", "AnzahlPreisGruppen", position, null);
+			inif.setStringProperty("PreisGruppen_Common", "PGName"+Integer.toString(position), commonname, null);
+			inif.setStringProperty("PreisGruppen_Common", "PGBereich"+Integer.toString(position), "00", null);
+			String[] diszis = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
+			for(int i = 0; i < diszis.length;i++){
+				inif.setIntegerProperty("PreisGruppen_"+diszis[i], "AnzahlPreisGruppen", position, null);
+				inif.setStringProperty("PreisGruppen_"+diszis[i], "PGName"+Integer.toString(position), commonname, null);
+				inif.setStringProperty("PreisGruppen_"+diszis[i], "PGBereich"+Integer.toString(position), "00", null);
+				
+				inif.setStringProperty("PreisRegeln_"+diszis[i], "PreisAb"+Integer.toString(position), "", null);
+				inif.setStringProperty("PreisRegeln_"+diszis[i], "PreisRegel"+Integer.toString(position), "0", null);
+				
+				inif.setStringProperty("ZuzahlRegeln_"+diszis[i], "ZuzahlRegel"+Integer.toString(position), "0", null);
+				
+				inif.setStringProperty("BerichtRegeln_"+diszis[i], "Bericht"+Integer.toString(position), "", null);
+				
+				inif.setStringProperty("HBRegeln_"+diszis[i], "HBPosVoll"+Integer.toString(position), "", null);
+				inif.setStringProperty("HBRegeln_"+diszis[i], "HBPosMit"+Integer.toString(position), "", null);
+				inif.setStringProperty("HBRegeln_"+diszis[i], "HBKilometer"+Integer.toString(position), "", null);
+				inif.setStringProperty("HBRegeln_"+diszis[i], "HBPauschal"+Integer.toString(position), "", null);
+				inif.setStringProperty("HBRegeln_"+diszis[i], "HBHeimMitZuZahl"+Integer.toString(position), "", null);
+				
+				inif.setStringProperty("HMRAbrechnung_"+diszis[i], "HMRAbrechnung"+Integer.toString(position), "0", null);
+			}
+			INITool.saveIni(inif);
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Es ist ein Fehler beim speichern der preisgruppen.ini aufgetreten!!");
 		}
-		inif.save();
 	}
 	private void macheNeuePreistabelle(){
 		String[] tabName = {"kgtarif","matarif","ertarif","lotarif","rhtarif","potarif"};

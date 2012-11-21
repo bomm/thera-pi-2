@@ -32,10 +32,10 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import dialoge.KuerzelNeu;
 
-import sqlTools.SqlInfo;
-import systemTools.JCompTools;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaRadioButton;
+import CommonTools.SqlInfo;
+import CommonTools.JCompTools;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaRadioButton;
 
 public class SysUtilKuerzel  extends JXPanel implements ActionListener{
 	

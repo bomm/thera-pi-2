@@ -1,6 +1,6 @@
 package systemEinstellungen;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 
 public class inidb {
 
@@ -52,6 +52,17 @@ public class inidb {
 				"rubrik = '" + strRubrik + "' AND SECTION = '"  + strSection + "' AND PROPERTY = '" + strProp + "' " +
 				" LIMIT 1" );
 		return strValue;
+	}
+	
+	public static String createIniTableStmt(){
+		StringBuffer buf = new StringBuffer();
+		buf.append( "CREATE TABLE IF NOT EXISTS inidatei (" );
+		buf.append( "dateiname varchar(250) DEFAULT NULL," );
+		buf.append( "inhalt text," );
+		buf.append( "id int(11) NOT NULL AUTO_INCREMENT," );
+		buf.append( "PRIMARY KEY (id)" );
+		buf.append( ") ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1" ) ;
+		return buf.toString();
 	}
 	
 }

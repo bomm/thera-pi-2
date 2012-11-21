@@ -41,16 +41,16 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 
 import rehaInternalFrame.JDta301Internal;
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.ButtonTools;
-import systemTools.Colors;
-import systemTools.JCompTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaRadioButton;
-import systemTools.JRtaTextField;
-import systemTools.StringTools;
+import CommonTools.Colors;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaRadioButton;
+import CommonTools.JRtaTextField;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
 
 import ag.ion.bion.officelayer.text.ITextDocument;

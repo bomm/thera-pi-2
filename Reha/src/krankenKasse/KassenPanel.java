@@ -65,15 +65,18 @@ import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 
 import rehaInternalFrame.JKasseInternal;
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 import stammDatenTools.KasseTools;
-import systemEinstellungen.INIFile;
+
 import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
-import systemTools.FileTools;
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.Colors;
+import CommonTools.FileTools;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -694,7 +697,7 @@ public class KassenPanel extends JXPanel implements PropertyChangeListener,Table
 			@Override
 			protected Void doInBackground() throws Exception {
 				// TODO Auto-generated method stub
-				INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
+				INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "kasse.ini");
 				int forms = inif.getIntegerProperty("Formulare", "KassenFormulareAnzahl");
 				for(int i = 1; i <= forms; i++){
 					titel.add(inif.getStringProperty("Formulare","KFormularText"+i));			

@@ -24,8 +24,8 @@ import javax.swing.JPanel;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXFrame;
 
-import sqlTools.SqlInfo;
-import systemTools.JRtaTextField;
+import CommonTools.SqlInfo;
+import CommonTools.JRtaTextField;
 import systemTools.ListenerTools;
 import terminKalender.DatFunk;
 

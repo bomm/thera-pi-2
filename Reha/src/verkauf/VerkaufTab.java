@@ -24,7 +24,7 @@ import org.jdesktop.swingx.JXPanel;
 import rechteTools.Rechte;
 import rehaInternalFrame.JVerkaufInternal;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

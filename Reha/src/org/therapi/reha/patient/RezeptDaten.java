@@ -26,17 +26,17 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import rechteTools.Rechte;
-import sqlTools.ExUndHop;
 import stammDatenTools.ArztTools;
 import stammDatenTools.KasseTools;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.JCompTools;
-import systemTools.JRtaLabel;
-import systemTools.JRtaTextField;
-import systemTools.StringTools;
+import CommonTools.StringTools;
 import terminKalender.TerminFenster;
+import CommonTools.ExUndHop;
+import CommonTools.JCompTools;
+import CommonTools.JRtaLabel;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -55,6 +55,7 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 	public Vector<String> vecaktrez = null;
 	public static boolean feddisch = false;
 	private JPopupMenu jPopupMenu = null; 
+	
 	private JMenuItem copyToBunker = null;
 	private JRtaLabel hblab = null;
 

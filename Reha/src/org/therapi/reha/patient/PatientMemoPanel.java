@@ -25,11 +25,11 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 
-import sqlTools.ExUndHop;
-import sqlTools.SqlInfo;
+import CommonTools.ExUndHop;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JCompTools;
-import systemTools.StringTools;
+import CommonTools.JCompTools;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
 
 

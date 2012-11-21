@@ -50,15 +50,15 @@ import org.thera_pi.nebraska.crypto.NebraskaKeystore;
 import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 
 import rehaInternalFrame.JAbrechnungInternal;
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.JCompTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaRadioButton;
-import systemTools.StringTools;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaRadioButton;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;

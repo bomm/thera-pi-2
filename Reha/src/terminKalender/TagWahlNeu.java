@@ -36,7 +36,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import systemTools.ListenerTools;
 import systemTools.WinNum;
 

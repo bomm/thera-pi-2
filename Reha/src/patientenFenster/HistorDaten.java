@@ -20,14 +20,14 @@ import javax.swing.TransferHandler;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.JCompTools;
+import CommonTools.JCompTools;
 
-import systemTools.JRtaTextField;
-import systemTools.StringTools;
+import CommonTools.JRtaTextField;
+import CommonTools.StringTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

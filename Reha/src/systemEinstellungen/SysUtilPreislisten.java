@@ -44,14 +44,17 @@ import org.jdesktop.swingx.painter.MattePainter;
 
 
 import sqlTools.PLServerAuslesen;
-import sqlTools.SqlInfo;
-import systemTools.JCompTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaRadioButton;
-import systemTools.JRtaTextField;
+import CommonTools.SqlInfo;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaRadioButton;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -332,7 +335,8 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	
 	private void fuelleMitWerten(){
 		int aktiv;
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/","rezept.ini");
+		
 		for(int i = 0;i < 5;i++){
 			aktiv = inif.getIntegerProperty("RezeptKlassen", "KlasseAktiv"+Integer.valueOf(i+1).toString());
 			if(aktiv > 0){
@@ -579,11 +583,11 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 			//((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).set(jcmb[1].getSelectedIndex(), jcmb[2].getSelectedIndex());
 			SystemPreislisten.hmNeuePreiseAb.get(diszis[jcmb[0].getSelectedIndex()]).set(jcmb[1].getSelectedIndex(),xgueltig);
 			SystemPreislisten.hmNeuePreiseRegel.get(diszis[jcmb[0].getSelectedIndex()]).set(jcmb[1].getSelectedIndex(),jcmb[2].getSelectedIndex());
-
-			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/preisgruppen.ini");
+			INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/","preisgruppen.ini");
 			inif.setStringProperty("PreisRegeln_"+diszis[jcmb[0].getSelectedIndex()], "PreisAb"+(diswelche),xgueltig , null);
 			inif.setIntegerProperty("PreisRegeln_"+diszis[jcmb[0].getSelectedIndex()], "PreisRegel"+(diswelche),regel , null);
-			inif.save();
+			INITool.saveIni(inif);
+
 			if(delvec.size()>0){
 				for(int i = 0;i < delvec.size();i++){
 					cmd = "delete from "+sdb+Integer.toString(igruppe)+" where id='"+delvec.get(i)+"'";

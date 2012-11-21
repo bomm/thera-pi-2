@@ -23,9 +23,9 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JCompTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaTextField;
 import systemTools.SetMaxText;
 
 import com.jgoodies.forms.builder.PanelBuilder;

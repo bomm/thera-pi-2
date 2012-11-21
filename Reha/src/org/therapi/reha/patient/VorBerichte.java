@@ -33,8 +33,8 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.therapi.reha.patient.TherapieBerichte.MyBerichtTableModel;
 
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
 import systemTools.ListenerTools;
 
 import com.jgoodies.forms.builder.PanelBuilder;

@@ -50,10 +50,13 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import systemTools.JCompTools;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -114,7 +117,8 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 	}
 	private void fuelleMitWerten(){
 		int aktiv;
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/","rezept.ini");
+		
 		for(int i = 0;i < 6;i++){
 			aktiv = inif.getIntegerProperty("RezeptKlassen", "KlasseAktiv"+Integer.valueOf(i+1).toString());
 			if(aktiv > 0){
@@ -422,7 +426,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		try{
 		String wert = "";
 		int iwert;
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rezept.ini");
 		inif.setStringProperty("RezeptKlassen", "InitKlasse",(String)voreinstellung.getSelectedItem(),null);
 		for(int i = 0; i < 6;i++){
 			iwert = (heilmittel[i].isSelected() ? 1 : 0);
@@ -455,7 +459,7 @@ public class SysUtilRezepte extends JXPanel implements KeyListener, ActionListen
 		}
 		
 		inif.setStringProperty("Sonstiges", "AngelegtVonUser", (angelegtVonUser.isSelected() ? "1" : "0"), null);
-		inif.save();
+		INITool.saveIni(inif);
 		SystemConfig.rezGebDrucker = (String)druckername.getSelectedItem();
 		SystemConfig.rezBarcodeDrucker = (String)barcodedrucker.getSelectedItem();
 		SystemConfig.AngelegtVonUser = angelegtVonUser.isSelected();

@@ -63,8 +63,8 @@ import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
 //import roogle.SuchenSeite;
-import sqlTools.SqlInfo;
-import systemTools.JRtaTextField;
+import CommonTools.SqlInfo;
+import CommonTools.JRtaTextField;
 import terminKalender.ParameterLaden;
 //import terminKalender.TerminFenster;
 import terminKalender.DatFunk;

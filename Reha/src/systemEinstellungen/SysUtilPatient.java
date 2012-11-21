@@ -58,8 +58,11 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -162,7 +165,7 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 		}else{
 			optimize.setSelected(true);
 		}
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/","patient.ini");
 		int forms = inif.getIntegerProperty("Formulare", "PatientFormulareAnzahl");
 		Vector<String> vec = new Vector<String>();
 		for(int i = 1; i <= forms; i++){
@@ -453,50 +456,55 @@ public class SysUtilPatient extends JXPanel implements KeyListener, ActionListen
 	}
 	
 	private void doSpeichern(){
-		String wert = "";
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
-		//System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
-		wert = (unten.isSelected() ? "1" : "0");
-		SystemConfig.hmContainer.put("Patient", Integer.valueOf(wert));
-		inif.setStringProperty("Container", "StarteIn",wert , null);
-		
-		wert = (optimize.isSelected() ? "1" : "0");
-		SystemConfig.hmContainer.put("PatientOpti",Integer.valueOf(wert));
-		inif.setStringProperty("Container", "ImmerOptimieren",wert , null);
+		try{
+			String wert = "";
+			INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/","patient.ini");
+			//System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
+			wert = (unten.isSelected() ? "1" : "0");
+			SystemConfig.hmContainer.put("Patient", Integer.valueOf(wert));
+			inif.setStringProperty("Container", "StarteIn",wert , null);
+			
+			wert = (optimize.isSelected() ? "1" : "0");
+			SystemConfig.hmContainer.put("PatientOpti",Integer.valueOf(wert));
+			inif.setStringProperty("Container", "ImmerOptimieren",wert , null);
 
-		int rows = vorlagen.getRowCount();
-		
-		formok = true;
-		for(int i = 0;i<rows;i++){
-			String test = (String)vorlagen.getValueAt(i, 0);
-			if(test.equals("")){
-				String datei = (String)vorlagen.getValueAt(i, 1);
-				String msg = "Für Vorlagendatei "+datei+" wurde kein Titel eingegeben!\nDie Vorlagen werden nicht(!!!) gespeichert.";
-				JOptionPane.showMessageDialog(null,msg);
-				formok = false;
-				break;
-			}else{
-				formok = true;
-				inif.setStringProperty("Formulare", "PatientFormulareAnzahl",Integer.valueOf(rows).toString() , null);				
-			}
-		}
-		if(formok){
+			int rows = vorlagen.getRowCount();
+			
+			formok = true;
 			for(int i = 0;i<rows;i++){
-				inif.setStringProperty("Formulare", "PFormularText"+(i+1),(String)vorlagen.getValueAt(i, 0) , null);
-				inif.setStringProperty("Formulare", "PFormularName"+(i+1),(String)vorlagen.getValueAt(i, 1) , null);
+				String test = (String)vorlagen.getValueAt(i, 0);
+				if(test.equals("")){
+					String datei = (String)vorlagen.getValueAt(i, 1);
+					String msg = "Für Vorlagendatei "+datei+" wurde kein Titel eingegeben!\nDie Vorlagen werden nicht(!!!) gespeichert.";
+					JOptionPane.showMessageDialog(null,msg);
+					formok = false;
+					break;
+				}else{
+					formok = true;
+					inif.setStringProperty("Formulare", "PatientFormulareAnzahl",Integer.valueOf(rows).toString() , null);				
+				}
 			}
+			if(formok){
+				for(int i = 0;i<rows;i++){
+					inif.setStringProperty("Formulare", "PFormularText"+(i+1),(String)vorlagen.getValueAt(i, 0) , null);
+					inif.setStringProperty("Formulare", "PFormularName"+(i+1),(String)vorlagen.getValueAt(i, 1) , null);
+				}
+			}
+			for(int i = 0;i<6;i++){
+				wert = krit[i].getText();
+				inif.setStringProperty("Kriterien", "Krit"+(i+1),wert , null);
+				SystemConfig.vPatMerker.set(i, wert);
+				
+				wert = icon[i].getText();
+				inif.setStringProperty("Kriterien", "Image"+(i+1),icon[i].getText() , null);
+				SystemConfig.vPatMerkerIcon.set(i, (wert.equals("") ? null : new ImageIcon(Reha.proghome+"icons/"+wert)));
+				
+			}
+			INITool.saveIni(inif);
+			JOptionPane.showMessageDialog(null,"Konfiguration erfolgrein in patient.ini gespeichert.");
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Fehler beim speichern der Konfiguration in patient.ini!!!!");
 		}
-		for(int i = 0;i<6;i++){
-			wert = krit[i].getText();
-			inif.setStringProperty("Kriterien", "Krit"+(i+1),wert , null);
-			SystemConfig.vPatMerker.set(i, wert);
-			
-			wert = icon[i].getText();
-			inif.setStringProperty("Kriterien", "Image"+(i+1),icon[i].getText() , null);
-			SystemConfig.vPatMerkerIcon.set(i, (wert.equals("") ? null : new ImageIcon(Reha.proghome+"icons/"+wert)));
-			
-		}
-		inif.save();
 	}	
 	
 	private String dateiDialog(String pfad){

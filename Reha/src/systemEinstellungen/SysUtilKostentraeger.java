@@ -31,9 +31,12 @@ import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
-import sqlTools.SqlInfo;
-import systemTools.JCompTools;
+import CommonTools.SqlInfo;
+import CommonTools.JCompTools;
 import terminKalender.DatFunk;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -48,7 +51,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	JXTable ktrtbl = null;
 	MyKtraegerModel ktrmod = null;
 	JButton[] but = {null,null,null,null};
-	INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/ktraeger.ini");
+	INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "ktraeger.ini");
 	private TableCellRenderer JLabelRenderer = null; //= new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
 	
 	public SysUtilKostentraeger(){
@@ -388,7 +391,7 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		}
 		int kANr = inif.getIntegerProperty("KassenArtNr", datei.substring(0,2).toUpperCase());
 		inif.setStringProperty("KTraegerDateien", "KTDatei"+kANr, datei.toString(), null);
-		inif.save();
+		INITool.saveIni(inif);
 		try {
 			Thread.sleep(150);
 		} catch (InterruptedException e) {

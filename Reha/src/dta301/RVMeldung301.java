@@ -23,10 +23,10 @@ import org.thera_pi.nebraska.crypto.NebraskaNotInitializedException;
 import emailHandling.EmailSendenExtern;
 import entlassBerichte.EBerichtPanel;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
 import systemTools.IntegerTools;
-import systemTools.StringTools;
+import CommonTools.StringTools;
 import terminKalender.DatFunk;
 
 

@@ -17,16 +17,20 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaRadioButton;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaRadioButton;
+import CommonTools.JRtaTextField;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -300,8 +304,9 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		
 	}
 	private void doSpeichern(){
+		try{
 		String wert = "";
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/abrechnung.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "abrechnung.ini");
 		inif.setStringProperty("HMGKVRechnung", "Rformular",tf[0].getText().trim() , null);
 		inif.setStringProperty("HMGKVRechnung", "Rdrucker",((String) jcmb[0].getSelectedItem()).trim() , null);
 		inif.setStringProperty("HMGKVRechnung", "Tdrucker",((String) jcmb[1].getSelectedItem()).trim() , null);
@@ -321,7 +326,8 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 		inif.setStringProperty("GemeinsameParameter", "InOfficeStarten",wert , null);
 		wert = (cbemail.isSelected() ? "1" : "0");
 		inif.setStringProperty("GemeinsameParameter", "FragenVorEmail",wert , null);
-		inif.save();
+		INITool.saveIni(inif);
+		JOptionPane.showMessageDialog(null,"Die Werte wurden erfolgreich in abrechung.ini gespeichert");
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -329,6 +335,9 @@ public class SysUtilAbrechnungFormulare extends JXPanel implements KeyListener, 
 				return null;
 			}
 		}.execute();
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Fehler beim speichern in die abrechnung.ini!!!");
+		}
 	}
 	private void doWaehlen(JRtaTextField tf){
 		String s = dateiDialog();

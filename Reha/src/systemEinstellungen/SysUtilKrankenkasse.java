@@ -57,8 +57,11 @@ import org.jdesktop.swingx.painter.MattePainter;
 
 
 
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -135,7 +138,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 			}else{
 				optimize.setSelected(true);
 			}
-			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
+			INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "kasse.ini");
 			int forms = inif.getIntegerProperty("Formulare", "KassenFormulareAnzahl");
 			Vector<String> vec = new Vector<String>();
 			for(int i = 1; i <= forms; i++){
@@ -418,7 +421,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 	
 	private void doSpeichern(){
 		String wert = "";
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "kasse.ini");
 		//System.out.println(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
 		wert = (unten.isSelected() ? "1" : "0");
 		SystemConfig.hmContainer.put("Kasse", Integer.valueOf(wert));
@@ -461,7 +464,7 @@ public class SysUtilKrankenkasse extends JXPanel implements KeyListener, ActionL
 		*/
 		//vPreisGruppen.add(inif.getStringProperty("PreisGruppen","PGName"+i));
 		//vZuzahlRegeln.add(inif.getIntegerProperty("ZuzahlRegeln","ZuzahlRegel"+i));
-		inif.save();
+		INITool.saveIni(inif);
 	}	
 	
 	private int stringPosErmitteln(String[] str,String vergleich){

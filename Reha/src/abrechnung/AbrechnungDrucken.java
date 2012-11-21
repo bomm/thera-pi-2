@@ -16,7 +16,7 @@ import oOorgTools.OOTools;
 
 import org.jdesktop.swingworker.SwingWorker;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 

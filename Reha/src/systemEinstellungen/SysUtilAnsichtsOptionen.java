@@ -25,8 +25,11 @@ import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import terminKalender.ParameterLaden;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -201,7 +204,7 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
 	private void speichernHandeln(){
 		try{
 			String wert;
-			INIFile ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kalender.ini");
+			INIFile ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "kalender.ini");
 			
 			wert = (unten.isSelected() ? "1" : "0");
 			SystemConfig.hmContainer.put("Kalender", Integer.valueOf(wert));
@@ -213,7 +216,7 @@ public class SysUtilAnsichtsOptionen extends JXPanel implements KeyListener,Acti
 
 			ini.setStringProperty("Kalender", "StartWochenAnsicht", (startWochenAnz.isSelected() ? "1" : "0"), null);
 			ini.setStringProperty("Kalender", "AnsichtDefault", defaultWA.getSelectedItem()+"@"+defaultNA.getSelectedItem(), null);
-			ini.save();
+			INITool.saveIni(ini);
 			SystemConfig.KalenderStartWochenAnsicht = startWochenAnz.isSelected();
 			SystemConfig.KalenderStartNADefaultSet = defaultNA.getSelectedItem().toString();
 			SystemConfig.KalenderStartWADefaultUser = defaultWA.getSelectedItem().toString();

@@ -37,7 +37,7 @@ import org.jdesktop.swingx.JXTitledPanel;
 import org.therapi.reha.patient.PatientHauptLogic;
 
 import systemEinstellungen.SystemConfig;
-import systemTools.StringTools;
+import CommonTools.StringTools;
 import events.PatStammEvent;
 import events.PatStammEventClass;
 import events.RehaEvent;
@@ -173,12 +173,7 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 		
 		// Lemmi 20101212: zuletzt eingestellte und gemerkte Dimension des Suchfensters zurückholen
 		Dimension dim = new Dimension(300, 400);  // Diese Defaultwerte haben keine Wirkung !
-/*		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
-		if ( inif.getStringProperty("PatientenSuche", "SuchFensterBreite") != null )  // Prüfung auf Existenz
-			dim.width = inif.getIntegerProperty("PatientenSuche", "SuchFensterBreite");
-		if ( inif.getStringProperty("PatientenSuche", "SuchFensterHoehe") != null )  // Prüfung auf Existenz
-			dim.height = inif.getIntegerProperty("PatientenSuche", "SuchFensterHoehe");
-*/
+
 		dim.width = SystemConfig.hmPatientenSuchenDlgIni.get("fensterbreite");
 		dim.height = SystemConfig.hmPatientenSuchenDlgIni.get("fensterhoehe");
 		
@@ -423,31 +418,11 @@ public class SuchenDialog extends JXDialog implements RehaTPEventListener{
 	// speichere Dimension und Suchart in der INI-Datei für nächsten Aufruf
 	public void PatSuchenDlgIniSave(){
 		Dimension dim = SuchenDialog.this.getSize();
-		//Dimension dim = SuchenDialog.this.get
-/*		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
-		inif.setIntegerProperty("PatientenSuche", "SuchFensterBreite", dim.width, " letzte Breite des Suchfensters");
-		inif.setIntegerProperty("PatientenSuche", "SuchFensterHoehe", dim.height, " letzte Höhe des Suchfensters");
-		inif.setIntegerProperty("PatientenSuche", "Suchart", suchart, " letzte angewählte Suchart Suchfensters");
-		inif.save();
-*/		
+
 		SystemConfig.hmPatientenSuchenDlgIni.put("fensterbreite", dim.width);
 		SystemConfig.hmPatientenSuchenDlgIni.put("fensterhoehe", dim.height);
 		SystemConfig.hmPatientenSuchenDlgIni.put("suchart", suchart);
 	}
-/*
-	public void OtherDefaultsRead(){
-		int x = suchart;
-		Dimension dim = Dimension(100, 200);
-		//Dimension dim = SuchenDialog.this.get
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
-		x = inif.getIntegerProperty("PatientenSuche", "SuchFensterBreite");
-		if ( x > 0 ) dim.width = x;
-		x = inif.getIntegerProperty("PatientenSuche", "SuchFensterHoehe");
-		if ( x > 0 ) dim.height = x; 
-		suchart = inif.getIntegerProperty("PatientenSuche", "Suchart");
-//		inif.save();
-	}
-*/
 	
 
 	/**

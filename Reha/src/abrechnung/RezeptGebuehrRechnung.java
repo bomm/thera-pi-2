@@ -34,9 +34,9 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
@@ -230,7 +230,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		hmRezgeb.put("<rgbetrag>",dcf.format(Double.parseDouble(tfs[2].getText().replace(",","."))));
 		hmRezgeb.put("<rgpauschale>",dcf.format(Double.parseDouble(tfs[3].getText().replace(",","."))));
 		if(this.buchen){
-			hmRezgeb.put("<rgnr>","RGR-"+Integer.toString(sqlTools.SqlInfo.erzeugeNummer("rgrnr")));	
+			hmRezgeb.put("<rgnr>","RGR-"+Integer.toString(SqlInfo.erzeugeNummer("rgrnr")));	
 		}else{
 			hmRezgeb.put("<rgnr>",SqlInfo.holeEinzelFeld("select rnr from rgaffaktura where reznr='"+
 					hmRezgeb.get("<rgreznum>")+"' LIMIT 1"));
@@ -268,7 +268,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		buf.append("rgbetrag='"+hmRezgeb.get("<rgbetrag>").replace(",",".")+"', ");
 		buf.append("rpbetrag='"+hmRezgeb.get("<rgpauschale>").replace(",",".")+"', ");		
 		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
-		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
+		SqlInfo.sqlAusfuehren(buf.toString());		
 		
 		// vvv Lemmi 20101220: Eintrag der RGR auch in Tabelle "rliste"
 		/*
@@ -365,7 +365,7 @@ public class RezeptGebuehrRechnung extends JXDialog implements FocusListener, Ac
 		buf.append("rpbetrag='"+hmRezgeb.get("<rgpauschale>").replace(",",".")+"', ");		
 		buf.append("rdatum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"'");
 		buf.append(" where rnr='"+hmRezgeb.get("<rgnr>")+"' LIMIT 1");
-		sqlTools.SqlInfo.sqlAusfuehren(buf.toString());		
+		SqlInfo.sqlAusfuehren(buf.toString());		
 	}
 	
 	

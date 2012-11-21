@@ -34,9 +34,9 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import rehaInternalFrame.JBarkassenInternal;
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemTools.ButtonTools;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 
 public class Barkasse extends JXPanel{

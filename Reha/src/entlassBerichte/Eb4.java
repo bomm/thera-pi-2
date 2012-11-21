@@ -20,10 +20,10 @@ import javax.swing.JViewport;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import sqlTools.SqlInfo;
-import systemTools.JCompTools;
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
+import CommonTools.SqlInfo;
+import CommonTools.JCompTools;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;

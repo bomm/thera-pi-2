@@ -34,39 +34,56 @@ public class LadeProg {
 		}
 		//Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
 		//String vmload = "java -jar ";
-		//String commandx = vmload + prog; 
-
+		//String commandx = vmload + prog;
 		final String xprog = prog;
-		new SwingWorker<Void, Void>(){
+		new Thread(){
+			public void run(){
+				new SwingWorker<Void, Void>(){
 
-			@Override
-			protected Void doInBackground() throws Exception {
-				try {
-					List<String>list = Arrays.asList(xprog.split(" "));
-					ArrayList<String> alist = new ArrayList<String>(list);
-					alist.add(0,"-jar");
-					alist.add(0,"java");
-					Process process = new ProcessBuilder(alist).start();
-					//Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
-				       InputStream is = process.getInputStream();
-				       InputStreamReader isr = new InputStreamReader(is);
-				       BufferedReader br = new BufferedReader(isr);
-				       String line;
-				       while ((line = br.readLine()) != null) {
-				         doTestLine(line);
-				       }
-				       is.close();
-				       isr.close();
-				       br.close();
-				       //System.out.println("Process.beendet");
-				       process = null;
-				} catch (IOException e) {
-					Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
-					e.printStackTrace();
-				}
-				return null;
+					@Override
+					protected Void doInBackground() throws Exception {
+						//String cmd = "java -jar "+xprog;
+						//Runtime.getRuntime().exec(cmd);
+
+						try {
+							
+							
+							
+							List<String>list = Arrays.asList(xprog.split(" "));
+							ArrayList<String> alist = new ArrayList<String>(list);
+							alist.add(0,"-jar");
+							alist.add(0,"java");
+							Process process = new ProcessBuilder(alist).start();
+							
+							//Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+						       InputStream is = process.getInputStream();
+						       InputStreamReader isr = new InputStreamReader(is);
+						       BufferedReader br = new BufferedReader(isr);
+						       String line;
+						       
+						       while ((line = br.readLine()) != null) {
+						         //doTestLine(line);
+						       }
+						       
+						       is.close();
+						       isr.close();
+						       br.close();
+						       //System.out.println("Process.beendet");
+						       process = null;
+						    
+						     
+						} catch (IOException e) {
+							Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
+							e.printStackTrace();
+						}
+
+						return null;
+					}
+				}.execute();
+				
 			}
-		}.execute();
+		}.start();
+
 	}
 	public void doTestLine(String line){
 		final String xline = line;

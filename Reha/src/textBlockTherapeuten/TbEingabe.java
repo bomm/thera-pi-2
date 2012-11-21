@@ -13,7 +13,7 @@ import org.jdesktop.swingx.JXFrame;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 
 import dialoge.RehaSmartDialog;
 import events.RehaTPEventListener;

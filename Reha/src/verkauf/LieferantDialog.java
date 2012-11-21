@@ -14,7 +14,7 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import verkauf.model.Lieferant;
 
 import com.jgoodies.forms.layout.CellConstraints;

@@ -39,10 +39,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import rehaContainer.RehaTP;
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaCheckBox;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaTextField;
 import systemTools.Verschluesseln;
 import systemTools.WinNum;
 import dialoge.PinPanel;

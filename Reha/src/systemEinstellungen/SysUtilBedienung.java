@@ -20,8 +20,8 @@ import javax.swing.JPanel;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaComboBox;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -407,7 +407,7 @@ public class SysUtilBedienung extends JXPanel implements KeyListener, ActionList
 	
 	
 	private void doSpeichern(){
-//		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
+
 		if(HasChanged() && neustartRequire){
 			JOptionPane.showMessageDialog(null,"Sie haben die Einstellung für die Arbeitsflächen verändert.\n\n"+
 					"Diese Einstellung wird erst nach einem Neustart von Thera-Pi wirksam!");

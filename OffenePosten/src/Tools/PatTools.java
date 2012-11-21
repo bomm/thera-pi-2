@@ -4,6 +4,9 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import CommonTools.DatFunk;
+import CommonTools.StringTools;
+
 import offenePosten.OffenePosten;
 
 
@@ -43,7 +46,7 @@ public class PatTools {
 			//int lang = SystemConfig.hmAdrPDaten.hashCode();
 			////System.out.println(lang);
 			//SystemConfig.hmAdrPDaten.put("<Padr1>", patDaten.get(0));
-			String anrede = Tools.StringTools.EGross(patDaten.get(0));
+			String anrede = StringTools.EGross(patDaten.get(0));
 			if(anrede.toUpperCase().equals("HERR")){
 				isherr = true;
 			}

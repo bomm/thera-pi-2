@@ -39,12 +39,16 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 import RehaIO.RehaIOMessages;
 import RehaIO.SocketClient;
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.JCompTools;
-import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
-import Tools.SqlInfo;
+import CommonTools.ButtonTools;
+import CommonTools.DatFunk;
+import CommonTools.DateTableCellEditor;
+import CommonTools.DblCellEditor;
+import CommonTools.DoubleTableCellRenderer;
+import CommonTools.JCompTools;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
+import CommonTools.MitteRenderer;
+import CommonTools.SqlInfo;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -160,17 +164,17 @@ public class OffenepostenPanel extends JXPanel implements TableModelListener{
 		tabmod.setColumnIdentifiers(spalten);
 		tab = new JXTable(tabmod);
 		tab.setHorizontalScrollEnabled(true);
-		tab.getColumn(0).setCellRenderer(new Tools.MitteRenderer());
+		tab.getColumn(0).setCellRenderer(new MitteRenderer());
 		
 		//tab.getColumn(1).setCellEditor();
 		DateTableCellEditor tble = new DateTableCellEditor();
-		tab.getColumn (4).setCellRenderer(new Tools.MitteRenderer());
-		tab.getColumn(5).setCellRenderer(new Tools.DoubleTableCellRenderer());
-		tab.getColumn(6).setCellRenderer(new Tools.DoubleTableCellRenderer());
-		tab.getColumn(8).setCellRenderer(new Tools.DoubleTableCellRenderer());
-		tab.getColumn(5).setCellEditor(new Tools.DblCellEditor());
-		tab.getColumn(6).setCellEditor(new Tools.DblCellEditor());
-		tab.getColumn(8).setCellEditor(new Tools.DblCellEditor());
+		tab.getColumn (4).setCellRenderer(new MitteRenderer());
+		tab.getColumn(5).setCellRenderer(new DoubleTableCellRenderer());
+		tab.getColumn(6).setCellRenderer(new DoubleTableCellRenderer());
+		tab.getColumn(8).setCellRenderer(new DoubleTableCellRenderer());
+		tab.getColumn(5).setCellEditor(new DblCellEditor());
+		tab.getColumn(6).setCellEditor(new DblCellEditor());
+		tab.getColumn(8).setCellEditor(new DblCellEditor());
 		
 		tab.getColumn(1).setCellEditor(tble);
 		tab.getColumn(7).setCellEditor(tble);

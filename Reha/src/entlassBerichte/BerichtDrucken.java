@@ -25,7 +25,7 @@ import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaCheckBox;
+import CommonTools.JRtaCheckBox;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

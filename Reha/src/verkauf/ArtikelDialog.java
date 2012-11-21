@@ -18,10 +18,13 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
-import systemTools.JRtaTextField;
-import utils.INIFile;
+import CommonTools.JRtaTextField;
+
 import verkauf.model.Artikel;
 import verkauf.model.Lieferant;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -69,7 +72,7 @@ public class ArtikelDialog extends RehaSmartDialog {
 		//pinPanel.getRot().setActionCommand("close");
 		pinPanel.setName("ArtikelDlg");
 		setPinPanel(pinPanel);
-		inif = new INIFile(Reha.proghome +"ini/"+ Reha.aktIK +"/verkauf.ini");
+		inif = INITool.openIni(Reha.proghome +"ini/"+ Reha.aktIK +"/", "verkauf.ini"); 
 		getSmartTitledPanel().setContentContainer(getContent());
 		getSmartTitledPanel().getContentContainer().setName("ArtikelDlg");
 		getSmartTitledPanel().setTitle("Artikel anlegen / bearbeiten");

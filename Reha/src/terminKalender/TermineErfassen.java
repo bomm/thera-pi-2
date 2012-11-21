@@ -12,7 +12,7 @@ import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 

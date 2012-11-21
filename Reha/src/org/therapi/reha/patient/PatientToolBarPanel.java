@@ -20,7 +20,7 @@ import javax.swing.JToolBar;
 import org.jdesktop.swingx.JXPanel;
 
 import systemEinstellungen.SystemConfig;
-import systemTools.Colors;
+import CommonTools.Colors;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -34,6 +34,7 @@ public class PatientToolBarPanel extends JXPanel{
 	PatientToolBarLogic patToolLogic = null;
 	public JLabel sucheLabel = null;
 	
+	@SuppressWarnings("rawtypes")
 	public PatientToolBarPanel(PatientHauptPanel patHauptPanel){
 		super();
 		setOpaque(false);
@@ -58,11 +59,6 @@ public class PatientToolBarPanel extends JXPanel{
 				"Nur Patienten mit aktuellen Rezepten"});
 			
 		// Lemmi 20101212: Die letzte benutzte Suchart aus der INI-Datei holen und wieder setzen
-/*		int suchart = 0;
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
-		if ( inif.getStringProperty("PatientenSuche", "Suchart") != null )  // Prüfung auf Existenz
-				suchart = inif.getIntegerProperty("PatientenSuche", "Suchart");
-*/				
 		int suchart = SystemConfig.hmPatientenSuchenDlgIni.get("suchart");
 
 		patientHauptPanel.jcom.setSelectedIndex(suchart);
@@ -104,7 +100,8 @@ public class PatientToolBarPanel extends JXPanel{
 		add(sucheLabel,cc.xy(13,2));
 		patientHauptPanel.tfsuchen = new JFormattedTextField();
 		patientHauptPanel.tfsuchen.setFont(new Font("Tahoma",Font.BOLD,11));
-		patientHauptPanel.tfsuchen.setBackground(Colors.PiOrange.alpha(0.15f));
+		//patientHauptPanel.tfsuchen.setBackground(Colors.PiOrange.alpha(0.15f));
+		patientHauptPanel.tfsuchen.setOpaque(false);
 		patientHauptPanel.tfsuchen.setForeground(new Color(136,136,136));
 		patientHauptPanel.tfsuchen.setName("suchenach");
 		patientHauptPanel.tfsuchen.addKeyListener(patientHauptPanel.toolBarKeys);

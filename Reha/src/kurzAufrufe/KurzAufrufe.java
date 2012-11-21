@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import org.jdesktop.swingworker.SwingWorker;
 
 import oOorgTools.OOTools;
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;

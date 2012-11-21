@@ -29,10 +29,10 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
-import sqlTools.SqlInfo;
-import systemTools.Colors;
-import systemTools.JCompTools;
-import systemTools.JRtaTextField;
+import CommonTools.SqlInfo;
+import CommonTools.Colors;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

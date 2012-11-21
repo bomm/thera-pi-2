@@ -10,9 +10,9 @@ import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.StringTools;
+import CommonTools.StringTools;
 
 public class ArztTools {
 	public static void constructArztHMap(String id){

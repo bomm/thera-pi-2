@@ -1,10 +1,15 @@
 package systemEinstellungen;
 
+
 import hauptFenster.Reha;
 
 import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
+import java.io.InputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,8 +22,17 @@ import javax.swing.JOptionPane;
 
 
 
-import sqlTools.SqlInfo;
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
+
+import com.mysql.jdbc.PreparedStatement;
+
+
+
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
+import CommonTools.FileTools;
 import systemTools.Verschluesseln;
 import terminKalender.DatFunk;
 import terminKalender.ParameterLaden;
@@ -226,7 +240,7 @@ public class SystemConfig {
 	
 	}
 	public void SystemStart(String homedir){
-		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 		PDFformularPfad = ini.getStringProperty("Formulare","PDFFormularPfad");
 		try {
 			dieseMaschine = java.net.InetAddress.getLocalHost();
@@ -283,9 +297,7 @@ public class SystemConfig {
 	@SuppressWarnings("unchecked")
 	private void DatenBank(){
 		try{
-		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-		//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
-
+		ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 		int lesen;
 		int i;
 		ArrayList<String> aKontakt;
@@ -319,7 +331,7 @@ public class SystemConfig {
 					Verschluesseln man = Verschluesseln.getInstance();
 					man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 					ini.setStringProperty("DatenBank","DBPasswort"+i,man.encrypt(((String)ret)),null);
-					ini.save();
+					INITool.saveIni(ini);
 				}
 			}
 
@@ -335,8 +347,7 @@ public class SystemConfig {
 
 	private void HauptFenster(){
 		try{
-			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-			//ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
+			ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 			boolean mustsave = false;
 			aHauptFenster = new ArrayList<String>();
 			aHauptFenster.add(ini.getStringProperty("HauptFenster","Hintergrundbild"));
@@ -366,7 +377,7 @@ public class SystemConfig {
 				mustsave = true;
 			}
 			if(mustsave){
-				ini.save();
+				INITool.saveIni(ini);
 			}
 
 			
@@ -384,7 +395,7 @@ public class SystemConfig {
 			}
 			OpenOfficeNativePfad = ini.getStringProperty("OpenOffice.org","OfficeNativePfad");
 			
-			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/nachrichten.ini");
+			ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "nachrichten.ini");
 			timerdelay = ini.getLongProperty("RehaNachrichten", "NachrichtenTimer");
 			timerpopup = (ini.getIntegerProperty("RehaNachrichten", "NachrichtenPopUp") <= 0 ? false : true);
 			timerprogressbar = (ini.getIntegerProperty("RehaNachrichten", "NachrichtenProgressbar") <= 0 ? false : true);
@@ -406,9 +417,8 @@ public class SystemConfig {
 	
 	@SuppressWarnings("unchecked")
 	private void TerminKalender(){
-		//ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");	
-		INIFile termkalini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
-		//(TestFenster) eltern.splashText("Lade Kalenderparameter");
+	
+		INIFile termkalini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "terminkalender.ini");
 		aTerminKalender = new ArrayList<ArrayList<ArrayList<String[]>>>();
 		ArrayList<String> aList1  = new ArrayList<String>();
 		ArrayList<String[]> aList2 = new ArrayList<String[]>();
@@ -443,7 +453,7 @@ public class SystemConfig {
 		GruppenLesen();
 		//oGruppen = new GruppenEinlesen().init();
 		try{
-			ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kalender.ini");
+			ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "kalender.ini");
 			KalenderLangesMenue = (ini.getStringProperty("Kalender","LangesMenue").trim().equals("0") ? false : true );
 			KalenderStartWochenAnsicht = (ini.getStringProperty("Kalender","StartWochenAnsicht").trim().equals("0") ? false : true );
 			KalenderStartWADefaultUser = (ini.getStringProperty("Kalender","AnsichtDefault").split("@")[0]);
@@ -451,7 +461,7 @@ public class SystemConfig {
 			KalenderZeitLabelZeigen = (ini.getStringProperty("Kalender","ZeitLabelZeigen").trim().equals("0") ? false : true );
 			if(ini.getStringProperty("Kalender", "ZeitLinieZeigen")==null){
 				ini.setStringProperty("Kalender", "ZeitLinieZeigen", "0", null);
-				ini.save();
+				INITool.saveIni(ini);
 				KalenderTimeLineZeigen = false;
 			}else{
 				KalenderTimeLineZeigen = (ini.getStringProperty("Kalender", "ZeitLinieZeigen").trim().equals("0") ? false : true);	
@@ -467,10 +477,7 @@ public class SystemConfig {
 	}
 	@SuppressWarnings("unchecked")
 	public static void NurSets(){
-		//ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
-		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
-
-		//(TestFenster) eltern.splashText("Lade Kalenderparameter");
+		ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "terminkalender.ini");
 		aTerminKalender = new ArrayList<ArrayList<ArrayList<String[]>>>();
 		aTerminKalender.clear();
 		ArrayList<String> aList1  = new ArrayList<String>();
@@ -491,8 +498,7 @@ public class SystemConfig {
 	}
 	@SuppressWarnings("unchecked")
 	public static void  RoogleGruppen(){
-		INIFile roogleini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/terminkalender.ini");
-		//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
+		INIFile roogleini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "terminkalender.ini");
 		aRoogleGruppen = new ArrayList<ArrayList<ArrayList<String[]>>>();
 		int lesen,i;
 		lesen =  Integer.parseInt(String.valueOf(roogleini.getStringProperty("RoogleEinstellungen","RoogleAnzahlGruppen")) );
@@ -523,8 +529,7 @@ public class SystemConfig {
 	}
 
 	private void EmailParameter(){
-		INIFile emailini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/email.ini");
-		//ini = new INIFile("c:\\RehaVerwaltung\\ini\\rehajava.ini");
+		INIFile emailini = 		INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "email.ini");
 		hmEmailExtern = new HashMap<String,String>();
 		hmEmailExtern.put("SmtpHost",emailini.getStringProperty("EmailExtern","SmtpHost"));
 		hmEmailExtern.put("SmtpAuth",emailini.getStringProperty("EmailExtern","SmtpAuth"));			
@@ -551,7 +556,7 @@ public class SystemConfig {
 		hmEmailIntern.put("SenderAdresse",emailini.getStringProperty("EmailIntern","SenderAdresse"));			
 		hmEmailIntern.put("Bestaetigen",emailini.getStringProperty("EmailIntern","EmpfangBestaetigen"));	
 		if(new File(Reha.proghome+"ini/"+Reha.aktIK+"/dta301.ini").exists()){
-			INIFile dtaini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/dta301.ini");
+			INIFile dtaini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "dta301.ini");
 			dta301InBox = dtaini.getStringProperty("DatenPfade301", "inbox");
 			dta301OutBox = dtaini.getStringProperty("DatenPfade301", "outbox");
 		}
@@ -559,7 +564,7 @@ public class SystemConfig {
 	}	
 	
 	private void Verzeichnisse(){
-		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 		hmVerzeichnisse = new HashMap<String,String>();
 		hmVerzeichnisse.put("Programmverzeichnis",String.valueOf(Reha.proghome));
 		hmVerzeichnisse.put("Vorlagen",String.valueOf(Reha.proghome+"vorlagen/"+Reha.aktIK));
@@ -574,7 +579,7 @@ public class SystemConfig {
 	@SuppressWarnings("unchecked")
 	private void TKFarben(){
 		if (colini==null){
-			colini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/color.ini");
+			colini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "color.ini");
 		}
 		////System.out.println("In TK-Farben");
 		int anz  = Integer.valueOf( String.valueOf(colini.getStringProperty("Terminkalender","FarbenAnzahl")));
@@ -657,7 +662,7 @@ public class SystemConfig {
 	@SuppressWarnings({ "unchecked" })
 	public static void MandantenEinlesen(){
 
-		INIFile inif = new INIFile(Reha.proghome+"ini/mandanten.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/", "mandanten.ini");
 		int AnzahlMandanten = inif.getIntegerProperty("TheraPiMandanten", "AnzahlMandanten");
 		AuswahlImmerZeigen = inif.getIntegerProperty("TheraPiMandanten", "AuswahlImmerZeigen");
 		DefaultMandant = inif.getIntegerProperty("TheraPiMandanten", "DefaultMandant");
@@ -671,7 +676,7 @@ public class SystemConfig {
 		}
 		hmDBMandant = new HashMap<String,Vector>(); 
 		for(int i = 0; i < AnzahlMandanten;i++){
-			INIFile minif = new INIFile(Reha.proghome+"ini/"+Mandanten.get(i)[0]+"/rehajava.ini");
+			INIFile minif = INITool.openIni(Reha.proghome+"ini/"+Mandanten.get(i)[0]+"/", "rehajava.ini");
 			Vector<String> mandantDB = new Vector<String>();
 			mandantDB.add(minif.getStringProperty("DatenBank", "DBType1"));
 			mandantDB.add(minif.getStringProperty("DatenBank", "DBTreiber1"));
@@ -692,7 +697,7 @@ public class SystemConfig {
 			hmDBMandant.put(Mandanten.get(i)[1],(Vector<String>)mandantDB.clone());
 		}
 		
-		INIFile dbtini = new INIFile(Reha.proghome+"ini/dbtypen.ini");
+		INIFile dbtini = INITool.openIni(Reha.proghome+"ini/", "dbtypen.ini");
 		int itypen = dbtini.getIntegerProperty("Datenbanktypen", "TypenAnzahl");
 		DBTypen = new Vector<String[]>();
 		String[] typen = new String[] {null,null,null};
@@ -705,7 +710,7 @@ public class SystemConfig {
 	}
 
 	public static void InetSeitenEinlesen(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/rehabrowser.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/", "rehabrowser.ini");
 		int seitenanzahl = inif.getIntegerProperty("RehaBrowser", "SeitenAnzahl");
 		InetSeiten = new Vector<ArrayList<String>>();
 		ArrayList<String> seite = null;
@@ -733,11 +738,9 @@ public class SystemConfig {
  
 
 	public static void UpdateIni(String inidatei,String gruppe,String element,String wert){
-
-		INIFile	updateini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/"+inidatei);
-	
+		INIFile	updateini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", inidatei);
 		updateini.setStringProperty(gruppe, element, wert, null);
-		updateini.save();
+		INITool.saveIni(updateini);
 	}
 	public static void UpdateIni(INIFile inidatei,String gruppe,String element,Object wert,String hinweis){
 		if(wert instanceof java.lang.String){
@@ -746,69 +749,12 @@ public class SystemConfig {
 			inidatei.setIntegerProperty(gruppe, element, (Integer)wert, hinweis);
 		}
 		//System.out.println(inidatei.getFileName()+" - Gruppe="+gruppe+" / Element="+element+" / Wert="+wert );
-		inidatei.save();
+		INITool.saveIni(inidatei);
 	}
 
 	public static void GruppenLesen(){
 		oGruppen = new GruppenEinlesen().init();
 	}
-	/*
-	public static void TarifeLesen(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/kasse.ini");
-		int tarife = inif.getIntegerProperty("PreisGruppen", "AnzahlPreisGruppen");
-		vPreisGruppen = new Vector<String>() ;
-		vPreisGueltig = new Vector<String>() ;
-		vZuzahlRegeln = new Vector<Integer>();
-		vNeuePreiseAb = new Vector<Vector<String>>();
-		vNeuePreiseRegel = new Vector<Vector<Integer>>();
-		vHBRegeln = new Vector<Vector<String>>();
-		vBerichtRegeln = new Vector<String>();
-		vHMRAbrechnung = new Vector<Integer>();
-		//xxx
-
-		Vector<String> vec = new Vector<String>();
-
-		for(int i = 1; i <= tarife; i++){
-			vPreisGruppen.add(inif.getStringProperty("PreisGruppen","PGName"+i));
-			vPreisGueltig.add(inif.getStringProperty("PreisGruppen","PGGueltig"+i));
-			vZuzahlRegeln.add(inif.getIntegerProperty("ZuzahlRegeln","ZuzahlRegel"+i));
-			vHMRAbrechnung.add(inif.getIntegerProperty("HMRAbrechnung","HMRAbrechnung"+i));
-		}
-		tarife = inif.getIntegerProperty("HBRegeln", "AnzahlHBRegeln");
-		for(int i = 1; i <= tarife; i++){
-			vec.clear();
-			vec.add(inif.getStringProperty("HBRegeln","HBPosVoll"+i));
-			vec.add(inif.getStringProperty("HBRegeln","HBPosMit"+i));			
-			vec.add(inif.getStringProperty("HBRegeln","HBKilometer"+i));			
-			vec.add(inif.getStringProperty("HBRegeln","HBPauschal"+i));			
-			vec.add(inif.getStringProperty("HBRegeln","HBMitZuZahl"+i));
-			vHBRegeln.add((Vector<String>)vec.clone());
-		}
-		tarife = inif.getIntegerProperty("BerichtRegeln", "AnzahlBerichtRegeln");
-		for(int i = 1; i <= tarife; i++){
-			vBerichtRegeln.add( inif.getStringProperty("BerichtRegeln","Bericht1"+i) );
-		}
-		String[] diszis = {"Physio","Massage","Ergo","Logo","REHA"};
-		tarife = inif.getIntegerProperty("PreisRegeln", "PreisRegelAnzahl");
-		Integer iregel;
-		Vector<String> vpreisab = new Vector<String>();
-		Vector<Integer> vpreisreg = new Vector<Integer>();		
-		for(int d = 0 ; d < diszis.length; d++){
-			vpreisab.clear();
-			vpreisreg.clear();
-			for(int i = 1; i <= tarife; i++){
-				vpreisab.add(inif.getStringProperty("PreisRegeln","Preis"+diszis[d]+"Ab"+i));
-				iregel = inif.getIntegerProperty("PreisRegeln","Preis"+diszis[d]+"Regel"+i);
-				vpreisreg.add( ( (iregel != null) ? iregel : 0) );				
-			}
-			vNeuePreiseAb.add((Vector<String>)vpreisab.clone());
-			vNeuePreiseRegel.add((Vector<Integer>)vpreisreg.clone());
-		}
-		//System.out.println("Neue Preise ab="+vNeuePreiseAb);
-		//System.out.println("Neue Preise Regeln = "+vNeuePreiseRegel);
-
-	}
-	*/
 	public static void HashMapsVorbereiten(){
 		/********************/
 		hmAdrKDaten = new HashMap<String,String>();
@@ -873,43 +819,62 @@ public class SystemConfig {
 		String[] fenster = {"Kasse","Patient","Kalender","Arzt","Gutachten","Abrechnung"};
 		String[] files = {"kasse.ini","patient.ini","kalender.ini","arzt.ini","gutachten.ini","abrechnung.ini"};
 		INIFile inif = null;
+		boolean mustupdate = false;
 		for(int i = 0; i < fenster.length;i++){
-			inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/"+files[i]);
-			
-			//desktopPane 0 oder 1
-			if(inif.getIntegerProperty("Container", "StarteIn")==null)
-				UpdateIni(inif,"Container","StarteIn",1,null);
-			hmContainer.put(fenster[i], inif.getIntegerProperty("Container", "StarteIn"));
-			//immer auf maximale Größe
-			if(inif.getIntegerProperty("Container", "ImmerOptimieren")==null)
-				UpdateIni(inif,"Container","ImmerOptimieren",(fenster[i].equals("Kalender") ? 1 : 0),null);
-			hmContainer.put(fenster[i]+"Opti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
-			//X-Position
-			if(inif.getIntegerProperty("Container", "ZeigeAnPositionX")==null){
-				UpdateIni(inif,"Container","ZeigeAnPositionX",5,null);
-				if(fenster[i].equals("Kalender")){
-					hmContainer.put(fenster[i]+"Opti",1);		
+			try{
+				mustupdate = false;
+				inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", files[i]);
+				//desktopPane 0 oder 1
+				if(inif.getIntegerProperty("Container", "StarteIn")==null){
+					inif.setIntegerProperty("Container","StarteIn",1,null);
+					mustupdate = true;
 				}
+				hmContainer.put(fenster[i], inif.getIntegerProperty("Container", "StarteIn"));
+				//immer auf maximale Größe
+				if(inif.getIntegerProperty("Container", "ImmerOptimieren")==null){
+					inif.setIntegerProperty("Container","ImmerOptimieren",(fenster[i].equals("Kalender") ? 1 : 0),null);
+					mustupdate = true;
+				}
+				hmContainer.put(fenster[i]+"Opti", inif.getIntegerProperty("Container", "ImmerOptimieren"));
+				//X-Position
+				if(inif.getIntegerProperty("Container", "ZeigeAnPositionX")==null){
+					inif.setIntegerProperty("Container","ZeigeAnPositionX",5,null);
+					mustupdate = true;
+					if(fenster[i].equals("Kalender")){
+						hmContainer.put(fenster[i]+"Opti",1);		
+					}
+				}
+				hmContainer.put(fenster[i]+"LocationX", inif.getIntegerProperty("Container", "ZeigeAnPositionX"));
+				//Y-Position
+				if(inif.getIntegerProperty("Container", "ZeigeAnPositionY")==null){
+					inif.setIntegerProperty("Container","ZeigeAnPositionY",5,null);
+					mustupdate = true;
+				}
+				hmContainer.put(fenster[i]+"LocationY", inif.getIntegerProperty("Container", "ZeigeAnPositionY"));
+				//X-Größe
+				if(inif.getIntegerProperty("Container", "DimensionX")==null){
+					inif.setIntegerProperty("Container","DimensionX",-1,null);
+					mustupdate = true;					
+				}
+				hmContainer.put(fenster[i]+"DimensionX", inif.getIntegerProperty("Container", "DimensionX"));
+				//Y-Größe
+				if(inif.getIntegerProperty("Container", "DimensionY")==null){
+					inif.setIntegerProperty("Container","DimensionY",-1,null);
+					mustupdate = true;					
+				}
+				hmContainer.put(fenster[i]+"DimensionY", inif.getIntegerProperty("Container", "DimensionY"));
+				if(mustupdate){
+					INITool.saveIni(inif);
+				}
+			}catch(Exception ex){
+				ex.printStackTrace();
 			}
-			hmContainer.put(fenster[i]+"LocationX", inif.getIntegerProperty("Container", "ZeigeAnPositionX"));
-			//Y-Position
-			if(inif.getIntegerProperty("Container", "ZeigeAnPositionY")==null)
-				UpdateIni(inif,"Container","ZeigeAnPositionY",5,null);
-			hmContainer.put(fenster[i]+"LocationY", inif.getIntegerProperty("Container", "ZeigeAnPositionY"));
-			//X-Größe
-			if(inif.getIntegerProperty("Container", "DimensionX")==null)
-				UpdateIni(inif,"Container","DimensionX",-1,null);
-			hmContainer.put(fenster[i]+"DimensionX", inif.getIntegerProperty("Container", "DimensionX"));
-			//Y-Größe
-			if(inif.getIntegerProperty("Container", "DimensionY")==null)
-				UpdateIni(inif,"Container","DimensionY",-1,null);
-			hmContainer.put(fenster[i]+"DimensionY", inif.getIntegerProperty("Container", "DimensionY"));
 		}
 	}
 	public static void PatientLesen(){
 		vPatMerker = new Vector<String>();
 		vPatMerkerIcon = new Vector<ImageIcon>();
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/patient.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "patient.ini");
 		for(int i = 1; i < 7;i++){
 			vPatMerker.add(inif.getStringProperty("Kriterien", "Krit"+i));
 			String simg = inif.getStringProperty("Kriterien", "Image"+i);
@@ -921,11 +886,12 @@ public class SystemConfig {
 		}
 	}
 	public static void GeraeteInit(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/geraete.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "geraete.ini");
+		boolean mustsave = false;
 		if(inif.getIntegerProperty("KartenLeser", "KartenLeserAktivieren") > 0){
 			sReaderName = inif.getStringProperty("KartenLeser", "KartenLeserName");
 			sReaderAktiv = "1";
-			boolean mustsave = false;
+
 			if(inif.getStringProperty("KartenLeser", "KartenLeserCTAPILib")==null){
 				inif.setStringProperty("KartenLeser", "KartenLeserCTAPILib","ctpcsc31kv",null);
 				mustsave = true;
@@ -933,9 +899,6 @@ public class SystemConfig {
 			if(inif.getStringProperty("KartenLeser", "KartenLeserDeviceID")==null){
 				inif.setStringProperty("KartenLeser", "KartenLeserDeviceID","0",null);
 				mustsave = true;
-			}
-			if(mustsave){
-				inif.save();
 			}
 
 			sReaderCtApiLib = inif.getStringProperty("KartenLeser", "KartenLeserCTAPILib");
@@ -959,6 +922,7 @@ public class SystemConfig {
 			hmKVKDaten.put("Fehlercode", "");
 			hmKVKDaten.put("Fehlertext", "");
 			hmKVKDaten.put("Anrede", "");
+
 		}else{
 			sReaderName = "";
 			sReaderAktiv = "0";
@@ -989,9 +953,13 @@ public class SystemConfig {
 			hmDokuScanner.put("seiten", "---");
 			hmDokuScanner.put("dialog", "---");
 		}
+		if(mustsave){
+			INITool.saveIni(inif);
+		}
+
 	}
 	public static void ArztGruppenInit(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arzt.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "arzt.ini");
 		int ags;
 		if( (ags = inif.getIntegerProperty("ArztGruppen", "AnzahlGruppen")) > 0){
 			arztGruppen = new String[ags];
@@ -1002,7 +970,8 @@ public class SystemConfig {
 	}
 	@SuppressWarnings("unchecked")
 	public static void RezeptInit(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rezept.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rezept.ini");
+		boolean mustsave = false;;
 		int args;
 		//public static String[] rezeptKlassen = null;
 		initRezeptKlasse = inif.getStringProperty("RezeptKlassen", "InitKlasse");
@@ -1043,7 +1012,7 @@ public class SystemConfig {
 		String dummy = inif.getStringProperty("Sonstiges", "AngelegtVonUser");
 		if(dummy == null){
 			inif.setStringProperty("Sonstiges", "AngelegtVonUser","0",null);
-			inif.save();
+			mustsave = true;
 		}else{
 			AngelegtVonUser = (inif.getStringProperty("Sonstiges", "AngelegtVonUser").equals("0") ? false : true);
 		}
@@ -1061,7 +1030,7 @@ public class SystemConfig {
 			}
 			//System.out.println("Aus Direktzuweisung\n"+hmHmPraefix);
 			//System.out.println("Aus Direktzuweisung\n"+hmHmPosIndex);
-			inif.save();
+			mustsave = true;
 		}else{
 			for(int i = 0; i < hmPraefixArt.length;i++){
 				hmHmPraefix.put(hmPraefixArt[i] ,inif.getStringProperty("HMRPraefix",hmPraefixArt[i]));
@@ -1070,11 +1039,14 @@ public class SystemConfig {
 			//System.out.println("Aus INI-Datei\n"+hmHmPraefix);
 			//System.out.println("Aus INI-Datei\n"+hmHmPosIndex);
 		}
+		if(mustsave){
+			INITool.saveIni(inif);
+		}
 		
 	}
 	@SuppressWarnings("unchecked")
 	public static void TherapBausteinInit() {
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/thbericht.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "thbericht.ini");
 		hmTherapBausteine = new HashMap<String,Vector<String>>();
 		int lang = rezeptKlassenAktiv.size();
 		Vector<String> vec = new Vector<String>();
@@ -1105,7 +1077,7 @@ public class SystemConfig {
 				"Strasse","Plz","Ort","Telefon","Telefax","Email","Internet","Bank","Blz","Kto",
 				"Steuernummer","Hrb","Logodatei","Zusatz1","Zusatz2","Zusatz3","Zusatz4","Bundesland"};
 		hmFirmenDaten = new HashMap<String,String>();
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/firmen.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "firmen.ini");
 		for(int i = 0; i < stitel.length;i++){
 			hmFirmenDaten.put(stitel[i],inif.getStringProperty("Firma",stitel[i] ) );
 		}
@@ -1114,7 +1086,7 @@ public class SystemConfig {
 	
 	// Lemmi 20101224 Steuerparanmeter für RGR und AFR in OffenPosten und Mahnungen, zentral einlesen
 	public static void OffenePostenIni_ReadFromIni(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/offeneposten.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "offeneposten.ini");
 
 		// Voreinstellung von Defaultwerten
 		hmZusatzInOffenPostenIni.put("RGRinOPverwaltung", 0);
@@ -1131,15 +1103,16 @@ public class SystemConfig {
 	}
 	public static void EigeneDokuvorlagenLesen(){
 		try{
-			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/eigenedoku.ini");
+			INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "eigenedoku.ini");
 			String dokus = null;
 			vOwnDokuTemplate.clear();
+			boolean mustsave = false;
 			// Prüfung auf Existenz
 			if ( (dokus = inif.getStringProperty("EigeneDokus", "DokuAnzahl")) == null ){
 				inif.setStringProperty("EigeneDokus", "DokuAnzahl","0",null);
 				inif.setStringProperty("EigeneDokus", "DokuText1","",null);
 				inif.setStringProperty("EigeneDokus", "DokuDatei1","",null);
-				inif.save();
+				mustsave = true;
 			}else{
 				Vector<String> vdummy = new Vector<String>(); 
 				for(int i = 0; i < Integer.parseInt(dokus); i++){
@@ -1148,6 +1121,9 @@ public class SystemConfig {
 					vdummy.add( inif.getStringProperty("EigeneDokus", "DokuDatei"+Integer.toString(i+1)));
 					vOwnDokuTemplate.add((Vector<String>)vdummy.clone());
 				}
+			}
+			if(mustsave){
+				INITool.saveIni(inif);
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -1158,7 +1134,7 @@ public class SystemConfig {
 	// Lemmi 20101223 Steuerparanmeter für den Patienten-Suchen-Dialog aus der INI zentral einlesen
 	public static void BedienungIni_ReadFromIni(){
 		boolean mustsave = false;
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "bedienung.ini");
 		
 //		if ( inif.IsFileLoaded() )
 //			int x = 5;
@@ -1219,13 +1195,13 @@ public class SystemConfig {
 			JOptionPane.showMessageDialog(null,"Die Datei 'bedienung.ini' zur aktuellen IK-Nummer kann nicht gelesen werden.");
 		}
 		if(mustsave){
-			inif.save();
+			INITool.saveIni(inif);
 		}
 	}
 
 	// Lemmi 20101223 Steuerparanmeter für den Patienten-Suchen-Dialog in die INI schreiben	
 	public static void BedienungIni_WriteToIni(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/bedienung.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "bedienung.ini");
 
 		// Sofern alle Parameter hier wieder in die INI geschrieben werden, legt das eine komplette INI an !
 	
@@ -1242,11 +1218,12 @@ public class SystemConfig {
 		inif.setIntegerProperty("Termine", "HMDialogZeigen", (Boolean)hmTerminBestaetigen.get("dlgzeigen") ? 1 : 0, null);
 		inif.setIntegerProperty("Termine", "HMDialogDiffZeigen",(Boolean)hmTerminBestaetigen.get("dlgdiffzeigen") ? 1 : 0, null);
 
-		inif.save();  // Daten wegschreiben
-		
-		ini = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		  // Daten wegschreiben
+		INITool.saveIni(inif);
+		ini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 		ini.setStringProperty("HauptFenster", "HorizontalTeilen",(SystemConfig.desktopHorizontal ? "1" : "0"),null);
-		ini.save();
+		INITool.saveIni(ini);
+
 /*		
 		// Wegschreiben der INI-Parameter in die Datenbank TESTHALBER
 		inidb.WritePropInteger("bedienung.ini", "Bedienung", "WerkzeugaufrufMausklicks", 
@@ -1266,7 +1243,7 @@ public class SystemConfig {
 	
 	@SuppressWarnings("unchecked")
 	public static void FremdProgs(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/fremdprog.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "fremdprog.ini");
 		vFremdProgs = new Vector<Vector<String>>();
 		Vector<String> progs = new Vector<String>();
 		int anzahl =  inif.getIntegerProperty("FremdProgramme", "FremdProgrammeAnzahl");
@@ -1288,34 +1265,34 @@ public class SystemConfig {
 	}
 	public static void GeraeteListe(){
 		hmGeraete = new HashMap<String,String[]>();
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/geraete.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "geraete.ini");
 
 		int anzahl =  inif.getIntegerProperty("KartenLeserListe", "LeserAnzahl");
 		String[] string = new String[anzahl]; 
 		String[] string2 = new String[anzahl];
-		boolean speichern = false;
+		boolean mustsave = false;
 		for(int i = 0; i < anzahl; i++){
 			string[i] = inif.getStringProperty("KartenLeserListe", "Leser"+(i+1));
 			if(inif.getStringProperty("KartenLeserListe", "CTAPILib"+(i+1))==null){
-				speichern = true;
+				mustsave = true;
 				inif.setStringProperty("KartenLeserListe", "CTAPILib"+(i+1),"ctpcsc31kv",null);
 			}
 			string2[i] = inif.getStringProperty("KartenLeserListe", "CTAPILib"+(i+1));
 		}
 		sWebCamActive = inif.getStringProperty("WebCam", "WebCamActive");
 		if(sWebCamActive == null){
-			speichern = true;
+			mustsave = true;
 			sWebCamActive = "0";
 			inif.setStringProperty("WebCam", "WebCamActive","0",null);
 		}
 		String dummy = inif.getStringProperty("WebCam", "WebCamX");
 		if(dummy == null){
-			speichern = true;
+			mustsave = true;
 			inif.setIntegerProperty("WebCam", "WebCamX",sWebCamSize[0],null);
 			inif.setIntegerProperty("WebCam", "WebCamY",sWebCamSize[1],null);
 		}
 		//sWebCamActive
-		if(speichern){inif.save();}
+		
 		sWebCamSize[0] = inif.getIntegerProperty("WebCam", "WebCamX");
 		sWebCamSize[1] = inif.getIntegerProperty("WebCam", "WebCamY");
 
@@ -1344,12 +1321,15 @@ public class SystemConfig {
 			string[3] = inif.getStringProperty("COM"+i, "StopBit");
 			hmGeraete.put("COM"+i, string.clone());			
 		}
+		if(mustsave){
+			INITool.saveIni(inif);
+		}
 		
 	}
 	
 	public static void CompanyInit(){
 		hmCompany = new HashMap<String,String>();
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/company.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "company.ini");
 		hmCompany.put("name", inif.getStringProperty("Company", "CompanyName"));
 		hmCompany.put("enable", inif.getStringProperty("Company", "DeliverEnable"));
 		hmCompany.put("event", inif.getStringProperty("Company", "DeliverEvent"));
@@ -1363,7 +1343,7 @@ public class SystemConfig {
 		vGutachtenIK = new Vector<String>();
 		vGutachtenArzt = new Vector<String>();
 		vGutachtenDisplay = new Vector<String>();
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/gutachten.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "gutachten.ini");
 		int anzahl =  inif.getIntegerProperty("GutachtenEmpfaenger", "AnzahlEmpfaenger");
 		for(int i = 0; i < anzahl;i++){
 			vGutachtenEmpfaenger.add( inif.getStringProperty("GutachtenEmpfaenger", "Empfaenger"+(i+1)) );
@@ -1384,9 +1364,10 @@ public class SystemConfig {
 	}
 	
 	public static void AbrechnungParameter(){
+		boolean mustsave = false;
 		hmAbrechnung.clear();
 		/********Heilmittelabrechnung********/
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/abrechnung.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "abrechnung.ini");
 		hmAbrechnung.put("hmgkvformular", inif.getStringProperty("HMGKVRechnung", "Rformular"));
 		hmAbrechnung.put("hmgkvrechnungdrucker", inif.getStringProperty("HMGKVRechnung", "Rdrucker"));
 		hmAbrechnung.put("hmgkvtaxierdrucker", inif.getStringProperty("HMGKVRechnung", "Tdrucker"));
@@ -1422,23 +1403,26 @@ public class SystemConfig {
 		if(sask==null){
 			System.out.println("Erstelle Parameter 'FrageVorEmail'");
 			inif.setStringProperty("GemeinsameParameter", "FragenVorEmail","1",null);
-			inif.save();
+			mustsave=true;
 		}
 		hmAbrechnung.put("hmaskforemail", inif.getStringProperty("GemeinsameParameter", "FragenVorEmail"));
+		if(mustsave){
+			INITool.saveIni(inif);
+		}
 		//sask = inif.getStringProperty("GemeinsameParameter", "ZuzahlmodusNormal");
 		
 		String INI_FILE = "";
 		if(System.getProperty("os.name").contains("Windows")){
-			INI_FILE = Reha.proghome+ "nebraska_windows.conf";
+			INI_FILE = "nebraska_windows.conf";
 		}else if(System.getProperty("os.name").contains("Linux")){
-			INI_FILE = Reha.proghome+ "nebraska_linux.conf";			
+			INI_FILE = "nebraska_linux.conf";			
 		}else if(System.getProperty("os.name").contains("String für MaxOSX????")){
-			INI_FILE = Reha.proghome+"nebraska_mac.conf";
+			INI_FILE = "nebraska_mac.conf";
 		}
 		Verschluesseln man = Verschluesseln.getInstance();
 		man.init(Verschluesseln.getPassword().toCharArray(), man.getSalt(), man.getIterations());
 		try{
-			inif = new INIFile(INI_FILE);
+			inif = INITool.openIni(Reha.proghome, INI_FILE);
 			String pw = null;
 			String decrypted = null;
 			hmAbrechnung.put("hmkeystorepw", "");
@@ -1458,7 +1442,7 @@ public class SystemConfig {
 		//System.out.println("Keystore-Passwort = "+hmAbrechnung.get("hmkeystorepw"));
 	}
 	public static void AktiviereLog(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 		boolean mustsave = false;
 		String dummy = inif.getStringProperty("SystemIntern","VLog");
 		if(dummy==null){
@@ -1489,13 +1473,13 @@ public class SystemConfig {
 			logAlleTermine = (inif.getStringProperty("SystemIntern","ALog").trim().equals("0") ? false : true);
 		}
 		if(mustsave){
-			inif.save();
+			INITool.saveIni(inif);
 		}
 
 	}	
 	
 	public static void JahresUmstellung(){
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/rehajava.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "rehajava.ini");
 		aktJahr = inif.getStringProperty("SystemIntern","AktJahr");
 		String jahrHeute = DatFunk.sHeute().substring(6);
 		if(! aktJahr.equals(jahrHeute) ){
@@ -1508,7 +1492,7 @@ public class SystemConfig {
 			aktJahr = String.valueOf(jahrHeute);
 
 			inif.setStringProperty("SystemIntern","AktJahr",jahrHeute,null);
-			inif.save();
+			INITool.saveIni(inif);
 		}else{
 			//System.out.println("Aktuelles Jahr ist o.k.: "+jahrHeute);
 		}
@@ -1529,7 +1513,7 @@ public class SystemConfig {
 		//public static HashMap<String,Object> hmArschgeigenModus = new HashMap<String,Object>();
 		//public static Vector<Vector<String>> vArschgeigenDaten = new Vector<Vector<String>>();
 		if(new File(Reha.proghome+"ini/"+Reha.aktIK+"/arschgeigen.ini").exists()){
-			INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/arschgeigen.ini");
+			INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "arschgeigen.ini");
 			int anzahlag = inif.getIntegerProperty("Arschgeigen", "AnzahlArschgeigen");
 			int anzahliks;
 			Vector<String> vDummy = new Vector<String>();
@@ -1567,7 +1551,7 @@ public class SystemConfig {
 				"abrdreizwei","abriv","att","close","confirm","copy","cut","day","dayselect","down","left","minimize","paste","patsearch",
 				"quicksearch","refresh","right","search","tellist","termin","upw","week","abrdreieins","ebcheck","hbmehrere","verkaufArtikel",
 				"verkaufLieferant", "verkaufTuten"};
-		INIFile inif = new INIFile(Reha.proghome+"ini/"+Reha.aktIK+"/icons.ini");
+		INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "icons.ini");
 		hmSysIcons = new HashMap<String,ImageIcon>();
 		Image ico = null;
 		
@@ -1628,6 +1612,11 @@ public class SystemConfig {
 	}
 	*/
 
+/*******************************************************************************/
+/*******************************************************************************/	
+/*******************************************************************************/	
+/*******************************************************************************/	
+/*******************************************************************************/
 	
 	
 }

@@ -34,9 +34,9 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.therapi.reha.patient.AktuelleRezepte;
 
-import sqlTools.SqlInfo;
+import CommonTools.SqlInfo;
 import systemEinstellungen.SystemConfig;
-import systemTools.JRtaTextField;
+import CommonTools.JRtaTextField;
 import terminKalender.DatFunk;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;

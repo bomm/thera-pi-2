@@ -70,7 +70,7 @@ int pfeily;
 //public Composite xoriginal;
 //public AlphaComposite xac1;
 public  kalenderPanel KalenderPanel() {
-
+		
 		this.setBackground(SystemConfig.KalenderHintergrund);
 		kPanel = new JXPanel();
 		kPanel.setBorder(null);
