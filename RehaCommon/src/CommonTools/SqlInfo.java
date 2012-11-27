@@ -450,26 +450,31 @@ public class SqlInfo {
 			
 			int nichtlesen = ausschliessen.size();
 			while(rs.next()){
-				retvec.clear();
-				 rsMetaData = rs.getMetaData() ;
-				 int numberOfColumns = rsMetaData.getColumnCount()+1;
-				 for(int i = 1 ; i < numberOfColumns;i++){
-					 if(nichtlesen > 0){
-						 if(!ausschliessen.contains( rsMetaData.getColumnName(i)) ){
-							 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );						 
+				try{
+					retvec.clear();
+					 rsMetaData = rs.getMetaData() ;
+					 int numberOfColumns = rsMetaData.getColumnCount()+1;
+					 for(int i = 1 ; i < numberOfColumns;i++){
+						 if(nichtlesen > 0){
+							 if(!ausschliessen.contains( rsMetaData.getColumnName(i)) ){
+								 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );						 
+							 }
+						 }else{
+							 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );
 						 }
-					 }else{
-						 retvec.add( (rs.getString(i)==null  ? "" :  rs.getString(i)) );
 					 }
-				 }
-				 retkomplett.add((Vector<String>)((Vector<?>)retvec.clone()));
+					 retkomplett.add((Vector<String>)((Vector<?>)retvec.clone()));
+				}catch(Exception ex){
+					//ex.printStackTrace();
+				}
 			}
 			retvec.clear();
 			retvec = null;
 			if(frame != null)
 			frame.setCursor(normalCursor);
 		}catch(SQLException ev){
-			JOptionPane.showMessageDialog(null, "Fehler in der MySqlFunktion-HoeleSaetze");
+			ev.printStackTrace();
+			//JOptionPane.showMessageDialog(null, "Fehler in der MySqlFunktion-HoeleSaetze");
 		}	
 		finally {
 			if (rsMetaData != null){
