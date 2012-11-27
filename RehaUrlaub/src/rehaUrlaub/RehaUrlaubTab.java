@@ -14,7 +14,7 @@ import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 
-import Tools.SqlInfo;
+import CommonTools.SqlInfo;
 
 import com.jgoodies.looks.windows.WindowsTabbedPaneUI;
 
@@ -36,7 +36,7 @@ public class RehaUrlaubTab extends JXPanel{
 	
 	RehaUrlaubPanel urlaubPanel = null;
 	RehaUrlaubTabelle urlaubTabelle = null;
-	AltImport altimportPanel = null;
+	//AltImport altimportPanel = null;
 	
 	//RehaUrlaubTabelle = urlaubTabelle = null;
 	
@@ -52,9 +52,11 @@ public class RehaUrlaubTab extends JXPanel{
 		
 		urlaubPanel = new RehaUrlaubPanel(this);
 		billEditTab.add("Stundenerfassung",urlaubPanel);
-		
+
+		/*
 		altimportPanel = new AltImport(this);
 		billEditTab.add("alten RTA-Urlaub importieren",altimportPanel);
+		*/
 		
 		urlaubTabelle = new RehaUrlaubTabelle(this);
 		billEditTab.add("Urlaubtabelle",urlaubTabelle);

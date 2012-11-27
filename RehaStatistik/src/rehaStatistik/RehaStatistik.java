@@ -6,30 +6,21 @@ import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
 
+import CommonTools.SqlInfo;
+import CommonTools.StartOOApplication;
+import CommonTools.INIFile;
+import Tools.SystemPreislisten;
+import CommonTools.Verschluesseln;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.event.ITerminateEvent;
-import ag.ion.bion.officelayer.event.VetoTerminateListener;
-
-import com.sun.star.uno.Exception;
-
-import Tools.INIFile;
-import Tools.SystemPreislisten;
-import Tools.Verschluesseln;
 
 
 
@@ -68,11 +59,12 @@ public class RehaStatistik implements WindowListener{
 	public static String aktIK = "510841109";
 	
 	public static boolean testcase = false;
+	public SqlInfo sqlInfo;
 	
 	public static void main(String[] args) {
 		RehaStatistik application = new RehaStatistik();
 		application.getInstance();
-		
+		application.getInstance().sqlInfo = new SqlInfo();
 		if(args.length > 0 || testcase){
 			if(!testcase){
 				System.out.println("hole daten aus INI-Datei "+args[0]);
@@ -105,7 +97,7 @@ public class RehaStatistik implements WindowListener{
 					while(! DbOk){
 						try {
 							Thread.sleep(20);
-							if(System.currentTimeMillis()-zeit > 5000){
+							if(System.currentTimeMillis()-zeit > 10000){
 								System.exit(0);
 							}
 						} catch (InterruptedException e) {
@@ -118,8 +110,8 @@ public class RehaStatistik implements WindowListener{
 					}
 					RehaStatistik.starteOfficeApplication();
 					SystemPreislisten.ladePreise("Reha");
-					System.out.println(SystemPreislisten.hmPreise.get("Reha"));
-					System.out.println(SystemPreislisten.hmPreisGruppen.get("Reha"));
+					//System.out.println(SystemPreislisten.hmPreise.get("Reha"));
+					//System.out.println(SystemPreislisten.hmPreisGruppen.get("Reha"));
 					return null;
 				}
 				
@@ -147,6 +139,7 @@ public class RehaStatistik implements WindowListener{
 		}
 		thisClass = this;
 		jFrame = new JFrame();
+		sqlInfo.setFrame(jFrame);
 		jFrame.addWindowListener(this);
 		jFrame.setSize(500,500);
 		jFrame.setTitle("Thera-Pi Modul:Reha-Statistik");
@@ -177,8 +170,10 @@ public class RehaStatistik implements WindowListener{
 	
 	public static void stoppeDB(){
 		try {
-			RehaStatistik.thisClass.conn.close();
-			RehaStatistik.thisClass.conn = null;
+			if(RehaStatistik.thisClass.conn != null){
+				RehaStatistik.thisClass.conn.close();
+				RehaStatistik.thisClass.conn = null;
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 			
@@ -218,6 +213,7 @@ public class RehaStatistik implements WindowListener{
         	try {
         		
    				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
+   				sqlInfo.setConnection(obj.conn);
 				RehaStatistik.DbOk = true;
     			System.out.println("Datenbankkontakt hergestellt");
         	} 
@@ -283,7 +279,13 @@ public class RehaStatistik implements WindowListener{
 	/***************************/
 	
     public static void starteOfficeApplication(){ 
-
+    	try {
+			officeapplication = (IOfficeApplication)new StartOOApplication(RehaStatistik.officeProgrammPfad,RehaStatistik.officeNativePfad).start(false);
+			 System.out.println("OpenOffice ist gestartet und Active ="+officeapplication.isActive());
+		} catch (OfficeApplicationException e1) {
+			e1.printStackTrace();
+		}
+		/*
     	final String OPEN_OFFICE_ORG_PATH = RehaStatistik.officeProgrammPfad;
 
         try
@@ -317,6 +319,7 @@ public class RehaStatistik implements WindowListener{
         catch (OfficeApplicationException e) {
             e.printStackTrace();
         }
+        */
     }
 	
 

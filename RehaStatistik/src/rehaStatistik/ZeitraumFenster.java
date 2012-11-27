@@ -11,9 +11,9 @@ import javax.swing.JLabel;
 
 import org.jdesktop.swingx.JXPanel;
 
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.JRtaTextField;
+import CommonTools.ButtonTools;
+import CommonTools.DatFunk;
+import CommonTools.JRtaTextField;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -34,7 +34,6 @@ public class ZeitraumFenster extends JDialog{
 		super();
 		this.activateActionListener();
 		this.setContentPane(getContent());
-		//this.addWindowListener(this);
 		this.eltern = xeltern;
 		this.setTitle("Zeitraum der Auswertung");
 	}

@@ -24,10 +24,10 @@ import javax.swing.event.ListSelectionListener;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.OOTools;
-import Tools.SqlInfo;
+import CommonTools.ButtonTools;
+import CommonTools.DatFunk;
+import CommonTools.OOTools;
+import CommonTools.SqlInfo;
 import Tools.SystemPreislisten;
 
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
@@ -142,7 +142,11 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 		new SwingWorker<Void,Void>(){
 			@Override
 			protected Void doInBackground() throws Exception {
-				enableButtons();
+				try{
+					enableButtons();					
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 				return null;
 			}
 
@@ -155,7 +159,7 @@ public class StatistikPanel extends JXPanel implements ListSelectionListener, Ac
 		while(! RehaStatistik.DbOk){
 			try {
 				Thread.sleep(50);
-				if( (System.currentTimeMillis()-zeit) > 3000 ){
+				if( (System.currentTimeMillis()-zeit) > 10000 ){
 					break;
 				}
 			} catch (InterruptedException e) {

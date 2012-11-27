@@ -4,13 +4,9 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -19,17 +15,12 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
 
-import Tools.DatFunk;
-import Tools.FileTools;
-import Tools.INIFile;
-import Tools.Verschluesseln;
+import CommonTools.SqlInfo;
+import CommonTools.StartOOApplication;
+import CommonTools.INIFile;
+import CommonTools.Verschluesseln;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.event.ITerminateEvent;
-import ag.ion.bion.officelayer.event.VetoTerminateListener;
 import ag.ion.bion.officelayer.spreadsheet.ISpreadsheetDocument;
 
 public class RehaUrlaub implements WindowListener {
@@ -68,16 +59,17 @@ public class RehaUrlaub implements WindowListener {
 	public static String progHome = "C:/RehaVerwaltung/";
 	public static String aktIK = "510841109";
 	public static String urlaubsDateiVorlage = "UrlaubUndStunden.ods";
-	
+	public boolean isLibreOffice;
 	
 	public static ISpreadsheetDocument spreadsheetDocument;
 	
 	public static boolean testcase = false;
+	SqlInfo sqlInfo = null;
 	
 	public static void main(String[] args) {
 		RehaUrlaub application = new RehaUrlaub();
 		application.getInstance();
-		
+		application.getInstance().sqlInfo = new SqlInfo();
 		try{
 			
 
@@ -121,7 +113,7 @@ public class RehaUrlaub implements WindowListener {
 					while(! DbOk){
 						try {
 							Thread.sleep(20);
-							if(System.currentTimeMillis()-zeit > 7000){
+							if(System.currentTimeMillis()-zeit > 10000){
 								JOptionPane.showMessageDialog(null, "TimeOut-für Datenbank erreicht");
 								System.exit(0);
 							}
@@ -180,8 +172,9 @@ public class RehaUrlaub implements WindowListener {
 		}
 		thisClass = this;
 		
-
+		
 		jFrame = new JFrame();
+		sqlInfo.setFrame(jFrame);
 		jFrame.setCursor(RehaUrlaub.thisClass.wartenCursor);
 		jFrame.addWindowListener(this);
 		jFrame.setSize(1000,500);
@@ -263,6 +256,7 @@ public class RehaUrlaub implements WindowListener {
         	try {
         		
    				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
+   				sqlInfo.setConnection(obj.conn);
 				RehaUrlaub.DbOk = true;
     			System.out.println("Datenbankkontakt hergestellt");
         	} 
@@ -337,41 +331,14 @@ public class RehaUrlaub implements WindowListener {
 	/***************************/
 	
     public static void starteOfficeApplication(){ 
+     	try {
+			officeapplication = (IOfficeApplication)new StartOOApplication(RehaUrlaub.officeProgrammPfad,RehaUrlaub.officeNativePfad).start(false);
+			RehaUrlaub.officeOk = true;
+		} catch (OfficeApplicationException e1) {
+			e1.printStackTrace();
+		}
 
-    	final String OPEN_OFFICE_ORG_PATH = RehaUrlaub.officeProgrammPfad;
-
-        try
-        {
-        	//System.out.println("**********Open-Office wird gestartet***************");
-            String path = OPEN_OFFICE_ORG_PATH;
-            Map <String, String>config = new HashMap<String, String>();
-            config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
-            config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-            System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,RehaUrlaub.officeNativePfad);
-            officeapplication = OfficeApplicationRuntime.getApplication(config);
-            officeapplication.activate();
-            officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
-            	  public void queryTermination(ITerminateEvent terminateEvent) {
-            	    super.queryTermination(terminateEvent);
-            	    try {
-            	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
-            	      if (docs.length == 1) { 
-            	        docs[0].close();
-            	        //System.out.println("Letztes Dokument wurde geschlossen");
-            	      }
-            	    }
-            	    catch (DocumentException e) {
-            	    	e.printStackTrace();
-            	    } catch (OfficeApplicationException e) {
-						e.printStackTrace();
-					}
-            	  }
-            	});
-            RehaUrlaub.officeOk = true;
-        }
-        catch (OfficeApplicationException e) {
-            e.printStackTrace();
-        }
+    	 
     }
 	
 

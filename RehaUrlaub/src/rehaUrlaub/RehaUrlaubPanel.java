@@ -72,13 +72,15 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.sun.star.sheet.XSheetCellCursor;
 import com.sun.star.sheet.XSpreadsheets;
 
-import Tools.DatFunk;
-import Tools.JCompTools;
-import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
-import Tools.MitteRenderer;
-import Tools.SqlInfo;
-import Tools.StringTools;
+import CommonTools.DatFunk;
+import CommonTools.DblCellEditor;
+import CommonTools.DoubleTableCellRenderer;
+import CommonTools.JCompTools;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
+import CommonTools.MitteRenderer;
+import CommonTools.SqlInfo;
+import CommonTools.StringTools;
 
 public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 	
@@ -476,8 +478,8 @@ public class RehaUrlaubPanel extends JXPanel implements TableModelListener  {
 		tab.setHorizontalScrollEnabled(true);
 		for(int i = 0; i < feldNamen.size();i++){
 			if(feldNamen.get(i).get(1).contains("decimal(")){
-				tab.getColumn(i).setCellRenderer(new Tools.DoubleTableCellRenderer());
-				tab.getColumn(i).setCellEditor(new Tools.DblCellEditor());
+				tab.getColumn(i).setCellRenderer(new DoubleTableCellRenderer());
+				tab.getColumn(i).setCellEditor(new DblCellEditor());
 			}
 			if(feldNamen.get(i).get(0).contains("_ART")){
 				//tab.getColumn(i).setCellRenderer(new Tools.DoubleTableCellRenderer());

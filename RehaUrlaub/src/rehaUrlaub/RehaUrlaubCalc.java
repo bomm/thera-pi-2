@@ -30,8 +30,8 @@ import com.sun.star.sheet.XSpreadsheet;
 import com.sun.star.sheet.XSpreadsheets;
 import com.sun.star.uno.UnoRuntime;
 
-import Tools.FileTools;
-import Tools.OOTools;
+import CommonTools.FileTools;
+import CommonTools.OOTools;
 
 public class RehaUrlaubCalc {
 
@@ -99,8 +99,8 @@ public class RehaUrlaubCalc {
 				e.printStackTrace();
 			}
 		}else{
-			System.out.println(pfadvorlage);
-			System.out.println(urlaubsdatei);
+			//System.out.println(pfadvorlage);
+			//System.out.println(urlaubsdatei);
 		}
 		return ret;
 	}
