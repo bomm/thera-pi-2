@@ -22,5 +22,6 @@
 	<classpathentry kind="lib" path="/Libraries/lib/jgoodies/forms-1.3.0.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/sql/jpmdbc.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RehaCommon"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

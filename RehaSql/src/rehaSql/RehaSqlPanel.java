@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -36,26 +37,25 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-
-
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
+import CommonTools.ButtonTools;
+import CommonTools.DatFunk;
+import CommonTools.DblCellEditor;
+import CommonTools.DoubleTableCellRenderer;
+import CommonTools.INIFile;
+import CommonTools.INITool;
+import CommonTools.JCompTools;
+import CommonTools.JRtaCheckBox;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
+import CommonTools.OOTools;
+import CommonTools.SqlInfo;
 import RehaIO.RehaIOMessages;
 import RehaIO.SocketClient;
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.DblCellEditor;
-import Tools.DoubleTableCellRenderer;
-import Tools.INIFile;
-import Tools.JCompTools;
-import Tools.JRtaCheckBox;
-import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
-import Tools.OOTools;
-import Tools.SqlInfo;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -151,7 +151,8 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 	IntTableCellEditor tabIntegerEditor = new IntTableCellEditor();
 	IntTableCellRenderer tabIntegerRenderer = new IntTableCellRenderer();
 	
-	JRtaTextField sqlstatement = null;
+	//JRtaTextField sqlstatement = null;
+	JTextArea sqlstatement = null;
 	
 	DecimalFormat dcf = new DecimalFormat("##########0.00");
 	SimpleDateFormat datumsFormat = new SimpleDateFormat ("dd.MM.yyyy"); //Konv.
@@ -263,23 +264,44 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 		String xwerte = "5dlu,40dlu,2dlu,fill:0:grow(1.0),2dlu,60dlu,5dlu";
 		//                1   2  3     4               5   6  7   8  9      10
 		//String ywerte = "5dlu,p,2dlu,fill:0:grow(0.5),2dlu,p,2dlu,p,2dlu,fill:0:grow(0.5),5dlu";
-		//				  1   2  3     4                    5   6  7   8  9    10                   11
-		String ywerte = "5dlu,p,2dlu,fill:100dlu:grow(0.5),2dlu,p,2dlu,p,2dlu,fill:100dlu:grow(0.5),5dlu";
+		//				  1   2  3     4   5  6      7                   8   9  10 11 12    13                   14
+		String ywerte = "5dlu,p,70dlu,5dlu,p,5dlu,fill:100dlu:grow(0.7),2dlu,p,2dlu,p,2dlu,fill:100dlu:grow(0.3),5dlu";
 		FormLayout lay = new FormLayout(xwerte,ywerte);
 		CellConstraints cc = new CellConstraints();
 		JXPanel jpan = new JXPanel();
 		jpan.setOpaque(false);
 		jpan.setLayout(lay);
-		jpan.add(new JLabel("Statement"),cc.xy(2,2));
-		jpan.add(sqlstatement = new JRtaTextField("nix",true),cc.xy(4,2));
+		JLabel lab = new JLabel("Statement eingeben oder vorgefertigtes Statement auswählen:");
+		lab.setForeground(Color.BLUE);
+		jpan.add(lab,cc.xyw(2,2,3));
+		
+		//jpan.add(sqlstatement = new JRtaTextField("nix",true),cc.xy(4,2));
+		sqlstatement = new JTextArea();
+		sqlstatement.setFont(new Font("Courier",Font.PLAIN,12));
+		sqlstatement.setLineWrap(true);
+		sqlstatement.setWrapStyleWord(true);
+		sqlstatement.setForeground(Color.BLUE);
+		sqlstatement.setOpaque(false);
 		sqlstatement.setName("sqlstatement");
 		sqlstatement.setFont(new Font("Courier New",Font.PLAIN,12));
 		sqlstatement.addKeyListener(kl);
-		jpan.add(buts[0] = ButtonTools.macheButton("execute", "exekutieren", al),cc.xy(6,2));
+		JScrollPane scrstmt = JCompTools.getTransparentScrollPane(sqlstatement);
+		scrstmt.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+		scrstmt.validate();
+		jpan.add(scrstmt,cc.xyw(2,3,5,CellConstraints.FILL,CellConstraints.FILL));
+		
+		lab = new JLabel("Statement ausführen (execute):");
+		lab.setForeground(Color.RED);
+		jpan.add(lab,cc.xyw(2,5,3));
+		
+		buts[0] = ButtonTools.macheButton("execute", "exekutieren", al);
+		buts[0].setMnemonic('e');
+		buts[0].setForeground(Color.RED);
+		jpan.add(buts[0],cc.xy(6,5));
+		
 		tabmod = new SqlTableModel();
 		tab = new JXTable(tabmod);
 		tab.setColumnControlVisible(true);
-		
 		tab.setHorizontalScrollEnabled(true);
 		tab.getSelectionModel().addListSelectionListener( new BillListSelectionHandler());
 		
@@ -288,14 +310,14 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 		
 		jscr = JCompTools.getTransparentScrollPane(tab);
 		jscr.validate();
-		jpan.add(jscr,cc.xyw(2,4,5,CellConstraints.DEFAULT,CellConstraints.FILL));		
+		jpan.add(jscr,cc.xyw(2,7,5,CellConstraints.DEFAULT,CellConstraints.FILL));		
 
 		labgefunden = new JLabel("noch keine Abfageergebnisse");
 		labgefunden.setForeground(Color.BLUE);
-		jpan.add(labgefunden,cc.xyw(2,6,5));
+		jpan.add(labgefunden,cc.xyw(2,9,5));
 
 		//Hier mit y-Wert = 8 die Funktionsleiste einbauen
-		jpan.add(getFunktionsPanel(),cc.xyw(2,8,5,CellConstraints.FILL,CellConstraints.FILL));
+		jpan.add(getFunktionsPanel(),cc.xyw(2,11,5,CellConstraints.FILL,CellConstraints.FILL));
 		
 		textArea = new JTextArea();
 		textArea.setFont(new Font("Courier",Font.PLAIN,12));
@@ -308,7 +330,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 		JScrollPane span = JCompTools.getTransparentScrollPane(textArea);
 		span.setBackground(Color.WHITE);
 		span.validate();
-		jpan.add(span, cc.xyw(2,10,5,CellConstraints.DEFAULT,CellConstraints.FILL));
+		jpan.add(span, cc.xyw(2,13,5,CellConstraints.DEFAULT,CellConstraints.FILL));
 		
 		jpan.validate();
 		return jpan;
@@ -358,12 +380,17 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 		
 	}
 	private void doFillStatementBox(){
-		String inipfad = RehaSql.progHome+"ini/"+RehaSql.aktIK+"/sqlmodul.ini";
+		while(!RehaSql.DbOk){
+			try {
+				Thread.sleep(25);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		try{
-			INIFile inif = new INIFile(inipfad);
+			INIFile inif =INITool.openIni(RehaSql.progHome+"ini/"+RehaSql.aktIK+"/", "sqlmodul.ini");
 			Vector<String> vecstmts = new Vector<String>();
 			int anzahl = inif.getIntegerProperty("SqlStatements", "StatementsAnzahl");
-			System.out.println("Statements Insgesamt= "+anzahl);
 			for(int i = 0; i < anzahl;i++){
 				vecstmts.clear();
 				vecstmts.add((String)inif.getStringProperty("SqlStatements", "StatementTitel"+Integer.toString(i+1)));
@@ -374,7 +401,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			chbstatement.setSelectedItem("./.");
 		}catch(Exception ex){
 			ex.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Fehler beim Einlesen der Statements");
+			JOptionPane.showMessageDialog(null, "Fehler beim Einlesen der INI-Datei");
 		}
 	}
 	
@@ -510,14 +537,19 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 		kl = new KeyListener(){
 			@Override
 			public void keyPressed(KeyEvent arg0) {
+				if(arg0.getKeyCode()==10 && arg0.isShiftDown()){
+					return;
+				}
 				if(arg0.getKeyCode()==10){
 					if( ((JComponent)arg0.getSource()).getName().equals("sqlstatement") ){
+						/*
 						doStatementAuswerten();
 						SwingUtilities.invokeLater(new Runnable(){
 							public void run(){
 								sqlstatement.requestFocus();
 							}
 						});
+						*/
 					}
 				}
 				
@@ -894,31 +926,41 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			while(rs.next()){
 				vec.clear();
 
-				try{
-				for(int i = 0;i<lang;i++){
-					if(colTypeName.get(i).contains("VARCHAR")){
-						vec.add( (rs.getString(i+1)==null ? "" : rs.getString(i+1)) );
-					}else if(colTypeName.get(i).equals("BOOLEAN")){
-						vec.add( (rs.getString(i+1)==null ?  Boolean.FALSE : (rs.getString(i+1).equals("T") ? Boolean.TRUE : Boolean.FALSE)) );
-					}else if(colTypeName.get(i).contains("DECIMAL")){
-						if(rs.getBigDecimal(i+1) == null){
-							vec.add(Double.parseDouble("0.00"));
-						}else{
-							vec.add(rs.getBigDecimal(i+1).doubleValue());	
+				
+					for(int i = 0;i<lang;i++){
+						try{
+							//System.out.println(i+" Durchlauf: "+colTypeName.get(i));
+							if(colTypeName.get(i).contains("VARCHAR")){
+								vec.add( (rs.getString(i+1)==null ? "" : rs.getString(i+1)) );
+							}else if(colTypeName.get(i).equals("BOOLEAN")){
+								vec.add( (rs.getString(i+1)==null ?  Boolean.FALSE : (rs.getString(i+1).equals("T") ? Boolean.TRUE : Boolean.FALSE)) );
+							}else if(colTypeName.get(i).contains("DECIMAL")){
+								if(rs.getBigDecimal(i+1) == null){
+									vec.add(Double.parseDouble("0.00"));
+								}else{
+									vec.add(rs.getBigDecimal(i+1).doubleValue());	
+								}
+							}else if(colTypeName.get(i).toUpperCase().startsWith("TINYINT")){
+								vec.add(rs.getInt(i+1));
+							}else if(colTypeName.get(i).startsWith("BIGINT")){
+								vec.add(rs.getLong(i+1));
+							}else if(colTypeName.get(i).startsWith("INT")){
+								vec.add(rs.getInt(i+1));
+							}else if(colTypeName.get(i).contains("DATE")){
+								if(! (rs.getString(i+1) == null)){
+									vec.add(rs.getDate(i+1));	
+								}else{
+									vec.add(null);
+								}
+							}else{
+								vec.add( (rs.getString(i+1)==null ? "" : rs.getString(i+1)) );
+							}
+						}catch(Exception ex){
+							vec.add(null);
+							ex.printStackTrace();
 						}
-					}else if(colTypeName.get(i).contains("tinyint(")){
-						vec.add(rs.getInt(i+1));
-					}else if(colTypeName.get(i).contains("INT")){
-						vec.add(rs.getInt(i+1));
-					}else if(colTypeName.get(i).contains("DATE")){
-						vec.add(rs.getDate(i+1));
-					}else{
-						vec.add( (rs.getString(i+1)==null ? "" : rs.getString(i+1)) );
 					}
-				}
-				}catch(Exception ex){
-					ex.printStackTrace();
-				}
+				
 				
 				tabmod.addRow( (Vector<?>) vec.clone());
 				if(durchlauf>200){
@@ -995,13 +1037,13 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 				return Boolean.class;
 			}else if(colTypeName.get(columnIndex).contains("DECIMAL")){
 				return Double.class;
-			}else if(colTypeName.get(columnIndex).contains("tinyint(")){
+			}else if(colTypeName.get(columnIndex).toUpperCase().contains("TINYINT")){
 				return Integer.class;
-			}else if(colTypeName.get(columnIndex).contains("INT")){
+			}else if(colTypeName.get(columnIndex).toUpperCase().contains("INT")){
 				return Integer.class;
 			}else if(colTypeName.get(columnIndex).contains("DATE")){
 				return Date.class;
-			}else if(colTypeName.get(columnIndex).contains("longtext")){
+			}else if(colTypeName.get(columnIndex).toUpperCase().contains("LONGTEXT")){
 				return String.class;
 			}
 		   return String.class;
@@ -1043,6 +1085,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 				for(int y = 0;y < colVisible.size();y++){
 					relativerow = tab.convertRowIndexToModel(i);
 					obj = tabmod.getValueAt(relativerow,colVisible.get(y));
+					//System.out.println(y+" Durchlauf = "+ obj.getClass());
 					if(obj!=null){
 						if(obj instanceof Double){
 							OOTools.doCellValue(cellCursor, y, i+1, (Double) obj);
@@ -1059,6 +1102,8 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 							}catch(Exception ex){
 								OOTools.doCellValue(cellCursor, y, i+1, (String)obj.toString());
 							}
+						}else if(obj instanceof Long){
+							OOTools.doCellValue(cellCursor, y, i+1, (Long) obj);
 						}else{
 							OOTools.doCellValue(cellCursor, y, i+1, (String) obj);
 						}

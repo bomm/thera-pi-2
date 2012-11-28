@@ -17,11 +17,19 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
 
+
+
+
+
+import CommonTools.INIFile;
+import CommonTools.INITool;
+import CommonTools.SqlInfo;
+import CommonTools.StartOOApplication;
+import CommonTools.Verschluesseln;
 import RehaIO.RehaIOMessages;
 import RehaIO.RehaReverseServer;
 import RehaIO.SocketClient;
-import Tools.INIFile;
-import Tools.Verschluesseln;
+import ag.ion.bion.officelayer.application.ILazyApplicationInfo;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
@@ -87,17 +95,18 @@ public class RehaSql implements WindowListener {
 	public static boolean xportOk = false;
 	public RehaReverseServer rehaReverseServer = null;
 	public static int rehaReversePort = -1;
-	
+	public boolean isLibreOffice;
+	SqlInfo sqlInfo = null;
 	
 	public static void main(String[] args) {
 		RehaSql application = new RehaSql();
 		application.getInstance();
-		
+		application.getInstance().sqlInfo = new SqlInfo();
 		if(args.length > 0 || testcase){
 			if(!testcase){
 				System.out.println("hole daten aus INI-Datei "+args[0]);
 				INIFile inif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
-				dbIpAndName = inif.getStringProperty("DatenBank","DBKontakt1");
+				dbIpAndName = inif.getStringProperty("DatenBank","DBKontakt1")+"?jdbcCompliantTruncation=false&zeroDateTimeBehavior=convertToNull";
 				dbUser = inif.getStringProperty("DatenBank","DBBenutzer1");
 				String pw = inif.getStringProperty("DatenBank","DBPasswort1");
 				String decrypted = null;
@@ -114,6 +123,7 @@ public class RehaSql implements WindowListener {
 				officeNativePfad = inif.getStringProperty("OpenOffice.org","OfficeNativePfad");
 				progHome = args[0];
 				aktIK = args[1];
+				INITool.init(progHome+"ini/"+aktIK+"/");
 				if(args.length >= 3){
 					rehaReversePort = Integer.parseInt(args[2]);
 				}
@@ -128,7 +138,7 @@ public class RehaSql implements WindowListener {
 					while(! DbOk){
 						try {
 							Thread.sleep(20);
-							if(System.currentTimeMillis()-zeit > 5000){
+							if(System.currentTimeMillis()-zeit > 10000){
 								System.exit(0);
 							}
 						} catch (InterruptedException e) {
@@ -241,8 +251,9 @@ public class RehaSql implements WindowListener {
 		}catch(Exception ex){
 			rehaReverseServer = null;
 		}
+		sqlInfo.setFrame(jFrame);
 		jFrame.addWindowListener(this);
-		jFrame.setSize(1000,500);
+		jFrame.setSize(1000,700);
 		jFrame.setTitle("Thera-Pi  Sql-Modul  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"] - Äußerste Vorsicht ist geboten!!!");
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setLocationRelativeTo(null);
@@ -322,8 +333,8 @@ public class RehaSql implements WindowListener {
 	    		return ;
 			}	
         	try {
-        		
    				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
+    			RehaSql.thisClass.sqlInfo.setConnection(obj.conn);
 				RehaSql.DbOk = true;
     			System.out.println("Datenbankkontakt hergestellt");
         	} 
@@ -386,6 +397,7 @@ public class RehaSql implements WindowListener {
     			obj.conn = (Connection) DriverManager.getConnection("jdbc:jpmdbc:http://www.thera-pi.org/jpmdbc.php?db336243054",connProperties);
         		
    				//obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
+ 
 				RehaSql.DbOk = true;
     			System.out.println("Datenbankkontakt hergestellt");
         	} 
@@ -457,40 +469,12 @@ public class RehaSql implements WindowListener {
 	/***************************/
 	
     public static void starteOfficeApplication(){ 
-
-    	final String OPEN_OFFICE_ORG_PATH = RehaSql.officeProgrammPfad;
-
-        try
-        {
-        	//System.out.println("**********Open-Office wird gestartet***************");
-            String path = OPEN_OFFICE_ORG_PATH;
-            Map <String, String>config = new HashMap<String, String>();
-            config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
-            config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-            System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,RehaSql.officeNativePfad);
-            officeapplication = OfficeApplicationRuntime.getApplication(config);
-            officeapplication.activate();
-            officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
-            	  public void queryTermination(ITerminateEvent terminateEvent) {
-            	    super.queryTermination(terminateEvent);
-            	    try {
-            	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
-            	      if (docs.length == 1) { 
-            	        docs[0].close();
-            	        //System.out.println("Letztes Dokument wurde geschlossen");
-            	      }
-            	    }
-            	    catch (DocumentException e) {
-            	    	e.printStackTrace();
-            	    } catch (OfficeApplicationException e) {
-						e.printStackTrace();
-					}
-            	  }
-            	});
-        }
-        catch (OfficeApplicationException e) {
-            e.printStackTrace();
-        }
+    	try {
+			officeapplication = (IOfficeApplication)new StartOOApplication(RehaSql.officeProgrammPfad,RehaSql.officeNativePfad).start(false);
+			 System.out.println("OpenOffice ist gestartet und Active ="+officeapplication.isActive());
+		} catch (OfficeApplicationException e1) {
+			e1.printStackTrace();
+		}
     }
 	
 

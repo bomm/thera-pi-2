@@ -13,6 +13,7 @@ import javax.swing.text.BadLocationException;
 
 
 public class DateFieldDocument extends javax.swing.text.PlainDocument {
+	
 	 /**
 	 * 
 	 */
@@ -31,7 +32,8 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	 // **** Attribute Ende
 
 	 // **** Konstruktor 1
-	 public DateFieldDocument(JFormattedTextField textComponent,boolean datumHeute) { 
+	 public DateFieldDocument(JFormattedTextField textComponent,boolean datumHeute) {
+		 
 	  this.textComponent = textComponent;       // Hiermit wird jetzt gearbeitet
 	  initDate.setTime(new Date());             // Kalender auf heute
 	  initString = datumsFormat.format(initDate.getTime()); // Nach String
@@ -50,6 +52,7 @@ public class DateFieldDocument extends javax.swing.text.PlainDocument {
 	 }
 	 // **** Konstruktor 1 Ende
 	 // **** Konstruktor 2
+	 
 	 public DateFieldDocument(JFormattedTextField textComponent, Calendar givenDate){ 
 	  this.textComponent = textComponent;       // Hiermit wird jetzt gearbeitet
 	  initDate=givenDate;                       // Kalender auf Parameter

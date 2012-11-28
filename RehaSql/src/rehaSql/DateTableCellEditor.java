@@ -22,7 +22,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.MaskFormatter;
 
-import Tools.DatFunk;
+import CommonTools.DatFunk;
+
+
 
 
 
