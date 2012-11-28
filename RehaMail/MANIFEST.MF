@@ -20,5 +20,6 @@ Class-Path: Libraries/lib/jgoodies/forms-1.3.0.jar
  Libraries/lib/openofficeorg/officebean.jar 
  Libraries/lib/openofficeorg/unoil.jar 
  Libraries/lib/sql/mysql-connector-java-5.1.5-bin.jar 
+ RehaCommon.jar 
 
  

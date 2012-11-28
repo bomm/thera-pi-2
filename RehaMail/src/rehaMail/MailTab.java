@@ -3,6 +3,11 @@ package rehaMail;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.LinearGradientPaint;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.geom.Point2D;
 
 import javax.swing.BorderFactory;
@@ -24,6 +29,7 @@ public class MailTab extends JXPanel {
 	JTabbedPane mailTab = null;
 	public MailPanel mailPanel = null;
 	public SendMailPanel sendPanel = null;
+	public ToDoPanel todoPanel = null;
 	public RTFEditorPanel editorPanel = null;
 	public static RehaMail eltern;
 	public MailTab(RehaMail xeltern){
@@ -40,7 +46,7 @@ public class MailTab extends JXPanel {
 		float[] dist =null;
 		Color[] colors = null;
 	    dist = new float[] {0.0f, 0.75f};
-	    colors = new Color[] {Color.WHITE,Tools.Colors.Green.alpha(0.45f)};
+	    colors = new Color[] {Color.WHITE,CommonTools.Colors.Green.alpha(0.45f)};
 	    p = new LinearGradientPaint(start, end, dist, colors);
 	    mp = new MattePainter(p);
 	    cp = new CompoundPainter<Object>(mp);
@@ -62,7 +68,28 @@ public class MailTab extends JXPanel {
 
 					mailTab.addTab("eingegangene Nachrichten", RehaMail.attachmentIco[5],mailPanel );
 					mailTab.addTab("gesendete Nachrichten",RehaMail.attachmentIco[6],(sendPanel = new SendMailPanel()));
-						
+					mailTab.addTab(ToDoPanel.setTabTitel(),RehaMail.symbole.get("todo"),(todoPanel = new ToDoPanel()));
+					/*
+					DropTarget dndt = new DropTarget();
+					DropTargetListener dropTargetListener =
+						 new DropTargetListener() {
+						  public void dragEnter(DropTargetDragEvent e) {}
+						  public void dragExit(DropTargetEvent e) {}
+						  public void dragOver(DropTargetDragEvent e) {}
+						  public void drop(DropTargetDropEvent e) {
+							  
+						  }
+						@Override
+						public void dropActionChanged(DropTargetDragEvent dtde) {
+							// TODO Auto-generated method stub
+							
+						}
+					};
+					
+					dndt.addDropTargetListener(dropTargetListener);
+					todoPanel.setDropTarget(dndt);
+					*/
+					
 					mailTab.revalidate();
 					
 					mailTab.setSelectedIndex(0);
@@ -81,6 +108,12 @@ public class MailTab extends JXPanel {
 	}
 	public SendMailPanel getSendPanel(){
 		return sendPanel;
+	}
+	public ToDoPanel getToDoPanel(){
+		return todoPanel;
+	}
+	public void setzeTitel(int tab,String titel){
+		mailTab.setTitleAt(tab, titel);
 	}
 
 	

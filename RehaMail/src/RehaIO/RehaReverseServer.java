@@ -43,12 +43,14 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 			RehaMail.thisClass.getMTab().mailPanel.allesAufNull();
 			RehaMail.progRechte = "";
 			RehaMail.thisClass.getMTab().getSendPanel().allesAufNull();
+			RehaMail.thisClass.getMTab().getToDoPanel().allesAufNull();
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_SEARCHFORMAIL)){
 			
 		}else if(op.split("#")[1].equals(RehaIOMessages.MUST_CHANGEUSER)){
 			RehaMail.mailUser = op.split("#")[2]; 
 			RehaMail.thisClass.getMTab().mailPanel.checkForNewMail(true);
 			RehaMail.thisClass.getMTab().getSendPanel().checkForNewMail();
+			RehaMail.thisClass.getMTab().getToDoPanel().checkForNewToDo(true);
 			RehaMail.updateTitle(RehaMail.mailUser);
 			RehaMail.setRechte();
 		}
@@ -61,12 +63,12 @@ public class RehaReverseServer extends SwingWorker<Void,Void>{
 					serv = new ServerSocket(RehaMail.xport);
 					break;
 				} catch (Exception e) {
-					//System.out.println("In Exception während der Portsuche - 1");
+					//System.out.println("In Exception währen der Portsuche - 1");
 					if(serv != null){
 						try {
 							serv.close();
 						} catch (IOException e1) {
-							//System.out.println("In Exception während der Portsuche - 2");
+							//System.out.println("In Exception währen der Portsuche - 2");
 							e1.printStackTrace();
 						}
 						serv = null;

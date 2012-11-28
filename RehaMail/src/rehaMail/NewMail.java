@@ -67,10 +67,11 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
+
+import CommonTools.ButtonTools;
+import CommonTools.DatFunk;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.desktop.IFrame;
@@ -417,12 +418,12 @@ public class NewMail extends JFrame  implements WindowListener  {
 		Point2D start = new Point2D.Float(0, 0);
 		Point2D end = new Point2D.Float(960,100);
 	    float[] dist = {0.0f, 0.75f};
-	    Color[] colors = {Color.WHITE,Tools.Colors.PiOrange.alpha(0.25f)};
+	    Color[] colors = {Color.WHITE,CommonTools.Colors.PiOrange.alpha(0.25f)};
 
 		start = new Point2D.Float(0, 0);
 	    end = new Point2D.Float(0,400);
 	    dist = new  float[] {0.0f, 0.75f};
-	    colors = new Color[] {Color.WHITE,Tools.Colors.TaskPaneBlau.alpha(0.45f)};
+	    colors = new Color[] {Color.WHITE,CommonTools.Colors.TaskPaneBlau.alpha(0.45f)};
 	    p =  new LinearGradientPaint(start, end, dist, colors);
 	    mp = new MattePainter(p);
 	    cp = new CompoundPainter<Object>(mp);
@@ -435,7 +436,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 		CellConstraints cc = new CellConstraints();
 		pan.setLayout(lay);
 		pan.add(getToolbar(),cc.xy(1,1));
-		pan.add(rtfEditor = new RTFEditorPanel(true,true),cc.xy(1, 3));
+		pan.add(rtfEditor = new RTFEditorPanel(true,true,false),cc.xy(1, 3));
 		/*
 		pan.add(getnoaDummy(),cc.xy(1, 3));
 		
@@ -480,8 +481,9 @@ public class NewMail extends JFrame  implements WindowListener  {
 
 		bar.addSeparator(new Dimension(30,30));
 		bar.add(buts[0]=ButtonTools.macheButton("", "senden", al));
-		Image ico = new ImageIcon(RehaMail.progHome+"icons/evolution.png").getImage().getScaledInstance(34,34, Image.SCALE_SMOOTH);
-		buts[0].setIcon(new ImageIcon(ico));
+
+		buts[0].setIcon(RehaMail.symbole.get("senden"));
+		
 		buts[0].setToolTipText("Nachricht versenden");
 		bar.addSeparator(new Dimension(40,30));
 		bar.add(rads[0]=new JRadioButton("an Einzelperson"));
@@ -779,7 +781,7 @@ public class NewMail extends JFrame  implements WindowListener  {
 	private String[] dateiDialog(String pfad){
 		//String sret = "";
 		String[] sret ={null,null};
-		final JFileChooser chooser = new JFileChooser("Dateianhang auswÃ¤hlen");
+		final JFileChooser chooser = new JFileChooser("Dateianhang auswählen");
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         final File file = new File(pfad);

@@ -22,5 +22,6 @@
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/unoloader.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/bootstrapconnector.jar"/>
 	<classpathentry kind="lib" path="/Libraries/lib/openofficeorg/officebean.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RehaCommon"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

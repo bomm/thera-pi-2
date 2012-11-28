@@ -2,16 +2,11 @@ package rehaMail;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.Point;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -44,7 +39,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
@@ -59,57 +53,27 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
-import rehaMail.MailPanel.EinListSelectionHandler;
-import rehaMail.MailPanel.ToolsDlgAktuelleRezepte;
-
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.DateTableCellRenderer;
-import Tools.DblCellEditor;
-import Tools.DoubleTableCellRenderer;
-import Tools.IconListRenderer;
-import Tools.JCompTools;
-import Tools.JRtaTextField;
-import Tools.MitteRenderer;
-import Tools.OOTools;
-import Tools.ReaderStart;
+import CommonTools.ButtonTools;
+import CommonTools.DatFunk;
+import CommonTools.DateTableCellRenderer;
+import CommonTools.DblCellEditor;
+import CommonTools.DoubleTableCellRenderer;
+import CommonTools.IconListRenderer;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
+import CommonTools.MitteRenderer;
+import CommonTools.ReaderStart;
+import CommonTools.SqlInfo;
 import Tools.Rechte;
-import Tools.SqlInfo;
-import Tools.StringTools;
 import Tools.ToolsDialog;
 import Tools.UIFSplitPane;
 import ag.ion.bion.officelayer.NativeView;
-import ag.ion.bion.officelayer.application.IOfficeApplication;
-import ag.ion.bion.officelayer.desktop.GlobalCommands;
 import ag.ion.bion.officelayer.desktop.IFrame;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.text.IParagraph;
-import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
-import ag.ion.bion.officelayer.text.IViewCursor;
-import ag.ion.bion.officelayer.text.TextException;
-import ag.ion.noa.NOAException;
-import ag.ion.noa.filter.OpenDocumentFilter;
-import ag.ion.noa.frame.ILayoutManager;
-import ag.ion.noa.internal.frame.LayoutManager;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.sun.star.beans.PropertyVetoException;
-import com.sun.star.beans.UnknownPropertyException;
-import com.sun.star.beans.XPropertySet;
-import com.sun.star.container.XNameAccess;
-import com.sun.star.frame.XLayoutManager;
-import com.sun.star.lang.IllegalArgumentException;
-import com.sun.star.lang.WrappedTargetException;
-import com.sun.star.text.XTextContent;
-import com.sun.star.text.XTextGraphicObjectsSupplier;
-import com.sun.star.ui.XUIElement;
-import com.sun.star.uno.Any;
-import com.sun.star.uno.UnoRuntime;
-import com.sun.star.view.DocumentZoomType;
 
 public class SendMailPanel extends JXPanel implements KeyListener {
 	/**
@@ -119,14 +83,14 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 	
 
 	
-	Tools.DateTableCellEditor tabDateEditor = new Tools.DateTableCellEditor();
+	CommonTools.DateTableCellEditor tabDateEditor = new CommonTools.DateTableCellEditor();
 	DateTableCellRenderer tabDateRenderer = new DateTableCellRenderer(true);
 	
 	DblCellEditor tabDoubleEditor = new DblCellEditor();
 	DoubleTableCellRenderer tabDoubleRenderer = new DoubleTableCellRenderer();
 	
-	Tools.IntTableCellEditor tabIntegerEditor = new Tools.IntTableCellEditor();
-	Tools.IntTableCellRenderer tabIntegerRenderer = new Tools.IntTableCellRenderer();
+	CommonTools.IntTableCellEditor tabIntegerEditor = new CommonTools.IntTableCellEditor();
+	CommonTools.IntTableCellRenderer tabIntegerRenderer = new CommonTools.IntTableCellRenderer();
 	
 	JRtaTextField sqlstatement = null;
 	
@@ -261,7 +225,7 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 		try{
 		UIFSplitPane jSplitRechtsOU =  UIFSplitPane.createStrippedSplitPane(JSplitPane.VERTICAL_SPLIT,
         		getTabelle(),
-        		rtfEditor = new RTFEditorPanel(false,false)/*getOOorgPanel()*/);
+        		rtfEditor = new RTFEditorPanel(false,false,false)/*getOOorgPanel()*/);
 		jSplitRechtsOU.setOpaque(false);
 		jSplitRechtsOU.setDividerSize(7);
 		jSplitRechtsOU.setDividerBorderVisible(true);
@@ -317,6 +281,8 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 
 		eintab.setFont(new Font("Courier New",12,12));
 		eintab.getSelectionModel().addListSelectionListener( (listhandler=new EinListSelectionHandler()));
+		eintab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		eintab.setDragEnabled(true);
 		jscr = JCompTools.getTransparentScrollPane(eintab);
 		jscr.validate();
 		pan.add(jscr,cc.xy(1,1));
@@ -377,7 +343,7 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 							out.flush();
 							out.close();
 							ByteArrayInputStream ins = new ByteArrayInputStream(out.toByteArray());
-							OOTools.starteWriterMitStream(ins, "mailprint");
+							Tools.OOTools.starteWriterMitStream(ins, "mailprint");
 							ins.close();
 							return null;
 						}
@@ -413,24 +379,19 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 		jtb.setBorder(null);
 		jtb.addSeparator(new Dimension(0,30));
 		jtb.add( (buts[0]=ButtonTools.macheButton("", "newMail", al)));
-		Image ico = new ImageIcon(RehaMail.progHome+"icons/package-install.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		buts[0].setIcon(new ImageIcon(ico));
+		buts[0].setIcon(RehaMail.symbole.get("plus"));
 		buts[0].setToolTipText("eine neue Nachricht erstellen");
 		jtb.addSeparator(new Dimension(15,30));
 		jtb.add( (buts[1]=ButtonTools.macheButton("", "replyMail", al)));
-		ico = new ImageIcon(RehaMail.progHome+"icons/edit-undo.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		buts[1].setIcon(new ImageIcon(ico));
-		buts[1].setToolTipText("Gelesen-Status aktualisieren");
+		buts[1].setIcon(RehaMail.symbole.get("refresh"));
+		buts[1].setToolTipText("auf die gewählte Nachricht antworten");
 		jtb.addSeparator(new Dimension(15,30));
 		jtb.add( (buts[3]=ButtonTools.macheButton("", "loeschen", al)));
-		ico = new ImageIcon(RehaMail.progHome+"icons/package-remove-red.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
-		buts[3].setIcon(new ImageIcon(ico));
+		buts[3].setIcon(RehaMail.symbole.get("minus"));
 		buts[3].setToolTipText("die gewählte Nachricht loeschen");
 		jtb.addSeparator(new Dimension(75,30));
-
-		ico = new ImageIcon(RehaMail.progHome+"icons/document-print.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		jtb.add( (buts[2]=ButtonTools.macheButton("", "print", al)));
-		buts[2].setIcon(new ImageIcon(ico));
+		buts[2].setIcon(RehaMail.symbole.get("drucken"));
 		buts[2].setToolTipText("die gewählte Nachricht drucken");
 		jtb.addSeparator(new Dimension(50,30));
 		jtb.add(new JLabel("Betreff oder Nachricht enthält: "));
@@ -449,7 +410,7 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 		return jtb;
 	}
 	
-	/********OO.org-Gedönse*******
+	/********OO.org-Ged�nse*******
 	 * 
 	 * 
 	 * 
@@ -469,8 +430,8 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 		        hideElements(LayoutManager.URL_TOOLBAR_STANDARDBAR);
 		        hideElements(LayoutManager.URL_TOOLBAR);
 
-	        	//Tools.OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
-	        	Tools.OOTools.setzeRaender(document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
+	        	//CommonTools.OOCommonTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
+	        	CommonTools.OOCommonTools.setzeRaender(document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
 
 	        	//nativeView.validate();
 		        try {
@@ -572,9 +533,9 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 		Vector<Object> vec = new Vector<Object>();
 		int durchlauf = 0;
 
-		//Saudummerweise entspricht der Rückgabewert von getColumnTypeName() oder
+		//Saudummerweise entspricht der R�ckgabewert von getColumnTypeName() oder
 		//getColumnType() nicht der Abfrag von describe tabelle
-		//so werden alle Integer-Typen unter INT zusammengefaßt
+		//so werden alle Integer-Typen unter INT zusammengefa�t
 		//Longtext, Mediumtext, Varchar = alles VARCHAR
 		//CHAR kann sowohl ein einzelnes Zeichen als auch enum('T','F') also boolean sein...
 		//eigentlich ein Riesenmist!
@@ -760,7 +721,7 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 	private void doLoeschen(){
 		if(einmod.getRowCount()<=0){tabelleLeeren();return;}
 		listenerAusschalten();
-		System.out.println("einlesen text");
+		//System.out.println("einlesen text");
 		int[] rows = eintab.getSelectedRows();
 		int frage = JOptionPane.showConfirmDialog(null,"Die ausgewählten Emails wirklich löschen",
 				"Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
@@ -805,7 +766,7 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 		/****************************************************/
 		ByteArrayInputStream ins = null;
 		try{
-			ins = (ByteArrayInputStream)SqlInfo.holeStream("pimail", "emailtext", "id='"+aktId+"' LIMIT 1");
+			ins = (ByteArrayInputStream)SqlInfo.holeStream("pimail", "emailtext", "id='"+aktId+"'");
 			try {
 				rtfEditor.editorArea.getDocument().remove(0, rtfEditor.editorArea.getDocument().getLength());
 				rtfEditor.editorArea.getEditorKit().read(ins, rtfEditor.editorArea.getDocument(),0);
@@ -866,8 +827,8 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 /***********************************/
 	private static String toRTF(String toConvert){
 		String convertet = "";
-		convertet = toConvert.replace("Ä", "\\''d6").replace("ä", "\\''f6");
-		convertet = convertet.replace("Ö", "\\''c4").replace("ö", "\\''e6");
+		convertet = toConvert.replace("Ö", "\\''d6").replace("ö", "\\''f6");
+		convertet = convertet.replace("Ä", "\\''c4").replace("ä", "\\''e6");
 		convertet = convertet.replace("Ü", "\\''dc").replace("ü", "\\''fc");
 		convertet = convertet.replace("ß", "\\''df");
 		return String.valueOf(convertet);
@@ -882,7 +843,7 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 				try{
 					//toRTF(suchen.getText())
 				((JComponent)arg0.getSource()).requestFocus();
-				String where = SqlInfo.macheWhereKlausel("where absender='"+RehaMail.mailUser+"' AND ", 
+				String where = SqlInfo.macheWhereKlauselRTF("where absender='"+RehaMail.mailUser+"' AND ", 
 						suchen.getText(), new String[] {"betreff","emailtext"});
 				String cmd = "select empfaenger_person,"+
 				"gelesen,versanddatum,gelesendatum,betreff,id from pimail "+where+
@@ -943,11 +904,11 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 					}
 				 
 				 if(komplett.toUpperCase().endsWith(".PDF")){
-					 new ReaderStart(komplett);
+					 new ReaderStart(komplett,RehaMail.pdfReader);
 				 }else if(komplett.toUpperCase().endsWith(".ODT") ||komplett.toUpperCase().endsWith(".ODT")  ){
-					OOTools.starteWriterMitDatei(komplett.replace("//", "/")); 
+					Tools.OOTools.starteWriterMitDatei(komplett.replace("//", "/")); 
 				 }else if(komplett.toUpperCase().endsWith(".ODS")){
-					 OOTools.starteCalcMitDatei(komplett); 
+					 Tools.OOTools.starteCalcMitDatei(komplett); 
 				 }
 			 }else{
 					String[] indatei = dateiDialog(attachmentFileName.get(RehaMail.toolsDlgRueckgabe));
@@ -1006,7 +967,7 @@ public class SendMailPanel extends JXPanel implements KeyListener {
 	private String[] dateiDialog(String pfad){
 		//String sret = "";
 		String[] sret ={null,null};
-		System.out.println("Speichern in "+pfad);
+		//System.out.println("Speichern in "+pfad);
 		final JFileChooser chooser = new JFileChooser("Verzeichnis auswählen");
 	    chooser.setDialogType(JFileChooser.SAVE_DIALOG);
 	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

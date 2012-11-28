@@ -22,7 +22,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -37,19 +36,16 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jdesktop.swingworker.SwingWorker;
 
+import CommonTools.INIFile;
+import CommonTools.INITool;
+import CommonTools.SqlInfo;
+import CommonTools.StartOOApplication;
+import CommonTools.Verschluesseln;
 import RehaIO.RehaIOMessages;
 import RehaIO.RehaReverseServer;
 import RehaIO.SocketClient;
-import Tools.INIFile;
-import Tools.SqlInfo;
-import Tools.Verschluesseln;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.event.ITerminateEvent;
-import ag.ion.bion.officelayer.event.VetoTerminateListener;
 
 public class RehaMail implements WindowListener {
 
@@ -86,6 +82,7 @@ public class RehaMail implements WindowListener {
 	public static String officeNativePfad = "C:/RehaVerwaltung/Libraries/lib/openofficeorg/";
 	public static String progHome = "C:/RehaVerwaltung/";
 	public static String aktIK = "510841109";
+	
 	public static String hmRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	public static String hmRechnungKasse = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
 	public static String rhRechnungPrivat = "C:/RehaVerwaltung/vorlagen/HMRechnungPrivatKopie.ott";
@@ -131,7 +128,7 @@ public class RehaMail implements WindowListener {
 	public static int Sonstiges_NachrichtenLoeschen		= 102;
 	public static String progRechte = "";
 	
-	public static ImageIcon[] attachmentIco = {null,null,null,null,null,null,null};
+	public static ImageIcon[] attachmentIco = {null,null,null,null,null,null,null,null,null};
 	public static int toolsDlgRueckgabe;
 	public MailTab mtab = null;
 	//public MailPanel mpanel = null;
@@ -150,6 +147,10 @@ public class RehaMail implements WindowListener {
 	public static boolean timerprogressbar = true;
 	
 	public static boolean testcase = false;
+	
+	public static HashMap<String,ImageIcon> symbole = new HashMap<String,ImageIcon>();
+	
+	SqlInfo sqlInfo = null;
 	
 	public static void main(String[] args) {
 		try {
@@ -170,6 +171,7 @@ public class RehaMail implements WindowListener {
 		if(args.length > 0 || testcase){
 			if(!testcase){
 				System.out.println("hole daten aus INI-Datei "+args[0]);
+				INITool.init(args[0]+"ini/"+args[1]+"/");
 				INIFile inif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
 				dbIpAndName = inif.getStringProperty("DatenBank","DBKontakt1");
 				dbUser = inif.getStringProperty("DatenBank","DBBenutzer1");
@@ -183,7 +185,8 @@ public class RehaMail implements WindowListener {
 					decrypted = new String("");
 				}
 				dbPassword = decrypted.toString();
-				inif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
+				//inif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
+				//inif = INITool.openIni(args[0]+"ini/"+args[1]+"/","rehajava.ini");
 				officeProgrammPfad = inif.getStringProperty("OpenOffice.org","OfficePfad");
 				officeNativePfad = inif.getStringProperty("OpenOffice.org","OfficeNativePfad");
 				progHome = args[0];
@@ -194,13 +197,13 @@ public class RehaMail implements WindowListener {
 				if(args.length >= 4){
 					mailUser = args[3].replace("#", " ");
 				}
-
-				inif = new INIFile(args[0]+"ini/"+args[1]+"/nachrichten.ini");
+				inif = INITool.openIni(args[0]+"ini/"+args[1]+"/","nachrichten.ini");
+				
 				timerdelay = inif.getLongProperty("RehaNachrichten", "NachrichtenTimer");
 				timerpopup = (inif.getIntegerProperty("RehaNachrichten", "NachrichtenPopUp") <= 0 ? false : true);
 				timerprogressbar = (inif.getIntegerProperty("RehaNachrichten", "NachrichtenProgressbar") <= 0 ? false : true);
-				
-				inif = new INIFile(RehaMail.progHome+"ini/"+RehaMail.aktIK+"/fremdprog.ini");
+				inif = INITool.openIni(args[0]+"ini/"+args[1]+"/","fremdprog.ini");
+
 				pdfReader = inif.getStringProperty("FestProg", "FestProgPfad1");
 				
 			}
@@ -208,7 +211,7 @@ public class RehaMail implements WindowListener {
 				
 			RehaMail application = new RehaMail();
 			application.getInstance();
-
+			application.getInstance().sqlInfo = new SqlInfo();;
 			final RehaMail xapplication = application;
 			new SwingWorker<Void,Void>(){
 				@Override
@@ -230,6 +233,7 @@ public class RehaMail implements WindowListener {
 							e.printStackTrace();
 						}
 					}
+					
 					/*********************************/
 							
 							Verschluesseln man = Verschluesseln.getInstance();
@@ -396,6 +400,7 @@ public class RehaMail implements WindowListener {
 		}catch(Exception ex){
 			rehaReverseServer = null;
 		}
+		RehaMail.thisClass.sqlInfo.setFrame(jFrame);
 		thisFrame = jFrame;
 		jFrame.addWindowListener(this);
 		jFrame.setSize(800,650);
@@ -439,10 +444,27 @@ public class RehaMail implements WindowListener {
 		attachmentIco[5] = new ImageIcon(ico);
 		ico = new ImageIcon(RehaMail.progHome+"icons/stock_outbox.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
 		attachmentIco[6] = new ImageIcon(ico);
+		//ico = new ImageIcon(RehaMail.progHome+"icons/appointment-new.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		//attachmentIco[8] = new ImageIcon(ico);		
 		
 		icoPinPanel[0] = new ImageIcon(RehaMail.progHome+"icons/red.png");
 		icoPinPanel[1] = new ImageIcon(RehaMail.progHome+"icons/buttongreen.png");
 		icoPinPanel[2] = new ImageIcon(RehaMail.progHome+"icons/inaktiv.png");
+		
+		ico = new ImageIcon(RehaMail.progHome+"icons/evolution.png").getImage().getScaledInstance(34,34, Image.SCALE_SMOOTH);
+		symbole.put("senden",new ImageIcon(ico));
+		ico = new ImageIcon(RehaMail.progHome+"icons/package-install.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		symbole.put("plus",new ImageIcon(ico));
+		ico = new ImageIcon(RehaMail.progHome+"icons/edit-undo.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		symbole.put("refresh",new ImageIcon(ico));
+		ico = new ImageIcon(RehaMail.progHome+"icons/package-remove-red.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		symbole.put("minus",new ImageIcon(ico));
+		ico = new ImageIcon(RehaMail.progHome+"icons/document-print.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		symbole.put("drucken",new ImageIcon(ico));
+		ico = new ImageIcon(RehaMail.progHome+"icons/appointment-soon.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		symbole.put("todo",new ImageIcon(ico));
+		ico = new ImageIcon(RehaMail.progHome+"icons/appointment-new.png").getImage().getScaledInstance(26,26, Image.SCALE_SMOOTH);
+		symbole.put("todosolo",new ImageIcon(ico));		
 
 	}
 
@@ -515,8 +537,10 @@ public class RehaMail implements WindowListener {
         	try {
         		
    				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
+    			RehaMail.thisClass.sqlInfo.setConnection(obj.conn);
 				RehaMail.DbOk = true;
     			System.out.println("Datenbankkontakt hergestellt");
+
         	} 
         	catch (final SQLException ex) {
         		System.out.println("SQLException: " + ex.getMessage());
@@ -670,43 +694,13 @@ public class RehaMail implements WindowListener {
 	
     public static void starteOfficeApplication() throws OfficeApplicationException{ 
 
- 
-
-        	final String OPEN_OFFICE_ORG_PATH = RehaMail.officeProgrammPfad;
-
-            try
-            {
-            	//System.out.println("**********Open-Office wird gestartet***************");
-                String path = OPEN_OFFICE_ORG_PATH;
-                Map <String, String>config = new HashMap<String, String>();
-                config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
-                config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-                System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,RehaMail.officeNativePfad);
-                officeapplication = OfficeApplicationRuntime.getApplication(config);
-                officeapplication.activate();
-                officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
-                	  public void queryTermination(ITerminateEvent terminateEvent) {
-                	    super.queryTermination(terminateEvent);
-                	    try {
-                	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
-                	      if (docs.length == 1) { 
-                	        docs[0].close();
-                	        //System.out.println("Letztes Dokument wurde geschlossen");
-                	      }
-                	    }
-                	    catch (DocumentException e) {
-                	    	e.printStackTrace();
-                	    } catch (OfficeApplicationException e) {
-    						e.printStackTrace();
-    					}
-                	  }
-                	});
-            }
-            catch (OfficeApplicationException e) {
-                e.printStackTrace();
-            }
-            System.out.println("OpenOffice ist gestartet und Active ="+officeapplication.isActive());
-        }
+    	try {
+			officeapplication = (IOfficeApplication)new StartOOApplication(RehaMail.officeProgrammPfad,RehaMail.officeNativePfad).start(false);
+			 System.out.println("OpenOffice ist gestartet und Active ="+officeapplication.isActive());
+		} catch (OfficeApplicationException e1) {
+			e1.printStackTrace();
+		}
+    }
     
     public final static String notread =
     "{\\rtf1\\ansi\\deff0\\adeflang1025"
@@ -731,5 +725,21 @@ public class RehaMail implements WindowListener {
     		+"Doppelklick auf die Tabellenzeile}"
     		+"\\par }";
 	
-
-}
+    public final static String emptyrtf =
+    "{\\rtf1\\ansi\\deff0\\adeflang1025"+
+    	"{\\fonttbl{\\f0\\froman\\fprq2\\fcharset0 Times New Roman;}{\\f1\\froman\\fprq2\\fcharset0 Times New Roman;}{\\f2\\fswiss\\fprq2\\fcharset0 Arial;}{\\f3\\fswiss\\fprq2\\fcharset128 Arial;}{\\f4\\fnil\\fprq2\\fcharset0 SimSun;}{\\f5\\fnil\\fprq2\\fcharset0 Microsoft YaHei;}{\\f6\\fnil\\fprq2\\fcharset0 Mangal;}{\\f7\\fnil\\fprq0\\fcharset0 Mangal;}}"+
+    	"{\\colortbl;\\red0\\green0\\blue0;\\red128\\green128\\blue128;}"+
+    	"{\\stylesheet{\\s1\\cf0{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\rtlch\\af6\\afs24\\lang1081\\ltrch\\dbch\\af4\\langfe2052\\hich\\f0\\fs24\\lang1031\\loch\\f0\\fs24\\lang1031\\snext1 Normal;}"+
+    	"{\\s2\\sb240\\sa120\\keepn\\cf0{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\rtlch\\afs28\\lang1081\\ltrch\\dbch\\af5\\langfe2052\\hich\\f2\\fs28\\lang1031\\loch\\f2\\fs28\\lang1031\\sbasedon1\\snext3 Heading;}"+
+    	"{\\s3\\sa120\\cf0{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\rtlch\\af6\\afs24\\lang1081\\ltrch\\dbch\\af4\\langfe2052\\hich\\f0\\fs24\\lang1031\\loch\\f0\\fs24\\lang1031\\sbasedon1\\snext3 Body Text;}"+
+    	"{\\s4\\sa120\\cf0{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\rtlch\\af7\\afs24\\lang1081\\ltrch\\dbch\\af4\\langfe2052\\hich\\f0\\fs24\\lang1031\\loch\\f0\\fs24\\lang1031\\sbasedon3\\snext4 List;}"+
+    	"{\\s5\\sb120\\sa120\\cf0{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\rtlch\\af7\\afs24\\lang1081\\ai\\ltrch\\dbch\\af4\\langfe2052\\hich\\f0\\fs24\\lang1031\\i\\loch\\f0\\fs24\\lang1031\\i\\sbasedon1\\snext5 caption;}"+
+    	"{\\s6\\cf0{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\rtlch\\af7\\afs24\\lang1081\\ltrch\\dbch\\af4\\langfe2052\\hich\\f0\\fs24\\lang1031\\loch\\f0\\fs24\\lang1031\\sbasedon1\\snext6 Index;}"+
+    	"}"+
+    	"{\\info{\\author Jürgen Steinhilber}{\\creatim\\yr2011\\mo10\\dy8\\hr13\\min35}{\\revtim\\yr0\\mo0\\dy0\\hr0\\min0}{\\printim\\yr0\\mo0\\dy0\\hr0\\min0}{\\comment StarWriter}{\\vern3300}}\\deftab709"+
+    	"{\\*\\pgdsctbl"+
+    	"{\\pgdsc0\\pgdscuse195\\pgwsxn11906\\pghsxn16838\\marglsxn1134\\margrsxn1134\\margtsxn1134\\margbsxn1134\\pgdscnxt0 Standard;}}"+
+    	"\\paperh16838\\paperw11906\\margl1134\\margr1134\\margt1134\\margb1134\\sectd\\sbknone\\pgwsxn11906\\pghsxn16838\\marglsxn1134\\margrsxn1134\\margtsxn1134\\margbsxn1134\\ftnbj\\ftnstart1\\ftnrstcont\\ftnnar\\aenddoc\\aftnrstcont\\aftnstart1\\aftnnrlc"+
+    	"\\pard\\plain \\ltrpar\\s1\\cf0{\\*\\hyphen2\\hyphlead2\\hyphtrail2\\hyphmax0}\\rtlch\\af6\\afs32\\lang1081\\ltrch\\dbch\\af4\\langfe2052\\hich\\f3\\fs32\\lang1031\\loch\\f3\\fs32\\lang1031"+ 
+    	"\\par }}";
+}    

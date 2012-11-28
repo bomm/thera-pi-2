@@ -28,13 +28,16 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.JCompTools;
-import Tools.JRtaComboBox;
-import Tools.OOTools;
-import Tools.SqlInfo;
-import Tools.TableTool;
+import CommonTools.ButtonTools;
+import CommonTools.DatFunk;
+import CommonTools.DateTableCellEditor;
+import CommonTools.DblCellEditor;
+import CommonTools.DoubleTableCellRenderer;
+import CommonTools.JCompTools;
+import CommonTools.JRtaComboBox;
+import CommonTools.OOTools;
+import CommonTools.SqlInfo;
+import CommonTools.TableTool;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.IDocument;
@@ -166,10 +169,11 @@ public class RehaKassenbuchEdit extends JXPanel implements TableModelListener{
 		tab.setHighlighters(HighlighterFactory.createSimpleStriping(HighlighterFactory.CLASSIC_LINE_PRINTER));
 		tab.setSortable(false);
 		tabmod.addTableModelListener(this);
-		tab.getColumn(0).setCellRenderer(new Tools.DoubleTableCellRenderer());
-		tab.getColumn(0).setCellEditor(new Tools.DblCellEditor());
-		tab.getColumn(1).setCellRenderer(new Tools.DoubleTableCellRenderer());
-		tab.getColumn(1).setCellEditor(new Tools.DblCellEditor());
+		tab.getColumn(0).setCellRenderer(new DoubleTableCellRenderer());
+		
+		tab.getColumn(0).setCellEditor(new DblCellEditor());
+		tab.getColumn(1).setCellRenderer(new DoubleTableCellRenderer());
+		tab.getColumn(1).setCellEditor(new DblCellEditor());
 		tab.getColumn(3).setMinWidth(350);
 		tab.unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0));
 		MyListener myEnterListener = new MyListener();		
@@ -296,7 +300,7 @@ public class RehaKassenbuchEdit extends JXPanel implements TableModelListener{
 			return;
 		}
 		String cmd = "insert into "+combo.getSelectedItem()+" set ktext='',rez_nr=''";
-		int id = SqlInfo.holeId(combo.getSelectedItem().toString(),cmd);
+		int id = SqlInfo.holeIdSimple(combo.getSelectedItem().toString(),cmd);
 		Vector<Vector<String>> vecx = SqlInfo.holeFelder("select * from "+
 				combo.getSelectedItem().toString()+" where id = '"+Integer.toString(id)+"' LIMIT 1");
 		tabmod.addRow((Vector<?>)vecx.get(0).clone());
@@ -339,7 +343,7 @@ public class RehaKassenbuchEdit extends JXPanel implements TableModelListener{
 				datavec.add(vec.get(i).get(0));
 			}
 		}
-		System.out.println(datavec);
+		//System.out.println(datavec);
 		if(combo == null){
 			System.out.println("combo == null");
 			return;

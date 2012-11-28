@@ -28,8 +28,8 @@ import javax.swing.text.rtf.RTFEditorKit;
 
 import org.jdesktop.swingx.JXPanel;
 
-import Tools.ButtonTools;
-import Tools.JCompTools;
+import CommonTools.ButtonTools;
+import CommonTools.JCompTools;
 
 public class RTFEditorPanel extends JXPanel implements FocusListener{
 	/**
@@ -47,12 +47,12 @@ public class RTFEditorPanel extends JXPanel implements FocusListener{
 	public int selstart = -1;
 	public int selend = -1;
 	
-	public RTFEditorPanel(boolean showtoolbar,boolean editable){
+	public RTFEditorPanel(boolean showtoolbar,boolean editable,boolean mitsavebutton){
 		super(new BorderLayout());
 		setOpaque(false);
 		activateListener();
 		if(showtoolbar){
-			add(getToolBar(),BorderLayout.NORTH);			
+			add(getToolBar(mitsavebutton),BorderLayout.NORTH);			
 		}
 		add(getEditorPane(),BorderLayout.CENTER);
 		caretposition = 0;
@@ -61,7 +61,7 @@ public class RTFEditorPanel extends JXPanel implements FocusListener{
 		validate();
 	}
 	
-	private JToolBar getToolBar(){
+	private JToolBar getToolBar(boolean mitsavebutton){
 		JXPanel pan = new JXPanel(new BorderLayout());
 		pan.setOpaque(false);
 		JToolBar bar = new JToolBar();
@@ -107,6 +107,12 @@ public class RTFEditorPanel extends JXPanel implements FocusListener{
 		box2.setMaximumSize(new Dimension(40,25));
 		box2.setSelectedItem("16");
 		bar.add(box2);
+		
+		if(mitsavebutton){
+			bar.addSeparator(new Dimension(20,0));
+			bar.add( (buts[4]=ButtonTools.macheButton("", "speichern", al)));
+			buts[4].setIcon(new ImageIcon(RehaMail.progHome+"icons/SaveHK.png"));
+		}
 
 		return bar;
 	}
@@ -153,6 +159,8 @@ public class RTFEditorPanel extends JXPanel implements FocusListener{
 				}else if(cmd.equals("unterstrichen")){
 					setCaret();
 					return;
+				}else if(cmd.equals("speichern")){
+						RehaMail.thisClass.getMTab().getToDoPanel().doSpeichern();
 				}
 				
 			}
