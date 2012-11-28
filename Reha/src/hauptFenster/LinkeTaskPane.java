@@ -850,9 +850,13 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-						Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
-						KurzAufrufe.starteFunktion("Akutliste",null,null);
-						Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
+						try{
+							Reha.thisFrame.setCursor(Reha.thisClass.wartenCursor);
+							KurzAufrufe.starteFunktion("Akutliste",null,null);
+							Reha.thisFrame.setCursor(Reha.thisClass.cdefault);
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
 						return null;
 					}
 				}.execute();

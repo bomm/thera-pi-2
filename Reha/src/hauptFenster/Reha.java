@@ -312,7 +312,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2012-11-08-DB=";
+	public static String aktuelleVersion = "2012-11-27-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -2960,7 +2960,7 @@ final class DatenbankStarten implements Runnable{
 			if (sDB=="SQL"){
 				//obj.conn = (Connection) DriverManager.getConnection("jdbc:mysql://194.168.1.8:3306/dbf","entwickler","entwickler");
 				new SocketClient().setzeInitStand("Datenbank initialisieren und öffnen");
-				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1)+"?jdbcCompliantTruncation=false",
+				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1)+"?jdbcCompliantTruncation=false&zeroDateTimeBehavior=convertToNull",
 						SystemConfig.vDatenBank.get(0).get(3),SystemConfig.vDatenBank.get(0).get(4));
 				}	
 				int nurmaschine = SystemConfig.dieseMaschine.toString().lastIndexOf("/");
