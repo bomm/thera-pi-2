@@ -27,6 +27,8 @@ public class SystemPreislisten {
 	public static HashMap<String,Vector<String>> hmPreisGruppen = new HashMap<String,Vector<String>>();
 
 	public static HashMap<String,Vector<String>> hmPreisBereich = new HashMap<String,Vector<String>>();
+	
+	public static HashMap<String,Vector<String>> hmPreisBesonderheit = new HashMap<String,Vector<String>>();
 
 	public static HashMap<String,Vector<Integer>> hmZuzahlRegeln = new HashMap<String,Vector<Integer>>();	
 	public static HashMap<String,Vector<Integer>> hmZuzahlModus = new HashMap<String,Vector<Integer>>();
@@ -98,6 +100,9 @@ public class SystemPreislisten {
 			getPreisBereich(inif,"Physio",tarife);
 			hmPreisBereich.put("Physio", (Vector<String>)dummy.clone() );
 			dummy.clear();
+			getPreisBesonderheit(inif,"Physio",tarife);
+			hmPreisBesonderheit.put("Physio", (Vector<String>)dummy.clone() );
+			dummy.clear();
 			getNeuePreiseAb(inif,"Physio",tarife);
 			hmNeuePreiseAb.put("Physio", (Vector<String>)dummy.clone() );
 			dummy.clear();				
@@ -142,6 +147,9 @@ public class SystemPreislisten {
 			dummy.clear();
 			getPreisBereich(inif,"Massage",tarife);
 			hmPreisBereich.put("Massage", (Vector<String>)dummy.clone() );
+			dummy.clear();
+			getPreisBesonderheit(inif,"Massage",tarife);
+			hmPreisBesonderheit.put("Massage", (Vector<String>)dummy.clone() );
 			dummy.clear();
 			intdummy.clear();
 			getNeuePreiseRegeln(inif,"Massage",tarife);
@@ -188,6 +196,9 @@ public class SystemPreislisten {
 			getPreisBereich(inif,"Ergo",tarife);
 			hmPreisBereich.put("Ergo", (Vector<String>)dummy.clone() );
 			dummy.clear();
+			getPreisBesonderheit(inif,"Ergo",tarife);
+			hmPreisBesonderheit.put("Ergo", (Vector<String>)dummy.clone() );
+			dummy.clear();
 			intdummy.clear();
 			getNeuePreiseRegeln(inif,"Ergo",tarife);
 			hmNeuePreiseRegel.put("Ergo", (Vector<Integer>)intdummy.clone());
@@ -232,6 +243,9 @@ public class SystemPreislisten {
 			dummy.clear();
 			getPreisBereich(inif,"Logo",tarife);
 			hmPreisBereich.put("Logo", (Vector<String>)dummy.clone() );
+			dummy.clear();
+			getPreisBesonderheit(inif,"Logo",tarife);
+			hmPreisBesonderheit.put("Logo", (Vector<String>)dummy.clone() );
 			dummy.clear();
 			intdummy.clear();
 			getNeuePreiseRegeln(inif,"Logo",tarife);
@@ -278,6 +292,9 @@ public class SystemPreislisten {
 			getPreisBereich(inif,"Reha",tarife);
 			hmPreisBereich.put("Reha", (Vector<String>)dummy.clone() );
 			dummy.clear();
+			getPreisBesonderheit(inif,"Reha",tarife);
+			hmPreisBesonderheit.put("Reha", (Vector<String>)dummy.clone() );
+			dummy.clear();
 			intdummy.clear();
 			getNeuePreiseRegeln(inif,"Reha",tarife);
 			hmNeuePreiseRegel.put("Reha", (Vector<Integer>)intdummy.clone());
@@ -322,6 +339,9 @@ public class SystemPreislisten {
 			dummy.clear();
 			getPreisBereich(inif,"Podo",tarife);
 			hmPreisBereich.put("Podo", (Vector<String>)dummy.clone() );
+			dummy.clear();
+			getPreisBesonderheit(inif,"Podo",tarife);
+			hmPreisBesonderheit.put("Podo", (Vector<String>)dummy.clone() );
 			dummy.clear();
 			intdummy.clear();
 			getNeuePreiseRegeln(inif,"Podo",tarife);
@@ -382,6 +402,20 @@ public class SystemPreislisten {
 			dummy.add(f.getStringProperty("PreisGruppen_"+disziplin, "PGBereich"+Integer.toString(i+1)));
 		}
 	}
+	public static void getPreisBesonderheit(INIFile f,String disziplin,int tarife){
+		boolean mustsave = false;
+		for(int i = 0; i < tarife;i++){
+			if( (f.getStringProperty("PreisGruppen_"+disziplin, "PGBesonderheit"+Integer.toString(i+1))) == null ){
+				f.setStringProperty("PreisGruppen_"+disziplin, "PGBesonderheit"+Integer.toString(i+1), "000", null);
+				mustsave = true;
+			}
+			dummy.add(f.getStringProperty("PreisGruppen_"+disziplin, "PGBesonderheit"+Integer.toString(i+1)));
+		}
+		if(mustsave){
+			INITool.saveIni(f);
+		}
+	}
+	
 	public static void getZuzahlRegeln(INIFile f,String disziplin,int tarife){
 		boolean mustsave = false;
 		String sdummy;
@@ -435,6 +469,7 @@ public class SystemPreislisten {
 		hmPreise.clear();
 		hmPreisGruppen.clear();
 		hmPreisBereich.clear();
+		hmPreisBesonderheit.clear();
 		hmZuzahlRegeln.clear();	
 		hmHMRAbrechnung.clear();
 		hmNeuePreiseAb.clear();

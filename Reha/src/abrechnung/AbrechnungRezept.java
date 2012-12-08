@@ -3574,7 +3574,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			node = holeNode(i);
 			//Notwendig wg. BKK-Gesundheit Tarifwechsel
 			if(!node.abr.tarifwechsel){
-				edibuf.append("EHE+"+disziplinGruppe+":"+SystemPreislisten.hmPreisBereich.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1)+"000"+plus);				
+				edibuf.append("EHE+"+disziplinGruppe+":"+SystemPreislisten.hmPreisBereich.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1)+
+						SystemPreislisten.hmPreisBesonderheit.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1)+plus);				
 			}else{
 				edibuf.append("EHE+"+disziplinGruppe+":"+node.abr.tarifkennzeichen+"000"+plus);
 			}
