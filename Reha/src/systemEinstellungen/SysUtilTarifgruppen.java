@@ -104,7 +104,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		disziplin = new JRtaComboBox(new String[] {"Physio","Massage","Ergo","Logo","Reha","Podo"});
 		disziplin.setActionCommand("disziplin");
 		disziplin.addActionListener(this);
-		modtarife.setColumnIdentifiers(new String[] {"Tarifgruppe","Zuzahlungsregel","gültig ab","Anwendungsregel","Gültik.Bereich","§302-Abrechnung","Pos.HB-Einzeln","Pos.HB-Mehrere","Pos.Weg/km","Pos.Weg/Pauschal","HB-Heim mit Zuzahl.","Arztbericht"});
+		modtarife.setColumnIdentifiers(new String[] {"Tarifgruppe","Zuzahlungsregel","gültig ab","Anwendungsregel","Gültik.Bereich","§302-Abrechnung","Pos.HB-Einzeln","Pos.HB-Mehrere","Pos.Weg/km","Pos.Weg/Pauschal","HB-Heim mit Zuzahl.","Arztbericht","Tarifbesonderh."});
 		tarife = new JXTable(modtarife);
 		tarife.getColumn(0).setMinWidth(120);
 		tarife.getColumn(1).setMinWidth(100);
@@ -397,7 +397,9 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 				vec.add("nicht abrechenbar");
 			}else{
 				vec.add("x9701 (teilw. GKV)");
-			}			
+			}
+			wert = SystemPreislisten.hmPreisBesonderheit.get(diszi).get(i);
+			vec.add(wert);
 			modtarife.addRow((Vector<?>)vec.clone());
 		}
 		tarife.validate();
@@ -542,6 +544,31 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 				treffer = Arrays.asList(arztbericht).indexOf(swert);
 				SystemPreislisten.hmBerichtRegeln.get(diszi).set(i, (treffer==0 ? "" : resultarztbericht[treffer]));
 				inif.setStringProperty("BerichtRegeln_"+diszi, "Bericht"+(i+1), (treffer==0 ? "" : resultarztbericht[treffer]), null);
+				
+				swert = String.valueOf((String) tarife.getValueAt(i, 12));
+				if(swert.trim().length() != 3){
+					JOptionPane.showMessageDialog(null,"Der Wert Tarifbesonderheit in der Tarifgruppe\n"+
+							inif.getStringProperty("PreisGruppen_"+diszi, "PGName"+(i+1))+" besteht nicht aus 3 Zahlen und wird deshalb auf\n000 (=ohne Besonderheit) zurückgesetzt");
+					tarife.setValueAt((String) "000",i, 12 );
+					SystemPreislisten.hmPreisBesonderheit.get(diszi).set(i, "000");
+					inif.setStringProperty("PreisGruppen_"+diszi, "PGBesonderheit"+(i+1),"000" , null);
+				}else{
+					boolean falsch = false;
+					for(int ipb = 0; ipb < 3; ipb++){
+						if(! ("0123456789".contains(swert.substring(ipb, ipb+1))) ){
+							falsch = true;
+						}
+					}
+					if(falsch){
+						JOptionPane.showMessageDialog(null,"Der Wert Tarifbesonderheit in der Tarifgruppe\n"+
+								inif.getStringProperty("PreisGruppen_"+diszi, "PGName"+(i+1))+" besteht nicht aus 3 Zahlen und wird deshalb auf\n000 (=ohne Besonderheit) zurückgesetzt");
+						tarife.setValueAt((String) "000",i, 12 );
+						SystemPreislisten.hmPreisBesonderheit.get(diszi).set(i, "000");
+						inif.setStringProperty("PreisGruppen_"+diszi, "PGBesonderheit"+(i+1),"000" , null);
+					}else{
+						inif.setStringProperty("PreisGruppen_"+diszi, "PGBesonderheit"+(i+1),swert , null);
+					}
+				}
 				/*
 				System.out.println("*********");
 				System.out.println("BerichtRegeln_"+diszi);
@@ -677,11 +704,13 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			inif.setIntegerProperty("PreisGruppen_Common", "AnzahlPreisGruppen", position, null);
 			inif.setStringProperty("PreisGruppen_Common", "PGName"+Integer.toString(position), commonname, null);
 			inif.setStringProperty("PreisGruppen_Common", "PGBereich"+Integer.toString(position), "00", null);
+			inif.setStringProperty("PreisGruppen_Common", "PGBesonderheit"+Integer.toString(position), "000", null);
 			String[] diszis = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 			for(int i = 0; i < diszis.length;i++){
 				inif.setIntegerProperty("PreisGruppen_"+diszis[i], "AnzahlPreisGruppen", position, null);
 				inif.setStringProperty("PreisGruppen_"+diszis[i], "PGName"+Integer.toString(position), commonname, null);
 				inif.setStringProperty("PreisGruppen_"+diszis[i], "PGBereich"+Integer.toString(position), "00", null);
+				inif.setStringProperty("PreisGruppen_"+diszis[i], "PGBesonderheit"+Integer.toString(position), "000", null);
 				
 				inif.setStringProperty("PreisRegeln_"+diszis[i], "PreisAb"+Integer.toString(position), "", null);
 				inif.setStringProperty("PreisRegeln_"+diszis[i], "PreisRegel"+Integer.toString(position), "0", null);
