@@ -1,6 +1,7 @@
 package CommonTools;
 
 import java.awt.Cursor;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +32,10 @@ public class StartOOApplication {
     public IOfficeApplication start(boolean mustRestart) throws OfficeApplicationException{ 
         	if(mustRestart){
         		JOptionPane.showMessageDialog(null,"Zur Info die UNO-Runtime wird neu gestartet!");
+        	}
+        	File file = new File(ooPath);
+        	if(! file.exists()){
+        		JOptionPane.showMessageDialog(null, "Der eingestellte OpenOffice-Pfad zeigt auf "+ooPath+"\nDieser Pfad existiert nicht auf Ihrem Rechner!\nDie Anwendung kann nicht korrekt gestartet werden");
         	}
             ILazyApplicationInfo info =  OfficeApplicationRuntime.getApplicationAssistant(libPath).findLocalApplicationInfo(ooPath);
             String[] names = info.getProperties().getPropertyNames();
