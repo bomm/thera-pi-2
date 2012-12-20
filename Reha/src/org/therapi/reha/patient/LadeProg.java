@@ -38,13 +38,12 @@ public class LadeProg {
 		final String xprog = prog;
 		new Thread(){
 			public void run(){
+				/*
 				new SwingWorker<Void, Void>(){
 
 					@Override
 					protected Void doInBackground() throws Exception {
-						//String cmd = "java -jar "+xprog;
-						//Runtime.getRuntime().exec(cmd);
-
+					*/
 						try {
 							
 							
@@ -57,11 +56,13 @@ public class LadeProg {
 							
 							//Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 						       InputStream is = process.getInputStream();
+						       //InputStream is = process.getErrorStream();
 						       InputStreamReader isr = new InputStreamReader(is);
 						       BufferedReader br = new BufferedReader(isr);
 						       String line;
 						       
 						       while ((line = br.readLine()) != null) {
+						    	   System.out.println(line);
 						         //doTestLine(line);
 						       }
 						       
@@ -75,11 +76,12 @@ public class LadeProg {
 						} catch (IOException e) {
 							Reha.thisFrame.setCursor(Reha.thisClass.normalCursor);
 							e.printStackTrace();
+							JOptionPane.showMessageDialog(null, "Fehler beim starten des Moduls, Fehlermeldung ist\n"+e.getMessage().toString());
 						}
-
+						/*
 						return null;
 					}
-				}.execute();
+				}.execute();*/
 				
 			}
 		}.start();
