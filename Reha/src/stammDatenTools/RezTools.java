@@ -1659,7 +1659,6 @@ public class RezTools {
 		return false;
 	}
 	public static Object[] hbNormal(ZuzahlModell zm, BigDecimal rezwert,Double rezgeb,int realhbAnz,boolean neuerpreis){
-		
 		//Object[] retobj = {new BigDecimal(new Double(0.00)),(Double)rezgeb};
 		//((BigDecimal)retobj[0]).add(BigDecimal.valueOf(new Double(1.00)));
 		//((BigDecimal) retobj[0]).add(new BigDecimal(rezwert));
@@ -1755,14 +1754,31 @@ public class RezTools {
 							bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
 							retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 							SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
+							//System.out.println("Zuzahlungsmodus = "+SystemPreislisten.hmZuzahlModus.get(putRezNrGetDisziplin(rezid)).get(zm.preisgruppe-1));
 							if(zz.equals("1")){// Zuzahlungspflichtig
-								bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
-								testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
-								bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-								SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
-								SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
-								SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );
-								retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+								/*
+								 * Hier noch den bayrischen Modus einbauen.
+								 * 
+								 */
+								
+								if(SystemPreislisten.hmZuzahlModus.get(putRezNrGetDisziplin(rezid)).get(zm.preisgruppe-1) == 1){
+									bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
+									testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+									bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+									SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
+									SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
+									SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );
+									retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+								}else{ //bayrische Variante
+									//bdpreis.divide(BigDecimal.valueOf(new Double(10.000)))
+									bdrezgeb = BigDecimal.valueOf( new Double(preis) ).divide(BigDecimal.valueOf(new Double(10.000)));
+									testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+									bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl))).multiply(new BigDecimal(new Double(zm.km)));
+									SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue())+"(*"+Integer.toString(zm.km)+"km)");
+									SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
+									SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );
+									retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+								}
 							}else{
 								SystemConfig.hmAdrRDaten.put("<Rhbanzahl>","----");
 								SystemConfig.hmAdrRDaten.put("<Rhbpos>","----");
@@ -1823,6 +1839,7 @@ public class RezTools {
 							
 						}
 					}else{// es können keine Kilometer abgerechnet werden
+						//System.out.println("Zuzahlungsmodus = "+SystemPreislisten.hmZuzahlModus.get(putRezNrGetDisziplin(rezid)).get(zm.preisgruppe-1));
 						SystemConfig.hmAdrRDaten.put("<Rwegpos>","----");	
 						preis = PreisUeberPosition(SystemConfig.hmAdrRDaten.get("<Rwegpos>"),
 								zm.preisgruppe,SystemConfig.hmAdrRDaten.get("<Rnummer>").substring(0,2),neuerpreis);
@@ -1943,14 +1960,24 @@ public class RezTools {
 						bdposwert = bdpreis.multiply(BigDecimal.valueOf(new Double(realhbAnz)));
 						retobj[0] = ((BigDecimal)retobj[0]).add(BigDecimal.valueOf(bdposwert.doubleValue()));
 						SystemConfig.hmAdrRDaten.put("<Rwegpreis>", dfx.format(bdpreis.doubleValue()));
-
-						bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
-						testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
-						bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
-						SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
-						SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
-						SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );
-						retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+						if(SystemPreislisten.hmZuzahlModus.get(putRezNrGetDisziplin(rezid)).get(zm.preisgruppe-1) == 1){
+							bdrezgeb = bdpreis.divide(BigDecimal.valueOf(new Double(10.000)));
+							testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+							bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl)));
+							SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue()));
+							SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
+							SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );
+							retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+						}else{
+							//bdpreis.divide(BigDecimal.valueOf(new Double(10.000)))
+							bdrezgeb = BigDecimal.valueOf( new Double(preis) ).divide(BigDecimal.valueOf(new Double(10.000)));
+							testpr = bdrezgeb.setScale(2, BigDecimal.ROUND_HALF_UP);
+							bdendrezgeb = testpr.multiply(BigDecimal.valueOf(new Double(zm.gesamtZahl))).multiply(new BigDecimal(new Double(zm.km)));
+							SystemConfig.hmAdrRDaten.put("<Rwegproz>", dfx.format(testpr.doubleValue())+"(*"+Integer.toString(zm.km)+"km)");
+							SystemConfig.hmAdrRDaten.put("<Rweggesamt>", dfx.format(bdendrezgeb.doubleValue()));
+							SystemConfig.hmAdrRDaten.put("<Rweganzahl>",Integer.valueOf(zm.gesamtZahl).toString() );
+							retobj[1] = ((Double)retobj[1]) +bdendrezgeb.doubleValue();
+						}
 						/*******************************/
 
 

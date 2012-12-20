@@ -725,7 +725,7 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 						long zeit = System.currentTimeMillis();
 						while(true){
 							Thread.sleep(20);
-							if(System.currentTimeMillis()-zeit > 2000){
+							if(System.currentTimeMillis()-zeit > 6000){
 								break;
 							}
 						}
@@ -779,9 +779,39 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 			if (cmd.equals("piHelp")){
 				new Thread(){
 					public void run(){
+						try{
+							//Runtime.getRuntime().exec(Reha.proghome+"piHelp.jar");
+							new LadeProg(Reha.proghome+"piHelp.jar "+
+									Reha.proghome+" "+Reha.aktIK);
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
+					}
+				}.start();				
+				
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						RehaSplash rspl = new RehaSplash(null,"piHelp - Hilfetextgenerator laden....dieser Vorgang kann einige Sekunden dauern...");
+						long zeit = System.currentTimeMillis();
+						while(true){
+							Thread.sleep(20);
+							if(System.currentTimeMillis()-zeit > 2000){
+								break;
+							}
+						}
+						rspl.dispose();
+						return null;
+					}
+					
+				}.execute();
+				/*
+				new Thread(){
+					public void run(){
 						new LadeProg(Reha.proghome+"piHelp.jar");		
 					}
 				}.start();
+				*/
 				break;
 			}
 			if (cmd.equals("piTool")){

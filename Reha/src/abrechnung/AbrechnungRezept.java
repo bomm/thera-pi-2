@@ -2538,7 +2538,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}else{
 			adressParams = getAdressParams(adrvec.get(0).get(1));
 		}
-		System.out.println("Zuzhlungwert = "+zuzahlungWert);
+		//System.out.println("Zuzhlungwert = "+zuzahlungWert);
 		hmRezgeb.put("<rgreznum>",aktRezNum.getText());
 		hmRezgeb.put("<rgbehandlung>",behandl);
 		hmRezgeb.put("<rgdatum>",DatFunk.sDatInDeutsch(vec_rez.get(0).get(2)));
