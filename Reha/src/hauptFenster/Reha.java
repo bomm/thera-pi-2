@@ -312,7 +312,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2012-12-20-DB=";
+	public static String aktuelleVersion = "2012-12-27-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -1007,7 +1007,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			new ReverseSocket().setzeRehaNachricht(RehaIOServer.rehaMailreversePort, "Reha#"+RehaIOMessages.MUST_CHANGEUSER+"#"+Reha.aktUser);			
 		}else{
 			if((!Reha.aktUser.trim().startsWith("Therapeut")) && Reha.checkForMails()){
-				new LadeProg(Reha.proghome+"RehaMail.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport+" "+Reha.aktUser.replace(" ", "#"));
+				if(Reha.isStarted){
+					new LadeProg(Reha.proghome+"RehaMail.jar"+" "+Reha.proghome+" "+Reha.aktIK+" "+Reha.xport+" "+Reha.aktUser.replace(" ", "#"));	
+				}
 			}
 		}
 	}
@@ -1833,11 +1835,13 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.setActionCommand("sqlmodul");
 			men.addActionListener(this);
 			toolsMenu.add(men);
+			/*
 			men = new JMenuItem("INI-Editor");
 			men.setActionCommand("iniedit");
 			men.addActionListener(this);
 			toolsMenu.add(men);
 			toolsMenu.addSeparator();
+			*/
 			men = new JMenuItem("§301 Reha Fall-Steuerung");
 			men.setActionCommand("fallsteuerung");
 			men.addActionListener(this);

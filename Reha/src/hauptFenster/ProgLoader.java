@@ -971,7 +971,9 @@ public static void PasswortDialog(int setPos) {
 	SwingUtilities.invokeLater(new Runnable(){
 		
 		public void run(){
-			Reha.nachrichtenRegeln();
+			if(Reha.isStarted){
+				Reha.nachrichtenRegeln();	
+			}
 		}
 	});
 	

@@ -292,6 +292,10 @@ private JScrollPane getParameterListe(){
 	
 	treeitem = new DefaultMutableTreeNode( "Verkauf" );
 	node.add(treeitem);
+	
+	treeitem = new DefaultMutableTreeNode( "INI-Editor" );
+	node.add(treeitem);
+
 	root.add(node);
 	
 	/***/
@@ -714,6 +718,17 @@ private void auswertenSysUtil(String util){
 					}
 				}
 			}
+		}
+		if(util.equals("INI-Editor")){
+			if(!Rechte.hatRecht(Rechte.Sonstiges_sqlmodul, false)){
+				doAccessDenied();
+				return;
+			}
+			JOptionPane.showMessageDialog(null,"<html><b>Achtung!!!!</b><br>Wenn Sie mit dem INI-Editor eine INI-Datei verändern oder neu erstellen,<br>wirkt sich die jeweilige Änderung erst dann aus wenn Sie<br><b>Thera-Pi neu starten!</b></html>");
+			new LadeProg(Reha.proghome+"RehaIniedit.jar "+
+					" "+Reha.proghome+" "+Reha.aktIK );
+			cursorWait(false);
+			break;
 		}
 		if(util.equals("Befreiungen zurücksetzen/Jahreswechsel")){
 			if(!Rechte.hatRecht(Rechte.BenutzerSuper_user, false)){
