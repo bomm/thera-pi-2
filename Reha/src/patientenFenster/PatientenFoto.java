@@ -150,22 +150,36 @@ public class PatientenFoto  extends RehaSmartDialog{
 	    Image img = (new BufferToImage((VideoFormat)buf.getFormat()).createImage(buf));	
 	    
 	    if(! (img==null)){
+	    	Image imgr = null;
+	    	BufferedImage feddisch = null;
+		    BufferedImage img2 = null;
 		    BufferedImage buffImg = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
+
 		    Graphics2D g = buffImg.createGraphics();
 		    g.drawImage(img, null, null);
 			g.dispose();
-			BufferedImage img2 = new BufferedImage(panel.getPhotoFrameSize().width,panel.getPhotoFrameSize().height,BufferedImage.TYPE_INT_RGB);
-			img2 = buffImg.getSubimage(panel.getActivePoint().x*(bigvideo ? 1 : 2),
-					panel.getActivePoint().y*(bigvideo ? 1 : 2),
-					panel.getPhotoFrameSize().width*(bigvideo ? 1 : 2),
-					panel.getPhotoFrameSize().height*(bigvideo ? 1 : 2));
+			try{
+				img2 = new BufferedImage(panel.getPhotoFrameSize().width,panel.getPhotoFrameSize().height,BufferedImage.TYPE_INT_RGB);
+				img2 = buffImg.getSubimage(panel.getActivePoint().x*(bigvideo ? 1 : 2),
+						panel.getActivePoint().y*(bigvideo ? 1 : 2),
+						panel.getPhotoFrameSize().width*(bigvideo ? 1 : 2),
+						panel.getPhotoFrameSize().height*(bigvideo ? 1 : 2));
 
-	    	Image imgr =   img2.getScaledInstance(175, 220, Image.SCALE_SMOOTH);
-	    	BufferedImage feddisch = new BufferedImage(175, 220, BufferedImage.TYPE_INT_RGB);
-	    	g = feddisch.createGraphics();
-    	    g.drawImage(imgr, 0, 0, null);
-    	    g.dispose();
-    	    eltern.setNewPic(new ImageIcon(feddisch));
+		    	imgr =   img2.getScaledInstance(175, 220, Image.SCALE_SMOOTH);
+		    	feddisch = new BufferedImage(175, 220, BufferedImage.TYPE_INT_RGB);
+		    	g = feddisch.createGraphics();
+	    	    g.drawImage(imgr, 0, 0, null);
+	    	    g.dispose();
+	    	    eltern.setNewPic(new ImageIcon(feddisch));
+			}catch(Exception ex){
+				System.out.println("****Fehler in der Funktion Patientenfoto");
+				System.out.println("Größe des Fotoframes in X-Richtung = "+panel.getPhotoFrameSize().width);
+				System.out.println("Größe des Fotoframes in Y-Richtung = "+panel.getPhotoFrameSize().height);
+				System.out.println("Größe des Original-Videoframes in X-Richtung = "+img.getWidth(null));
+				System.out.println("Größe des Original-Videoframes in Y-Richtung = "+img.getHeight(null));
+				System.out.println("X-Position des aktiven Punktes  = "+panel.getActivePoint().x);
+				System.out.println("Y-Position des aktiven Punktes  = "+panel.getActivePoint().y);
+			}
     	    /*
 			try {
 				ImageIO.write( feddisch , "png", new File("c:\\webcam2.png"));

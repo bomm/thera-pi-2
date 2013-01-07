@@ -514,6 +514,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					   tabaktrez.setRowSelectionInterval(row, row);
 					   ZeigePopupMenu(arg0);
 				   }else{
+					   /*
 					   EmailSendenExtern oMail = new EmailSendenExtern();
 						String smtphost = SystemConfig.hmEmailExtern.get("SmtpHost");
 						String authent = SystemConfig.hmEmailExtern.get("SmtpAuth");
@@ -531,6 +532,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 						} catch (MessagingException e) {
 							e.printStackTrace();
 						}
+						*/
 				   }
 				}
 			}

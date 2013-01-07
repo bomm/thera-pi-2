@@ -163,10 +163,11 @@ public class HistorDaten extends JXPanel{
 					rezlabs[5].setText(" ");
 					rezlabs[6].setText(" ");
 				}
+				
 				stest = StringTools.NullTest((String)vecaktrez.get(55));
 				if( stest.equals("T") ){
 					test = StringTools.ZahlTest((String)vecaktrez.get(54));
-					if(test >= 0){
+					if(test > 0){
 						rezlabs[7].setForeground(Color.BLACK);
 						rezlabs[7].setText("Therapiebericht o.k.");
 					}else{
