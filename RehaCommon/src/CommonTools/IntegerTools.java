@@ -23,5 +23,25 @@ public class IntegerTools {
 		ret = Integer.parseInt(zahl.substring(i));
 		return ret;
 	}
+	
+	public static int trimLeadingNullAndRetInt(String zahl){
+		int ret = 0;
+		if(zahl==null){
+			return ret;
+		}
+		int lang = zahl.length(); 
+		if(lang == 0){
+			return ret;
+		}
+		int i  = 0;
+		for(i = 0; i < lang;i++){
+			if(! zahl.substring(i,i+1).equals("0")){
+				break;
+			}
+		}
+		ret = Integer.parseInt(zahl.substring(i));
+		return ret;
+	}
+	
 
 }

@@ -106,7 +106,7 @@ public class RehaSql implements WindowListener {
 			if(!testcase){
 				System.out.println("hole daten aus INI-Datei "+args[0]);
 				INIFile inif = new INIFile(args[0]+"ini/"+args[1]+"/rehajava.ini");
-				dbIpAndName = inif.getStringProperty("DatenBank","DBKontakt1")+"?jdbcCompliantTruncation=false&zeroDateTimeBehavior=convertToNull";
+				dbIpAndName = inif.getStringProperty("DatenBank","DBKontakt1");
 				dbUser = inif.getStringProperty("DatenBank","DBBenutzer1");
 				String pw = inif.getStringProperty("DatenBank","DBPasswort1");
 				String decrypted = null;
@@ -333,7 +333,7 @@ public class RehaSql implements WindowListener {
 	    		return ;
 			}	
         	try {
-   				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
+   				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName+"?jdbcCompliantTruncation=false&zeroDateTimeBehavior=convertToNull",dbUser,dbPassword);
     			RehaSql.thisClass.sqlInfo.setConnection(obj.conn);
 				RehaSql.DbOk = true;
     			System.out.println("Datenbankkontakt hergestellt");

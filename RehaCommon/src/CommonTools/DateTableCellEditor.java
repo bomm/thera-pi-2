@@ -145,6 +145,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
 	}
 
     //Override to invoke setValue on the formatted text field.
+	/*
     public Component getTableCellEditorComponent(JTable table,
             Object value, boolean isSelected,
             int row, int column) {
@@ -176,7 +177,35 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         
         return ftf;
     }
+	*/
+	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,int row, int column) {
 
+		JFormattedTextField ftf = (JFormattedTextField)super.getTableCellEditorComponent(table, value, isSelected, row, column);
+		String insstr = " . . ";
+		if(value == null){
+			insstr = " . . ";
+			ftf.setText(insstr);
+		}else if(((Object)value).toString().trim().equals("")){
+			insstr = " . . ";
+			ftf.setText(insstr);
+		}else{
+			try{
+				insstr = DatFunk.sDatInDeutsch(((Object)value).toString() );
+			}catch(Exception ex){
+				insstr = " . . ";
+			}
+			ftf.setText(insstr);
+		}
+		ftf.requestFocus();
+		ftf.setCaretColor(Color.BLACK);
+		ftf.requestFocus();
+		ftf.setSelectionStart(0);
+		ftf.setSelectionEnd(0);
+		ftf.selectAll();
+		ftf.setCaretPosition(0);
+		return ftf;
+	}	
+	
     //Override to ensure that the value remains an Integer.
     public Object getCellEditorValue() {
         JFormattedTextField ftf = (JFormattedTextField)getComponent();
@@ -189,6 +218,7 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
     //it isn't.  If it's OK for the editor to go
     //away, we need to invoke the superclass's version 
     //of this method so that everything gets cleaned up.
+    /*
     public boolean stopCellEditing() {
         JFormattedTextField ftf = (JFormattedTextField)getComponent();
         ////System.out.println("Verify in stopCell = "+ftf.getInputVerifier().verify(ftf));
@@ -204,20 +234,6 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         	ftf.setCaretPosition(0);
         	return false;
         }
-        /*
-        if (ftf.isEditValid()) {
-            try {
-                ftf.commitEdit();
-            } catch (java.text.ParseException exc) { }
-	    
-        } else { //text is invalid
-        	//System.out.println("Verify = "+ftf.getInputVerifier().verify(ftf));
-        	//System.out.println("Ung�ltige Eingabe ---------> "+ftf.getText());
-            if (!userSaysRevert()) { //user wants to edit
-            	return false; //don't let the editor go away
-            } 
-        }
-        */
         if(DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) >= 120 ||
         		DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) <= -120){
         	JOptionPane.showMessageDialog(null,"Der eingebene Datumswert ist zwar ein kalendarisch korrektes Datum,\n"+
@@ -226,6 +242,34 @@ public class DateTableCellEditor extends DefaultCellEditor implements KeyListene
         fireEditingStopped();
         return super.stopCellEditing();
     }
+    */
+    public boolean stopCellEditing() {
+
+    	JFormattedTextField ftf = (JFormattedTextField)getComponent();
+
+    	if((!ftf.getInputVerifier().verify(ftf)) ||
+    	    	(ftf.getText().trim().length()==7) ||(ftf.getText().trim().length()==9)){
+        	ftf.setText(" . . ");
+        	ftf.setCaretPosition(0);
+        	return false;
+    	}
+
+    	if(!testeDatum(ftf)){
+        	ftf.setText(" . . ");
+        	ftf.setCaretPosition(0);
+        	return false;
+    	}
+    	try{
+        	if(DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) >= 120 ||
+        	    	DatFunk.JahreDifferenz(DatFunk.sHeute(),ftf.getText()) <= -120){
+        	        	JOptionPane.showMessageDialog(null,"Der eingebene Datumswert ist zwar ein kalendarisch korrektes Datum,\n"+
+        	        	"trotzdem würde ich an Ihrer Stelle das Datum noch einmal prüfen.....");
+   	    	}
+    	}catch(Exception ex){}
+    		fireEditingStopped();
+    		return super.stopCellEditing();
+   	}    
+    
     public void cancelCellEditing() {
     	super.cancelCellEditing();
     }

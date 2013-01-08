@@ -142,7 +142,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 	
 	JScrollPane jscr = null;
 	
-	DateTableCellEditor tabDateEditor = new DateTableCellEditor();
+	CommonTools.DateTableCellEditor tabDateEditor = new CommonTools.DateTableCellEditor();
 	DateTableCellRenderer tabDateRenderer = new DateTableCellRenderer();
 	
 	DblCellEditor tabDoubleEditor = new DblCellEditor();
@@ -162,6 +162,8 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 	IDocument document  = null;
 	XSheetCellCursor cellCursor = null;
 	String sheetName = null;
+	
+	long starttime = 0;
 	
 	public RehaSqlPanel(RehaSqlTab eltern){
 		super();
@@ -820,6 +822,7 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 	}
 
 	private void doStatementAuswerten(){
+		starttime = System.currentTimeMillis();
 		if(sqlstatement.getText().trim().equals("")){
 			return;
 		}
@@ -1016,13 +1019,11 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 				}
 			}
 		}
-
 		tabmod.addTableModelListener(this);
-		
-		
 	}
+	
 	private void doSetAbfrageErgebnis(){
-		labgefunden.setText("Abfrageergebnis: Datensätze = "+Integer.toString(tab.getRowCount())+" / Spalten = "+Integer.toString(tab.getColumnCount()));
+		labgefunden.setText("Abfrageergebnis: Datensätze = "+Integer.toString(tab.getRowCount())+" / Spalten = "+Integer.toString(tab.getColumnCount())+" - "+Long.toString(System.currentTimeMillis()-starttime)+" Millisekunden");
 	}
 	class SqlTableModel extends DefaultTableModel{
 		   /**
@@ -1056,7 +1057,6 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 			}
 			return true;
 		}
-		   
 	}
 	
 	private void starteExport(){
@@ -1145,8 +1145,5 @@ public class RehaSqlPanel extends JXPanel implements ListSelectionListener, Acti
 		XSpreadsheets spreadsheets = spreadsheetDocument.getSpreadsheetDocument().getSheets();		
 		XSpreadsheet spreadsheet1 = (XSpreadsheet)UnoRuntime.queryInterface(XSpreadsheet.class,spreadsheets.getByName(sheetName));
 		cellCursor = spreadsheet1.createCursor();
-
 	}
-
-
 }	
