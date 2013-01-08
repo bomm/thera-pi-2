@@ -238,111 +238,126 @@ public class Umsaetze extends JXPanel{
 
 			//Oberste Schleife für die Kalenderbenutzer
 			for(int i1 = 0; i1 < anzahlbehandler;i1++ ){
-				//progressbar 1+2 einstellen
-				progress1.setMinimum(0);
-				progress1.setMaximum(anzahltage);
-				
-				progress2.setValue(i1);
-				aktion2.setText("ermittle Umsatz von:"+kalUsers.get(i1).get(0));
-
-				//calcValue
-				doCellCharWeight(0,calcrow,com.sun.star.awt.FontWeight.BOLD);
-				doCellValue(0,calcrow,"Umsatz von: "+kalUsers.get(i1).get(0));
-				calcrow++;
-				for(int kopf = 0; kopf < kopfzeile.length;kopf++){
-					doCellValue(kopf,calcrow,kopfzeile[kopf]);
-				}
-				calcrow++;
-				//Hier die int-Werte der Reihen für die summenbildung Speichern zunächst nur Beginn!
-				//Endwert hat an dieser Stelle noch 0
-				Integer[] rows = {calcrow+1,0};
-				summenPos.add(rows);
-
-				//1. Unterschleife für die einzelnen Behandlungstage (von - bis Angaben)
-				for(int i2 = 0; i2 < anzahltage;i2++){
-					if(vecBehandlungen.size() < anzahltage){
-						vecBehandlungen.add(new Vector<String>());
-					}
-					//text einstellen
-					int anzahltermine = Integer.parseInt(allDates.get(i1).get(i2).get(300));
+				try{
+					//progressbar 1+2 einstellen
 					progress1.setMinimum(0);
-					progress1.setMaximum(anzahltermine);
+					progress1.setMaximum(anzahltage);
+					
+					progress2.setValue(i1);
+					aktion2.setText("ermittle Umsatz von:"+kalUsers.get(i1).get(0));
 
-					////System.out.println(kalUsers.get(i1).get(0)+" hat am "+DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304))+" Anzahl Termine = "+allDates.get(i1).get(i2).get(300));
+					//calcValue
+					doCellCharWeight(0,calcrow,com.sun.star.awt.FontWeight.BOLD);
+					doCellValue(0,calcrow,"Umsatz von: "+kalUsers.get(i1).get(0));
+					calcrow++;
+					for(int kopf = 0; kopf < kopfzeile.length;kopf++){
+						doCellValue(kopf,calcrow,kopfzeile[kopf]);
+					}
+					calcrow++;
+					//Hier die int-Werte der Reihen für die summenbildung Speichern zunächst nur Beginn!
+					//Endwert hat an dieser Stelle noch 0
+					Integer[] rows = {calcrow+1,0};
+					summenPos.add(rows);
 
-					//2. und letzte Unterschleife für die einzelnen Termine pro Behandlunstag
-					behandlungenProTag = 0;
-					//
-					String akttag = DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304));
-					for(int i3 = 0; i3 < anzahltermine; i3++){
-						progress1.setValue(i3);
-						akttag = DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304));
-						aktion1.setText(akttag+": ermittle Termin "+Integer.toString(i3+2)+" von "+Integer.toString(anzahltermine));
+					//1. Unterschleife für die einzelnen Behandlungstage (von - bis Angaben)
+					String akttag = null;
+					for(int i2 = 0; i2 < anzahltage;i2++){
+						try{
+							if(vecBehandlungen.size() < anzahltage){
+								vecBehandlungen.add(new Vector<String>());
+							}
+							//text einstellen
+							int anzahltermine = Integer.parseInt(allDates.get(i1).get(i2).get(300));
+							progress1.setMinimum(0);
+							progress1.setMaximum(anzahltermine);
 
-						if( (!(reznum = allDates.get(i1).get(i2).get((i3*5)+1)).contains("@FREI")) &&
-								(!(reznum = allDates.get(i1).get(i2).get((i3*5)+1)).contains("@INTERN"))	){
-							// Wenn der Termin nich leer ist
-							if((!reznum.trim().equals("")) && (reznum.trim().length()>2)){
-								
-								if("KGMAERLORHPO".contains(reznum.substring(0,2))){
-									rawreznum = reznum; 
-									if( (pos=rawreznum.indexOf("\\")) >= 0){
-										pos = reznum.indexOf("\\");
-										endreznum = allDates.get(i1).get(i2).get((i3*5)+1).substring(0,pos).trim(); 
-										////System.out.println("Behandler="+kalUsers.get(i1).get(0)+" Tag = "+allDates.get(i1).get(i2).get(304)+"-Rezeptnummer = "+allDates.get(i1).get(i2).get((i3*5)+1).substring(0,pos).trim());
-									}else{
-										////System.out.println("Behandler="+kalUsers.get(i1).get(0)+" Tag = "+allDates.get(i1).get(i2).get(304)+"-Rezeptnummer = "+allDates.get(i1).get(i2).get((i3*5)+1).trim());
-										endreznum = allDates.get(i1).get(i2).get((i3*5)+1).trim();
+							////System.out.println(kalUsers.get(i1).get(0)+" hat am "+DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304))+" Anzahl Termine = "+allDates.get(i1).get(i2).get(300));
+
+							//2. und letzte Unterschleife für die einzelnen Termine pro Behandlunstag
+							behandlungenProTag = 0;
+							//
+							akttag = DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304));
+							for(int i3 = 0; i3 < anzahltermine; i3++){
+								try{
+									progress1.setValue(i3);
+									akttag = DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304));
+									aktion1.setText(akttag+": ermittle Termin "+Integer.toString(i3+2)+" von "+Integer.toString(anzahltermine));
+
+									if( (!(reznum = allDates.get(i1).get(i2).get((i3*5)+1)).contains("@FREI")) &&
+											(!(reznum = allDates.get(i1).get(i2).get((i3*5)+1)).contains("@INTERN"))	){
+										// Wenn der Termin nich leer ist
+										if((!reznum.trim().equals("")) && (reznum.trim().length()>2)){
+											
+											if("KGMAERLORHPO".contains(reznum.substring(0,2))){
+												rawreznum = reznum; 
+												if( (pos=rawreznum.indexOf("\\")) >= 0){
+													pos = reznum.indexOf("\\");
+													endreznum = allDates.get(i1).get(i2).get((i3*5)+1).substring(0,pos).trim(); 
+													////System.out.println("Behandler="+kalUsers.get(i1).get(0)+" Tag = "+allDates.get(i1).get(i2).get(304)+"-Rezeptnummer = "+allDates.get(i1).get(i2).get((i3*5)+1).substring(0,pos).trim());
+												}else{
+													////System.out.println("Behandler="+kalUsers.get(i1).get(0)+" Tag = "+allDates.get(i1).get(i2).get(304)+"-Rezeptnummer = "+allDates.get(i1).get(i2).get((i3*5)+1).trim());
+													endreznum = allDates.get(i1).get(i2).get((i3*5)+1).trim();
+												}
+												//testen ob diese Rezeptnummer an selben Tag bereits einbezogen wurde!
+												if(vecBehandlungen.get(i2).indexOf(endreznum)>=0){
+													//bereits erfaßt
+													doLeerzeile(DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304)),
+															allDates.get(i1).get(i2).get((i3*5)+2),"Rezept "+endreznum+" an diesem Tag bereits erfaßt!!");
+													behandlungenProTag++;
+												}else{
+													vecBehandlungen.get(i2).add(String.valueOf(endreznum));
+													doManageRezept(endreznum,DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304)),allDates.get(i1).get(i2).get((i3*5)+2),(String)kalUsers.get(i1).get(0));
+													behandlungenProTag++;
+												}
+											}
+										}
 									}
-									//testen ob diese Rezeptnummer an selben Tag bereits einbezogen wurde!
-									if(vecBehandlungen.get(i2).indexOf(endreznum)>=0){
-										//bereits erfaßt
-										doLeerzeile(DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304)),
-												allDates.get(i1).get(i2).get((i3*5)+2),"Rezept "+endreznum+" an diesem Tag bereits erfaßt!!");
-										behandlungenProTag++;
-									}else{
-										vecBehandlungen.get(i2).add(String.valueOf(endreznum));
-										doManageRezept(endreznum,DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304)),allDates.get(i1).get(i2).get((i3*5)+2),(String)kalUsers.get(i1).get(0));
-										behandlungenProTag++;
-									}
+								}catch(Exception ex3){
+									JOptionPane.showMessageDialog(null, "Fehler bei Benutzer: "+kalUsers.get(i1).get(0)+"\n"+
+											"Kalendertag: "+akttag+"\n"+
+											"Terminblock: "+Integer.toString(i3)+"\nMessage:\n"+
+											ex3.getMessage());	
 								}
 							}
+							if(behandlungenProTag==0){
+								doKeineBehandlung(akttag);
+							}
+							progress1.setValue(progress1.getMaximum());
+						}catch(Exception ex2){
+							JOptionPane.showMessageDialog(null, "Fehler bei Benutzer: "+kalUsers.get(i1).get(0)+"\n"+
+									"Kalendertag: "+akttag+"\nMessage:\n"+ex2.getMessage());	
 						}
 					}
-					if(behandlungenProTag==0){
-						doKeineBehandlung(akttag);
+					doCellColor(0,calcrow,0xff0000);
+					doCellValue(0,calcrow,"Summen");
+					summenPos.get(summenPos.size()-1)[1] = calcrow+1;
+					if(summenPos.get(summenPos.size()-1)[1]==summenPos.get(summenPos.size()-1)[0]){
+						//Keine Positionen gefunden = Urlaub, Krankheit etc.
+						for(int i = 8; i < 14;i++){
+							doCellColor(i,summenPos.get(summenPos.size()-1)[1]-1,0xff0000);
+							doCellValue(i,summenPos.get(summenPos.size()-1)[1]-1,Double.parseDouble("0.00"));
+							//Hier korrigieren. Leerzeile einfügen und danach die Summenformel
+							//damit kann man z.B. Beträge für Krankheits- oder Urlaubstage einfügen
+						}
+					}else{
+						for(int i = 8; i < 14;i++){
+							String formula ="=sum("+
+							cols[i]+
+							Integer.toString(summenPos.get(summenPos.size()-1)[0])+
+							":"+
+							cols[i]+
+							Integer.toString(summenPos.get(summenPos.size()-1)[1]-1)+
+							")"; 
+							//System.out.println(formula);
+							doCellColor(i,summenPos.get(summenPos.size()-1)[1]-1,0xff0000);
+							doCellFormula(i,summenPos.get(summenPos.size()-1)[1]-1,formula);
+						}
 					}
-					progress1.setValue(progress1.getMaximum());
+					//System.out.println("StartRow für SummenFormel = "+summenPos.get(summenPos.size()-1)[0]+
+							//" EndRow für SummenFormel = "+summenPos.get(summenPos.size()-1)[1]);
+				}catch(Exception ex1){
+					JOptionPane.showMessageDialog(null, "Fehler bei Benutzer "+kalUsers.get(i1).get(0)+"\nMessage:\n"+ex1.getMessage() );
 				}
-				doCellColor(0,calcrow,0xff0000);
-				doCellValue(0,calcrow,"Summen");
-				summenPos.get(summenPos.size()-1)[1] = calcrow+1;
-				if(summenPos.get(summenPos.size()-1)[1]==summenPos.get(summenPos.size()-1)[0]){
-					//Keine Positionen gefunden = Urlaub, Krankheit etc.
-					for(int i = 8; i < 14;i++){
-						doCellColor(i,summenPos.get(summenPos.size()-1)[1]-1,0xff0000);
-						doCellValue(i,summenPos.get(summenPos.size()-1)[1]-1,Double.parseDouble("0.00"));
-						//Hier korrigieren. Leerzeile einfügen und danach die Summenformel
-						//damit kann man z.B. Beträge für Krankheits- oder Urlaubstage einfügen
-					}
-				}else{
-					for(int i = 8; i < 14;i++){
-						String formula ="=sum("+
-						cols[i]+
-						Integer.toString(summenPos.get(summenPos.size()-1)[0])+
-						":"+
-						cols[i]+
-						Integer.toString(summenPos.get(summenPos.size()-1)[1]-1)+
-						")"; 
-						//System.out.println(formula);
-						doCellColor(i,summenPos.get(summenPos.size()-1)[1]-1,0xff0000);
-						doCellFormula(i,summenPos.get(summenPos.size()-1)[1]-1,formula);
-					}
-				}
-
-				//System.out.println("StartRow für SummenFormel = "+summenPos.get(summenPos.size()-1)[0]+
-						//" EndRow für SummenFormel = "+summenPos.get(summenPos.size()-1)[1]);
-				
 				calcrow += 2;
 			}
 			progress1.setForeground(Color.GREEN);
