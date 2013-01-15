@@ -151,6 +151,9 @@ public class PatientenFoto  extends RehaSmartDialog{
 	    
 	    if(! (img==null)){
 	    	Image imgr = null;
+			int faktor = (bigvideo ? 1 : 2);
+			int teiler = 1;
+
 	    	BufferedImage feddisch = null;
 		    BufferedImage img2 = null;
 		    BufferedImage buffImg = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
@@ -158,13 +161,17 @@ public class PatientenFoto  extends RehaSmartDialog{
 		    Graphics2D g = buffImg.createGraphics();
 		    g.drawImage(img, null, null);
 			g.dispose();
+
 			try{
 				img2 = new BufferedImage(panel.getPhotoFrameSize().width,panel.getPhotoFrameSize().height,BufferedImage.TYPE_INT_RGB);
-				img2 = buffImg.getSubimage(panel.getActivePoint().x*(bigvideo ? 1 : 2),
-						panel.getActivePoint().y*(bigvideo ? 1 : 2),
-						panel.getPhotoFrameSize().width*(bigvideo ? 1 : 2),
-						panel.getPhotoFrameSize().height*(bigvideo ? 1 : 2));
-
+				if( (panel.getActivePoint().x*faktor) + (panel.getPhotoFrameSize().width*faktor) > img.getWidth(null) ||
+						(panel.getActivePoint().y*faktor) + (panel.getPhotoFrameSize().height*faktor) > img.getHeight(null) ){
+					teiler = 2;
+				}
+				img2 = buffImg.getSubimage(panel.getActivePoint().x*faktor/teiler,
+						panel.getActivePoint().y*faktor/teiler,
+						panel.getPhotoFrameSize().width*faktor/teiler,
+						panel.getPhotoFrameSize().height*faktor/teiler);
 		    	imgr =   img2.getScaledInstance(175, 220, Image.SCALE_SMOOTH);
 		    	feddisch = new BufferedImage(175, 220, BufferedImage.TYPE_INT_RGB);
 		    	g = feddisch.createGraphics();
@@ -179,6 +186,12 @@ public class PatientenFoto  extends RehaSmartDialog{
 				System.out.println("Größe des Original-Videoframes in Y-Richtung = "+img.getHeight(null));
 				System.out.println("X-Position des aktiven Punktes  = "+panel.getActivePoint().x);
 				System.out.println("Y-Position des aktiven Punktes  = "+panel.getActivePoint().y);
+				System.out.println("Bigvideo-Parameter = "+bigvideo);
+				System.out.println("X-Subimage = "+panel.getActivePoint().x*faktor);
+				System.out.println("Y-Subimage = "+panel.getActivePoint().y*faktor);
+				System.out.println("W-Subimage = "+panel.getPhotoFrameSize().width*faktor);
+				System.out.println("H-Subimage = "+panel.getPhotoFrameSize().height*faktor);
+				ex.printStackTrace();
 			}
     	    /*
 			try {
