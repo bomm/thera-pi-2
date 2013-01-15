@@ -577,11 +577,20 @@ public class RezTools {
 		int lang = vec.size(),i;
 		//int suchenin = (Integer.parseInt(preisgruppe)*4)-2;
 		String ret = "";
-		for(i = 0; i < lang;i++){
-			if(vec.get(i).get(2).trim().equals(pos.trim()) && (!vec.get(i).get(1).equals("Isokin")) ){
-				ret = vec.get(i).get(1).toString();
-				break;
+		try{
+			for(i = 0; i < lang;i++){
+				if(vec.get(i).get(2).trim().equals(pos.trim()) && (!vec.get(i).get(1).equals("Isokin")) ){
+					ret = vec.get(i).get(1).toString();
+					break;
+				}
 			}
+		}catch(Exception ex){
+			System.out.println("Parameter pos = "+pos);
+			System.out.println("Parameter preisgruppe = "+preisgruppe);
+			System.out.println("Parameter vec = "+vec);
+			System.out.println("Parameter ret = "+ret);
+			System.out.println("Nachfolgend die Excepiton von getKurzformFromPos");
+			ex.printStackTrace();
 		}
 		return ret;
 	}
