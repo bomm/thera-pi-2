@@ -422,7 +422,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				 								"Angaben wurden geändert", JOptionPane.YES_NO_OPTION ) ) {
 */
 		String[] strOptions = {"ja", "nein"};  // Defaultwert euf "nein" gesetzt !
-		return JOptionPane.showOptionDialog(null, "Es wurden Rezept-Anngaben geändert!\nWollen sie die Änderung(en) wirklich verwerfen?",
+		return JOptionPane.showOptionDialog(null, "Es wurden Rezept-Angaben geändert!\nWollen sie die Änderung(en) wirklich verwerfen?",
 				 "Angaben wurden geändert", 
 				 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				 strOptions, strOptions[1] );
@@ -570,7 +570,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.addLabel("spätester Beh.Beginn",cc.xy(5,9));
 		jpan.add(jtf[cBEGINDAT],cc.xy(7,9));
 
-		jcmb[cVERORD] = new JRtaComboBox(new String[] {"Erstverodnung","Folgeverordnung", "außerhalb des Regelfalles"});
+		jcmb[cVERORD] = new JRtaComboBox(new String[] {"Erstverordnung","Folgeverordnung", "außerhalb des Regelfalles"});
 		jcmb[cVERORD].setActionCommand("verordnungsart");
 		jcmb[cVERORD].addActionListener(this);
 		jpan.addLabel("Art d. Verordn.",cc.xy(1, 11));
