@@ -1583,6 +1583,18 @@ public class SystemConfig {
 		vFeiertage = SqlInfo.holeFeld("select datsql from feiertage where jahr >= '"+aktJahr+"' AND "+
 				"buland <> ''");
 	}
+	
+	public static void ICD10Laden() {
+		String sql = "SELECT icd10.schluessel1, icd10.titelzeile FROM icd10 ORDER BY icd10.schluessel1 ASC;";
+		Vector<Vector<String>> icd10 = SqlInfo.holeFelder(sql);
+		HashMap<String, String> icd10Map = new HashMap<String, String>();
+		for(Vector<String> datensatz : icd10) {
+			icd10Map.put(datensatz.get(0), datensatz.get(1));
+		}
+		Reha.icd10 = icd10Map;
+		Reha.icd10Schluessel = new String[Reha.icd10.size()];
+		Reha.icd10Schluessel =  Reha.icd10.keySet().toArray(Reha.icd10Schluessel);
+	}
 	/*
 	public static void compTest(){
 		Vector<Vector> vec = new Vector<Vector>();
