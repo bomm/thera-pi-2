@@ -33,18 +33,18 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
 
 import rechteTools.Rechte;
-import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
+import systemTools.ListenerTools;
+import terminKalender.DatFunk;
 import CommonTools.Colors;
 import CommonTools.JCompTools;
 import CommonTools.JRtaCheckBox;
 import CommonTools.JRtaComboBox;
 import CommonTools.JRtaTextField;
-import systemTools.ListenerTools;
+import CommonTools.SqlInfo;
 import CommonTools.StringTools;
-import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -65,7 +65,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 								  null,null,null,null,null,
 								  null,null,null,null,null,
 								  null,null,null,null,null,
-								  null,null,null,null,null};
+								  null,null,null,null,null,
+								  null,null};
 	// Lemmi 20101231: Harte Index-Zahlen für "jtf" durch sprechende Konstanten ersetzt ! 
 	final int cKTRAEG = 0;
 	final int cARZT   = 1;
@@ -97,6 +98,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	final int cPATINT    = 27;
 	final int cZZSTAT    = 28;
 	final int cHEIMBEWPATSTAM = 29;
+	final int cICD10Text = 30;
+	final int cICD10Beschreibung = 31;
 	
 	// Lemmi 20101231: Merken der Originalwerte der eingelesenen Textfelder, Combo- und Check-Boxen
 	Vector<Object> originale = new Vector<Object>();
@@ -432,8 +435,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu, 5dlu, right:max(60dlu;p), 4dlu, 60dlu",
 			       //1.   2.   3.   4.   5.   6   7   8    9   10   11  12  13  14    15   16   17  18 19   20   21  22   23  24   25  
 					"p, 10dlu, p, 5dlu,  p, 5dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, " +
-		//26   27   28   29  30   31   32    33   34   35   36    37	 38	  39			
-		"10dlu, p, 10dlu, p, 2dlu, p, 2dlu,  p,  10dlu, p, 10dlu, 30dlu,2dlu,2dlu");
+		//26   27   28   29  30   31   32    33  34   35   36    37	 38	  39	40    41		
+		"10dlu, p, 10dlu, p, 2dlu, p, 2dlu,  p, 2dlu, p,  10dlu, p, 10dlu, 30dlu,2dlu,2dlu");
 					
 
 		CellConstraints cc = new CellConstraints();
@@ -682,7 +685,38 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jcmb[cBARCOD] = new JRtaComboBox(SystemConfig.rezBarCodName);
 		jpan.add(jcmb[cBARCOD],cc.xy(7, 31));
 		
-		jpan.addLabel("FarbCode im TK",cc.xy(1, 33));
+		jpan.addLabel("ICD-10 Schlüssel", cc.xy(1, 33));
+		
+		
+		
+		jtf[cICD10Text] = new JRtaTextField("GROSS",false);
+		jtf[cICD10Beschreibung] = new JRtaTextField("NIX", false);
+		jtf[cICD10Beschreibung].setEditable(false);
+		jtf[cICD10Text].addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				String icd10 = Reha.icd10.get(jtf[cICD10Text].getText());
+				if(icd10 != null) {
+					jtf[cICD10Beschreibung].setText(icd10);
+				}
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				
+			}
+			
+		});
+		jpan.add(jtf[cICD10Text], cc.xy(3, 33));
+		jpan.add(jtf[cICD10Beschreibung], cc.xyw(5, 33, 3));
+		
+		jpan.addLabel("FarbCode im TK",cc.xy(1, 35));
 		jcmb[cFARBCOD] = new JRtaComboBox();
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -692,10 +726,11 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 		}.execute();
 
-		jpan.add(jcmb[cFARBCOD],cc.xy(3, 33));
-		jpan.addLabel("Angelegt von",cc.xy(5, 33));
-		jpan.add(jtf[cANGEL],cc.xy(7, 33));
-		jpan.addSeparator("Ärztliche Diagnose laut Verordnung", cc.xyw(1,35,7));
+		jpan.add(jcmb[cFARBCOD],cc.xy(3, 35));
+		jpan.addLabel("Angelegt von",cc.xy(5, 35));
+		jpan.add(jtf[cANGEL],cc.xy(7, 35));		
+		
+		jpan.addSeparator("Ärztliche Diagnose laut Verordnung", cc.xyw(1,37,7));
 		jta = new JTextArea();
 		jta.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.5f)));
 		jta.setFont(new Font("Courier",Font.PLAIN,11));
@@ -707,7 +742,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jta.setForeground(Color.RED);
 		JScrollPane span = JCompTools.getTransparentScrollPane(jta);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));
-		jpan.add(span,cc.xywh(1, 37,7,2));
+		jpan.add(span,cc.xywh(1, 39,7,2));
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(jpan.getPanel());
 		jscr.getVerticalScrollBar().setUnitIncrement(15);
 		
