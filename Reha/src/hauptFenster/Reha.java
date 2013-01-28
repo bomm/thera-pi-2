@@ -352,6 +352,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public boolean isLibreOffice = false;
 	public SqlInfo sqlInfo = null;
 	
+	public static HashMap<String, String> icd10 = null;
+	public static String[] icd10Schluessel = null;
+	
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -444,7 +447,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}
 		new SocketClient().setzeInitStand("Überprüfe Dateisystem");
 		File f = null;
-		if(osVersion.contains("Windows")){
+		/*if(osVersion.contains("Windows")){
 			f = new File(javaPfad+"/bin/win32com.dll");
 			if(! f.exists()){
 				new SocketClient().setzeInitStand("Kopiere win32com.dll");
@@ -455,8 +458,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				}
 			}else{
 				////System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
-			}	
-		}	
+			}
+		}
 		f = new File(javaPfad+"/lib/ext/comm.jar");
 		if(! f.exists()){
 			try {
@@ -478,7 +481,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}
 		}else{
 			////System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
-		}
+		}*/
 		
 		new Thread(){
 			public void run(){
@@ -3112,6 +3115,10 @@ final class DatenbankStarten implements Runnable{
 				new SocketClient().setzeInitStand("Geräteliste erstellen");
 
 				SystemConfig.GeraeteListe();
+				
+				new SocketClient().setzeInitStand("ICD-10 Schluessel laden");
+				
+				SystemConfig.ICD10Laden();
 
 				SystemConfig.CompanyInit();
 
