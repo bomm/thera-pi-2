@@ -1535,6 +1535,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[cANZKM].setText(Reha.thisClass.patpanel.patDaten.get(48)); //kilometer
 		jtf[cPATID].setText(this.vec.get(38)); //id von Patient
 		jtf[cPATINT].setText(this.vec.get(0)); //pat_intern von Patient
+		if(!this.vec.get(71).equals("")) {
+			jtf[cICD10Text].setText(this.vec.get(71));
+			jtf[cICD10Beschreibung].setText(Reha.icd10.get(jtf[cICD10Text].getText()));
+		}
 	}
 	
 	/********************************/
@@ -1689,6 +1693,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else{
 				sbuf.append("indikatschl='"+"kein IndiSchl."+"', ");			
 			}
+			sbuf.append("ICD10='"+jtf[cICD10Text].getText()+"', ");
 			sbuf.append("barcodeform='"+Integer.valueOf(jcmb[cBARCOD].getSelectedIndex()).toString()+"', ");
 			sbuf.append("angelegtvon='"+jtf[cANGEL].getText()+"', ");
 			sbuf.append("preisgruppe='"+jtf[cPREISGR].getText()+"', ");
@@ -1911,6 +1916,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else{
 				sbuf.append("indikatschl='"+"kein IndiSchl."+"', ");			
 			}
+			sbuf.append("ICD10='"+jtf[cICD10Text].getText()+"', ");
 			sbuf.append("barcodeform='"+Integer.toString(jcmb[cBARCOD].getSelectedIndex())+"', ");
 			sbuf.append("angelegtvon='"+jtf[cANGEL].getText()+"', ");
 			sbuf.append("preisgruppe='"+jtf[cPREISGR].getText()+"', ");
