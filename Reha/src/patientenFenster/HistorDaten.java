@@ -244,7 +244,12 @@ public class HistorDaten extends JXPanel{
 					rezlabs[14].setText(stest+" Min.");
 				}
 				
-				rezdiag.setText(StringTools.NullTest((String)vecaktrez.get(23)));
+				if( (stest = StringTools.NullTest((String)vecaktrez.get(71))).trim().length() > 0){
+					rezdiag.setText("ICD-10: "+stest+"\n"+StringTools.NullTest((String)vecaktrez.get(23)));
+				}else{
+					rezdiag.setText(StringTools.NullTest((String)vecaktrez.get(23)));	
+				}
+				//rezdiag.setText(StringTools.NullTest((String)vecaktrez.get(23)));
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}

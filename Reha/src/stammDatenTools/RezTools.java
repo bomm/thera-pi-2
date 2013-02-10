@@ -24,6 +24,7 @@ import terminKalender.BestaetigungsDaten;
 import terminKalender.DatFunk;
 import terminKalender.TerminBestaetigenAuswahlFenster;
 import terminKalender.TermineErfassen;
+import wecker.AePlayWave;
 
 public class RezTools {
 	public static final int REZEPT_IST_JETZ_VOLL = 0;
@@ -2168,8 +2169,30 @@ public class RezTools {
 			}
 		}.execute();
 	}
-
 	/***********************************************************************************/
+	public static void RezGebSignal(String rez_num){
+		final String xrez_num = rez_num;
+		if(!SystemConfig.RezGebWarnung){
+			return;
+		}
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				try{
+					if(SqlInfo.holeEinzelFeld("select zzstatus from verordn where rez_nr = '"+xrez_num+"' LIMIT 1").equals("2") ){
+						//System.out.println("In Soundaufruf = "+Reha.proghome+"sounds/"+"doorbell.wav");
+						new AePlayWave(Reha.proghome+"sounds/"+"doorbell.wav").start();
+					}
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				return null;
+			}
+			
+		}.execute();
+	}
+	
+	/***********************************************************************************/	
 
 	public static Object[] BehandlungenAnalysieren(String swreznum,
 			boolean doppeltOk,boolean xforceDlg,boolean alletermine,

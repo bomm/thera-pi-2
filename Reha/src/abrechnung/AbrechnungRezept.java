@@ -3631,6 +3631,14 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 		edibuf.append(test.replace(" ", "")+plus);
 		edibuf.append(voIndex[Integer.parseInt(vec_rez.get(0).get(27))]+EOL);
+		
+		//an dieser Stelle muß der ICD-10 eingebaut werden, sofern vorhanden
+		//DIA+....
+		if(vec_rez.get(0).get(71).trim().length() > 0){
+			edibuf.append( "DIA+" + hochKomma(vec_rez.get(0).get(71).trim()) + EOL);
+		}
+		//an dieser Stelle müssen Daten zur Bewilligung eingebaut werden sofern vorhanden
+		//SKZ+....
 		edibuf.append("BES+");
 		edibuf.append(dfx.format(gesamt)+plus);
 		edibuf.append(dfx.format(rez+pauschal)+plus);

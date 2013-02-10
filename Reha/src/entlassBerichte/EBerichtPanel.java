@@ -1886,7 +1886,8 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				new LadeProg(Reha.proghome+"BMIRechner.jar");
 				break;
 			case 2:
-				new LadeProg(Reha.proghome+"ICDSuche.jar");
+				//new LadeProg(Reha.proghome+"ICDSuche.jar");
+				new LadeProg(Reha.proghome+"ICDSuche.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 				break;
 			case 3:
 				starteTest();

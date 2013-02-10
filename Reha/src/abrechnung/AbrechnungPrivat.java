@@ -44,6 +44,7 @@ import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
+import CommonTools.AdressTools;
 import CommonTools.JRtaComboBox;
 import CommonTools.JRtaRadioButton;
 import CommonTools.StringTools;
@@ -338,11 +339,44 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 		}.execute();
 	}
 	private void holePrivat(){
-		hmAdresse.put("<pri1>",SystemConfig.hmAdrPDaten.get("<Panrede>") );
-		hmAdresse.put("<pri2>",SystemConfig.hmAdrPDaten.get("<Padr1>") );
-		hmAdresse.put("<pri3>",SystemConfig.hmAdrPDaten.get("<Padr2>") );
-		hmAdresse.put("<pri4>",SystemConfig.hmAdrPDaten.get("<Padr3>") );
-		hmAdresse.put("<pri5>",SystemConfig.hmAdrPDaten.get("<Pbanrede>") );
+		/*
+		String cmd = "select abwadress,id from pat5 where pat_intern='"+vec_rez.get(0).get(0)+"' LIMIT 1";
+		Vector<Vector<String>> adrvec = SqlInfo.holeFelder(cmd);
+		String[] adressParams = null;
+		if(adrvec.get(0).get(0).equals("T")){
+			adressParams = holeAbweichendeAdresse(adrvec.get(0).get(1));
+		}else{
+			adressParams = getAdressParams(adrvec.get(0).get(1));
+		}
+		//System.out.println("Zuzhlungwert = "+zuzahlungWert);
+		hmRezgeb.put("<rgreznum>",aktRezNum.getText());
+		hmRezgeb.put("<rgbehandlung>",behandl);
+		hmRezgeb.put("<rgdatum>",DatFunk.sDatInDeutsch(vec_rez.get(0).get(2)));
+		hmRezgeb.put("<rgbetrag>",dfx.format(zuzahlungWert));
+		hmRezgeb.put("<rgpauschale>","5,00");
+		hmRezgeb.put("<rggesamt>","0,00");
+		hmRezgeb.put("<rganrede>",adressParams[0]);
+		hmRezgeb.put("<rgname>",adressParams[1]);
+		hmRezgeb.put("<rgstrasse>",adressParams[2]);
+		hmRezgeb.put("<rgort>",adressParams[3]);
+		hmRezgeb.put("<rgbanrede>",adressParams[4]);
+		hmRezgeb.put("<rgpatintern>",vec_rez.get(0).get(0));
+ 
+		 */
+		if(! Reha.thisClass.patpanel.patDaten.get(5).equals("T")){
+			hmAdresse.put("<pri1>",SystemConfig.hmAdrPDaten.get("<Panrede>") );
+			hmAdresse.put("<pri2>",SystemConfig.hmAdrPDaten.get("<Padr1>") );
+			hmAdresse.put("<pri3>",SystemConfig.hmAdrPDaten.get("<Padr2>") );
+			hmAdresse.put("<pri4>",SystemConfig.hmAdrPDaten.get("<Padr3>") );
+			hmAdresse.put("<pri5>",SystemConfig.hmAdrPDaten.get("<Pbanrede>") );
+		}else{
+			String[] adressParams = AdressTools.holeAbweichendeAdresse(Reha.thisClass.patpanel.patDaten.get(66));
+			hmAdresse.put("<pri1>",adressParams[0] );
+			hmAdresse.put("<pri2>",adressParams[1] );
+			hmAdresse.put("<pri3>",adressParams[2] );
+			hmAdresse.put("<pri4>",adressParams[3] );
+			hmAdresse.put("<pri5>",adressParams[4] );
+		}
 		return;
 	}
 	private void holeBGE(){
@@ -356,28 +390,36 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	private void doPrivat(){
 		try {
 			Thread.sleep(50);
-			hmAdresse.put("<pri1>",SystemConfig.hmAdrPDaten.get("<Panrede>") );
-			hmAdresse.put("<pri2>",SystemConfig.hmAdrPDaten.get("<Padr1>") );
-			hmAdresse.put("<pri3>",SystemConfig.hmAdrPDaten.get("<Padr2>") );
-			hmAdresse.put("<pri4>",SystemConfig.hmAdrPDaten.get("<Padr3>") );
-			hmAdresse.put("<pri5>",SystemConfig.hmAdrPDaten.get("<Pbanrede>") );
-			
-			if((!hmAdresse.get("<pri2>").contains(StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2))))) ||
-					(!hmAdresse.get("<pri2>").contains(StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(3)))))	){
-				String meldung = "Fehler!!!! aktuelle Patientendaten - soll = "+StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(3)))+" "+
-				StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)))+"\n"+
-				"Istdaten sind\n"+
-				hmAdresse.get("<pri1>")+"\n"+
-				hmAdresse.get("<pri2>")+"\n"+
-				hmAdresse.get("<pri3>")+"\n"+
-				hmAdresse.get("<pri4>")+"\n"+
-				hmAdresse.get("<pri5>");
-				JOptionPane.showMessageDialog(null,meldung);
-				return;
+			if(! Reha.thisClass.patpanel.patDaten.get(5).equals("T")){
+				hmAdresse.put("<pri1>",SystemConfig.hmAdrPDaten.get("<Panrede>") );
+				hmAdresse.put("<pri2>",SystemConfig.hmAdrPDaten.get("<Padr1>") );
+				hmAdresse.put("<pri3>",SystemConfig.hmAdrPDaten.get("<Padr2>") );
+				hmAdresse.put("<pri4>",SystemConfig.hmAdrPDaten.get("<Padr3>") );
+				hmAdresse.put("<pri5>",SystemConfig.hmAdrPDaten.get("<Pbanrede>") );
+				
+				if((!hmAdresse.get("<pri2>").contains(StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2))))) ||
+						(!hmAdresse.get("<pri2>").contains(StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(3)))))	){
+					String meldung = "Fehler!!!! aktuelle Patientendaten - soll = "+StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(3)))+" "+
+					StringTools.EGross(StringTools.EscapedDouble(Reha.thisClass.patpanel.patDaten.get(2)))+"\n"+
+					"Istdaten sind\n"+
+					hmAdresse.get("<pri1>")+"\n"+
+					hmAdresse.get("<pri2>")+"\n"+
+					hmAdresse.get("<pri3>")+"\n"+
+					hmAdresse.get("<pri4>")+"\n"+
+					hmAdresse.get("<pri5>");
+					JOptionPane.showMessageDialog(null,meldung);
+					return;
+				}
+			}else{
+				String[] adressParams = AdressTools.holeAbweichendeAdresse(Reha.thisClass.patpanel.patDaten.get(66));
+				hmAdresse.put("<pri1>",adressParams[0] );
+				hmAdresse.put("<pri2>",adressParams[1] );
+				hmAdresse.put("<pri3>",adressParams[2] );
+				hmAdresse.put("<pri4>",adressParams[3] );
+				hmAdresse.put("<pri5>",adressParams[4] );
 			}
 			aktRechnung = Integer.toString(SqlInfo.erzeugeNummer("rnr"));
 			hmAdresse.put("<pri6>",aktRechnung);
-
 			starteDokument(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+SystemConfig.hmAbrechnung.get("hmpriformular"));
 			starteErsetzen();
 			startePositionen();

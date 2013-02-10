@@ -305,18 +305,24 @@ public class Umsaetze extends JXPanel{
 															allDates.get(i1).get(i2).get((i3*5)+2),"Rezept "+endreznum+" an diesem Tag bereits erfaßt!!");
 													behandlungenProTag++;
 												}else{
-													vecBehandlungen.get(i2).add(String.valueOf(endreznum));
-													doManageRezept(endreznum,DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304)),allDates.get(i1).get(i2).get((i3*5)+2),(String)kalUsers.get(i1).get(0));
+													try{
+														vecBehandlungen.get(i2).add(String.valueOf(endreznum));
+														doManageRezept(endreznum,DatFunk.sDatInDeutsch(allDates.get(i1).get(i2).get(304)),allDates.get(i1).get(i2).get((i3*5)+2),(String)kalUsers.get(i1).get(0));
+													}catch(Exception ex4){
+														ex4.printStackTrace();
+														JOptionPane.showMessageDialog(null, "Fehler bei doManageRezept");
+													}
 													behandlungenProTag++;
 												}
 											}
 										}
 									}
 								}catch(Exception ex3){
+									ex3.printStackTrace();
 									JOptionPane.showMessageDialog(null, "Fehler bei Benutzer: "+kalUsers.get(i1).get(0)+"\n"+
 											"Kalendertag: "+akttag+"\n"+
 											"Terminblock: "+Integer.toString(i3)+"\nMessage:\n"+
-											ex3.getMessage());	
+											ex3.getMessage());
 								}
 							}
 							if(behandlungenProTag==0){
@@ -324,8 +330,9 @@ public class Umsaetze extends JXPanel{
 							}
 							progress1.setValue(progress1.getMaximum());
 						}catch(Exception ex2){
+							ex2.printStackTrace();
 							JOptionPane.showMessageDialog(null, "Fehler bei Benutzer: "+kalUsers.get(i1).get(0)+"\n"+
-									"Kalendertag: "+akttag+"\nMessage:\n"+ex2.getMessage());	
+									"Kalendertag: "+akttag+"\nMessage:\n"+ex2.getMessage());
 						}
 					}
 					doCellColor(0,calcrow,0xff0000);
@@ -356,6 +363,7 @@ public class Umsaetze extends JXPanel{
 					//System.out.println("StartRow für SummenFormel = "+summenPos.get(summenPos.size()-1)[0]+
 							//" EndRow für SummenFormel = "+summenPos.get(summenPos.size()-1)[1]);
 				}catch(Exception ex1){
+					ex1.printStackTrace();
 					JOptionPane.showMessageDialog(null, "Fehler bei Benutzer "+kalUsers.get(i1).get(0)+"\nMessage:\n"+ex1.getMessage() );
 				}
 				calcrow += 2;

@@ -1,5 +1,8 @@
 package systemTools;
 
+import java.util.Vector;
+
+import CommonTools.SqlInfo;
 import CommonTools.StringTools;
 
 public class AdressTools {
@@ -89,5 +92,18 @@ public class AdressTools {
 		String[] str = null;
 		return str;
 	}
+	
+	public String[] holeAbweichendeAdresse(String patid){
+		//"anrede,titel,nachname,vorname,strasse,plz,ort"
+		String cmd = "select abwanrede,abwtitel,abwn_name,abwv_name,abwstrasse,abwplz,abwort from pat5 where id='"+
+			patid+"' LIMIT 1";
+		Vector<Vector<String>> abwvec = SqlInfo.holeFelder(cmd);
+		Object[] obj = { (Object)abwvec.get(0).get(0),(Object)abwvec.get(0).get(1),(Object)abwvec.get(0).get(2),
+				(Object)abwvec.get(0).get(3),(Object)abwvec.get(0).get(4),(Object)abwvec.get(0).get(5),
+				(Object)abwvec.get(0).get(6)
+				};
+		return AdressTools.machePrivatAdresse(obj,true);
+	}
+	
 
 }

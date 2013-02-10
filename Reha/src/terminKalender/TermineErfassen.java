@@ -462,10 +462,28 @@ public class TermineErfassen implements Runnable {
 		
 
 /*******************************/
+		//0=termine,
+		//1=pos1
+		//2=pos2
+		//3=pos3
+		//4=pos4
+		//5=hausbes
+		//6=unter18
+		//7=jahrfrei
+		//8=pat_intern
+		//9=preisgruppe
+		//10=zzregel
+		//11=anzahl1
+		//12=anzahl2
+		//13=anzahl3
+		//14=anzahl4
+		//15=preisgruppe
 		//System.out.println("Unter 18 = "+unter18+" Vorjahrfei = "+vorjahrfrei);
 		if(!unter18 && !vorjahrfrei){
 			//System.out.println("In Variante 1");
-			SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");			
+			SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");
+			//Teste ob Rezeptgebühr bezahlt!
+			if(SystemConfig.RezGebWarnung){	RezTools.RezGebSignal(scanrez);}
 		}else if( (unter18) && (!vorjahrfrei) ){
 			/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus �ndern;
 			//System.out.println("Pat_intern = "+vec.get(9));
@@ -478,26 +496,33 @@ public class TermineErfassen implements Runnable {
 				SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");				
 			}else{
 				//System.out.println("In Variante 3");
-				SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"', zzstatus='2'", "rez_nr='"+scanrez+"'");				
+				SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"', zzstatus='2'", "rez_nr='"+scanrez+"'");
+				//Teste ob Rezeptgebühr bezahlt!
+				if(SystemConfig.RezGebWarnung){	RezTools.RezGebSignal(scanrez);}
 			}
 
 		}else if(!unter18 && vorjahrfrei){
-			String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(8)+"'" );
+			String befreit = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(8)+"'" );
 			//String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
-			if(!bef_dat.equals("T")){
-				if(DatFunk.DatumsWert("31.12."+vec.get(8)) < DatFunk.DatumsWert(DatFunk.sHeute()) ){
+			if(!befreit.equals("T")){
+				if(DatFunk.DatumsWert("31.12."+vec.get(7)) < DatFunk.DatumsWert(DatFunk.sHeute()) ){
 					//System.out.println("In Variante 4");
 					SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"', zzstatus='2'", "rez_nr='"+scanrez+"'");
+					//Teste ob Rezeptgebühr bezahlt!
+					if(SystemConfig.RezGebWarnung){	RezTools.RezGebSignal(scanrez);}
 				}else{
 					//System.out.println("In Variante 5");
 					SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");					
 				}
 			}else{
 				SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");
+				
 			}
 		}else{
 			//System.out.println("In Variante 6");
-			SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");			
+			SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"'", "rez_nr='"+scanrez+"'");
+			//Teste ob Rezeptgebühr bezahlt!
+			if(SystemConfig.RezGebWarnung){	RezTools.RezGebSignal(scanrez);}
 		}
 /*******************************/		
 

@@ -470,6 +470,16 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 		//jxLink.setEnabled(false);
 		tp5.add(jxLink);
 
+		jxLink = new JXHyperlink();
+		jxLink.setText("ICD-10 Recherche");
+		jxLink.setClickedColor(new Color(0, 0x33, 0xFF));	
+		img = new ImageIcon(Reha.proghome+"icons/mag.png").getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		jxLink.setIcon(new ImageIcon(img));
+		jxLink.setActionCommand("piIcd10");
+		jxLink.addActionListener(this);
+		//jxLink.setEnabled(false);
+		tp5.add(jxLink);
+
 		tp5.setCollapsed(SystemConfig.taskPaneCollapsed[3]);
 		return tp5;
 	}
@@ -869,7 +879,9 @@ public class LinkeTaskPane extends JXPanel implements ActionListener, ComponentL
 				
 				break;
 			}
-			
+			if (cmd.equals("piIcd10")){
+				new LadeProg(Reha.proghome+"ICDSuche.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+			}
 			
 			
 			if (cmd.equals("Akutliste")){

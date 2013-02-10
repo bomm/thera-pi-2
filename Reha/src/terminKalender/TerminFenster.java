@@ -4508,6 +4508,22 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 				boolean erstedoppel = true;
 
 				try{
+					//0=termine,
+					//1=pos1
+					//2=pos2
+					//3=pos3
+					//4=pos4
+					//5=hausbes
+					//6=unter18
+					//7=jahrfrei
+					//8=pat_intern
+					//9=preisgruppe
+					//10=zzregel
+					//11=anzahl1
+					//12=anzahl2
+					//13=anzahl3
+					//14=anzahl4
+					//15=preisgruppe
 					// die anzahlen 1-4 werden jetzt zusammenhängend ab index 11 abgerufen
 					vec = SqlInfo.holeSatz("verordn", "termine,pos1,pos2,pos3,pos4,hausbes,unter18,jahrfrei,pat_intern,preisgruppe,zzregel,anzahl1,anzahl2,anzahl3,anzahl4,preisgruppe", "rez_nr='"+swreznum+"'", Arrays.asList(new String[] {}));
 					if (vec.size() > 0){
@@ -4552,8 +4568,10 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 						/********************************/
 						boolean unter18 =  ( ((String)vec.get(6)).equals("T") ? true : false );
 						boolean vorjahrfrei = ( ((String)vec.get(7)).equals("") ? false : true );
-						if(!unter18 && !vorjahrfrei){
-							SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");			
+						if(!unter18 && !vorjahrfrei){ //=Normalfall
+							SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");
+							//hier soundeffekt einbauen falls keine Rezeptgebühren bezahlt
+							if(SystemConfig.RezGebWarnung){	RezTools.RezGebSignal(swreznum);}
 						}else if(unter18 && !vorjahrfrei){
 							/// Testen ob immer noch unter 18 ansonsten ZuZahlungsstatus ändern;
 							String geboren = DatFunk.sDatInDeutsch(SqlInfo.holePatFeld("geboren","pat_intern='"+vec.get(8)+"'" ));
@@ -4561,14 +4579,18 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 							if(DatFunk.Unter18(DatFunk.sDatInDeutsch(swdatum), geboren)){
 								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");				
 							}else{
-								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");				
+								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");	
+								//hier soundeffekt einbauen falls keine Rezeptgebühren bezahlt
+								if(SystemConfig.RezGebWarnung){	RezTools.RezGebSignal(swreznum);}
 							}
 
 						}else if(!unter18 && vorjahrfrei){
-							String bef_dat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(8)+"'" );
-							if(!bef_dat.equals("T")){
-								if(DatFunk.DatumsWert("31.12."+vec.get(8)) < DatFunk.DatumsWert(swdatum) ){
+							String bef_pat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(8)+"'" );
+							if(!bef_pat.equals("T")){
+								if(DatFunk.DatumsWert("31.12."+vec.get(7)) < DatFunk.DatumsWert(swdatum) ){
 									SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");
+									//hier soundeffekt einbauen falls keine Rezeptgebühren bezahlt
+									if(SystemConfig.RezGebWarnung){	RezTools.RezGebSignal(swreznum);}
 								}else{
 									SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");					
 								}
@@ -4576,7 +4598,9 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 								SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");
 							}
 						}else{
-							SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");			
+							SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"'", "rez_nr='"+swreznum+"'");
+							//hier soundeffekt einbauen falls keine Rezeptgebühren bezahlt
+							if(SystemConfig.RezGebWarnung){	RezTools.RezGebSignal(swreznum);}
 						}
 						/**************************************/
 
