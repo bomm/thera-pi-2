@@ -31,20 +31,21 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.therapi.reha.patient.LadeProg;
 
 import rechteTools.Rechte;
+import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
 import systemEinstellungen.SystemPreislisten;
-import systemTools.ListenerTools;
-import terminKalender.DatFunk;
 import CommonTools.Colors;
 import CommonTools.JCompTools;
 import CommonTools.JRtaCheckBox;
 import CommonTools.JRtaComboBox;
 import CommonTools.JRtaTextField;
-import CommonTools.SqlInfo;
+import systemTools.ListenerTools;
 import CommonTools.StringTools;
+import terminKalender.DatFunk;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -66,7 +67,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 								  null,null,null,null,null,
 								  null,null,null,null,null,
 								  null,null,null,null,null,
-								  null,null};
+								  null};
 	// Lemmi 20101231: Harte Index-Zahlen für "jtf" durch sprechende Konstanten ersetzt ! 
 	final int cKTRAEG = 0;
 	final int cARZT   = 1;
@@ -98,8 +99,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 	final int cPATINT    = 27;
 	final int cZZSTAT    = 28;
 	final int cHEIMBEWPATSTAM = 29;
-	final int cICD10Text = 30;
-	final int cICD10Beschreibung = 31;
+	final int cICD10 = 30;
 	
 	// Lemmi 20101231: Merken der Originalwerte der eingelesenen Textfelder, Combo- und Check-Boxen
 	Vector<Object> originale = new Vector<Object>();
@@ -425,7 +425,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				 								"Angaben wurden geändert", JOptionPane.YES_NO_OPTION ) ) {
 */
 		String[] strOptions = {"ja", "nein"};  // Defaultwert euf "nein" gesetzt !
-		return JOptionPane.showOptionDialog(null, "Es wurden Rezept-Angaben geändert!\nWollen sie die Änderung(en) wirklich verwerfen?",
+		return JOptionPane.showOptionDialog(null, "Es wurden Rezept-Anngaben geändert!\nWollen sie die Änderung(en) wirklich verwerfen?",
 				 "Angaben wurden geändert", 
 				 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				 strOptions, strOptions[1] );
@@ -435,8 +435,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		FormLayout lay = new FormLayout("right:max(80dlu;p), 4dlu, 60dlu, 5dlu, right:max(60dlu;p), 4dlu, 60dlu",
 			       //1.   2.   3.   4.   5.   6   7   8    9   10   11  12  13  14    15   16   17  18 19   20   21  22   23  24   25  
 					"p, 10dlu, p, 5dlu,  p, 5dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, " +
-		//26   27   28   29  30   31   32    33  34   35   36    37	 38	  39	40    41		
-		"10dlu, p, 10dlu, p, 2dlu, p, 2dlu,  p, 2dlu, p,  10dlu, p, 10dlu, 30dlu,2dlu,2dlu");
+		//26   27   28   29  30   31   32    33   34   35   36    37 38	 39  40   41	42		
+		"10dlu, p, 10dlu, p, 2dlu, p, 2dlu,  p,  10dlu, p, 10dlu, p,10dlu,p,10dlu,30dlu,2dlu");
 					
 
 		CellConstraints cc = new CellConstraints();
@@ -478,7 +478,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[cPATINT]   = new JRtaTextField("",false); //pat_intern von Patient
 		jtf[cZZSTAT]   = new JRtaTextField("",false); //zzstatus
 		jtf[cHEIMBEWPATSTAM] = new JRtaTextField("",false); //Heimbewohner aus PatStamm
-
+		jtf[cICD10] = new JRtaTextField("GROSS",false); //ICD10-Code
 		jcmb[cRKLASSE] = new JRtaComboBox();
 		int lang = SystemConfig.rezeptKlassenAktiv.size();
 		strRezepklassenAktiv = new String[lang];
@@ -573,7 +573,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jpan.addLabel("spätester Beh.Beginn",cc.xy(5,9));
 		jpan.add(jtf[cBEGINDAT],cc.xy(7,9));
 
-		jcmb[cVERORD] = new JRtaComboBox(new String[] {"Erstverordnung","Folgeverordnung", "außerhalb des Regelfalles"});
+		jcmb[cVERORD] = new JRtaComboBox(new String[] {"Erstverodnung","Folgeverordnung", "außerhalb des Regelfalles"});
 		jcmb[cVERORD].setActionCommand("verordnungsart");
 		jcmb[cVERORD].addActionListener(this);
 		jpan.addLabel("Art d. Verordn.",cc.xy(1, 11));
@@ -684,39 +684,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		//jcmb[cBARCOD] = new JRtaComboBox(new String[] {"Muster 13/18","Muster 14","DIN A6-Format","DIN A4(BGE)","DIN A4 (REHA)"});
 		jcmb[cBARCOD] = new JRtaComboBox(SystemConfig.rezBarCodName);
 		jpan.add(jcmb[cBARCOD],cc.xy(7, 31));
-		
-		jpan.addLabel("ICD-10 Schlüssel", cc.xy(1, 33));
-		
-		
-		
-		jtf[cICD10Text] = new JRtaTextField("GROSS",false);
-		jtf[cICD10Beschreibung] = new JRtaTextField("NIX", false);
-		jtf[cICD10Beschreibung].setEditable(false);
-		jtf[cICD10Text].addKeyListener(new KeyListener() {
 
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				
-			}
-
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				String icd10 = Reha.icd10.get(jtf[cICD10Text].getText());
-				if(icd10 != null) {
-					jtf[cICD10Beschreibung].setText(icd10);
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent arg0) {
-				
-			}
-			
-		});
-		jpan.add(jtf[cICD10Text], cc.xy(3, 33));
-		jpan.add(jtf[cICD10Beschreibung], cc.xyw(5, 33, 3));
-		
-		jpan.addLabel("FarbCode im TK",cc.xy(1, 35));
+		jpan.addLabel("FarbCode im TK",cc.xy(1, 33));
 		jcmb[cFARBCOD] = new JRtaComboBox();
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -726,11 +695,19 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}
 		}.execute();
 
-		jpan.add(jcmb[cFARBCOD],cc.xy(3, 35));
-		jpan.addLabel("Angelegt von",cc.xy(5, 35));
-		jpan.add(jtf[cANGEL],cc.xy(7, 35));		
+		jpan.add(jcmb[cFARBCOD],cc.xy(3, 33));
+		jpan.addLabel("Angelegt von",cc.xy(5, 33));
+		jpan.add(jtf[cANGEL],cc.xy(7, 33));
+		jpan.addSeparator("ICD-10 sofern vorhanden", cc.xyw(1,35,7));
+		// hier der ICD-10 Code
+		/********/
+		jpan.addLabel("ICD-10-Code",cc.xy(1,37));
+		jtf[cICD10].setName("icd10");
+		//jtf[cICD10].addFocusListener(this);
+		jpan.add(jtf[cICD10],cc.xy(3,37));
+
 		
-		jpan.addSeparator("Ärztliche Diagnose laut Verordnung", cc.xyw(1,37,7));
+		jpan.addSeparator("Ärztliche Diagnose laut Rezept", cc.xyw(1,39,7));
 		jta = new JTextArea();
 		jta.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.5f)));
 		jta.setFont(new Font("Courier",Font.PLAIN,11));
@@ -742,7 +719,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jta.setForeground(Color.RED);
 		JScrollPane span = JCompTools.getTransparentScrollPane(jta);
 		span.setBorder(BorderFactory.createLineBorder(Colors.PiOrange.alpha(0.25f)));
-		jpan.add(span,cc.xywh(1, 39,7,2));
+		jpan.add(span,cc.xywh(1, 41,7,2));
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(jpan.getPanel());
 		jscr.getVerticalScrollBar().setUnitIncrement(15);
 		
@@ -849,7 +826,26 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				@Override
 				protected Void doInBackground() throws Exception {
 					try{
-						doHmrCheck();						
+						boolean icd10falsch = false;
+						if(jtf[cICD10].getText().trim().length() > 0){
+							String String1 = jtf[cICD10].getText().trim().substring(0,1).toUpperCase();
+							String String2 = jtf[cICD10].getText().trim().substring(1).toUpperCase().replace(" ", "").replace("*", "").replace("!", "").replace("+","").replace("R", "").replace("L","").replace("B","").replace("G","").replace("V","").replace("Z","");;
+							String suchenach = String1+String2;
+							//suchenach = suchenach.replace(" ", "").replace("*", "").replace("!", "").replace("R", "").replace("L","").replace("B","").replace("G","").replace("V","").replace("Z","");
+							//System.out.println(suchenach+" Länge = "+suchenach.length());
+							if(SqlInfo.holeEinzelFeld("select id from icd10 where schluessel1 = '"+suchenach+"' LIMIT 1").equals("")){
+								/*
+								int frage = JOptionPane.showConfirmDialog(null, "<html>Achtung!!<br><br>Der ICD-10 Code <b>"+jtf[cICD10].getText().trim()+
+										"</b> existiert nicht!<br>"+
+										"Wollen Sie jetzt das ICD-10-Tool starten?<br><br></html>", "falscher ICD-10",JOptionPane.YES_NO_OPTION);
+								if(frage==JOptionPane.YES_OPTION){
+									new LadeProg(Reha.proghome+"ICDSuche.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+								}
+								*/
+								icd10falsch = true;
+							}
+						}
+						doHmrCheck(icd10falsch);						
 					}catch(Exception ex){
 						ex.printStackTrace();
 					}
@@ -993,7 +989,7 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			this.hmrcheck.setEnabled(false);
 		}
 	}
-	private void doHmrCheck( ){
+	private void doHmrCheck(boolean icd10falsch ){
 		if( SystemPreislisten.hmHMRAbrechnung.get(aktuelleDisziplin).get(preisgruppen[jcmb[cRKLASSE].getSelectedIndex()])==0  ){
 			this.hmrcheck.setEnabled(true);
 			JOptionPane.showMessageDialog(null, "HMR-Check ist bei diesem Kostenträger nicht erforderlich");
@@ -1032,6 +1028,22 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		
 		if(jtf[cREZDAT].getText().trim().equals(".  .")){
 			JOptionPane.showMessageDialog(null, "Rezeptdatum nicht korrekt angegeben HMR-Check nicht möglich");
+			return;
+		}
+		if(icd10falsch){
+			int frage = JOptionPane.showConfirmDialog(null, "<html><b>Der eingetragene ICD-10-Code ist falsch: <font color='#ff0000'>"+
+					jtf[cICD10].getText().trim()+"</font></b><br>"+
+					"HMR-Check nicht möglich!<br><br>"+
+					"Wollen Sie jetzt das ICD-10-Tool starten?<br><br></html>", "falscher ICD-10",JOptionPane.YES_NO_OPTION);
+			if(frage==JOptionPane.YES_OPTION){
+				new LadeProg(Reha.proghome+"ICDSuche.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+			}
+			jtf[cICD10].setText("");
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					jtf[cICD10].requestFocus();		
+				}
+			});
 			return;
 		}
 		if(hmpositionen.size() > 0){
@@ -1300,6 +1312,26 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				jtf[cANZ4].setText(text);				
 				return;
 			}
+			//Die ICD-10 Prüfung ist im HMR-Check wohl besser aufgehoben
+			/*
+			if( ((JComponent)arg0.getSource()).getName().equals("icd10") ){
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws Exception {
+						if(SqlInfo.holeEinzelFeld("select id from icd10 where schluessel1 like '"+jtf[cICD10].getText().trim()+"%' LIMIT 1").equals("")){
+							int frage = JOptionPane.showConfirmDialog(null, "<html>Achtung!!<br><br>Der ICD-10 Code <b>"+jtf[cICD10].getText().trim()+
+									"</b> existiert nicht!<br>"+
+									"Wollen Sie jetzt das ICD-10-Tool starten?<br><br></html>", "falscher ICD-10",JOptionPane.YES_NO_OPTION);
+							if(frage==JOptionPane.YES_OPTION){
+								new LadeProg(Reha.proghome+"ICDSuche.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+							}
+						}
+						return null;
+					}
+				}.execute();
+				return;
+			}
+			*/
 		}
 	}
 	
@@ -1535,10 +1567,10 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		jtf[cANZKM].setText(Reha.thisClass.patpanel.patDaten.get(48)); //kilometer
 		jtf[cPATID].setText(this.vec.get(38)); //id von Patient
 		jtf[cPATINT].setText(this.vec.get(0)); //pat_intern von Patient
-		if(!this.vec.get(71).equals("")) {
-			jtf[cICD10Text].setText(this.vec.get(71));
-			jtf[cICD10Beschreibung].setText(Reha.icd10.get(jtf[cICD10Text].getText()));
-		}
+		
+		//ICD-10
+		jtf[cICD10].setText(this.vec.get(71));
+		
 	}
 	
 	/********************************/
@@ -1693,7 +1725,6 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else{
 				sbuf.append("indikatschl='"+"kein IndiSchl."+"', ");			
 			}
-			sbuf.append("ICD10='"+jtf[cICD10Text].getText()+"', ");
 			sbuf.append("barcodeform='"+Integer.valueOf(jcmb[cBARCOD].getSelectedIndex()).toString()+"', ");
 			sbuf.append("angelegtvon='"+jtf[cANGEL].getText()+"', ");
 			sbuf.append("preisgruppe='"+jtf[cPREISGR].getText()+"', ");
@@ -1786,7 +1817,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("heimbewohn='"+jtf[cHEIMBEW].getText()+"', ");
 			sbuf.append("hbvoll='"+(jcb[cVOLLHB].isSelected() ? "T" : "F")+"', ");
 			sbuf.append("anzahlkm='"+(jtf[cANZKM].getText().trim().equals("") ? "0.00" : jtf[cANZKM].getText().trim())+"', ");
-			sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(Integer.parseInt(jtf[cPREISGR].getText())-1 )+"'");
+			sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(Integer.parseInt(jtf[cPREISGR].getText())-1 )+"', ");
+			sbuf.append("icd10='"+jtf[cICD10].getText().trim().replace(" ", "")+"' ");
 			sbuf.append(" where id='"+this.vec.get(35)+"' LIMIT 1");
 
 			SqlInfo.sqlAusfuehren(sbuf.toString());
@@ -1916,7 +1948,6 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			}else{
 				sbuf.append("indikatschl='"+"kein IndiSchl."+"', ");			
 			}
-			sbuf.append("ICD10='"+jtf[cICD10Text].getText()+"', ");
 			sbuf.append("barcodeform='"+Integer.toString(jcmb[cBARCOD].getSelectedIndex())+"', ");
 			sbuf.append("angelegtvon='"+jtf[cANGEL].getText()+"', ");
 			sbuf.append("preisgruppe='"+jtf[cPREISGR].getText()+"', ");
@@ -1974,7 +2005,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("hbvoll='"+(jcb[cVOLLHB].isSelected() ? "T" : "F")+"', ");
 			sbuf.append("anzahlkm='"+(jtf[cANZKM].getText().trim().equals("") ? "0.00" : jtf[cANZKM].getText().trim())+"', ");		
 			sbuf.append("befr='"+Reha.thisClass.patpanel.patDaten.get(30)+"', ");
-			sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(Integer.valueOf(jtf[cPREISGR].getText())-1 )+"'");
+			sbuf.append("zzregel='"+SystemPreislisten.hmZuzahlRegeln.get(aktuelleDisziplin).get(Integer.valueOf(jtf[cPREISGR].getText())-1 )+"',");
+			sbuf.append("icd10='"+jtf[cICD10].getText().trim().replace(" ", "")+"' ");
 			sbuf.append("where id='"+Integer.toString(rezidneu)+"'  LIMIT 1");
 			SqlInfo.sqlAusfuehren(sbuf.toString());
 			//System.out.println("Rezept wurde mit Preisgruppe "+jtf[cPREISGR].getText()+" gespeichert");
@@ -2059,6 +2091,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 		final int cVAR_JAHRFREI = 59;
 
 		final int cVAR_HBVOLL = 61;
+		
+		final int cVAR_ICD10 = 71;
 		//Funktion ist immer noch suboptimal, da der Kostenträger des Rezeptes noch nicht übernommen wird. 
 		
 		//String strPat_Intern = jtf[cPATINT].getText();
@@ -2106,7 +2140,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			jtf[cKASID].setText(vec.get(37)); //kassenid
 			jtf[cARZT].setText(vec.get(15)); //arzt
 			jtf[cARZTID].setText(vec.get(16)); //arztid
-
+			
+			jtf[cICD10].setText(vec.get(71)); //icd10
 			
 			preisgruppe = Integer.parseInt(vec.get(41));
 			
