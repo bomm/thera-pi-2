@@ -103,6 +103,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	public HistorDaten jpan1 = null;
 	public JButton[] histbut = {null,null,null,null};
 	public static boolean inRezeptDaten = false;
+	
+	int idInTable = 7;
 
 	public Historie(){
 		super();
@@ -298,7 +300,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
 		dtblm = new MyHistorieTableModel();
-		String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Pat-Nr.",""};
+		String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Pat-Nr.","Indi.Schl.",""};
 		dtblm.setColumnIdentifiers(column);
 		tabhistorie = new JXTable(dtblm);
 		tabhistorie.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
@@ -313,8 +315,8 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		tabhistorie.getColumn(3).setMaxWidth(75);
 		tabhistorie.getColumn(5).setMinWidth(0);
 		tabhistorie.getColumn(5).setMaxWidth(0);		
-		tabhistorie.getColumn(6).setMinWidth(0);
-		tabhistorie.getColumn(6).setMaxWidth(0);		
+		tabhistorie.getColumn(idInTable).setMinWidth(0);
+		tabhistorie.getColumn(idInTable).setMaxWidth(0);		
 		tabhistorie.validate();
 		tabhistorie.setName("AktRez");
 		tabhistorie.setSelectionMode(0);
@@ -431,7 +433,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 	private void holeEinzelTermine(int row,Vector<?> vvec){
 		Vector<?> xvec = null;
 		if(vvec == null){
-			xvec = SqlInfo.holeSatz("lza", "termine", "id='"+tabhistorie.getValueAt(row,6)+"'", Arrays.asList(new String[] {}));			
+			xvec = SqlInfo.holeSatz("lza", "termine", "id='"+tabhistorie.getValueAt(row,idInTable)+"'", Arrays.asList(new String[] {}));			
 		}else{
 			xvec = vvec;
 		}
@@ -515,7 +517,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			String suchrezid = null;
 			String suchrez = null;
 			for(int i = 0; i < rows;i++){
-				suchrezid = (String)tabhistorie.getValueAt(i,6);
+				suchrezid = (String)tabhistorie.getValueAt(i,idInTable);
 				suchrez = (String)tabhistorie.getValueAt(i,0);
 				Vector<String> vec = null;
 				/*********************/
@@ -688,7 +690,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 			SwingUtilities.invokeLater(new Runnable(){
 				public  void run(){
 					String reznr = (String)tabhistorie.getValueAt(xrow,0);
-					String id = (String)tabhistorie.getValueAt(xrow,6);
+					String id = (String)tabhistorie.getValueAt(xrow,idInTable);
 					jpan1.setRezeptDaten(reznr,id);
 				}
 			});	
@@ -705,7 +707,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 		final String xpatint = patint;
 		final String xrez_nr = rez_nr;
 		Vector<Vector<String>> vec = SqlInfo.holeSaetze("lza", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
-				"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,id", 
+				"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,pat_intern,indikatschl,id", 
 				"pat_intern='"+xpatint+"' ORDER BY rez_datum DESC", Arrays.asList(new String[]{}));
 
 		int anz = vec.size();
@@ -751,13 +753,13 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 					
 				}
 				tabhistorie.setRowSelectionInterval(row, row);
-				jpan1.setRezeptDaten((String)tabhistorie.getValueAt(row, 0),(String)tabhistorie.getValueAt(row, 6));
+				jpan1.setRezeptDaten((String)tabhistorie.getValueAt(row, 0),(String)tabhistorie.getValueAt(row, idInTable));
 				tabhistorie.scrollRowToVisible(row);
 				holeEinzelTermine(row,null);
 			}else{
 				rezneugefunden = true;
 				tabhistorie.setRowSelectionInterval(0, 0);
-				jpan1.setRezeptDaten((String)tabhistorie.getValueAt(0, 0),(String)tabhistorie.getValueAt(0, 6));
+				jpan1.setRezeptDaten((String)tabhistorie.getValueAt(0, 0),(String)tabhistorie.getValueAt(0, idInTable));
 			}
 			anzahlHistorie.setText("Anzahl Rezepte in Historie: "+anz);
 			wechselPanel.revalidate();
@@ -851,7 +853,7 @@ public class Historie extends JXPanel implements ActionListener, TableModelListe
 									inRezeptDaten = true;
 		                			setCursor(Reha.thisClass.wartenCursor);
 		                    		holeEinzelTermine(ix,null);
-		    						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(ix, 0),(String)tabhistorie.getValueAt(ix, 6));
+		    						jpan1.setRezeptDaten((String)tabhistorie.getValueAt(ix, 0),(String)tabhistorie.getValueAt(ix, idInTable));
 		    						setCursor(Reha.thisClass.normalCursor);
 		    						inRezeptDaten = false;
 								}catch(Exception ex){

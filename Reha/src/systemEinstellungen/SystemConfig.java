@@ -86,6 +86,7 @@ public class SystemConfig {
 	public static float KalenderAlpha = 0.0f;
 	
 	public static boolean AngelegtVonUser = false;
+	public static boolean RezGebWarnung = true;
 	
 	public static ArrayList<ArrayList<ArrayList<String[]>>> aRoogleGruppen;
 	
@@ -1016,6 +1017,13 @@ public class SystemConfig {
 		}else{
 			AngelegtVonUser = (inif.getStringProperty("Sonstiges", "AngelegtVonUser").equals("0") ? false : true);
 		}
+		dummy = inif.getStringProperty("Sonstiges", "RezGebWarnung");
+		if(dummy == null){
+			inif.setStringProperty("Sonstiges", "RezGebWarnung","1",null);
+			mustsave = true;
+		}else{
+			RezGebWarnung =  (inif.getStringProperty("Sonstiges", "RezGebWarnung").equals("0") ? false : true);
+		}
 		String[] hmPraefixArt =  {"KG","MA","ER","LO","RH","PO","RS"};
 		String[] hmPraefixZahl = {"22","21","26","23","67","71","61"};
 		String[] hmIndexZahl = 	 {"2", "1", "5", "3", "6", "7","6"};
@@ -1582,18 +1590,6 @@ public class SystemConfig {
 	public static void Feiertage(){
 		vFeiertage = SqlInfo.holeFeld("select datsql from feiertage where jahr >= '"+aktJahr+"' AND "+
 				"buland <> ''");
-	}
-	
-	public static void ICD10Laden() {
-		String sql = "SELECT icd10.schluessel1, icd10.titelzeile FROM icd10 ORDER BY icd10.schluessel1 ASC;";
-		Vector<Vector<String>> icd10 = SqlInfo.holeFelder(sql);
-		HashMap<String, String> icd10Map = new HashMap<String, String>();
-		for(Vector<String> datensatz : icd10) {
-			icd10Map.put(datensatz.get(0), datensatz.get(1));
-		}
-		Reha.icd10 = icd10Map;
-		Reha.icd10Schluessel = new String[Reha.icd10.size()];
-		Reha.icd10Schluessel =  Reha.icd10.keySet().toArray(Reha.icd10Schluessel);
 	}
 	/*
 	public static void compTest(){

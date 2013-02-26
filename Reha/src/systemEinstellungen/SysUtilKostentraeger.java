@@ -152,8 +152,10 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	}
 	private void starteSession(String land,String jahr) throws IOException{
 		//String urltext = "http://www.gkv-datenaustausch.de/Leistungserbringer_Sole_Kostentraegerdateien.gkvnet";
-		String urltext = "http://www.gkv-datenaustausch.de/Leistungserbringer_Sole_Kotr.gkvnet";
+		//String urltext = "http://www.gkv-datenaustausch.de/Leistungserbringer_Sole_Kotr.gkvnet";
+		String urltext = "http://www.gkv-datenaustausch.de/leistungserbringer/sonstige_leistungserbringer/kostentraegerdateien_sle/kostentraegerdateien.jsp";
 		String text = null;
+		try{
 		URL url = new URL(urltext);
 		   
 		      URLConnection conn = url.openConnection();
@@ -172,22 +174,53 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		      Vector<String> kassendat = new Vector<String>();
 		      int index;
 		      boolean gestartet = false;
+		      String saveLink = "";
+		      String[] datLink = null;
 		      while ( (text  = inS.readLine())!= null ) {
 		    	  text = makeUTF8(text);
+		    	  
 		    	  if(durchlauf > 0){
-		        	  if(text.indexOf("<h2>Kostentr") >= 0){
+		    		  if(text.startsWith("<a href=\"")){
+		    			  //saveLink = text;
+		    			  datLink = getDateiUndLink(text);
+		    		  }
+		        	  if(text.indexOf("<strong>Kosten") >= 0){
 		        		  kassendat.clear();
+		        		  
+		        		  text = text.replace("<strong>", "");
+		        		  text = text.replace("</strong>", "");
+		        		  
+		        		  if(text.indexOf("AOK")> 0){
+		        			  text = "AOK-Bundesverband";
+		        		  }else if(text.indexOf("Betriebs") > 0 || text.indexOf("BKK")> 0){
+		        			  text = "BKK (Betriebskrankenkassen)";
+		        		  }else if(text.indexOf("Landwirt") > 0 || text.indexOf("LKK")> 0){
+		        			  text = "LKK (Landwirtschaftl. Krankenkassen)";
+		        		  }else if(text.indexOf("Innungs") > 0 || text.indexOf("IKK")> 0){
+		        			  text = "IKK (Innungskrankenkassen)";
+		        		  }else if(text.indexOf("Knappschaft") > 0 || text.indexOf("KBS")> 0){
+		        			  text = "Knappschaft";
+		        		  }else if(text.indexOf("Ersatzkassen") > 0 || text.toUpperCase().indexOf("VDEK")> 0){
+		        			  text = "VdEK (Ersatzkassen)";
+		        		  }else{
+		        			  continue;
+		        		  }
+		        			  
+		        		  
 		        		  gestartet = true;
-		        		  text = text.replace("<h2>", "");
-		        		  text = text.replace("</h2>", "");
 		        		  kassendat.add(text.trim());
+		        		  
+		        		  System.out.println(text);
+		        		  System.out.println(saveLink);
+
+		        		  saveLink = "";
 		        		  continue;
 		        	  }
-		        	  if( ((index = text.indexOf("\">gültig")) >= 0) || ((index = text.indexOf("\">Gültig")) >= 0) || ((index = text.indexOf("\">gueltig")) >= 0)|| ((index = text.indexOf("\">Gueltig")) >= 0)){ 
-		        		  text = text.substring(index+2);
-		        		  text = text.replace("</span>", "");
-		        		  text = text.replace("gültig ab", "");
-		        		  text = text.replace("Gültig ab", "");
+		        	  //g&uuml;ltig
+		        	  if( ((index = text.indexOf("g&uuml;ltig")) >= 0) || ((index = text.indexOf("G&uuml;ltig")) >= 0) || ((index = text.indexOf("gueltig")) >= 0)|| ((index = text.indexOf("Gueltig")) >= 0)){ 
+		        		  //text = text.substring(index+2);
+		        		  text = text.replace("g&uuml;ltig ab", "");
+		        		  text = text.replace("G&uuml;ltig ab", "");
 		        		  text = text.replace("gueltig ab", "");
 		        		  text = text.replace("Gueltig ab", "");
 		        		  text = text.replace("dem", "");
@@ -209,25 +242,33 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		        			  text="0"+text;
 		        		  }
 		        		  kassendat.add(text.trim());
-		        		  continue;
-		        	  }
-		        	  if( ((index = text.indexOf("href=\"/upload/")) >= 0) && (gestartet)  ){
-		        		  text = text.substring(index+6);
-		        		  text = text.substring(0,text.indexOf("\""));
-		        		  text = text.replace("/upload/", "");
-		        		  kassendat.add(text.trim());
+		        		  
+		        		  kassendat.add(datLink[0]);
 		        		  ktrmod.addRow((Vector<?>)kassendat.clone());
 		        		  //ktraegerdat.add((Vector<String>)kassendat.clone());
 		        		  gestartet = false;
+
 		        		  continue;
 		        	  }
-		        	  
-
 		          }
 		          ++durchlauf;
 		      }
-		inS.close();
-		setFlags();
+		      inS.close();
+		      setFlags();
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Fehler bei der Analyse der Kostenträgerseite\n"+urltext);
+		}
+	}
+	private String[] getDateiUndLink(String textzeile){
+		String[] ret = {null,null};
+		try{
+			String nurlink = textzeile.split("\"")[1].replace("\"", "");
+			ret[0] = nurlink.substring(nurlink.lastIndexOf("/")+1);
+			ret[1] = nurlink.substring(0,nurlink.lastIndexOf("/")+1);
+		}catch(Exception ex){
+			return null;
+		}
+		return ret;
 	}
 	private void setFlags() {
 		if(ktrmod.getRowCount() > 0){
@@ -305,7 +346,8 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 
 /*************************/
 	private void holeKtraeger(String datei) throws IOException{
-		String urltext = "http://www.gkv-datenaustausch.de/upload/"+datei;
+		String urltext = "http://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/sonstige_leistungserbringer/kostentraegerdateien_1/"+datei;
+		//String urltext = "http://www.gkv-datenaustausch.de/upload/"+datei;
 		String text = null;
 		URL url = new URL(urltext);
 		   

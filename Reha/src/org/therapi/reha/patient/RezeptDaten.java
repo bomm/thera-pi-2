@@ -241,7 +241,12 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 						Reha.thisClass.patpanel.rezlabs[14].setText(stest+" Min.");
 					}
 					
-					Reha.thisClass.patpanel.rezdiag.setText(StringTools.NullTest((String)Reha.thisClass.patpanel.vecaktrez.get(23)));
+					if( (stest = StringTools.NullTest((String)Reha.thisClass.patpanel.vecaktrez.get(71))).trim().length() > 0){
+						Reha.thisClass.patpanel.rezdiag.setText("ICD-10: "+stest+"\n"+StringTools.NullTest((String)Reha.thisClass.patpanel.vecaktrez.get(23)));
+					}else{
+						Reha.thisClass.patpanel.rezdiag.setText(StringTools.NullTest((String)Reha.thisClass.patpanel.vecaktrez.get(23)));	
+					}
+					
 
 					int zzbild = 0;
 					try{
@@ -498,7 +503,7 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 			String[] daten = { (Reha.thisClass.patpanel.patDaten.get(0).startsWith("F") ? "F-" : "H-")+
 					Reha.thisClass.patpanel.patDaten.get(2)+","+
 					Reha.thisClass.patpanel.patDaten.get(3),
-					Reha.thisClass.patpanel.vecaktrez.get(1),
+					Reha.thisClass.patpanel.vecaktrez.get(1)+(farbcode > 0 ? (String)SystemConfig.vSysColsCode.get(farbcode) : ""),
 					Reha.thisClass.patpanel.vecaktrez.get(47)						
 			};
 			
@@ -508,7 +513,6 @@ public class RezeptDaten extends JXPanel implements ActionListener{
 			}else{
 				Reha.thisClass.shiftLabel.setText(" ");
 			}
-			
 		}
 		
 	}

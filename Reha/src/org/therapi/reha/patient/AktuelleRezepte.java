@@ -153,7 +153,10 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 	Vector<String> aktTerminBuffer  = new Vector<String>();
 	int aktuellAngezeigt = -1;
 	int iformular = -1;
-
+	
+	int idInTable = 8;
+	int termineInTable = 9;
+	
 	AbrechnungRezept abrRez = null;
 
 	
@@ -428,7 +431,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		dummypan.setOpaque(false);
 		dummypan.setBorder(null);
 		dtblm = new MyAktRezeptTableModel();
-		String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Status","Pat-Nr.",""};
+		String[] column = 	{"Rezept-Nr.","bezahlt","Rez-Datum","angelegt am","spät.Beginn","Status","Pat-Nr.","Indi.Schl.",""};
 		dtblm.setColumnIdentifiers(column);
 		tabaktrez = new JXTable(dtblm);
 		tabaktrez.setHighlighters(HighlighterFactory.createSimpleStriping(Colors.PiOrange.alpha(0.25f)));
@@ -446,8 +449,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		//tabaktrez.getColumn(4).setMaxWidth(70);
 		tabaktrez.getColumn(6).setMinWidth(0);
 		tabaktrez.getColumn(6).setMaxWidth(0);		
-		tabaktrez.getColumn(7).setMinWidth(0);
-		tabaktrez.getColumn(7).setMaxWidth(0);			
+		tabaktrez.getColumn(idInTable).setMinWidth(0);
+		tabaktrez.getColumn(idInTable).setMaxWidth(0);			
 		/*
 		tabaktrez.getColumn(1).setCellRenderer(renderer);
 		tabaktrez.getColumn(1).setMaxWidth(45);
@@ -878,7 +881,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		
 				//String sstmt = "select * from verordn where PAT_INTERN ='"+xpatint+"' ORDER BY REZ_DATUM";
 				Vector<Vector<String>> vec = SqlInfo.holeSaetze("verordn", "rez_nr,zzstatus,DATE_FORMAT(rez_datum,'%d.%m.%Y') AS drez_datum,DATE_FORMAT(datum,'%d.%m.%Y') AS datum," +
-						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,abschluss,pat_intern,id,termine", 
+						"DATE_FORMAT(lastdate,'%d.%m.%Y') AS datum,abschluss,pat_intern,indikatschl,id,termine", 
 						"pat_intern='"+xpatint+"' ORDER BY rez_datum", Arrays.asList(new String[]{}));
 				int anz = vec.size();
 				
@@ -886,7 +889,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					if(i==0){
 						dtblm.setRowCount(0);						
 					}
-					aktTerminBuffer.add(String.valueOf(vec.get(i).get(8)));
+					aktTerminBuffer.add(String.valueOf(vec.get(i).get(termineInTable)));
 					int zzbild = 0;
 					int rezstatus = 0;
 					if( ((Vector)vec.get(i)).get(1) == null){
@@ -965,8 +968,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 							
 						}
 						//tabaktrez.setRowSelectionInterval(row, row);
-						Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(row, 7)+"'", Arrays.asList(new String[] {}) ));
-						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, 7));
+						Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(row, idInTable)+"'", Arrays.asList(new String[] {}) ));
+						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(row, 0),(String)tabaktrez.getValueAt(row, idInTable));
 						//RezTools.constructRawHMap();
 						/*
 						if(!inEinzelTermine){
@@ -983,8 +986,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					}else{
 						rezneugefunden = true;
 						//tabaktrez.setRowSelectionInterval(0, 0);
-						Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(row, 7)+"'", Arrays.asList(new String[] {}) ));
-						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(0, 0),(String)tabaktrez.getValueAt(0, 7));
+						Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(row, idInTable)+"'", Arrays.asList(new String[] {}) ));
+						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(0, 0),(String)tabaktrez.getValueAt(0, idInTable));
 						//RezTools.constructRawHMap();
 						////System.out.println("rezeptdaten akutalisieren in holeRezepte 1");						
 					}
@@ -1065,7 +1068,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			//final int xrow = row;
 			String reznr = (String)tabaktrez.getValueAt(row,0);
 			rezAngezeigt = reznr;
-			String id = (String)tabaktrez.getValueAt(row,7);
+			String id = (String)tabaktrez.getValueAt(row,idInTable);
 			rezDatenPanel.setRezeptDaten(reznr,id);
 		}
 	}
@@ -1208,7 +1211,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		inEinzelTermine = true;
 		Vector<String> xvec = null;
 		if(vvec == null){
-			xvec = (Vector<String>) SqlInfo.holeSatz("verordn", "termine", "id='"+tabaktrez.getValueAt(row,7)+"'", Arrays.asList(new String[] {}));			
+			xvec = (Vector<String>) SqlInfo.holeSatz("verordn", "termine", "id='"+tabaktrez.getValueAt(row,idInTable)+"'", Arrays.asList(new String[] {}));			
 		}else{
 			xvec = vvec;
 		}
@@ -1288,7 +1291,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 			sb.append((dtermm.getValueAt(i,4)!= null ? ((String)dtermm.getValueAt(i,4)).trim() : "")+"\n");
 		}
 		SystemConfig.hmAdrRDaten.put("<Ranzahltage>",Integer.toString(reihen));
-		SqlInfo.aktualisiereSatz("verordn", "termine='"+sb.toString()+"'","id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7)+"'");
+		SqlInfo.aktualisiereSatz("verordn", "termine='"+sb.toString()+"'","id='"+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), idInTable)+"'");
 		Reha.thisClass.patpanel.vecaktrez.set(34,sb.toString());
 		if(aktuellAngezeigt>=0){
 			try{
@@ -1422,9 +1425,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		                					inEinzelTermine = false;
 		                				}
 		                			}
-		                			Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(ix, 7)+"'", Arrays.asList(new String[] {}) ));
+		                			Reha.thisClass.patpanel.vecaktrez = ((Vector<String>)SqlInfo.holeSatz("verordn", " * ", "id = '"+(String)tabaktrez.getValueAt(ix, idInTable)+"'", Arrays.asList(new String[] {}) ));
 		                			Reha.thisClass.patpanel.aktRezept.rezAngezeigt = (String)tabaktrez.getValueAt(ix, 0);
-		    						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, 7));
+		    						rezDatenPanel.setRezeptDaten((String)tabaktrez.getValueAt(ix, 0),(String)tabaktrez.getValueAt(ix, idInTable));
 		    						setCursor(Reha.thisClass.normalCursor);
 		    						final String testreznum = (String)tabaktrez.getValueAt(ix, 0).toString();
 		    						//System.out.println("**********"+testreznum+" "+Reha.thisClass.dta301panel);
@@ -1749,7 +1752,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					return;
 				}
 				String reznr = (String)tabaktrez.getValueAt(currow, 0);
-				String rezid = (String)tabaktrez.getValueAt(currow, 7);
+				String rezid = (String)tabaktrez.getValueAt(currow, idInTable);
 				int frage = JOptionPane.showConfirmDialog(null,"Wollen Sie das Rezept "+reznr+" wirklich löschen?","Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 				if(frage == JOptionPane.NO_OPTION){
 					return;
@@ -2150,6 +2153,33 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					JOptionPane.showMessageDialog(null, "<html><b>Kein Indikationsschlüssel angegeben.<br>Die Angaben sind <font color='#ff0000'>nicht</font> gemäß den gültigen Heilmittelrichtlinien!</b></html>");
 					return;
 				}
+				if(Reha.thisClass.patpanel.vecaktrez.get(71).trim().length() > 0){
+					//für die Suche alles entfernen das nicht in der icd10-Tabelle aufgeführt sein kann
+					//String suchenach = Reha.thisClass.patpanel.vecaktrez.get(71).trim();
+					String String1 = Reha.thisClass.patpanel.vecaktrez.get(71).trim().substring(0,1).toUpperCase();
+					String String2 = Reha.thisClass.patpanel.vecaktrez.get(71).trim().substring(1).toUpperCase().replace(" ", "").replace("*", "").replace("!", "").replace("+","").replace("R", "").replace("L","").replace("B","").replace("G","").replace("V","").replace("Z","");;
+					String suchenach = String1+String2;
+					//suchenach = suchenach.replace(" ", "").replace("*", "").replace("!", "").replace("R", "").replace("L","").replace("B","").replace("G","").replace("V","").replace("Z","");
+					if(SqlInfo.holeEinzelFeld("select id from icd10 where schluessel1 = '"+suchenach+"' LIMIT 1").equals("")){
+						/*
+						int frage = JOptionPane.showConfirmDialog(null, "<html>Achtung!!<br><br>Der ICD-10 Code <b>"+jtf[cICD10].getText().trim()+
+								"</b> existiert nicht!<br>"+
+								"Wollen Sie jetzt das ICD-10-Tool starten?<br><br></html>", "falscher ICD-10",JOptionPane.YES_NO_OPTION);
+						if(frage==JOptionPane.YES_OPTION){
+							new LadeProg(Reha.proghome+"ICDSuche.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+						}
+						*/
+						int frage = JOptionPane.showConfirmDialog(null, "<html><b>Der eingetragene ICD-10-Code ist falsch: <font color='#ff0000'>"+
+								Reha.thisClass.patpanel.vecaktrez.get(71).trim()+"</font></b><br>"+
+								"HMR-Check nicht möglich!<br><br>"+
+								"Wollen Sie jetzt das ICD-10-Tool starten?<br><br></html>", "falscher ICD-10",JOptionPane.YES_NO_OPTION);
+						if(frage==JOptionPane.YES_OPTION){
+							new LadeProg(Reha.proghome+"ICDSuche.jar"+" "+Reha.proghome+" "+Reha.aktIK);
+						}
+						return;
+					}
+				}
+				
 				indi = indi.replace(" ", "");
 				Vector<Integer> anzahlen = new Vector<Integer>();
 				Vector<String> hmpositionen = new Vector<String>();
@@ -2632,9 +2662,9 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		if(lneu){
 			neuRez.getSmartTitledPanel().setTitle("Rezept Neuanlage");
 		}
-		neuRez.setSize(480,768);
-		neuRez.setPreferredSize(new Dimension(480+Reha.zugabex,630+Reha.zugabey));
-		neuRez.getSmartTitledPanel().setPreferredSize(new Dimension (480,630));
+		neuRez.setSize(500,800);
+		neuRez.setPreferredSize(new Dimension(490+Reha.zugabex,690+Reha.zugabey));
+		neuRez.getSmartTitledPanel().setPreferredSize(new Dimension (490,800)); //Original 630
 		neuRez.setPinPanel(pinPanel);
 		if(lneu){
 			// vvv Lemmi 20110101: Kopieren des letzten Rezepts des selben Patienten bei Rezept-Neuanlage
@@ -2695,7 +2725,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				try{
 				RezeptDaten.feddisch = false;
 				//System.out.println("rufe Rezeptnummer "+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
-				aktualisiereVector((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
+				aktualisiereVector((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), idInTable));
 
 					
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[Integer.parseInt((String)Reha.thisClass.patpanel.vecaktrez.get(39))], 

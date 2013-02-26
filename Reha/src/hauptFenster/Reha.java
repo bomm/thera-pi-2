@@ -312,7 +312,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2013-01-15-DB=";
+	public static String aktuelleVersion = "2013-02-25-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -351,10 +351,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	
 	public boolean isLibreOffice = false;
 	public SqlInfo sqlInfo = null;
-	
-	public static HashMap<String, String> icd10 = null;
-	public static String[] icd10Schluessel = null;
-	
+	public static int nachladenDB = 0;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -445,9 +442,11 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				e.printStackTrace();
 			}
 		}
+		/*
+		 * War nur bis WinXP sinnvoll einsetzbar
 		new SocketClient().setzeInitStand("Überprüfe Dateisystem");
 		File f = null;
-		/*if(osVersion.contains("Windows")){
+		if(osVersion.contains("Windows")){
 			f = new File(javaPfad+"/bin/win32com.dll");
 			if(! f.exists()){
 				new SocketClient().setzeInitStand("Kopiere win32com.dll");
@@ -458,8 +457,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				}
 			}else{
 				////System.out.println("Systemdateien win32com.dll existiert bereits, kopieren nicht erforderlich");
-			}
-		}
+			}	
+		}	
 		f = new File(javaPfad+"/lib/ext/comm.jar");
 		if(! f.exists()){
 			try {
@@ -481,8 +480,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			}
 		}else{
 			////System.out.println("Systemdateien javax.comm.properties existiert bereits, kopieren nicht erforderlich");
-		}*/
-		
+		}
+		*/
 		new Thread(){
 			public void run(){
 				new SocketClient().setzeInitStand("System-Icons laden");
@@ -582,6 +581,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				application.sqlInfo.setDieseMaschine(SystemConfig.dieseMaschine);
 				rehaBackImg = new ImageIcon(Reha.proghome+"icons/therapieMT1.gif");
 				thisClass = application;
+				//new DatenbankStarten().run();
 				new Thread(new DatenbankStarten()).start();
 				application.getJFrame();
 
@@ -2721,6 +2721,15 @@ public void actionPerformed(ActionEvent arg0) {
 		return;
 	}
 	if(cmd.equals("hmabrechnung")){
+		try{
+			if(SystemConfig.hmEmailExtern.get("SenderAdresse") == null || SystemConfig.hmEmailExtern.get("SenderAdresse").trim().equals("")){
+				JOptionPane.showMessageDialog(null,"<html>Bevor zum ersten Mal mit der GKV abgerechnet wird<br><br><b>muß(!) der Emailaccount in der System-Init konfiguriert werden.</b><br><br></html>");
+				return;
+			}
+		}catch(NullPointerException ex){
+			JOptionPane.showMessageDialog(null,"<html>Bevor zum ersten Mal mit der GKV abgerechnet wird<br><br><b>muß(!) der Emailaccount in der System-Init konfiguriert werden.</b><br><br></html>");
+			return;
+		}
 		Reha.thisClass.progLoader.AbrechnungFenster(1);
 		return;
 	}
@@ -2929,6 +2938,24 @@ public void activateWebCam(){
 		}
 	}.execute();
 }
+public void mustReloadDb(){
+	Reha.nachladenDB = JOptionPane.showConfirmDialog(Reha.thisFrame,"Die Datenbank konnte nicht gestartet werden, erneuter Versuch?","Wichtige Benuterzinfo",JOptionPane.YES_NO_OPTION);
+	/*
+	new SwingWorker<Void,Void>(){
+		@Override
+		
+		protected Void doInBackground() throws java.lang.Exception {
+			try{
+				
+			}catch(NullPointerException ex){
+				ex.printStackTrace();
+			}
+			return null;
+		}
+	}.execute();
+	*/
+}
+
 
 /*********************************************/
 }
@@ -2940,6 +2967,7 @@ public void activateWebCam(){
  * @author admin
  *
  */
+
 final class DatenbankStarten implements Runnable{
 	private void StarteDB(){
 		final Reha obj = Reha.thisClass;
@@ -2965,6 +2993,7 @@ final class DatenbankStarten implements Runnable{
 		}	
 		try {
 			if (sDB=="SQL"){
+				
 				//obj.conn = (Connection) DriverManager.getConnection("jdbc:mysql://194.168.1.8:3306/dbf","entwickler","entwickler");
 				new SocketClient().setzeInitStand("Datenbank initialisieren und öffnen");
 				obj.conn = (Connection) DriverManager.getConnection(SystemConfig.vDatenBank.get(0).get(1)+"?jdbcCompliantTruncation=false&zeroDateTimeBehavior=convertToNull",
@@ -3000,11 +3029,30 @@ final class DatenbankStarten implements Runnable{
 		}catch (final SQLException ex) {
 			System.out.println("SQLException: " + ex.getMessage());
 			Reha.DbOk = false;
-			int nochmals = JOptionPane.showConfirmDialog(null,"Die Datenbank konnte nicht gestartet werden, erneuter Versuch?","Wichtige Benuterzinfo",JOptionPane.YES_NO_OPTION);
-			if(nochmals == JOptionPane.YES_OPTION){
+			Reha.nachladenDB = -1;
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			/*
+			Reha.thisClass.mustReloadDb();
+			
+			while(Reha.nachladenDB < 0){
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			*/
+			
+			if(Reha.nachladenDB == JOptionPane.YES_OPTION){
 				new Thread(new DbNachladen()).start();
 			}else{
 				new SocketClient().setzeInitStand("INITENDE");
+				System.out.println("Datenbank kann nicht gestartet werden");
+				System.exit(0);
 			}
 			return;
 		}
@@ -3115,10 +3163,6 @@ final class DatenbankStarten implements Runnable{
 				new SocketClient().setzeInitStand("Geräteliste erstellen");
 
 				SystemConfig.GeraeteListe();
-				
-				new SocketClient().setzeInitStand("ICD-10 Schluessel laden");
-				
-				SystemConfig.ICD10Laden();
 
 				SystemConfig.CompanyInit();
 
@@ -3197,6 +3241,7 @@ final class DbNachladen implements Runnable{
 				e.printStackTrace();
 			}
 		}
+
     	try {
 			if (sDB=="SQL"){
 				new SocketClient().setzeInitStand("Datenbank initialisieren und öffnen");
@@ -3216,8 +3261,18 @@ final class DbNachladen implements Runnable{
     	} 
     	catch (final SQLException ex) {
     		Reha.DbOk = false;
-    		int nochmals = JOptionPane.showConfirmDialog(null,"Wiederherstellung der Datenbankverbindung - erfolglos!\nErneut versuchen?","Wichtige Benuterzinfo",JOptionPane.YES_NO_OPTION);
-    		if(nochmals == JOptionPane.YES_OPTION){
+			Reha.nachladenDB = -1;
+			Reha.thisClass.mustReloadDb();
+			
+    		while(Reha.nachladenDB < 0){
+    			try {
+    				Thread.sleep(25);
+    			} catch (InterruptedException e) {
+    				e.printStackTrace();
+    			}
+    		}
+
+    		if(Reha.nachladenDB == JOptionPane.YES_OPTION){
     			new Thread(new DbNachladen()).start();
     		}
     		return;
