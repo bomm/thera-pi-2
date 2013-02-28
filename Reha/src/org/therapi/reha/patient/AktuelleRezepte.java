@@ -2595,6 +2595,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 		SystemConfig.hmAdrRDaten.put("<Bges>",StringTools.fuelleMitZeichen(
 				SystemConfig.hmAdrRDaten.get("<Rwert>"), " ", true, 6));
 		SystemConfig.hmAdrRDaten.put("<Bnr>",SystemConfig.hmAdrRDaten.get("<Rnummer>"));
+		SystemConfig.hmAdrRDaten.put("<Buser>", Reha.aktUser);
 		//System.out.println("Es wird folgender Bacrode genommen "+url);
 		OOTools.starteBacrodeFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+url,SystemConfig.rezBarcodeDrucker);
 		
