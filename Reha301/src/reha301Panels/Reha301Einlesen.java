@@ -36,15 +36,15 @@ import org.thera_pi.nebraska.gui.NebraskaMain;
 import reha301.Reha301;
 import reha301.Reha301Tab;
 
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.INIFile;
-import Tools.IntegerTools;
-import Tools.JCompTools;
-import Tools.OOTools;
-import Tools.SqlInfo;
-import Tools.StringTools;
-import Tools.Verschluesseln;
+import CommonTools.ButtonTools;
+import CommonTools.DatFunk;
+import CommonTools.INIFile;
+import CommonTools.IntegerTools;
+import CommonTools.JCompTools;
+import CommonTools.OOTools;
+import CommonTools.SqlInfo;
+import CommonTools.StringTools;
+import CommonTools.Verschluesseln;
 
 import ag.ion.bion.officelayer.text.ITextDocument;
 
@@ -679,8 +679,15 @@ public class Reha301Einlesen{
 		if(zeile.startsWith("DTM+48:")){
 			String datum = teile[1].split(":")[1];
 			if(teile[1].split(":")[2].equals("804")){
-				ret[0] = String.valueOf("Bewilligte Tage: "+Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
-				dbHmap.put("tage",Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
+				//ret[0] = String.valueOf("Bewilligte Tage: "+Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
+				if( (IntegerTools.trailNullAndRetInt(datum)) % 7 == 0 ){
+					ret[0] = String.valueOf("Bewilligte Tage: "+Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
+					dbHmap.put("tage",Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
+				}else{
+					ret[0] = String.valueOf("Bewilligte Tage: "+Integer.toString( IntegerTools.trailNullAndRetInt(datum) ));
+					dbHmap.put("tage",Integer.toString( IntegerTools.trailNullAndRetInt(datum) ));
+				}
+				//dbHmap.put("tage",Integer.toString( IntegerTools.trailNullAndRetInt(datum)/7*5 ));
 			}else if(teile[1].split(":")[2].equals("102")){
 				ret[0] = String.valueOf("Bewilligte Tage: "+edifact_vec.get( ((Integer)ret[1])+1 ).split("\\+")[1].split(":")[1]  );
 				dbHmap.put("tage","");
@@ -1071,6 +1078,8 @@ public class Reha301Einlesen{
 				return "Art der Leistung: ganztägig ambulant";
 			}
 			if(inhalt.equals("3")){
+				//Wenn ambulant dann muß es NACHSORGE sein
+				dbHmap.put("a12", "NACHSORGE");
 				return "Art der Leistung: ambulant (nur RV)";
 			}
 		}

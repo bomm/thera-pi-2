@@ -22,10 +22,11 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 
-import Tools.JCompTools;
-import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
-import Tools.SqlInfo;
+
+import CommonTools.JCompTools;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
+import CommonTools.SqlInfo;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;

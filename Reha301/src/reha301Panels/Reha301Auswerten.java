@@ -53,18 +53,19 @@ import reha301.Reha301;
 import reha301.Reha301Tab;
 import reha301.SocketClient;
 
-import Tools.ButtonTools;
-import Tools.Colors;
-import Tools.DatFunk;
-import Tools.FileTools;
-import Tools.INIFile;
-import Tools.JCompTools;
-import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
+
+import CommonTools.ButtonTools;
+import CommonTools.Colors;
+import CommonTools.DatFunk;
+import CommonTools.FileTools;
+import CommonTools.INIFile;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
+import CommonTools.SqlInfo;
+import CommonTools.StringTools;
 import Tools.OOTools;
 import Tools.RezTools;
-import Tools.SqlInfo;
-import Tools.StringTools;
+
 import Tools.SystemPreislisten;
 import Tools.WartenAufDB;
 
@@ -801,6 +802,9 @@ public class Reha301Auswerten extends JXPanel{
 		buf.append("</table>");
 		buf.append("</html>");
 		editpan[1].setText(buf.toString());
+		new SocketClient().setzeRehaNachricht(Reha301.rehaPort, "Reha301#"+RehaIOMessages.MUST_PATFIND+"#"+
+				dta301mod.getX_patIntern());
+		
 		
 	}	
 	private void show301NoPatExist(){
@@ -1148,7 +1152,30 @@ public class Reha301Auswerten extends JXPanel{
 				disziplin = "Reha";
 				rhrezexist = true;
 			}
+		}//Hier muß der test ob Nachsorge existiert rein. //bisheriges Zeugs ist alles Murks!!! /st.
+		int frage = -1;
+		if( ((String)vecobj.get(4)).equals("NACHSORGE") ){
+			vecrhtest = SqlInfo.holeFelder("select rez_nr from verordn where pat_intern='"+dta301mod.getPatIntern()+"' and (kuerzel1 like 'ASP%' or kuerzel1 like 'IRENA%')");
+			if(vecrhtest.size() > 0){
+				String msg = "Für diesen Patient existiert bereits eine oder mehrere Nachsorgeverordnungen(en)\n\n";
+				msg = msg+vecrhtest.get(0).get(0)+"\n\n";
+				msg = msg+"Wollen Sie den Fall auf diese Verordnung übertragen?";
+				frage = JOptionPane.showConfirmDialog(null, msg,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+				if(frage == JOptionPane.YES_OPTION){
+					neuvo = false;
+					rezneuereznr = String.valueOf(vecrhtest.get(0).get(0));
+					disziplin = "Physio";
+					rhrezexist = true;
+				}else{
+					neuvo = true;
+					disziplin = "Physio";
+				}
+			}else{
+				neuvo = true;
+				disziplin = "Physio";
+			}
 		}
+
 		if(neuvo){
 			int preisgruppe = Integer.parseInt((String)vecobj.get(6));
 			int posgruppe = 0;
@@ -1254,97 +1281,103 @@ public class Reha301Auswerten extends JXPanel{
 		 * Unbedingt wieder einschalten
 		 */
 
+		//Nur im Rehafall Berichtsklamotten behandeln
+		
+		if( !( ((String)vecobj.get(4)).equals("NACHSORGE")) ){
+			int berichte = SqlInfo.zaehleSaetze("bericht2", "pat_intern='"+dta301mod.getPatIntern()+"'");
+			if(berichte > 0 && rhrezexist ){
+				//JRtaComboBox combo = new JRtaComboBox();
+				Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die Bericht-ID an auf die dieser Fall übertragen werden soll.\n(Leer lasse für neuen Bericht)", "");
+				if(ret != null){
+					//Bearbeitereintragen in dtafall
+					if(! ((String)ret).trim().equals("")){
+						buf.setLength(0);
+						buf.trimToSize();
+						buf.append("update dtafall set bearbeiter='301-er Automat' ");
+						buf.append("where id='"+fallid+"' LIMIT 1");
+						SqlInfo.sqlAusfuehren(buf.toString());
+						
+						buf.setLength(0);
+						buf.trimToSize();
+						buf.append("update dta301 set berichtid='"+((String)ret).trim()+"' ");
+						buf.append("where id='"+id+"' LIMIT 1");
+						SqlInfo.sqlAusfuehren(buf.toString());
+						return;
+					}
+				}
+			}
+			//buf.append("update dta301 set berichtid='"+Integer.toString(berichtid)+"' ");
+			//buf.append("where id='"+id+"' LIMIT 1");
 
-		int berichte = SqlInfo.zaehleSaetze("bericht2", "pat_intern='"+dta301mod.getPatIntern()+"'");
-		if(berichte > 0 && rhrezexist ){
-			//JRtaComboBox combo = new JRtaComboBox();
-			Object ret = JOptionPane.showInputDialog(null, "Geben Sie bitte die Bericht-ID an auf die dieser Fall übertragen werden soll.\n(Leer lasse für neuen Bericht)", "");
-			if(ret != null){
-				//Bearbeitereintragen in dtafall
-				if(! ((String)ret).trim().equals("")){
+			int berichtid = SqlInfo.erzeugeNummer("bericht");
+			if(disziplin.equals("Reha")){
+				//Reha
+				if(isRVTraeger){
+					//RV-Träger
+					//Berichtübersicht erstellen
+					
+					/*Später wieder einschalten
+					 * 
+					 */
+					String cmd = "insert into berhist set pat_intern='"+dta301mod.getPatIntern()+"', "+
+					"berichtid='"+Integer.toString(berichtid)+"', "+
+					"berichttyp='DRV E-Bericht', "+
+					"verfasser='Reha-Arzt', "+
+					"empfaenger='"+(String)((Object[])((Vector<?>)vecobj).get(0))[6]+"', "+
+					"bertitel='Reha-Entlassbericht', "+
+					"erstelldat='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', "+
+					"empfid='0'";
+					SqlInfo.sqlAusfuehren(cmd);
+					/**bis hierher ausgeschaltet**/				
+					//Berichtid in dta301 eintragen
+					buf.setLength(0);
+					buf.trimToSize();
+					buf.append("update dta301 set berichtid='"+Integer.toString(berichtid)+"' ");
+					buf.append("where id='"+id+"' LIMIT 1");
+					SqlInfo.sqlAusfuehren(buf.toString());
+
+					//Bearbeitereintragen in dtafall
 					buf.setLength(0);
 					buf.trimToSize();
 					buf.append("update dtafall set bearbeiter='301-er Automat' ");
 					buf.append("where id='"+fallid+"' LIMIT 1");
 					SqlInfo.sqlAusfuehren(buf.toString());
-					
+					/*Später wieder einschalten*/
+					//Bericht erstellen
 					buf.setLength(0);
 					buf.trimToSize();
-					buf.append("update dta301 set berichtid='"+((String)ret).trim()+"' ");
-					buf.append("where id='"+id+"' LIMIT 1");
+					buf.append("insert into bericht2 set pat_intern='"+dta301mod.getPatIntern()+"',");
+					buf.append("berichtid='"+Integer.toString(berichtid)+"',");
+					buf.append("vnummer='"+dta301mod.getPatVsnr()+"',");
+					buf.append("namevor='"+dta301mod.getPatNachname()+", "+dta301mod.getPatVorname()+"',");
+					buf.append("geboren='"+DatFunk.sDatInSQL(dta301mod.getPatGeboren())+"',");
+					buf.append("strasse='"+dta301mod.getPatStrasse()+"',");
+					buf.append("plz='"+dta301mod.getPatPlz()+"', ");
+					buf.append("ort='"+dta301mod.getPatOrt()+"', ");
+					buf.append("freitext=''");
 					SqlInfo.sqlAusfuehren(buf.toString());
-					return;
+					
+					//Ktl erstellen
+					buf.setLength(0);
+					buf.trimToSize();
+					buf.append("insert into bericht2ktl set pat_intern='"+dta301mod.getPatIntern()+"',");
+					buf.append("berichtid='"+Integer.toString(berichtid)+"',");
+					buf.append("terleut1='', terleut2=''");
+					SqlInfo.sqlAusfuehren(buf.toString());
+					/**bis hierher ausgeschaltet**/
+					//Dieser System.out bewirkt die Aktualisierung//
+					//System.out.println("#AktualisierePat@"+
+					//		dta301mod.getPatIntern()+"@"+rezneuereznr);
+					}				
+					new SocketClient().setzeRehaNachricht(Reha301.rehaPort, "Reha301#"+RehaIOMessages.MUST_PATANDREZFIND+"#"+
+							dta301mod.getPatIntern()+"#"+rezneuereznr);
+					
+				}else{
+					//Krankenkasse
 				}
-			}
-		}
-		//buf.append("update dta301 set berichtid='"+Integer.toString(berichtid)+"' ");
-		//buf.append("where id='"+id+"' LIMIT 1");
-
-		int berichtid = SqlInfo.erzeugeNummer("bericht");
-		if(disziplin.equals("Reha")){
-			//Reha
-			if(isRVTraeger){
-				//RV-Träger
-				//Berichtübersicht erstellen
-				
-				/*Später wieder einschalten
-				 * 
-				 */
-				String cmd = "insert into berhist set pat_intern='"+dta301mod.getPatIntern()+"', "+
-				"berichtid='"+Integer.toString(berichtid)+"', "+
-				"berichttyp='DRV E-Bericht', "+
-				"verfasser='Reha-Arzt', "+
-				"empfaenger='"+(String)((Object[])((Vector<?>)vecobj).get(0))[6]+"', "+
-				"bertitel='Reha-Entlassbericht', "+
-				"erstelldat='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"', "+
-				"empfid='0'";
-				SqlInfo.sqlAusfuehren(cmd);
-				/**bis hierher ausgeschaltet**/				
-				//Berichtid in dta301 eintragen
-				buf.setLength(0);
-				buf.trimToSize();
-				buf.append("update dta301 set berichtid='"+Integer.toString(berichtid)+"' ");
-				buf.append("where id='"+id+"' LIMIT 1");
-				SqlInfo.sqlAusfuehren(buf.toString());
-
-				//Bearbeitereintragen in dtafall
-				buf.setLength(0);
-				buf.trimToSize();
-				buf.append("update dtafall set bearbeiter='301-er Automat' ");
-				buf.append("where id='"+fallid+"' LIMIT 1");
-				SqlInfo.sqlAusfuehren(buf.toString());
-				/*Später wieder einschalten*/
-				//Bericht erstellen
-				buf.setLength(0);
-				buf.trimToSize();
-				buf.append("insert into bericht2 set pat_intern='"+dta301mod.getPatIntern()+"',");
-				buf.append("berichtid='"+Integer.toString(berichtid)+"',");
-				buf.append("vnummer='"+dta301mod.getPatVsnr()+"',");
-				buf.append("namevor='"+dta301mod.getPatNachname()+", "+dta301mod.getPatVorname()+"',");
-				buf.append("geboren='"+DatFunk.sDatInSQL(dta301mod.getPatGeboren())+"',");
-				buf.append("strasse='"+dta301mod.getPatStrasse()+"',");
-				buf.append("plz='"+dta301mod.getPatPlz()+"', ");
-				buf.append("ort='"+dta301mod.getPatOrt()+"', ");
-				buf.append("freitext=''");
-				SqlInfo.sqlAusfuehren(buf.toString());
-				
-				//Ktl erstellen
-				buf.setLength(0);
-				buf.trimToSize();
-				buf.append("insert into bericht2ktl set pat_intern='"+dta301mod.getPatIntern()+"',");
-				buf.append("berichtid='"+Integer.toString(berichtid)+"',");
-				buf.append("terleut1='', terleut2=''");
-				SqlInfo.sqlAusfuehren(buf.toString());
-				/**bis hierher ausgeschaltet**/
-				//Dieser System.out bewirkt die Aktualisierung//
-				//System.out.println("#AktualisierePat@"+
-				//		dta301mod.getPatIntern()+"@"+rezneuereznr);
-				new SocketClient().setzeRehaNachricht(Reha301.rehaPort, "Reha301#"+RehaIOMessages.MUST_PATANDREZFIND+"#"+
-						dta301mod.getPatIntern()+"#"+rezneuereznr);
-			}else{
-				//Krankenkasse
-			}
 		}else{
+			new SocketClient().setzeRehaNachricht(Reha301.rehaPort, "Reha301#"+RehaIOMessages.MUST_PATANDREZFIND+"#"+
+					dta301mod.getPatIntern()+"#"+rezneuereznr);
 			//Nachsorge
 		}
 		}catch(Exception ex){

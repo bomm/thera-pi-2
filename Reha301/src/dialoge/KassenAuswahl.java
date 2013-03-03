@@ -32,10 +32,10 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 
 
-import Tools.Colors;
-import Tools.JCompTools;
-import Tools.JRtaTextField;
-import Tools.SqlInfo;
+import CommonTools.Colors;
+import CommonTools.JCompTools;
+import CommonTools.JRtaTextField;
+import CommonTools.SqlInfo;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;

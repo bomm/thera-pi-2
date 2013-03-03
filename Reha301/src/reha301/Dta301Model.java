@@ -6,9 +6,10 @@ import javax.swing.JOptionPane;
 
 import org.jdesktop.swingx.JXTable;
 
-import Tools.DatFunk;
-import Tools.SqlInfo;
-import Tools.StringTools;
+import CommonTools.DatFunk;
+import CommonTools.SqlInfo;
+import CommonTools.StringTools;
+
 
 public class Dta301Model {
 	

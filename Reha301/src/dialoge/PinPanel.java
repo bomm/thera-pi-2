@@ -14,7 +14,7 @@ import org.jdesktop.swingx.JXPanel;
 import events.RehaTPEvent;
 import events.RehaTPEventClass;
 
-import Tools.ListenerTools;
+import CommonTools.ListenerTools;
 
 import reha301.Reha301;
 
@@ -110,7 +110,7 @@ public class PinPanel extends JXPanel implements ActionListener{
 			rEvt.setRehaEvent("PinPanelEvent");
 			rEvt.setDetails(sEvent,"GRUEN") ;
 			//System.outprintln("*****************************************");
-			//System.outprintln("*****abgefeuert von GRÜN****"+sEvent);
+			//System.outprintln("*****abgefeuert von GR�N****"+sEvent);
 			//System.outprintln("*****************************************");
 			RehaTPEventClass.fireRehaTPEvent(rEvt);
 			return;

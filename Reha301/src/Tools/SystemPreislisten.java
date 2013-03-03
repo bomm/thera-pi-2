@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import CommonTools.INIFile;
+import CommonTools.SqlInfo;
+
 import reha301.Reha301;
 
 

@@ -2,6 +2,8 @@ package Tools;
 
 import java.util.Vector;
 
+import CommonTools.SqlInfo;
+
 
 
 public class KTraegerTools {

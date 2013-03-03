@@ -36,11 +36,11 @@ import org.jdesktop.swingx.JXPanel;
 import reha301.Reha301;
 
 
-import Tools.JCompTools;
-import Tools.JRtaComboBox;
-import Tools.JRtaTextField;
+import CommonTools.JCompTools;
+import CommonTools.JRtaComboBox;
+import CommonTools.JRtaTextField;
 import Tools.KTraegerTools;
-import Tools.SqlInfo;
+import CommonTools.SqlInfo;
 import Tools.SystemPreislisten;
 
 import com.jgoodies.forms.builder.PanelBuilder;

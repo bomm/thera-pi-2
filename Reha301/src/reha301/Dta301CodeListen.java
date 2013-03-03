@@ -261,7 +261,7 @@ public class Dta301CodeListen {
 		{"79","Normales Rehaverfahren"},
 		{"80","Rehabilitationssport nach §44 Abs.1 Nr.3 SGB IX"},
 		{"81","Funktionstraining nach §44 Abs.1 Nr.4 SGB IX"},
-		{"82","Nachsorgeleistung nach §15 SGB IV"},
+		{"82","Nachsorgeleistung nach §15 SGB VI"},
 		{"90","Geriatrische Reha-Maßnahme nach §40 SGB V"},
 		{"91","Station. Vorsorgemaßnahme nach §23 Abs.4 SGB V"},
 		{"92","Station. Rehamaßnahme nach §40 Abs.2 SGB V"},

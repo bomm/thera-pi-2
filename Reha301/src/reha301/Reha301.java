@@ -2,6 +2,8 @@ package reha301;
 
 
 
+
+
 import java.awt.Cursor;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
@@ -10,8 +12,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JFrame;
@@ -22,17 +22,12 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.jdesktop.swingworker.SwingWorker;
 
 import reha301Panels.RehaIOMessages;
-
-
-import Tools.INIFile;
-import Tools.Verschluesseln;
+import CommonTools.INIFile;
+import CommonTools.SqlInfo;
+import CommonTools.StartOOApplication;
+import CommonTools.Verschluesseln;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
-import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
-import ag.ion.bion.officelayer.document.DocumentException;
-import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.event.ITerminateEvent;
-import ag.ion.bion.officelayer.event.VetoTerminateListener;
 
 public class Reha301 implements WindowListener  {
 	public static boolean DbOk;
@@ -90,6 +85,10 @@ public class Reha301 implements WindowListener  {
 	public static boolean xportOk = false;
 	public RehaReverseServer rehaReverseServer = null;
 	
+	public boolean  isLibreOffice;
+	
+	public SqlInfo sqlInfo = null;
+	
 	//public static String encodepfad = "C:/OODokumente/RehaVerwaltung/Dokumentation/301-er/";
 	/*
 	public static String dbIpAndName = "jdbc:mysql://192.168.2.2:3306/rtadaten";
@@ -109,7 +108,7 @@ public class Reha301 implements WindowListener  {
 	public static void main(String[] args) {
 		Reha301 application = new Reha301();
 		application.getInstance();
-		
+		application.getInstance().sqlInfo = new SqlInfo();
 		if(args.length > 0 || testcase){
 			if(!testcase){
 				//System.out.println("hole daten aus INI-Datei "+args[0]);
@@ -154,7 +153,7 @@ public class Reha301 implements WindowListener  {
 					while(! DbOk){
 						try {
 							Thread.sleep(20);
-							if(System.currentTimeMillis()-zeit > 5000){
+							if(System.currentTimeMillis()-zeit > 10000){
 								System.exit(0);
 							}
 						} catch (InterruptedException e) {
@@ -270,7 +269,7 @@ public class Reha301 implements WindowListener  {
 				  super.setAlwaysOnTop(false);
 			}	
 		};	
-
+		sqlInfo.setFrame(jFrame);
 		jFrame.addWindowListener(this);
 		jFrame.setSize(1000,550);
 		jFrame.setTitle("Thera-Pi  §301-er  [IK: "+aktIK+"] "+"[Server-IP: "+dbIpAndName+"]");
@@ -373,8 +372,8 @@ public class Reha301 implements WindowListener  {
         	try {
         		
    				obj.conn = (Connection) DriverManager.getConnection(dbIpAndName+"?jdbcCompliantTruncation=false",dbUser,dbPassword);
+   				Reha301.thisClass.sqlInfo.setConnection(obj.conn); 
 				Reha301.DbOk = true;
-    			//System.out.println("Datenbankkontakt hergestellt");
         	} 
         	catch (final SQLException ex) {
         		//System.out.println("SQLException: " + ex.getMessage());
@@ -397,63 +396,6 @@ public class Reha301 implements WindowListener  {
 	/**********************************************************
 	 * 
 	 */
-	final class piHelpDatenbankStarten implements Runnable{
-		private void StarteDB(){
-			final Reha301 obj = Reha301.thisClass;
-
-			//final String sDB = "SQL";
-			if (obj.conn != null){
-				try{
-				obj.conn.close();}
-				catch(final SQLException e){}
-			}
-			try{
-				Class.forName("de.root1.jpmdbc.Driver");
-				//Class.forName("com.mysql.jdbc.Driver").newInstance();
-	         
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Kein Kontakt zu MySql bei 1 & 1");
-        		//System.out.println(sDB+"Treiberfehler: " + e.getMessage());
-        		Reha301.DbOk = false;
-	    		return ;
-			}	
-        	try {
-    			//System.out.println("Starte de.root1.jpmdbc.Drive");
-    			////System.out.println("Starte Serveradresse:192.168.2.2");
-    			//obj.connMySql = (Connection) DriverManager.getConnection("jdbc:mysql://192.168.2.2:3306/dbf","entwickler","entwickler");
-    			Properties connProperties = new Properties();
-    			connProperties.setProperty("user", "dbo336243054");
-    			connProperties.setProperty("password", "allepreise");
-    			//connProperties.setProperty("host", "localhost");
-    			connProperties.setProperty("host", "db2614.1und1.de");	        			
-    			//connProperties.setProperty("host", "db2614.1und1.de");
-    			connProperties.setProperty("port", "3306");
-    			connProperties.setProperty("compression","false");
-    			connProperties.setProperty("NO_DRIVER_INFO", "1");
-
-    			obj.conn = (Connection) DriverManager.getConnection("jdbc:jpmdbc:http://www.thera-pi.org/jpmdbc.php?db336243054",connProperties);
-        		
-   				//obj.conn = (Connection) DriverManager.getConnection(dbIpAndName,dbUser,dbPassword);
-				Reha301.DbOk = true;
-    			//System.out.println("Datenbankkontakt hergestellt");
-        	} 
-        	catch (final SQLException ex) {
-				JOptionPane.showMessageDialog(null, "Kein Kontakt zu MySql bei 1 & 1");
-        		//System.out.println("SQLException: " + ex.getMessage());
-        		//System.out.println("SQLState: " + ex.getSQLState());
-        		//System.out.println("VendorError: " + ex.getErrorCode());
-        		Reha301.DbOk = false;
-        
-        	}
-	        return;
-		}
-		public void run() {
-			StarteDB();
-		}
-	
-	
-	}
 
 	@Override
 	public void windowActivated(WindowEvent arg0) {
@@ -517,39 +459,14 @@ public class Reha301 implements WindowListener  {
 	
     public static void starteOfficeApplication(){ 
 
-    	final String OPEN_OFFICE_ORG_PATH = Reha301.officeProgrammPfad;
-
         try
         {
-        	////System.out.println("**********Open-Office wird gestartet***************");
-            String path = OPEN_OFFICE_ORG_PATH;
-            Map <String, String>config = new HashMap<String, String>();
-            config.put(IOfficeApplication.APPLICATION_HOME_KEY, path);
-            config.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
-            System.setProperty(IOfficeApplication.NOA_NATIVE_LIB_PATH,Reha301.officeNativePfad);
-            officeapplication = OfficeApplicationRuntime.getApplication(config);
-            officeapplication.activate();
-            officeapplication.getDesktopService().addTerminateListener(new VetoTerminateListener() {
-            	  public void queryTermination(ITerminateEvent terminateEvent) {
-            	    super.queryTermination(terminateEvent);
-            	    try {
-            	      IDocument[] docs = officeapplication.getDocumentService().getCurrentDocuments();
-            	      if (docs.length == 1) { 
-            	        docs[0].close();
-            	        ////System.out.println("Letztes Dokument wurde geschlossen");
-            	      }
-            	    }
-            	    catch (DocumentException e) {
-            	    	e.printStackTrace();
-            	    } catch (OfficeApplicationException e) {
-						e.printStackTrace();
-					}
-            	  }
-            	});
-        }
-        catch (OfficeApplicationException e) {
+			officeapplication = (IOfficeApplication)new StartOOApplication(Reha301.officeProgrammPfad,Reha301.officeNativePfad).start(false);
+			 System.out.println("OpenOffice ist gestartet und Active ="+officeapplication.isActive());
+        }catch (OfficeApplicationException e) {
             e.printStackTrace();
         }
+        
     }
 	
 

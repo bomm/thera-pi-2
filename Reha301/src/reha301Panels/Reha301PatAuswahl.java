@@ -15,11 +15,11 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
-import Tools.ButtonTools;
-import Tools.DatFunk;
-import Tools.JRtaComboBox;
-import Tools.SqlInfo;
-import Tools.StringTools;
+import CommonTools.ButtonTools;
+import CommonTools.DatFunk;
+import CommonTools.JRtaComboBox;
+import CommonTools.SqlInfo;
+import CommonTools.StringTools;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
