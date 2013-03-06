@@ -1459,7 +1459,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		}
 		if(regel==3){
 			//Beliebiger Tag innerhalb er Spanne
-			if(  (DatFunk.TageDifferenz(datum,erster )< 0)  ||  (DatFunk.TageDifferenz(datum,letzter ) < 0) ){
+			//06.03.2013 bislang war hier eine oder Verknüpfung was verkehrt ist. 
+			if(  (DatFunk.TageDifferenz(datum,erster )< 0)  &&  (DatFunk.TageDifferenz(datum,letzter ) < 0) ){
 				//setze alle auf alten Tarif
 				setTarif(true,false,"");
 				return;
