@@ -719,6 +719,9 @@ public class RezTools {
 							return true;
 						}
 					}
+					if(DatFunk.TageDifferenz(datum,DatFunk.sHeute() ) >= 0){
+						return true;
+					}
 					return false;
 				}
 			}else{
