@@ -2728,9 +2728,11 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				//System.out.println("rufe Rezeptnummer "+(String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), 7));
 				aktualisiereVector((String)tabaktrez.getValueAt(tabaktrez.getSelectedRow(), idInTable));
 
-					
+				//Icon	
 				dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[Integer.parseInt((String)Reha.thisClass.patpanel.vecaktrez.get(39))], 
 									tabaktrez.getSelectedRow(),1);
+				//IndiSchlüssel
+				dtblm.setValueAt(Reha.thisClass.patpanel.vecaktrez.get(44), tabaktrez.getSelectedRow(), 7);
 				tabaktrez.validate();
 				tabaktrez.repaint();
 				}catch(Exception ex){
