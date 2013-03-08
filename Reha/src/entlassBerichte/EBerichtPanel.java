@@ -1434,7 +1434,7 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			protected Void doInBackground() throws Exception {
 
 				String cmd = "select id from dta301 where pat_intern = '"+
-				pat_intern+"' and nachrichtentyp='1' ORDER by eingelesenam DESC LIMIT 1";
+				pat_intern+"' and rez_nr like 'RH%' and nachrichtentyp='1' ORDER by eingelesenam DESC LIMIT 1";
 				String id = SqlInfo.holeEinzelFeld(cmd);
 				if(id.equals("")){
 					setCursor(Reha.thisClass.normalCursor);
