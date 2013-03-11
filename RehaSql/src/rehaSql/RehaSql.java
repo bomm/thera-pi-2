@@ -360,6 +360,9 @@ public class RehaSql implements WindowListener {
 	 * 
 	 */
 	final class piHelpDatenbankStarten implements Runnable{
+		String user;
+		String password;
+		String host;
 		private void StarteDB(){
 			final RehaSql obj = RehaSql.thisClass;
 
