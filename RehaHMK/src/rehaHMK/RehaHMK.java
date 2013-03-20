@@ -101,6 +101,7 @@ public class RehaHMK implements WindowListener {
 	public static IOfficeApplication officeapplication;
 	
 	public static String[] arztGruppen=null;
+	public static String hmkURL = null;
 	//public static StartOOApplication ooStart = null;
 	/**
 	 * @param args
@@ -132,6 +133,9 @@ public class RehaHMK implements WindowListener {
 				officeNativePfad = inif.getStringProperty("OpenOffice.org","OfficeNativePfad");
 				progHome = args[0];
 				aktIK = args[1];
+				
+				INIFile hmrinif = new INIFile(RehaHMK.progHome+"ini/"+RehaHMK.aktIK+"/hmrmodul.ini");
+				hmkURL = hmrinif.getStringProperty("HMRModul","HMKUrl");
 				
 				if(args.length >= 3){
 					rehaReversePort = Integer.parseInt(args[2]);

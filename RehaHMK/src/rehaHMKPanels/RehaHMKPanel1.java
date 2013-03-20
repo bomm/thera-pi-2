@@ -150,7 +150,8 @@ public class RehaHMKPanel1 extends JXPanel{
 					SwingUtilities.invokeLater(new Runnable(){
 						public void run(){
 							htmlPane.setText(getPiLogo());
-							webBrowser.navigate("http://www.heilmittelkatalog.de/physio/");
+							//"http://www.heilmittelkatalog.de/tl_files/hmk/"+"physio/index.htm"
+							webBrowser.navigate(RehaHMK.hmkURL+"physio/index.htm");
 						}
 					});
 					
@@ -284,11 +285,14 @@ public class RehaHMKPanel1 extends JXPanel{
 							try{
 								String diszi = "";
 								if(aktindex <= 1 || aktindex == 4){
-									diszi = "physio/";
+									diszi = "physio";
 								}else{
-									diszi = disziKurz[aktindex].toLowerCase()+"/"	;
+									diszi = disziKurz[aktindex].toLowerCase()	;
 								}
-								final String url = "http://www.heilmittelkatalog.de/"+diszi;
+								
+								//final String url = "http://www.heilmittelkatalog.de/"+diszi+"/index.html";
+								final String url = RehaHMK.hmkURL+diszi+"/index.htm";
+								//System.out.println("angestossen über Radiobuttons: "+url);
 								SwingUtilities.invokeLater(new Runnable(){
 									public void run(){
 										webBrowser.navigate(url);
@@ -320,8 +324,9 @@ public class RehaHMKPanel1 extends JXPanel{
 					}else{
 						url = url.substring(7);
 					}
-			    						
-					url = "http://www.heilmittelkatalog.de/"+aktwebsite.toLowerCase()+"/"+url.toLowerCase()+".htm";
+					url = RehaHMK.hmkURL+aktwebsite.toLowerCase()+"/"+url.toLowerCase()+".htm";
+					//url = "http://www.heilmittelkatalog.de/"+aktwebsite.toLowerCase()+"/"+url.toLowerCase()+".htm";
+					//System.out.println(url);
 					//System.out.println("url="+e.getURL());
 					//htmlPane.setPage(url);
 					webBrowser.navigate(url);
@@ -599,7 +604,9 @@ public class RehaHMKPanel1 extends JXPanel{
 		if(Character.isLowerCase(c)){
 			indi = indi.substring(0,indi.length()-1);
 		}
-		String url = "http://www.heilmittelkatalog.de/"+aktwebsite.toLowerCase()+"/"+indi.toLowerCase()+".htm";
+		//http://www.heilmittelkatalog.de/tl_files/hmk/physio/ws1.htm
+		String url = RehaHMK.hmkURL+aktwebsite.toLowerCase()+"/"+indi.toLowerCase()+".htm";
+		//String url = "http://www.heilmittelkatalog.de/"+aktwebsite.toLowerCase()+"/"+indi.toLowerCase()+".htm";
 		//htmlPane.setPage(url);
 		webBrowser.navigate(url);
 	}
@@ -794,8 +801,11 @@ public class RehaHMKPanel1 extends JXPanel{
 									if(Character.isLowerCase(c)){
 										indi = indi.substring(0,indi.length()-1);
 									}
-									final String url = "http://www.heilmittelkatalog.de/"+aktwebsite.toLowerCase()+"/"+indi.toLowerCase()+".htm";
+									// http://www.heilmittelkatalog.de/tl_files/hmk/physio/ws1.htm
+									final String url = RehaHMK.hmkURL+aktwebsite.toLowerCase()+"/"+indi.toLowerCase()+".htm";
+									//final String url = "http://www.heilmittelkatalog.de/"+aktwebsite.toLowerCase()+"/"+indi.toLowerCase()+".htm";
 									//htmlPane.setPage(url);
+									//System.out.println(url);
 									SwingUtilities.invokeLater(new Runnable(){
 										public void run(){
 											webBrowser.navigate(url);

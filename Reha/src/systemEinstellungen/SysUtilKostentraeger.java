@@ -9,11 +9,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -22,17 +26,20 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 
 import CommonTools.SqlInfo;
 import CommonTools.JCompTools;
+import sqlTools.PLServerAuslesen;
 import terminKalender.DatFunk;
 
 import CommonTools.INIFile;
@@ -53,7 +60,11 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	JButton[] but = {null,null,null,null};
 	INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "ktraeger.ini");
 	private TableCellRenderer JLabelRenderer = null; //= new DefaultTableRenderer(new MappedValue(StringValues.EMPTY, IconValues.ICON), JLabel.CENTER);
-	
+	PLServerAuslesen plServer = null;	
+	boolean debug = false;
+	JProgressBar progress = null;
+	Vector<String> vKassenTest = new Vector<String>();
+	Vector<Vector<String>> vDummyTest = new Vector<Vector<String>>();
 	public SysUtilKostentraeger(){
 		super(new BorderLayout());
 		//System.out.println("Aufruf SysUtilKostentraeger");
@@ -71,22 +82,22 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	private JPanel getVorlagenSeite(){
         //                                      1.            2.    3.    4.     5.     6.    7.      8.     9.  10.
 		FormLayout lay = new FormLayout("right:max(60dlu;p), 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 4dlu, 40dlu, 40dlu",
-       //1.    2. 3.   4.   5.    6.     7.  8.    9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
-		"p, 10dlu,p, 10dlu,100dlu,10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p,  10dlu ,10dlu, 10dlu, p");
+       //1.    2. 3.   4.   5.    6.  7.  8.    9.  10.  11. 12. 13.  14.  15. 16.  17. 18.  19.   20.    21.   22.   23.
+		"p, 10dlu,p, 10dlu,100dlu,p,10dlu, p, 10dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p,  10dlu ,10dlu, 10dlu, p");
 		
 		PanelBuilder builder = new PanelBuilder(lay);
 		builder.setDefaultDialogBorder();
 		builder.getPanel().setOpaque(false);
 		CellConstraints cc = new CellConstraints();
 		
-		builder.addSeparator("Kostenträgerdateien abholen (GKV-Datenaustausch)",cc.xyw(1,1,10));
+		builder.addSeparator("Kostenträgerdateien abholen",cc.xyw(1,1,10));
 		but[0] = new JButton("Serverkontakt herstellen");
 		but[0].setActionCommand("serverkontakt");
 		but[0].addActionListener(this);
 		builder.add(but[0],cc.xy(1,3));
 		
 		ktrmod = new MyKtraegerModel();
-		ktrmod.setColumnIdentifiers(new String[] {"Kostenträger","gültig ab","Dateiname","DB Status"});
+		ktrmod.setColumnIdentifiers(new String[] {"Kostenträger","gültig ab","Dateiname","DB Status",""});
 		ktrtbl = new JXTable(ktrmod);
 		ktrtbl.getColumn(1).setMaxWidth(75);
 		ktrtbl.getColumn(2).setMinWidth(0);
@@ -94,17 +105,23 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		ktrtbl.getColumn(3).setMinWidth(0);
 		ktrtbl.getColumn(3).setMaxWidth(60);
 		ktrtbl.getColumn(3).setCellRenderer(JLabelRenderer);
+		ktrtbl.getColumn(4).setMinWidth(0);
+		ktrtbl.getColumn(4).setMaxWidth(0);
+
 		ktrtbl.setSortable(false);
 		JScrollPane jscr = JCompTools.getTransparentScrollPane(ktrtbl);
 		jscr.validate();
 		builder.add(jscr,cc.xywh(1,5,10,1));
+		progress = new JProgressBar();
+		progress.setStringPainted(true);
+		builder.add(progress,cc.xywh(1,6,10,1));
 		
-		builder.addSeparator("Gewählte Datei in eigene Kostenträger einlesen",cc.xyw(1,7,10));
+		builder.addSeparator("Gewählte Datei in eigene Kostenträger einlesen",cc.xyw(1,8,10));
 		
 		but[1] = new JButton("abholen und verarbeiten");
 		but[1].setActionCommand("abholen");
 		but[1].addActionListener(this);
-		builder.add(but[1],cc.xy(1,9));
+		builder.add(but[1],cc.xy(1,10));
 		return builder.getPanel();
 	}
 
@@ -130,25 +147,80 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if(cmd.equals("serverkontakt")){
+			/*
 		     try{
-				starteSession("","");
+					starteSession("","");
 		     } catch (IOException e1) {
-				e1.printStackTrace();
+					e1.printStackTrace();
 		     }
+			 */
+			try{
+				startePLSession();
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 		     return;
 		}
 		if(cmd.equals("abholen")){
-			int row;
-			if( (row = ktrtbl.getSelectedRow()) >= 0){
+			
+			
+			/*
+			if( row >= 0){
 				try {
-					holeKtraeger((String)ktrmod.getValueAt(row, 2));
+					holeKtraeger((String)ktrmod.getValueAt(row, 2),null);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
+			*/
+			final int row = ktrtbl.getSelectedRow();
+			if(row >= 0){
+				new SwingWorker<Void,Void>(){
+
+					@Override
+					protected Void doInBackground() throws Exception {
+						try{
+							vKassenTest.clear();
+							plServer = new PLServerAuslesen();
+							Vector<Vector<String>> vec = PLServerAuslesen.holeFelder("select kttext from ktdateien where id = '"+ktrtbl.getValueAt(row,4).toString()+"' LIMIT 1");
+							plServer.schliessePLConnection();
+							holeKtraeger(ktrtbl.getValueAt(row,2).toString(),vec.get(0).get(0));
+							if(vKassenTest.size() > 0){
+								int frage = JOptionPane.showConfirmDialog(null,"Sie haben "+Integer.toString(vKassenTest.size())+" Krankenkassen in Ihrem eigenen Kassenstamm.\n"+
+										"Möglicherweise sind diese Kassen von Änderungen betroffen, wollen Sie\n"+
+										"die Kassen jetzt auf Änderungen hin prüfen lassen?",
+										"Benuteranfrage",JOptionPane.YES_NO_OPTION);
+								if(frage==JOptionPane.YES_OPTION){
+									doKassenTest();
+								}
+								
+							}
+						}catch(Exception ex){
+							ex.printStackTrace();
+							JOptionPane.showMessageDialog(null,"Fehler beim Bezug und der Verarbeitung der Kostenträgerdatei");
+						}
+						return null;
+					}
+					
+				}.execute();
+			}
 			return;
 		}
 		
+	}
+	private void startePLSession(){
+		try{
+			plServer = new PLServerAuslesen();
+			Vector<Vector<String>> vec = PLServerAuslesen.holeFelder("select ktart,DATE_FORMAT(ktgueltigab,'%d.%m.%Y') AS gueltig,ktdatei,'',id from ktdateien Order by ktart");
+			plServer.schliessePLConnection();
+			ktrmod.setRowCount(0);
+			for(int i = 0; i < vec.size();i++){
+				ktrmod.addRow((Vector<?>)vec.get(i).clone());	
+			}
+			setFlags();
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(null,"Kein Kontakt zum Preislisten-/Kostträgerserver");
+		}
 	}
 	private void starteSession(String land,String jahr) throws IOException{
 		//String urltext = "http://www.gkv-datenaustausch.de/Leistungserbringer_Sole_Kostentraegerdateien.gkvnet";
@@ -210,8 +282,8 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		        		  gestartet = true;
 		        		  kassendat.add(text.trim());
 		        		  
-		        		  System.out.println(text);
-		        		  System.out.println(saveLink);
+		        		  //System.out.println(text);
+		        		  //System.out.println(saveLink);
 
 		        		  saveLink = "";
 		        		  continue;
@@ -345,54 +417,92 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 	}
 
 /*************************/
-	private void holeKtraeger(String datei) throws IOException{
-		String urltext = "http://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/sonstige_leistungserbringer/kostentraegerdateien_1/"+datei;
-		//String urltext = "http://www.gkv-datenaustausch.de/upload/"+datei;
-		String text = null;
-		URL url = new URL(urltext);
-		   
-		      URLConnection conn = url.openConnection();
-		      ////System.out.println(conn.getContentEncoding());
-		      
-		      int lang=0,gesamt;
-		      BufferedReader inS = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
-		      gesamt = conn.getContentLength();
-		      JOptionPane.showMessageDialog(null, "Länge des Contents = "+gesamt);
-		      //System.out.println("Länge des Contents = "+conn.getContentLength());
-		      boolean start = false;
-		      Vector<Vector<String>> ktraegerdat = new Vector<Vector<String>>();
-		      Vector<String> kassendat = new Vector<String>();
-		      int index;
-		      boolean gestartet = false;
-		      while ( (text  = inS.readLine())!= null ) {
-		    	  if(text.startsWith("IDK+")){
+	private void holeKtraeger(String datei, String inhalt) throws IOException{
+
+		Vector<Vector<String>> ktraegerdat = new Vector<Vector<String>>();
+		Vector<String> kassendat = new Vector<String>();
+		boolean start = false;
+		boolean gestartet = false;
+		if(inhalt==null){
+			String urltext = "http://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/sonstige_leistungserbringer/kostentraegerdateien_1/"+datei;
+			//String urltext = "http://www.gkv-datenaustausch.de/upload/"+datei;
+			String text = null;
+			URL url = new URL(urltext);
+			   
+			      URLConnection conn = url.openConnection();
+			      ////System.out.println(conn.getContentEncoding());
+			      int lang=0,gesamt;
+			      BufferedReader inS = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
+			      gesamt = conn.getContentLength();
+			      JOptionPane.showMessageDialog(null, "Länge des Contents = "+gesamt);
+			      //System.out.println("Länge des Contents = "+conn.getContentLength());
+
+			      int index;
+
+			      while ( (text  = inS.readLine())!= null ) {
+			    	  if(text.startsWith("IDK+")){
+			    		  gestartet = true;
+			    		  kassendat.clear();
+			    		  kassendat.add(text);
+			    		  continue;
+			    	  }
+			    	  if((!text.startsWith("UNT+")) && gestartet){
+			    		  kassendat.add(text);
+			    		  continue;
+			    	  }
+			    	  if(text.startsWith("UNT+") && gestartet){
+			    		  kassendat.add(text);
+			    		  ktraegerdat.add((Vector<String>)kassendat.clone());
+			    		  gestartet = false;
+			    		  continue;
+			    	  }
+			    	  lang+=text.length();
+			      }
+			inS.close();
+		
+		}else{
+			//JOptionPane.showMessageDialog(null, "Länge des Contents = "+inhalt.length());
+
+			String[] text = inhalt.split("\n");
+			progress.setMaximum(text.length-1);
+			progress.setValue(0);
+			for(int i = 0; i < text.length; i++){
+				progress.setValue(i);
+		    	  if(text[i].startsWith("IDK+")){
 		    		  gestartet = true;
 		    		  kassendat.clear();
-		    		  kassendat.add(text);
+		    		  kassendat.add(text[i]);
 		    		  continue;
 		    	  }
-		    	  if((!text.startsWith("UNT+")) && gestartet){
-		    		  kassendat.add(text);
+		    	  if((!text[i].startsWith("UNT+")) && gestartet){
+		    		  kassendat.add(text[i]);
 		    		  continue;
 		    	  }
-		    	  if(text.startsWith("UNT+") && gestartet){
-		    		  kassendat.add(text);
+		    	  if(text[i].startsWith("UNT+") && gestartet){
+		    		  kassendat.add(text[i]);
 		    		  ktraegerdat.add((Vector<String>)kassendat.clone());
 		    		  gestartet = false;
 		    		  continue;
 		    	  }
-		    	  lang+=text.length();
-		      }
-		inS.close();
+			}
+		}
+		
 		kassendat.clear();
 		kassendat = null;
+		//System.out.println(ktraegerdat);
+		progress.setMaximum(ktraegerdat.size()-1);
+		progress.setValue(0);
+
 		for(int i = 0; i < ktraegerdat.size(); i++){
+			progress.setValue(i);
+			//System.out.println(ktraegerdat.get(i));
 			ktrAuswerten(ktraegerdat.get(i));
 		}
+
 		/***2-te Stufe***/
 		// hole feld ikdaten wo ikdaten nicht leer und email=leer
 		Vector<Vector<String>> vec1 = SqlInfo.holeFelder("select ikkostentraeger from ktraeger where ikdaten ='' AND email='' ORDER BY id");
-		//System.out.println("Anzahl der felder ohne Emaildaten = "+vec1.size());
+		System.out.println("Anzahl der felder ohne Emaildaten = "+vec1.size());
 		//System.out.println("***********************************************");
 		Vector<String> vec2 = new Vector<String>();
 		Vector<Vector<String>> mailvec;
@@ -404,8 +514,12 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		String kostentr = "";
 		String sdummy = "";
 		String daten = "";
+		progress.setMaximum(vec1.size()-1);
+		progress.setValue(0);
+
 		for(int i = 0;i < vec1.size();i++){
 			kostentr = vec1.get(i).get(0);
+			progress.setValue(i);
 			if( (!vec2.contains(kostentr)) && (!kostentr.equals("")) ){
 				
 				vec2.add(kostentr);
@@ -418,14 +532,17 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 					entschluessel = dummyvec.get(0).get(2);
 					//Von der Datenannahmestelle die Email holen
 					dumyvec = SqlInfo.holeFelder("select email from ktraeger where ikkasse='"+daten+"' LIMIT 1");
-					aemail = dumyvec.get(0).get(0);
-					
+					if(dumyvec.size() > 0){
+						aemail = dumyvec.get(0).get(0);	
+					}else{
+						aemail = "";
+					}
 					SqlInfo.sqlAusfuehren("update ktraeger set ikdaten='"+daten+"', "+
 							"ikpapier='"+papier+"', "+
 							"ikentschluesselung='"+entschluessel+"', "+
 							"email='"+aemail+"' where ikkostentraeger='"+kostentr+"'");
 				}catch(Exception ex){
-					//ex.printStackTrace();
+					ex.printStackTrace();
 				}
 				
 				
@@ -434,6 +551,8 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		int kANr = inif.getIntegerProperty("KassenArtNr", datei.substring(0,2).toUpperCase());
 		inif.setStringProperty("KTraegerDateien", "KTDatei"+kANr, datei.toString(), null);
 		INITool.saveIni(inif);
+		//progress.setValue(0);
+		JOptionPane.showMessageDialog(null,"Kostenträgerdatei erfolgreich verarbeitet");
 		try {
 			Thread.sleep(150);
 		} catch (InterruptedException e) {
@@ -552,6 +671,12 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		(existiert ? " where ikkasse='"+ikkas+"' LIMIT 1" : "");
 		//System.out.println(cmd);
 		SqlInfo.sqlAusfuehren(cmd);
+
+		
+		if(SqlInfo.gibtsSchon("select id from kass_adr where ik_kasse = '"+ikkas+"' LIMIT 1")){
+			vKassenTest.add(ikkas.toString());			
+		}
+		
 		
 	}
 	
@@ -618,7 +743,60 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 			        return this;
 			   }
 			}
+/***************************************************************/
+	private void doKassenTest(){
+		Vector<Vector<String>> vDummyKt = new Vector<Vector<String>>();
+		String htmlString = null;
+		//String emailkas,emailkt;
+		int frage; 
+		String kakostentr,ktkostentr,kadaten,ktdaten,kadecode,ktdecode,kapapier,ktpapier,kaemail,ktemail;
+		for(int i = 0; i < vKassenTest.size();i++){
+			//System.out.println(vKassenTest.get(i));
+			htmlString = "<html>Vergleich "+Integer.toString(i+1)+" von "+Integer.toString(vKassenTest.size())+"<br><br><table><tr><td></td><td>&nbsp;</td><td><i><b>Daten im eigenen Kassenstamm</b></i></td><td>&nbsp;&nbsp;</td><td><i><b>Daten in der Kostenträgerdatei</b></i></td></tr>";
 
+			vDummyKt = SqlInfo.holeFelder("select * from ktraeger where ikkasse = '"+vKassenTest.get(i)+"'");
+			ktkostentr = vDummyKt.get(0).get(1).trim();
+			ktdaten = vDummyKt.get(0).get(3).trim();
+			ktdecode = vDummyKt.get(0).get(4).trim();
+			ktpapier = vDummyKt.get(0).get(2).trim();
+
+			vDummyTest = SqlInfo.holeFelder("select * from kass_adr where ik_kasse = '"+vKassenTest.get(i)+"'");
+			kakostentr = vDummyTest.get(0).get(18).trim();
+			kadaten = vDummyTest.get(0).get(16).trim();
+			kadecode = vDummyTest.get(0).get(17).trim();
+			kapapier = vDummyTest.get(0).get(20).trim();
+			
+			if(kakostentr.equals(ktkostentr) && kadaten.equals(ktdaten)){continue;}
+			
+			htmlString = htmlString+ "<tr><td>Name1:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(2)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(5)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>Name2:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(3)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(6)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>Strasse:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(4)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(10)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>PLZ:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(5)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(8)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>Ort:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(6)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(9)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>IK-Kasse:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(15)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(0)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>IK-Kostenträger:</td><td>&nbsp;</td><td>"+kakostentr+"</td><td>&nbsp;&nbsp;</td><td>"+ktkostentr+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>IK-Datenannahme:</td><td>&nbsp;</td><td>"+kadaten+"</td><td>&nbsp;&nbsp;</td><td>"+ktdaten+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>IK-Entschlüsselung:</td><td>&nbsp;</td><td>"+kadecode+"</td><td>&nbsp;&nbsp;</td><td>"+ktdecode+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>IK-Papierannahme:</td><td>&nbsp;</td><td>"+kapapier+"</td><td>&nbsp;&nbsp;</td><td>"+ktpapier+"</td></tr>";
+			
+			kaemail = SqlInfo.holeEinzelFeld("select email1 from kass_adr where ik_kasse = '"+vDummyTest.get(0).get(16)+"' LIMIT 1");
+			ktemail = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse = '"+vDummyKt.get(0).get(3)+"' LIMIT 1");
+			
+			htmlString = htmlString+ "<tr><td>Email Abrechnungsdaten:</td><td>&nbsp;</td><td>"+kaemail+"</td><td>&nbsp;&nbsp;</td><td>"+ktemail+"</td></tr>";
+			htmlString = htmlString+"</table><br><br><b>Wollen Sie die Daten der Kostenträgerdatei in Ihren Kassenstamm übernehmen?</b></html>";
+			
+			frage = JOptionPane.showConfirmDialog(null,htmlString,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_CANCEL_OPTION);
+			System.out.println(frage);
+			vDummyKt.clear();
+			vDummyTest.clear();
+			htmlString = null; 
+			if(frage == JOptionPane.CANCEL_OPTION){break;}
+			if(frage == JOptionPane.YES_OPTION){
+				// hier die Updatefunktion
+			}
+		}
+		 
+	}
 	
 
 }
