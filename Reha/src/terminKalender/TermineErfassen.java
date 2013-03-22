@@ -503,9 +503,10 @@ public class TermineErfassen implements Runnable {
 
 		}else if(!unter18 && vorjahrfrei){
 			String befreit = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(8)+"'" );
+			String bezahlt = SqlInfo.holeRezFeld("rez_bez", "rez_nr='"+scanrez+"'");
 			//String bef_dat = datFunk.sDatInDeutsch(SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(9)+"'" ));
-			if(!befreit.equals("T")){
-				if(DatFunk.DatumsWert("31.12."+vec.get(7)) < DatFunk.DatumsWert(DatFunk.sHeute()) ){
+			if(!befreit.equals("T") && bezahlt.equals("F")){
+				if( (DatFunk.DatumsWert("31.12."+vec.get(7)) < DatFunk.DatumsWert(DatFunk.sHeute())) ){
 					//System.out.println("In Variante 4");
 					SqlInfo.aktualisiereSatz("verordn", "termine='"+sbuftermine.toString()+"', zzstatus='2'", "rez_nr='"+scanrez+"'");
 					//Teste ob Rezeptgebühr bezahlt!

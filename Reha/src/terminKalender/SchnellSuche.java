@@ -15,7 +15,9 @@ import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -31,6 +33,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXButton;
+import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXLabel;
@@ -81,7 +84,13 @@ public class SchnellSuche extends RehaSmartDialog implements ActionListener, Key
 	private String aktDatum = "";
 	private Vector vTdata = new Vector();
 	public static SchnellSuche thisClass = null;
+	public String startdatum = DatFunk.sHeute();
+	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+	Date newStart = null;
+	
+	public JXDatePicker datePicker = null;
 	SchnellSucheListSelectionHandler ssucheselect = new SchnellSucheListSelectionHandler();
+	
 	public SchnellSuche(JXFrame owner){
 		//super(frame, titlePanel());
 		super(owner,"SchnellSuche");
@@ -102,8 +111,8 @@ public class SchnellSuche extends RehaSmartDialog implements ActionListener, Key
         String ss = "icons/header-image.png";
         JXHeader header = new JXHeader("Mit dieser Schnellsuche....",
                 "....können Sie auf einfache Weise einen Namen oder eine Rezeptnummer suchen ('Roogle' ist zwar besser, aber diese Funktion ist schneller).\n" +
-                "Mit dem Button >>Heute<< durchsuchen sie lediglich den heutigen Tag (schneller).\n" +
-                "Mit dem Button >>Heute + 4 Tage<< dursuchen Sie den Kalender über einen Zeitraum von insgesamt 5 Tagen\n\n"+
+                "Mit dem Button >>Startdatum<< durchsuchen sie lediglich einen Tag (schneller).\n" +
+                "Mit dem Button >>Startdatum + 4 Tage<< dursuchen Sie den Kalender über einen Zeitraum von insgesamt 5 Tagen\n\n"+
                 "Sie schließen dieses Fenster über den roten Punkt rechts oben, oder mit der Taste >>ESC<<.",
                 new ImageIcon(ss));
         jp1.add(header,BorderLayout.NORTH);
@@ -221,7 +230,8 @@ public JXPanel eingabePanel(){
 	JXPanel eingabep = new JXPanel();
 	eingabep.setBorder(null);
 	eingabep.setPreferredSize(new Dimension(0,31));
-	FormLayout flay = new FormLayout("10dlu,40dlu,4dlu,80dlu,4dlu,80dlu,4dlu,80dlu,15dlu,80dlu,4dlu",
+	//                                 1     2    3    4     5     6    7    8     9     10     11   12
+	FormLayout flay = new FormLayout("10dlu,40dlu,4dlu,80dlu,4dlu,80dlu,4dlu,80dlu,15dlu,80dlu,4dlu,40dlu:g",
 	"3dlu,15dlu,80dlu,15dlu,15dlu,15dlu,30dlu,15dlu");
 	eingabep.setLayout(flay);
 	CellConstraints cc = new CellConstraints();
@@ -234,19 +244,46 @@ public JXPanel eingabePanel(){
 	tfSuche.setName("SucheFeld");
 	eingabep.add(tfSuche,cc.xy(4,2));
 	
-	heute = new JXButton("Heute");
+	heute = new JXButton(startdatum);
+	heute.setActionCommand("start");
 	heute.addActionListener(this);
 	heute.addKeyListener(this);	
 	eingabep.add(heute,cc.xy(6,2));
 
-	heute4 = new JXButton("Heute + 4 Tage");
+	heute4 = new JXButton(startdatum+" + 4 Tage");
+	heute4.setActionCommand("startplusvier");
 	heute4.addActionListener(this);
 	heute4.addKeyListener(this);
 	eingabep.add(heute4,cc.xy(8,2));
 	
 	lbldatum = new JXLabel("            ");
 	eingabep.add(lbldatum,cc.xy(10,2));
+	
+
+	
+	datePicker = new JXDatePicker(); 
+	datePicker.setDate(new Date());
+	datePicker.setName("datePicker");
+	//datePicker.addActionListener(this);
+	
+	datePicker.addActionListener(new ActionListener(){
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			newStart = datePicker.getDate();
+			startdatum = sdf.format(newStart);
+			//System.out.println("Neues Startdatum = "+startdatum);
+			heute.setText(startdatum);
+			heute4.setText(startdatum+" + 4 Tage");
+		}
+		
+	});
+	
+	eingabep.add(datePicker,cc.xy(12,2));
+	
+	
 	eingabep.setVisible(true);
+	
 	return eingabep;
 }
 
@@ -312,21 +349,17 @@ public void rehaTPEventOccurred(RehaTPEvent evt) {
 
 public void actionPerformed(ActionEvent arg0) {
 	String cmd = arg0.getActionCommand();
-	for(int i = 0; i< 1;i++){
-		if(cmd.equals("Heute")){
+		if(cmd.equals("start")){
 			vTdata.clear();
 			tageSuchen(0);
 			tfSuche.requestFocus();
-			break;
-		}
-		if(cmd.equals("Heute + 4 Tage")){
+			return;
+		}else if(cmd.equals("startplusvier")){
 			vTdata.clear();
 			tageSuchen(4);
 			tfSuche.requestFocus();
-			break;
+			return;
 		}
-	}
-	
 }
 
 private void tageSuchen(int abheute){
@@ -350,7 +383,7 @@ private void tageSuchen(int abheute){
 
 		String[] stmts = {null};
 		String sdatum = "";
-		aktDatum = DatFunk.sDatPlusTage(DatFunk.sHeute(), abheute);
+		aktDatum = DatFunk.sDatPlusTage(startdatum, abheute);
 		sdatum = DatFunk.sDatInSQL(aktDatum);
 		String stmt = "select * from flexkc where datum = '"+sdatum+"'";
 		stmts[0] = stmt;
@@ -376,7 +409,7 @@ private void tageSuchen(int abheute){
 		ttbl.setSelectionMode(0);	
 		String[] stmts = {null,null,null,null,null};
 		String sdatum = "";
-		aktDatum = DatFunk.sDatPlusTage(DatFunk.sHeute(), 0);
+		aktDatum = startdatum; //DatFunk.sDatPlusTage(DatFunk.sHeute(), 0);
 		sdatum = DatFunk.sDatInSQL(aktDatum);
 		String stmt = "select * from flexkc where datum = '"+sdatum+"'";
 		setLabelDatum(aktDatum);

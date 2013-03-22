@@ -1152,25 +1152,20 @@ public class OOTools{
 		
 		String key;
 		String wert;
-
 		for(i = 0; i < anzahlph;i++){
-			
-			if(SystemConfig.hmAdrBDaten.get(docPlatzhalter.get(i)) != null){
-				
-				key = docPlatzhalter.get(i);
-				wert = SystemConfig.hmAdrBDaten.get(docPlatzhalter.get(i));
-				wert = (wert==null ? "" : wert);
-				if( wert.trim().equals("") ){
-					//System.out.println("vor lösche leren Platzhalter -> "+key);
-					OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
-					//System.out.println("nach lösche leren Platzhalter -> "+key);
-				}else{
-					placeholders[i].getTextRange().setText(wert);
-					//System.out.println("nach Text setzen -> "+key+" = "+wert);
+				if(SystemConfig.hmAdrBDaten.get(docPlatzhalter.get(i)) != null){
+					key = docPlatzhalter.get(i);
+					wert = SystemConfig.hmAdrBDaten.get(docPlatzhalter.get(i));
+					wert = (wert==null ? "" : wert);
+					if( wert.trim().equals("") ){
+						//System.out.println("vor lösche leren Platzhalter -> "+key);
+						OOTools.loescheLeerenPlatzhalter(textDocument, placeholders[i]);
+						//System.out.println("nach lösche leren Platzhalter -> "+key);
+					}else{
+						placeholders[i].getTextRange().setText(wert);
+						//System.out.println("nach Text setzen -> "+key+" = "+wert);
+					}
 				}
-	
-
-			}
 		}	
 
 		}catch(NullPointerException ex){

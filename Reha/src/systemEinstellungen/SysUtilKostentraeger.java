@@ -186,15 +186,16 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 							plServer.schliessePLConnection();
 							holeKtraeger(ktrtbl.getValueAt(row,2).toString(),vec.get(0).get(0));
 							if(vKassenTest.size() > 0){
-								int frage = JOptionPane.showConfirmDialog(null,"Sie haben "+Integer.toString(vKassenTest.size())+" Krankenkassen in Ihrem eigenen Kassenstamm.\n"+
-										"Möglicherweise sind diese Kassen von Änderungen betroffen, wollen Sie\n"+
-										"die Kassen jetzt auf Änderungen hin prüfen lassen?",
-										"Benuteranfrage",JOptionPane.YES_NO_OPTION);
+								int frage = JOptionPane.showConfirmDialog(null,"<html>Sie haben <b>"+Integer.toString(vKassenTest.size())+" Krankenkassen</b> in Ihrem eigenen Kassenstamm<br>"+
+										"die in der eingelesenen Kostenträgerdatei enthalten sind.<br>Möglicherweise sind eine oder mehrere Kassen <b>von Änderungen betroffen!</b><br><br>Wollen Sie Ihre Kassen "+
+										"jetzt auf Änderungen hin prüfen lassen?<br><br></html>",
+										"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
 								if(frage==JOptionPane.YES_OPTION){
 									doKassenTest();
 								}
 								
 							}
+							JOptionPane.showMessageDialog(null, "<html><b>Feddisch mit dem Abgleich der Kassen</b></html>");
 						}catch(Exception ex){
 							ex.printStackTrace();
 							JOptionPane.showMessageDialog(null,"Fehler beim Bezug und der Verarbeitung der Kostenträgerdatei");
@@ -500,9 +501,9 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		}
 
 		/***2-te Stufe***/
-		// hole feld ikdaten wo ikdaten nicht leer und email=leer
+		// 
 		Vector<Vector<String>> vec1 = SqlInfo.holeFelder("select ikkostentraeger from ktraeger where ikdaten ='' AND email='' ORDER BY id");
-		System.out.println("Anzahl der felder ohne Emaildaten = "+vec1.size());
+		//System.out.println("Anzahl der felder ohne Emaildaten = "+vec1.size());
 		//System.out.println("***********************************************");
 		Vector<String> vec2 = new Vector<String>();
 		Vector<Vector<String>> mailvec;
@@ -751,8 +752,13 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 		int frage; 
 		String kakostentr,ktkostentr,kadaten,ktdaten,kadecode,ktdecode,kapapier,ktpapier,kaemail,ktemail;
 		for(int i = 0; i < vKassenTest.size();i++){
+
 			//System.out.println(vKassenTest.get(i));
-			htmlString = "<html>Vergleich "+Integer.toString(i+1)+" von "+Integer.toString(vKassenTest.size())+"<br><br><table><tr><td></td><td>&nbsp;</td><td><i><b>Daten im eigenen Kassenstamm</b></i></td><td>&nbsp;&nbsp;</td><td><i><b>Daten in der Kostenträgerdatei</b></i></td></tr>";
+			htmlString = "<html>"+
+			"<head>"+"<STYLE TYPE=\"text/css\">"+"<!--"+"A{text-decoration:none;background-color:transparent;border:none}"+
+			"TD{font-family: Arial; font-size: 12pt; padding-left:5px;padding-right:30px}"+".spalte1{color:#0000FF;}"+".spalte2{color:#FF0000;}"+"---></STYLE></head>"+
+			
+			"Vergleiche "+Integer.toString(i+1)+" von "+Integer.toString(vKassenTest.size())+"<br><br><table><tr><td></td><td>&nbsp;</td><td class=\"spalte1\"><i><b><u>Daten im eigenen Kassenstamm</u></b></i></td><td>&nbsp;&nbsp;</td><td class=\"spalte2\"><i><b><u>Daten in der Kostenträgerdatei</u></b></i></td></tr>";
 
 			vDummyKt = SqlInfo.holeFelder("select * from ktraeger where ikkasse = '"+vKassenTest.get(i)+"'");
 			ktkostentr = vDummyKt.get(0).get(1).trim();
@@ -768,32 +774,86 @@ public class SysUtilKostentraeger extends JXPanel implements KeyListener, Action
 			
 			if(kakostentr.equals(ktkostentr) && kadaten.equals(ktdaten)){continue;}
 			
-			htmlString = htmlString+ "<tr><td>Name1:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(2)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(5)+"</td></tr>";
-			htmlString = htmlString+ "<tr><td>Name2:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(3)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(6)+"</td></tr>";
-			htmlString = htmlString+ "<tr><td>Strasse:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(4)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(10)+"</td></tr>";
-			htmlString = htmlString+ "<tr><td>PLZ:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(5)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(8)+"</td></tr>";
-			htmlString = htmlString+ "<tr><td>Ort:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(6)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(9)+"</td></tr>";
-			htmlString = htmlString+ "<tr><td>IK-Kasse:</td><td>&nbsp;</td><td>"+vDummyTest.get(0).get(15)+"</td><td>&nbsp;&nbsp;</td><td>"+vDummyKt.get(0).get(0)+"</td></tr>";
-			htmlString = htmlString+ "<tr><td>IK-Kostenträger:</td><td>&nbsp;</td><td>"+kakostentr+"</td><td>&nbsp;&nbsp;</td><td>"+ktkostentr+"</td></tr>";
-			htmlString = htmlString+ "<tr><td>IK-Datenannahme:</td><td>&nbsp;</td><td>"+kadaten+"</td><td>&nbsp;&nbsp;</td><td>"+ktdaten+"</td></tr>";
-			htmlString = htmlString+ "<tr><td>IK-Entschlüsselung:</td><td>&nbsp;</td><td>"+kadecode+"</td><td>&nbsp;&nbsp;</td><td>"+ktdecode+"</td></tr>";
-			htmlString = htmlString+ "<tr><td>IK-Papierannahme:</td><td>&nbsp;</td><td>"+kapapier+"</td><td>&nbsp;&nbsp;</td><td>"+ktpapier+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>Name1:</td><td>&nbsp;</td><td class=\"spalte1\">"+vDummyTest.get(0).get(2)+"</td><td>&nbsp;&nbsp;</td><td class=\"spalte2\">"+vDummyKt.get(0).get(5)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>Name2:</td><td>&nbsp;</td><td class=\"spalte1\">"+vDummyTest.get(0).get(3)+"</td><td>&nbsp;&nbsp;</td><td class=\"spalte2\">"+vDummyKt.get(0).get(6)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>Strasse:</td><td>&nbsp;</td><td class=\"spalte1\">"+vDummyTest.get(0).get(4)+"</td><td>&nbsp;&nbsp;</td><td class=\"spalte2\">"+vDummyKt.get(0).get(10)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>PLZ:</td><td>&nbsp;</td><td class=\"spalte1\">"+vDummyTest.get(0).get(5)+"</td><td>&nbsp;&nbsp;</td><td class=\"spalte2\">"+vDummyKt.get(0).get(8)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>Ort:</td><td>&nbsp;</td><td class=\"spalte1\">"+vDummyTest.get(0).get(6)+"</td><td>&nbsp;&nbsp;</td><td class=\"spalte2\">"+vDummyKt.get(0).get(9)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>IK-Kasse:</td><td>&nbsp;</td><td class=\"spalte1\">"+vDummyTest.get(0).get(15)+"</td><td>&nbsp;&nbsp;</td><td class=\"spalte2\">"+vDummyKt.get(0).get(0)+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>IK-Kostenträger:</td><td>&nbsp;</td><td class=\"spalte1\">"+kakostentr+"</td><td>&nbsp;&nbsp;</td><td class=\"spalte2\">"+ktkostentr+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>IK-Datenannahme:</td><td>&nbsp;</td><td class=\"spalte1\">"+kadaten+"</td><td>&nbsp;&nbsp;</td><td class=\"spalte2\">"+ktdaten+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>IK-Entschlüsselung:</td><td>&nbsp;</td><td class=\"spalte1\">"+kadecode+"</td><td>&nbsp;&nbsp;</td><td class=\"spalte2\">"+ktdecode+"</td></tr>";
+			htmlString = htmlString+ "<tr><td>IK-Papierannahme:</td><td>&nbsp;</td><td class=\"spalte1\">"+kapapier+"</td><td>&nbsp;&nbsp;</td><td class=\"spalte2\">"+ktpapier+"</td></tr>";
 			
 			kaemail = SqlInfo.holeEinzelFeld("select email1 from kass_adr where ik_kasse = '"+vDummyTest.get(0).get(16)+"' LIMIT 1");
 			ktemail = SqlInfo.holeEinzelFeld("select email from ktraeger where ikkasse = '"+vDummyKt.get(0).get(3)+"' LIMIT 1");
 			
-			htmlString = htmlString+ "<tr><td>Email Abrechnungsdaten:</td><td>&nbsp;</td><td>"+kaemail+"</td><td>&nbsp;&nbsp;</td><td>"+ktemail+"</td></tr>";
-			htmlString = htmlString+"</table><br><br><b>Wollen Sie die Daten der Kostenträgerdatei in Ihren Kassenstamm übernehmen?</b></html>";
-			
+			htmlString = htmlString+ "<tr><td>Email Abrechnungsdaten:</td><td>&nbsp;</td><td class=\"spalte1\">"+kaemail+"</td><td>&nbsp;&nbsp;</td><td class=\"spalte2\">"+ktemail+"</td></tr>";
+			htmlString = htmlString+"</table><br><br><br><b>Wollen Sie die Daten der Kostenträgerdatei in Ihren Kassenstamm übernehmen?</b><br></html>";
+
+			if(ktkostentr.equals("") && ktdaten.equals("") && ktdecode.equals("") && ktpapier.equals("")){
+				//es handelt sich zu 99,99% um eine Datenannahmestelle // ToDo: testen ob Emailadresse für die Datenannahmestelle existiert
+				if(! SqlInfo.gibtsSchon("select email1 from kass_adr where ik_kasse = '"+ktdaten+"'")){
+					htmlString = "<html><b>Achtung der Datenannahmestelle</b><br>"+vDummyKt.get(0).get(5)+"<br>"+
+					"IK: "+vDummyKt.get(0).get(0)+" ist keine gültige Emailadresse zugeordenet"+
+					"<br>Bitte die Datenannahmestelle manuell anlegen!</html>";
+					JOptionPane.showMessageDialog(null,htmlString);					
+				}
+				vDummyKt.clear();
+				vDummyTest.clear();
+				htmlString = null;
+				continue;
+			}
 			frage = JOptionPane.showConfirmDialog(null,htmlString,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_CANCEL_OPTION);
-			System.out.println(frage);
-			vDummyKt.clear();
-			vDummyTest.clear();
+			//System.out.println(frage);
+
 			htmlString = null; 
 			if(frage == JOptionPane.CANCEL_OPTION){break;}
 			if(frage == JOptionPane.YES_OPTION){
 				// hier die Updatefunktion
+				String stmt = null; 
+				if(ktkostentr.equals("") || ktdaten.equals("") || ktdecode.equals("") || ktpapier.equals("") ){
+					htmlString = "<html><b>Achtung die Daten die Sie übernehmen wollen sind nicht vollständig!</b><br><br><table>"+
+					"<tr><td>IK-Kostenträger:</td><td>&nbsp;</td><td>"+(ktkostentr.equals("") ? "<b>->fehlt!</b>" : ktkostentr)+"</td></tr>"+
+					"<tr><td>IK-Datenannahme:</td><td>&nbsp;</td><td>"+(ktdaten.equals("") ? "<b>->fehlt!</b>" : ktdaten) +"</td></tr>"+
+					"<tr><td>IK-Entschlüsselung:</td><td>&nbsp;</td><td>"+(ktdecode.equals("") ? "<b>->fehlt!</b>" : ktdecode) +"</td></tr>"+
+					"<tr><td>IK-Papierannahme:</td><td>&nbsp;</td><td>"+(ktpapier.equals("") ? "<b>->fehlt!</b>" : ktpapier)+"</td></tr>"+
+					"<br><br><b>Daten trotzdem übernehmen?</b><br>"+
+					"</table></html>";
+					frage = JOptionPane.showConfirmDialog(null,htmlString,"Wichtige Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+					if(frage == JOptionPane.YES_OPTION){
+						stmt = "update kass_adr set ik_kostent='"+ktkostentr+"', ik_physika='"+ktdaten+"', ik_nutzer='"+ktdecode+"', ik_papier='"+ktpapier+"' "+
+						"where ik_kasse = '"+vDummyTest.get(0).get(15)+"'";
+						SqlInfo.sqlAusfuehren(stmt);
+						//System.out.println(stmt);
+					}
+				}/*else if(ktemail.equals("") && (!kaemail.equals("")) ){
+					htmlString = "<html><b>Die Emailadresse in der Kostenträgerdatei ist leer!<br>Die bisherige Emailadresse in Ihrem Kassenstamm wird deshalb nicht überschrieben</html>";
+					if(ktemail.equals("")){
+						frage = JOptionPane.showConfirmDialog(null,htmlString,JOptionPane.YES_NO_OPTION);
+					}
+				}*/else{
+					stmt = "update kass_adr set ik_kostent='"+ktkostentr+"', ik_physika='"+ktdaten+"', ik_nutzer='"+ktdecode+"', ik_papier='"+ktpapier+"' "+
+					"where ik_kasse = '"+vDummyTest.get(0).get(15)+"'";
+					SqlInfo.sqlAusfuehren(stmt);
+					//nachsehen ob die Emailadresse im Kassenstamm vorhanden ist...
+					if( (!ktemail.equals("")) && (kaemail.equals("") || kaemail != ktemail) ){
+						if(! SqlInfo.gibtsSchon("select id from kass_adr where ik_kasse = '"+ktdaten+"'")){
+							htmlString = "<html><b>Achtung die Datenannahmestelle</b><br>"+vDummyKt.get(0).get(5)+"<br>"+
+							"IK: "+vDummyKt.get(0).get(0)+" existiert in Ihrem Kassenstamm nicht"+
+							"<br>Bitte die Datenannahmestelle manuell anlegen!</html>";
+							JOptionPane.showMessageDialog(null,htmlString);
+						}else{
+							stmt = "update kass_adr set email1='"+ktemail+"' where ik_kasse='"+ktdaten+"'"; 
+							SqlInfo.sqlAusfuehren(stmt);
+						}
+					}
+				}
+
 			}
+			vDummyKt.clear();
+			vDummyTest.clear();
+			htmlString = null;
 		}
 		 
 	}

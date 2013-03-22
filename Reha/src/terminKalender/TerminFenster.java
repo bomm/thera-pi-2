@@ -4586,7 +4586,8 @@ public class TerminFenster extends Observable implements RehaTPEventListener, Ac
 
 						}else if(!unter18 && vorjahrfrei){
 							String bef_pat = SqlInfo.holePatFeld("befreit","pat_intern='"+vec.get(8)+"'" );
-							if(!bef_pat.equals("T")){
+							String bezahlt = SqlInfo.holeRezFeld("rez_bez", "rez_nr='"+swreznum+"'");
+							if(!bef_pat.equals("T") && bezahlt.equals("F")){
 								if(DatFunk.DatumsWert("31.12."+vec.get(7)) < DatFunk.DatumsWert(swdatum) ){
 									SqlInfo.aktualisiereSatz("verordn", "termine='"+termbuf.toString()+"', zzstatus='2'", "rez_nr='"+swreznum+"'");
 									//hier soundeffekt einbauen falls keine Rezeptgebühren bezahlt

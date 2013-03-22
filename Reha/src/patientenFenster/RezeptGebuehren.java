@@ -225,8 +225,8 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 		}else{
 			okknopf = new JButton("Quittung drucken & buchen");	
 		}
-		okknopf.addActionListener(this);
 		okknopf.setActionCommand("okknopf");
+		okknopf.addActionListener(this);
 		okknopf.setName("okknopf");
 		okknopf.addKeyListener(this);
 		pb.add(okknopf,cc.xyw(3,12,3));
@@ -384,6 +384,7 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 						doSchliessen();
 					}catch(Exception ex){
 						ex.printStackTrace();
+						JOptionPane.showMessageDialog(null,"Fehler in der Funktion Drucken und Buchen\n"+ex.getMessage());
 					}
 
 					return null;
@@ -459,24 +460,32 @@ public class RezeptGebuehren extends RehaSmartDialog implements RehaTPEventListe
 							"Fehler-Mail");
 
 				}
-				Reha.thisClass.patpanel.vecaktrez.set(39, "1");
-				String cmd2 = "update verordn set rez_geb='"+
-				srgeb+"', "+
-				"rez_bez='T', zzstatus='1' where id='"+Reha.thisClass.patpanel.vecaktrez.get(35).trim()+"' LIMIT 1";
-				boolean allesok = SqlInfo.sqlAusfuehren(cmd2.toString());
-				this.aktuelleRezepte.doVectorAktualisieren(new int[]{14,39}, new String[]{"T","1"});
-				if(!allesok){
-					JOptionPane.showMessageDialog(null, "Fehler-Nr. 2 beim einstellen der Rezeptgebühr im Rezept\n\n"+
+				try{
+					Reha.thisClass.patpanel.vecaktrez.set(39, "1");
+					String cmd2 = "update verordn set rez_geb='"+
+					srgeb+"', "+
+					"rez_bez='T', zzstatus='1' where rez_nr='"+SystemConfig.hmAdrRDaten.get("<Rnummer>")+"' LIMIT 1";
+					boolean allesok = SqlInfo.sqlAusfuehren(cmd2.toString());
+					this.aktuelleRezepte.doVectorAktualisieren(new int[]{14,39}, new String[]{"T","1"});
+					if(!allesok){
+						JOptionPane.showMessageDialog(null, "Fehler-Nr. 2 beim einstellen der Rezeptgebühr im Rezept\n\n"+
+								"Der Wert der HashMap hat aktuell: "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n"+
+								"Der Wert für Rezeptnummer ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
+								"\nSql-Befehl = "+cmd+"\n\n"+
+								"Bitte notieren Sie diese Fehlermeldung und informieren Sie den Administrator umgehend.");
+						new ErrorMail("Fehler bei Rezeptgebührenkassieren - Fehler-Nr. 2 - Reznr."+SystemConfig.hmAdrRDaten.get("<Rnummer>"),
+								"Computer: "+SystemConfig.dieseMaschine.toString(),
+								"Benutzer: "+Reha.aktUser,
+								SystemConfig.hmEmailIntern.get("Username"),
+								"Fehler-Mail");
+
+					}
+				}catch(Exception ex3){
+					JOptionPane.showMessageDialog(null, "Fehler-Nr. 2.1 beim einstellen der Rezeptgebühr im Rezept\n\n"+
 							"Der Wert der HashMap hat aktuell: "+SystemConfig.hmAdrRDaten.get("<Rendbetrag>")+"\n"+
 							"Der Wert für Rezeptnummer ist aktuell: "+Reha.thisClass.patpanel.vecaktrez.get(1)+"\n"+
 							"\nSql-Befehl = "+cmd+"\n\n"+
 							"Bitte notieren Sie diese Fehlermeldung und informieren Sie den Administrator umgehend.");
-					new ErrorMail("Fehler bei Rezeptgebührenkassieren - Fehler-Nr. 2 - Reznr."+SystemConfig.hmAdrRDaten.get("<Rnummer>"),
-							"Computer: "+SystemConfig.dieseMaschine.toString(),
-							"Benutzer: "+Reha.aktUser,
-							SystemConfig.hmEmailIntern.get("Username"),
-							"Fehler-Mail");
-
 				}
 
 			}catch(Exception ex2){
