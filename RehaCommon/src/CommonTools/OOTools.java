@@ -469,6 +469,12 @@ public class OOTools{
         	cell.setValue((Long)value);
         }
 	}
+	public static Object  doGetCellValue(XSheetCellCursor cellCursor,int col,int row,Object value) throws IndexOutOfBoundsException{
+		Object ret = null;
+		XCell cell= cellCursor.getCellByPosition(col,row);
+		ret = cell.getType().getDefault();
+		return ret;
+	}
 	/*
 	public static void doCellValue(XSheetCellCursor cellCursor,int col,int row,Object value) throws IndexOutOfBoundsException{
 		XCell cell= cellCursor.getCellByPosition(col,row);
