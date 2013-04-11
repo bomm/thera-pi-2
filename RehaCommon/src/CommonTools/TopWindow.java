@@ -18,6 +18,8 @@ public class TopWindow implements XTopWindowListener{
 	IDocument xdocument = null;
 	
 	public TopWindow(IDocument doc){
+		
+		//Scheißworkaround wg. Java 7
 		xdocument = doc;
 		
 		

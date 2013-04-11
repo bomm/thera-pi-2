@@ -53,6 +53,7 @@ import systemEinstellungen.SystemConfig;
 import CommonTools.JCompTools;
 import CommonTools.JRtaComboBox;
 import CommonTools.JRtaTextField;
+import CommonTools.TopWindow;
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.desktop.IFrame;
@@ -516,6 +517,17 @@ public class ArztBausteine extends JDialog implements WindowListener{
 		        document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(officeFrame,
 		            IDocument.WRITER,
 		            DocumentDescriptor.DEFAULT);
+		        SwingUtilities.invokeLater(new Runnable(){
+		        	public void run(){
+		        		try{
+		        			//Workaround für Java 7
+		        			new TopWindow(document);
+		        		}catch(Exception ex){
+		        			JOptionPane.showMessageDialog(null,"Achtung!, der TopWindow-Listener (wichtig für Java 7) konnte nicht korrekt gestartet werden");
+		        		}
+		        	}
+		        });		        
+		        
 	        	OOTools.setzePapierFormat(document, Integer.valueOf(25199), Integer.valueOf(19299));
 	        	OOTools.setzeRaender(document, Integer.valueOf(1000), Integer.valueOf(1000),Integer.valueOf(1000),Integer.valueOf(1000));
 	        	hideAllElements();

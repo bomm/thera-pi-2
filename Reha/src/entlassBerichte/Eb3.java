@@ -5,6 +5,7 @@ import hauptFenster.Reha;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -30,6 +31,7 @@ import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXPanel;
 
 import CommonTools.SqlInfo;
+import CommonTools.TopWindow;
 import systemEinstellungen.SystemConfig;
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
@@ -46,7 +48,12 @@ import ag.ion.bion.officelayer.text.IViewCursor;
 import ag.ion.noa.frame.ILayoutManager;
 
 import com.mysql.jdbc.PreparedStatement;
+import com.sun.star.awt.XExtendedToolkit;
+import com.sun.star.awt.XToolkit;
+import com.sun.star.awt.XTopWindowListener;
+import com.sun.star.awt.XWindowPeer;
 import com.sun.star.frame.XController;
+import com.sun.star.lang.EventObject;
 import com.sun.star.text.XTextViewCursor;
 import com.sun.star.text.XTextViewCursorSupplier;
 import com.sun.star.uno.UnoRuntime;
@@ -150,6 +157,17 @@ public class Eb3 implements RehaEventListener  {
 		        				Reha.starteOfficeApplication();
 		        			}
 		        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().constructNewDocument(eltern.officeFrame,IDocument.WRITER,d);
+    				        SwingUtilities.invokeLater(new Runnable(){
+    				        	public void run(){
+    				        		try{
+    				        			//Workaround für Java 7
+    				        			new TopWindow(eltern.document);
+    				        		}catch(Exception ex){
+    				        			JOptionPane.showMessageDialog(null,"Achtung!, der TopWindow-Listener (wichtig für Java 7) konnte nicht korrekt gestartet werden");
+    				        		}
+    				        	}
+    				        });		        
+		        			
 				        	OOTools.setzePapierFormat(eltern.document, Integer.valueOf(25199), Integer.valueOf(19299));
 				        	OOTools.setzeRaender(eltern.document, Integer.valueOf(1000), Integer.valueOf(1000),Integer.valueOf(1000),Integer.valueOf(1000));
 				        	framegetrennt = false;
@@ -182,6 +200,17 @@ public class Eb3 implements RehaEventListener  {
 						        			//descript.setFilterDefinition(RTFFilter.FILTER.getFilterDefinition(IDocument.WRITER)); 
 						        			try{
 							        			eltern.document = (ITextDocument) Reha.officeapplication.getDocumentService().loadDocument(eltern.officeFrame,ins, descript);
+					    				        SwingUtilities.invokeLater(new Runnable(){
+					    				        	public void run(){
+					    				        		try{
+					    				        			//Workaraund für Java 7
+					    				        			new TopWindow(eltern.document);
+					    				        		}catch(Exception ex){
+					    				        			JOptionPane.showMessageDialog(null,"Achtung!, der TopWindow-Listener (wichtig für Java 7) konnte nicht korrekt gestartet werden");
+					    				        		}
+					    				        	}
+					    				        });		        
+							        			
 							        			eltern.meldeInitOk(2);
 							        			SwingUtilities.invokeLater(new Runnable(){
 							        				public void run(){

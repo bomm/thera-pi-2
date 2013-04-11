@@ -6,6 +6,7 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,6 +50,7 @@ import CommonTools.JRtaTextField;
 import CommonTools.OOTools;
 import CommonTools.SqlInfo;
 import CommonTools.TableTool;
+import CommonTools.TopWindow;
 import ag.ion.bion.officelayer.NativeView;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import ag.ion.bion.officelayer.desktop.IFrame;
@@ -67,10 +69,15 @@ import ag.ion.noa.internal.frame.LayoutManager;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.mysql.jdbc.PreparedStatement;
+import com.sun.star.awt.XExtendedToolkit;
+import com.sun.star.awt.XToolkit;
+import com.sun.star.awt.XTopWindowListener;
+import com.sun.star.awt.XWindowPeer;
 import com.sun.star.beans.PropertyVetoException;
 import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.beans.XPropertySet;
 import com.sun.star.frame.XLayoutManager;
+import com.sun.star.lang.EventObject;
 import com.sun.star.lang.IllegalArgumentException;
 import com.sun.star.lang.WrappedTargetException;
 import com.sun.star.ui.XUIElement;
@@ -629,6 +636,16 @@ public class ArztBausteinPanel extends JXPanel {
 		        document = (ITextDocument) ArztBaustein.officeapplication.getDocumentService().constructNewDocument(officeFrame,
 		            IDocument.WRITER,
 		            DocumentDescriptor.DEFAULT);
+		        SwingUtilities.invokeLater(new Runnable(){
+		        	public void run(){
+		        		try{
+		        			//Workaround für Java 7
+		        			new TopWindow(document);
+		        		}catch(Exception ex){
+		        			JOptionPane.showMessageDialog(null,"Achtung!, der TopWindow-Listener (wichtig für Java 7) konnte nicht korrekt gestartet werden");
+		        		}
+		        	}
+		        });		        
 		        
 	        	OOTools.setzePapierFormat(document, new Integer(25199), new Integer(19299));
 	        	OOTools.setzeRaender(document, new Integer(1000), new Integer(1000),new Integer(1000),new Integer(1000));
