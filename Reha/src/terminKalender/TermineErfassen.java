@@ -12,6 +12,7 @@ import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
+import CommonTools.IntegerTools;
 import CommonTools.SqlInfo;
 import stammDatenTools.RezTools;
 import systemEinstellungen.SystemConfig;
@@ -211,7 +212,9 @@ public class TermineErfassen implements Runnable {
 				
 		*/
 		alleterm = SqlInfo.holeFelder("select * from flexkc where datum='"+DatFunk.sDatInSQL(DatFunk.sHeute())+"' LIMIT "+Integer.toString(ParameterLaden.maxKalZeile));
+		/*******************************************/
 		Object[] obj = untersucheTermine();
+		/*******************************************/		
 		String string = null;
 		//System.out.println("Rückgabewert der Untersuchung = "+obj[0]);
 		if(! (Boolean) obj[0]){
@@ -286,6 +289,9 @@ public class TermineErfassen implements Runnable {
 		return ret;
 	}
 	/********************/
+	private int getKollegenInt(String kollege){
+		return IntegerTools.trimLeadingNullAndRetInt(kollege.substring(0,2));
+	}
 	private Object[] untersucheTermine() throws Exception{
 		
 		int spalten = alleterm.size();
@@ -294,34 +300,64 @@ public class TermineErfassen implements Runnable {
 		boolean gefunden = false;
 		
 		Object[] obj = {Boolean.valueOf(false),null,null,null,null,null,null,null};
-		for(i=0;i<spalten;i++){
-			//System.out.println("Untersuche Terminspalte "+Integer.toString(i+1));
-			int bloecke = ((Vector)alleterm.get(0)).size();
-			int belegt = Integer.parseInt( (String) ((Vector)alleterm.get(i)).get(bloecke-6) );
-			for(y=0;y<belegt;y++){
-				//System.out.println("Untersuche Block "+Integer.toString(y+1)+" von "+Integer.toString(belegt));
-				//int block = ((y*5)+1);
-				if( ((String) ((Vector)alleterm.get(i)).get( ((y*5)+1) )).contains(scanrez) ){
-					obj[0] = Boolean.valueOf(true); //gefunden
-					obj[1] = (String) ((Vector)alleterm.get(i)).get(bloecke-4) ;//Kollege
-					obj[2] = ((y*5)+1);//Blocknummer
-					obj[3] = (String) ((Vector)alleterm.get(i)).get( ((y*5)+1) ); // Rezeptnummer
-					obj[4] = (String) ((Vector)alleterm.get(i)).get( ((y*5)) ); // Name
-					obj[5] = (String) ((Vector)alleterm.get(i)).get( ((y*5))+2 ); // Beginn
-					obj[6] = (String) ((Vector)alleterm.get(i)).get( ((y*5)) ); // Name
-					obj[7] = (String) ((Vector)alleterm.get(i)).get(bloecke-2) ;//Datum
-					//((Vector)alleterm.get(i)).set((y*5), copyright+String.valueOf((String)obj[4]));
-					//System.out.println("Gefunden in Spalte "+Integer.toString(i+1)+
-					//		" in Block "+Integer.toString(y+1)+" Ergebnis = "+obj[3]);
-					gefunden = true;
-					erstfund = i;
+		
+		try{
+		
+			boolean isReha = scanrez.startsWith("RH");
+			boolean isKG = false;
+			
+			for(i=0;i<spalten;i++){
+				//System.out.println("Untersuche Terminspalte "+Integer.toString(i+1));
+				int bloecke = ((Vector)alleterm.get(0)).size();
+				int belegt = Integer.parseInt( (String) ((Vector)alleterm.get(i)).get(bloecke-6) );
+				
+				isKG = ParameterLaden.getAbteilung(getKollegenInt((String) ((Vector)alleterm.get(i)).get(bloecke-4)) ).equals("KG");
+				//System.out.println(getKollegenInt((String) ((Vector)alleterm.get(i)).get(bloecke-4))+" - Abteilung: "+ParameterLaden.getAbteilung(getKollegenInt((String) ((Vector)alleterm.get(i)).get(bloecke-4))) );
+				for(y=0;y<belegt;y++){
+					//System.out.println("Untersuche Block "+Integer.toString(y+1)+" von "+Integer.toString(belegt));
+					//int block = ((y*5)+1);
+					if( ((String) ((Vector)alleterm.get(i)).get( ((y*5)+1) )).contains(scanrez) ){
+						obj[0] = Boolean.valueOf(true); //gefunden
+						obj[1] = (String) ((Vector)alleterm.get(i)).get(bloecke-4) ;//Kollege
+						obj[2] = ((y*5)+1);//Blocknummer
+						obj[3] = (String) ((Vector)alleterm.get(i)).get( ((y*5)+1) ); // Rezeptnummer
+						obj[4] = (String) ((Vector)alleterm.get(i)).get( ((y*5)) ); // Name
+						obj[5] = (String) ((Vector)alleterm.get(i)).get( ((y*5))+2 ); // Beginn
+						obj[6] = (String) ((Vector)alleterm.get(i)).get( ((y*5)) ); // Name
+						obj[7] = (String) ((Vector)alleterm.get(i)).get(bloecke-2) ;//Datum
+						//((Vector)alleterm.get(i)).set((y*5), copyright+String.valueOf((String)obj[4]));
+						//System.out.println("Gefunden in Spalte "+Integer.toString(i+1)+
+						//		" in Block "+Integer.toString(y+1)+" Ergebnis = "+obj[3]);
+
+						//Hier muß ermittelt werden ob der Spalteninhaber zur Abteilung KG gehört
+						
+						if(! isReha){
+							gefunden = true;
+							erstfund = i;
+							break;
+						}else if(isReha && isKG){
+							gefunden = true;
+							erstfund = i;
+							break;
+						}else if(isReha && !isKG){
+							gefunden = true;
+							erstfund = i;
+						}
+					}
+				}
+				if(!isReha && gefunden){
+					firstfound = true;
 					break;
+				}else if(isReha && isKG && gefunden){
+					firstfound = true;
+					break;
+				}else if(isReha && !isKG && gefunden){
+					firstfound = true;
 				}
 			}
-			if(gefunden){
-				firstfound = true;
-				break;
-			}
+		
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 		return obj;
 	}
