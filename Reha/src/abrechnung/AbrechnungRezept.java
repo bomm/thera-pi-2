@@ -1612,7 +1612,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		String mehrereziffer = SystemPreislisten.hmHBRegeln.get(aktDisziplin).get(Integer.parseInt(preisgruppe)-1).get(1);
 
 		////System.out.println("Anzahl Kilometer = "+anzahlkm);
-		for(int i = 0; i < maxanzahl;i++){
+		//for(int i = 0; i < maxanzahl;i++){
+		for(int i = 0; i < insgesamthb;i++){	
 			
 			JXTTreeTableNode node = (JXTTreeTableNode)root.getChildAt(i);
 			tag = node.abr.datum;
@@ -1756,6 +1757,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		vec_pospos.clear();
 		int lang = 0;
 		if( (lang=vec_tabelle.size())<=0){return;}
+		//System.out.println(vec_tabelle);
 		for(int i = 0; i < lang;i++){
 			if(! vec_poskuerzel.contains((vec_tabelle.get(i).get(1) )) ){
 				vec_poskuerzel.add(vec_tabelle.get(i).get(1).toString());
@@ -1770,10 +1772,12 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				vec_posanzahl.set(pos, anzahl+1);
 			}
 		}
-		//////System.out.println("****************nachfolgende Positionen wurden ermittelt****************");
-		//////System.out.println(vec_poskuerzel);
-		//////System.out.println(vec_posanzahl);
-		//////System.out.println(vec_pospos);
+		/*
+		System.out.println("****************nachfolgende Positionen wurden ermittelt****************");
+		System.out.println(vec_poskuerzel);
+		System.out.println(vec_posanzahl);
+		System.out.println(vec_pospos);
+		*/
 	}
 	
 	private void doTreeRezeptWertermitteln(){
@@ -1884,20 +1888,19 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		//Das ist ein Riesenscheiß
 		////System.out.println("anzahl Behandlungen =*************************"+anzahlbehandlungen);
 		int posanzahl = 0;
-		
+		int posanzahlbegleitend;
 		for(int i = 0; i < anzahlbehandlungen;i++){
 			if(! abrfall[i].trim().equals("")){
 				vecdummy.clear();
 				//Hier testen ob Anzahlen unterschiedlich sind
 				//posanzahl = Integer.parseInt(vec_rez.get(0).get(3+i)); //Original
 				posanzahl = Integer.parseInt(vec_rez.get(0).get(3));
-				/*
-				//System.out.println("Anzahl = "+posanzahl);
-				//System.out.println("Tag+i="+(tag+1));
-				//System.out.println("Abrfall[i].length="+abrfall.length);
-				//System.out.println("Abrfall[i]="+abrfall[i]);
-				*/
-				if((i+1) <= posanzahl){
+				try{
+					posanzahlbegleitend = Integer.parseInt(vec_rez.get(0).get(3+i)); 	
+				}catch(NumberFormatException ex){
+					posanzahlbegleitend = posanzahl;
+				}
+				if((i+1) <= posanzahl || (posanzahl==1 && posanzahlbegleitend==1)){
 				//if((tag+1) <= posanzahl){  //Original
 					vecdummy.add(datum);
 					vecdummy.add(abrfall[i]);
