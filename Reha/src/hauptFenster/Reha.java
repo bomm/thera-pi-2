@@ -312,7 +312,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2013-04-18-DB=";
+	public static String aktuelleVersion = "2013-05-22-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -3420,19 +3420,30 @@ final class PreisListenLaden implements Runnable{
 		}
 		//Reha.thisClass.jxLinks.setAlpha(1.0f);
 		//Reha.thisClass.jxRechts.setAlpha(1.0f);
-	
-		new SocketClient().setzeInitStand("Preisliste Physio einlesen");
-		SystemPreislisten.ladePreise("Physio");
-		new SocketClient().setzeInitStand("Preisliste Massage einlesen");
-		SystemPreislisten.ladePreise("Massage");
-		new SocketClient().setzeInitStand("Preisliste Ergo einlesen");
-		SystemPreislisten.ladePreise("Ergo");
-		new SocketClient().setzeInitStand("Preisliste Logo einlesen");		
-		SystemPreislisten.ladePreise("Logo");
-		new SocketClient().setzeInitStand("Preisliste Reha einlesen");		
-		SystemPreislisten.ladePreise("Reha");
-		new SocketClient().setzeInitStand("Preisliste Podologie einlesen");
-		SystemPreislisten.ladePreise("Podo");
+		if(isAktiv("Physio")){
+			new SocketClient().setzeInitStand("Preisliste Physio einlesen");
+			SystemPreislisten.ladePreise("Physio");
+		}
+		if(isAktiv("Massage")){
+			new SocketClient().setzeInitStand("Preisliste Massage einlesen");
+			SystemPreislisten.ladePreise("Massage");
+		}
+		if(isAktiv("Ergo")){
+			new SocketClient().setzeInitStand("Preisliste Ergo einlesen");
+			SystemPreislisten.ladePreise("Ergo");
+		}
+		if(isAktiv("Logo")){
+			new SocketClient().setzeInitStand("Preisliste Logo einlesen");		
+			SystemPreislisten.ladePreise("Logo");
+		}
+		if(isAktiv("Reha")){
+			new SocketClient().setzeInitStand("Preisliste Reha einlesen");		
+			SystemPreislisten.ladePreise("Reha");
+		}
+		if(isAktiv("Podo")){
+			new SocketClient().setzeInitStand("Preisliste Podologie einlesen");
+			SystemPreislisten.ladePreise("Podo");
+		}
 		SystemPreislisten.ladePreise("Common");
 		new SocketClient().setzeInitStand("System-Init abgeschlossen!");
 		Reha.thisClass.setzeInitEnde();
@@ -3441,6 +3452,15 @@ final class PreisListenLaden implements Runnable{
 		}catch(NullPointerException ex){
 			ex.printStackTrace();
 		}
+	}
+	public boolean isAktiv(String disziplin){
+
+		for(int i = 0; i < SystemConfig.rezeptKlassenAktiv.size();i++){
+			if(SystemConfig.rezeptKlassenAktiv.get(i).get(0).toLowerCase().startsWith(disziplin.toLowerCase())){
+				return true;
+			}
+		}
+		return false;
 	}
 	public void run() {
 		Einlesen();
