@@ -380,7 +380,7 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 		if(cmd.equals("tabelleRegeln")){
 			delvec.clear();
 			tabelleRegeln();
-			
+			if(SystemPreislisten.hmNeuePreiseRegel.get(disziplin[jcmb[0].getSelectedIndex()])==null){return;}
 			
 			//int einstellung = ((Integer) ((Vector)SystemConfig.vNeuePreiseRegel.get(jcmb[0].getSelectedIndex())).get( jcmb[1].getSelectedIndex()) );
 			int einstellung = ((Integer) SystemPreislisten.hmNeuePreiseRegel.get(disziplin[jcmb[0].getSelectedIndex()]).get(jcmb[1].getSelectedIndex()));
@@ -919,9 +919,15 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 
 		String spreisart = Integer.toString(jcmb[1].getSelectedIndex() +1);
 		Vector preisvec = holePreisVec();
+		if(preisvec==null){
+			modpreis.setRowCount(0);
+			return;
+		}
 		int ipreis = jcmb[1].getSelectedIndex()+1;
-		int anzahl = preisvec.size();
 		modpreis.setRowCount(0);
+		
+		int anzahl = preisvec.size();
+		
 		String[] diszi = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 		//String disziplin = jcmb[0].getSelectedItem().toString();
 		int preisgruppe = jcmb[1].getSelectedIndex();
@@ -969,15 +975,17 @@ public class SysUtilPreislisten extends JXPanel implements KeyListener, ActionLi
 	}
  
 	private Vector holePreisVec(){
-		try{
-		int pgs = jcmb[0].getSelectedIndex();
-		int pgGruppe = jcmb[1].getSelectedIndex();
 		String[] diszi = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
-		setCursor(Reha.thisClass.normalCursor);
-		return SystemPreislisten.hmPreise.get(diszi[pgs]).get(pgGruppe);
+		int pgs = jcmb[0].getSelectedIndex();
+		try{
+			
+			int pgGruppe = jcmb[1].getSelectedIndex();
+			//String[] diszi = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
+			setCursor(Reha.thisClass.normalCursor);
+			return (SystemPreislisten.hmPreise.get(diszi[pgs]).get(pgGruppe) != null ? SystemPreislisten.hmPreise.get(diszi[pgs]).get(pgGruppe) : null) ;
 		}catch(Exception ex){
-			ex.printStackTrace();
-			JOptionPane.showMessageDialog(null,"Fehler beim Bezug der Preisliste");
+			//ex.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Diese Preisliste existiert nicht, oder Sie verfügen nicht über die Disziplin -> "+diszi[pgs]);
 		}
 		return null;
 	}

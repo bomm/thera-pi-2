@@ -2,6 +2,7 @@ package systemEinstellungen;
 
 import hauptFenster.Reha;
 
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -100,10 +101,20 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 	}
 	/************** Beginn der Methode f�r die Objekterstellung und -platzierung *********/
 	private JPanel getVorlagenSeite(){
-		
-		disziplin = new JRtaComboBox(new String[] {"Physio","Massage","Ergo","Logo","Reha","Podo"});
+		String[] dummydiszi = new String[] {"Physio","Massage","Ergo","Logo","Reha","Podo"};
+		disziplin = new JRtaComboBox(dummydiszi);
 		disziplin.setActionCommand("disziplin");
+
+		
+		for(int i = 0; i < dummydiszi.length;i++){
+			if(SystemConfig.initRezeptKlasse.toLowerCase().startsWith(dummydiszi[i].toLowerCase()) ){
+				disziplin.setSelectedItem(dummydiszi[i]);
+				break;
+			}
+		}
 		disziplin.addActionListener(this);
+		disziplin.setSelectedItem(SystemConfig.initRezeptKlasse);
+		
 		modtarife.setColumnIdentifiers(new String[] {"Tarifgruppe","Zuzahlungsregel","gültig ab","Anwendungsregel","Gültik.Bereich","§302-Abrechnung","Pos.HB-Einzeln","Pos.HB-Mehrere","Pos.Weg/km","Pos.Weg/Pauschal","HB-Heim mit Zuzahl.","Arztbericht","Tarifbesonderh."});
 		tarife = new JXTable(modtarife);
 		tarife.getColumn(0).setMinWidth(120);
@@ -306,6 +317,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 		modtarife.setRowCount(0);
 		//int lang = SystemConfig.vPreisGruppen.size();
 		String diszi = (String)disziplin.getSelectedItem();
+		if(SystemPreislisten.hmPreisGruppen.get(diszi)==null){return;}
 		int lang = SystemPreislisten.hmPreisGruppen.get(diszi).size();
 		Vector<String> vec = new Vector<String>();
 		String wert = "";
@@ -688,6 +700,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			macheNeuePreistabelle();
 			setzeIniEintraege(tarife.getRowCount()+1,String.valueOf(ret));
 			SystemPreislisten.loescheHashMaps();
+			/*
 			SystemPreislisten.ladePreise("Physio");
 			SystemPreislisten.ladePreise("Massage");
 			SystemPreislisten.ladePreise("Ergo");
@@ -695,9 +708,40 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			SystemPreislisten.ladePreise("Reha");
 			SystemPreislisten.ladePreise("Common");
 			SystemPreislisten.ladePreise("Podo");
+			 */
+			if(isAktiv("Physio")){
+				SystemPreislisten.ladePreise("Physio");
+			}
+			if(isAktiv("Massage")){
+				SystemPreislisten.ladePreise("Massage");
+			}
+			if(isAktiv("Ergo")){
+				SystemPreislisten.ladePreise("Ergo");
+			}
+			if(isAktiv("Logo")){
+				SystemPreislisten.ladePreise("Logo");
+			}
+			if(isAktiv("Reha")){
+				SystemPreislisten.ladePreise("Reha");
+			}
+			if(isAktiv("Podo")){
+				SystemPreislisten.ladePreise("Podo");
+			}
+			SystemPreislisten.ladePreise("Common");
+			
 			fuelleMitWerten(disziplin.getSelectedIndex());
 		}
 	}
+	public boolean isAktiv(String disziplin){
+
+		for(int i = 0; i < SystemConfig.rezeptKlassenAktiv.size();i++){
+			if(SystemConfig.rezeptKlassenAktiv.get(i).get(0).toLowerCase().startsWith(disziplin.toLowerCase())){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private void setzeIniEintraege(int position,String commonname){
 		try{
 			INIFile inif = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "preisgruppen.ini");
@@ -707,6 +751,7 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 			inif.setStringProperty("PreisGruppen_Common", "PGBesonderheit"+Integer.toString(position), "000", null);
 			String[] diszis = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
 			for(int i = 0; i < diszis.length;i++){
+				try{
 				inif.setIntegerProperty("PreisGruppen_"+diszis[i], "AnzahlPreisGruppen", position, null);
 				inif.setStringProperty("PreisGruppen_"+diszis[i], "PGName"+Integer.toString(position), commonname, null);
 				inif.setStringProperty("PreisGruppen_"+diszis[i], "PGBereich"+Integer.toString(position), "00", null);
@@ -726,6 +771,9 @@ public class SysUtilTarifgruppen extends JXPanel implements KeyListener, ActionL
 				inif.setStringProperty("HBRegeln_"+diszis[i], "HBHeimMitZuZahl"+Integer.toString(position), "", null);
 				
 				inif.setStringProperty("HMRAbrechnung_"+diszis[i], "HMRAbrechnung"+Integer.toString(position), "0", null);
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 			}
 			INITool.saveIni(inif);
 		}catch(Exception ex){
