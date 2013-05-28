@@ -14,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -84,6 +86,11 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 	JButton knopf6 = null;
 	static JXLabel KalMake = null;	
 	static JXLabel FeierTag = null;
+	static int anzahlLastDate = -1;
+	
+	static String repairDateStart = "";
+	static String repairDateEnd = "";
+	
 	JCheckBox AZPlan = null;
 	
 	JScrollPane listscr = null;
@@ -145,8 +152,17 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 	     }.execute();
 		return;
 	}
-	
-	/************** Beginn der Methode f�r die Objekterstellung und -platzierung *********/
+	private String setNewRange(boolean begin,String datum){
+		Object ret = null;
+		if(begin){
+			ret = JOptionPane.showInputDialog(null, "<html>Geben Sie bitte das neue <b>Startdatum</b> ein: </html>", datum);	
+		}else{
+			ret = JOptionPane.showInputDialog(null, "<html>Geben Sie bitte das neue <b>Endedatum</b> ein: </html>", datum);
+		}
+		if(ret==null){return datum;}
+		return (String) ret;
+	}
+	/************** Beginn der Methode für die Objekterstellung und -platzierung *********/
 	private JPanel getAnlegenSeite(){
        
 		knopf1 = new JButton("los"); // neues Jahr in Datenbank anlegen
@@ -188,7 +204,50 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		FreiTage = new JXTable();
 		
 		KalBis = new JXLabel("");
+		KalBis.setName("KalBis");
+		KalBis.addMouseListener(new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount()==2){
+					repairDateStart = setNewRange(true,repairDateStart);
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+		});
 		KalMake = new JXLabel("");
+		KalMake.setName("KalMake");
+		KalMake.addMouseListener(new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount()==2){
+					repairDateEnd = setNewRange(false,repairDateEnd);
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+		});
+		
 		AZPlan = new JCheckBox("");
 		AZPlan.setOpaque(false);
 		
@@ -646,6 +705,20 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 
 		String starttag = "01.01."+KalMake.getText();
 		String stoptag 	= "31.12."+KalMake.getText();
+		
+		if(repairDateStart.trim().length() == 10 && repairDateEnd.trim().length()==10){
+			int frage = JOptionPane.showConfirmDialog(null,"Vermutlich wollen Sie einen vorhandenen Kalender reparieren\n"+
+					"Der von Ihnen festgelegte Starttag = "+repairDateStart+"\n"+
+					"Der von Ihnen festgelegte Endtag = "+repairDateEnd+"\n"+
+					"Wollen Sie mit diesen Parametern starten?","Achtung wichtige Benutzeranfrage",JOptionPane.YES_NO_CANCEL_OPTION);
+			if(frage==JOptionPane.YES_OPTION){
+				starttag = repairDateStart;
+				stoptag = repairDateEnd;
+			}else if(frage == JOptionPane.CANCEL_OPTION){
+				dblaeuft = false;
+				return;
+			}
+		}
 		//String stoptag 	= "02.01."+KalMake.getText();
 		String akttag =  String.valueOf(starttag);
 		progress = 0;
@@ -688,6 +761,10 @@ public class SysUtilKalenderanlegen extends JXPanel implements KeyListener, Acti
 		Vector vec = SqlInfo.holeFelder("select min(datum),max(datum) from flexkc");
 		Reha.kalMin = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(0)) );
 		Reha.kalMax = DatFunk.sDatInDeutsch( ((String)((Vector)vec.get(0)).get(1)) );
+		SysUtilKalenderanlegen.anzahlLastDate = Integer.parseInt(SqlInfo.holeEinzelFeld("select count(*) from flexkc where datum = '"+((String)((Vector)vec.get(0)).get(1))+"'"));
+		if( (!Reha.kalMax.startsWith("31.12.")) || SysUtilKalenderanlegen.anzahlLastDate != 99){
+			JOptionPane.showMessageDialog(null,"Achtung Ihr Kalender wurde nicht korrekt angelegt!\nBitte melden Sie sich im Anwenderforum und fragen Sie nach Unterstützung");
+		}
 		//System.out.println("Kalenderspanne = von "+Reha.kalMin+" bis "+Reha.kalMax);		
 //			}
 //		}.start();
