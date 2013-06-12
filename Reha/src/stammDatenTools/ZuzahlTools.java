@@ -220,7 +220,16 @@ public class ZuzahlTools {
 		preisgrp = ((String)((Vector<String>)vec.get(0)).get(0));
 		
 		//zzregel = SystemConfig.vZuzahlRegeln.get(Integer.valueOf(preisgrp)-1);
-		zzregel = SystemPreislisten.hmZuzahlRegeln.get("Physio").get(Integer.valueOf(preisgrp)-1);
+		String defaultHM = null;
+		String[] xdisziplin = {"Physio","Massage","Ergo","Logo","Reha","Podo"};
+		for(int y = 0; y < xdisziplin.length;y++){
+			if(SystemConfig.initRezeptKlasse.toLowerCase().startsWith(xdisziplin[y].toLowerCase())){
+				defaultHM = xdisziplin[y].toString();
+				break;
+			}
+		}
+		zzregel = SystemPreislisten.hmZuzahlRegeln.get((defaultHM != null ? defaultHM : "Physio")).get(Integer.valueOf(preisgrp)-1);
+		//zzregel = SystemPreislisten.hmZuzahlRegeln.get("Physio").get(Integer.valueOf(preisgrp)-1);
 		return zzregel;
 	}
 	

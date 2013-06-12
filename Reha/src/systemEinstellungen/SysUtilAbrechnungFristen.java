@@ -134,7 +134,15 @@ public class SysUtilAbrechnungFristen extends JXPanel implements KeyListener, Ac
 		builder.add(cmbdiszi = new JRtaComboBox(xdisziplin),cc.xyw(3,3,5));
 		cmbdiszi.setActionCommand("neuedisziplin");
 		builder.addLabel("Tarif-/Preisgruppe auswählen", cc.xy(1, 5));
-		builder.add(cmbtarife = new JRtaComboBox(SystemPreislisten.hmPreisGruppen.get(xdisziplin[cmbdiszi.getSelectedIndex()])), cc.xyw(3, 5,5));
+		String defaultHM = null;
+		for(int y = 0; y < xdisziplin.length;y++){
+			if(SystemConfig.initRezeptKlasse.toLowerCase().startsWith(xdisziplin[y].toLowerCase())){
+				defaultHM = xdisziplin[y].toString();
+				break;
+			}
+		}
+		builder.add(cmbtarife = new JRtaComboBox(SystemPreislisten.hmPreisGruppen.get((defaultHM != null ? defaultHM : "Physio"))), cc.xyw(3, 5,5));
+		//builder.add(cmbtarife = new JRtaComboBox(SystemPreislisten.hmPreisGruppen.get(xdisziplin[cmbdiszi.getSelectedIndex()])), cc.xyw(3, 5,5));
 
 		builder.addSeparator("Fristenregegelung",cc.xyw(1,7,7));
 		
