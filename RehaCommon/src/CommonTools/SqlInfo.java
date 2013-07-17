@@ -1118,6 +1118,7 @@ public class SqlInfo {
 			stmt =  conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 			            ResultSet.CONCUR_UPDATABLE );
 		} catch (SQLException e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Fehler bei der Ausführung des Statements\nMethode:sqlAusfuehren("+sstmt+")");
 			System.exit(0);
 		}
@@ -1126,6 +1127,7 @@ public class SqlInfo {
 			if(frame != null)
 			frame.setCursor(normalCursor);
 		}catch(SQLException ev){
+			ev.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Fehler bei der Ausführung des Statements\nMethode:sqlAusfuehren("+sstmt+")\n\nBitte informieren Sie sofort den Administrator!!!");
 			ret = false;
 		}	
