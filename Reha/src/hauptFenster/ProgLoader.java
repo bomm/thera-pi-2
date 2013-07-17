@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 
 import krankenKasse.KassenPanel;
 
+import org.jdesktop.swingworker.SwingWorker;
 import org.therapi.reha.patient.PatientHauptPanel;
 
 import rechteTools.Rechte;
@@ -960,7 +961,7 @@ public static void PasswortDialog(int setPos) {
 	//Calculate the frame location
 	int x = (screenSize.width - rSmart.getWidth()) / 2;
 	int y = (screenSize.height - rSmart.getHeight()) / 2;
-	rSmart.setLocation(x, y); 
+	rSmart.setLocation(x, y);
 	rSmart.toFront();
 	rSmart.setVisible(true);
 	rSmart.toFront();

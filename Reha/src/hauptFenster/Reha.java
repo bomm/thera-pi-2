@@ -141,6 +141,7 @@ import urlaubBeteiligung.Beteiligung;
 import urlaubBeteiligung.Urlaub;
 import verkauf.VerkaufTab;
 import wecker.Wecker;
+import CommonTools.FireRehaError;
 import CommonTools.INIFile;
 import CommonTools.INITool;
 import CommonTools.SqlInfo;
@@ -164,9 +165,9 @@ import com.sun.star.uno.Exception;
 import dialoge.RehaSmartDialog;
 import dta301.Dta301;
 import entlassBerichte.EBerichtPanel;
-import events.RehaEvent;
-import events.RehaEventClass;
-import events.RehaEventListener;
+import CommonTools.RehaEvent;
+import CommonTools.RehaEventClass;
+import CommonTools.RehaEventListener;
 import geraeteInit.BarCodeScanner;
 
 public class Reha implements FocusListener,ComponentListener,ContainerListener,MouseListener,MouseMotionListener,KeyListener,RehaEventListener, WindowListener, WindowStateListener, ActionListener  {
@@ -312,7 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2013-05-28-DB=";
+	public static String aktuelleVersion = "2013-06-18-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -586,7 +587,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				application.getJFrame();
 
 				
-				Reha.thisFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( Reha.proghome+"icons/pi.png" ) );
+				Reha.thisFrame.setIconImage( Toolkit.getDefaultToolkit().getImage( Reha.proghome+"icons/Pi_1_0.png" ) );
 				
 				if(!dividerOk){
 					//Reha.thisClass.setDivider(5);
@@ -625,6 +626,15 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			@Override
 			protected Void doInBackground() throws java.lang.Exception {
 				new SocketClient().setzeInitStand("INITENDE");
+				/*
+				try{
+			    //nur zum Test
+			    System.out.println("Abfeuern des ErrorEvents");
+				new FireRehaError(this, RehaEvent.ERROR_EVENT,new String[] {"Reha","Blödsinn\nBlödsinn"});
+				}catch(NullPointerException ex){
+					ex.printStackTrace();
+				}
+				*/
 				return null;
 			}
 		}.execute();
@@ -1396,7 +1406,6 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	    RehaEventClass rehaEvent = new RehaEventClass();
 	    rehaEvent.addRehaEventListener(this);
 	    AktiveFenster.Init();
-	    
 	    
 		
 	    /*
@@ -2477,7 +2486,14 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	}
 
 	public void rehaEventOccurred(RehaEvent evt) {
+		//System.out.println("Event angekommen - Event="+evt.getRehaEvent());
 		if(evt.getRehaEvent().equals("PatSuchen")){
+		}
+		if(evt.getRehaEvent().equals(RehaEvent.ERROR_EVENT)){
+			String sclass = (evt.getSource()==null ? "NULL" : evt.getSource().getClass().toString());
+			String module = evt.getDetails()[0];
+			String errortext  = evt.getDetails()[1];
+			JOptionPane.showMessageDialog(null,"Es ist ein Fehler aufgetreten!\n\nKlasse="+sclass+"\n\nModul="+module+"\n\nFehlertext="+errortext);
 		}
 	}
 	static Component WerHatFocus(){
@@ -2675,6 +2691,40 @@ public void starteTimer(){
 	Reha.fangoTimer.setActionCommand("testeFango");
 	Reha.fangoTimer.start();
 	Reha.timerLaeuft = true;
+}
+public static void testeStrictMode(){
+	try{
+		String cmd = "show variables like 'sql_mode%'";
+		Vector<Vector<String>> vecfeld = SqlInfo.holeFelder(cmd);
+		System.out.println("sql_mode="+vecfeld.get(0).get(1).trim());
+		if(!vecfeld.get(0).get(1).trim().equals("")){
+			String meldung = "Achtung der MySql-Server wird im Modus: "+vecfeld.get(0).get(1).trim()+" betrieben!\n"+
+			"In diesem Modus kann Thera-Pi nicht fehlerfrei betrieben werden.\n\n"+
+			"Beenden Sie Thera-Pi und stellen Sie in der Datei my.ini (Linux=my.cnf) den Wert sql_mode='' ein\n"+
+			"Die Datei befindet sich in dem Verzeichnis indem der MySql-Server installiert wurde";;
+			JOptionPane.showMessageDialog(null,meldung);
+		}
+	}catch(NullPointerException ex){
+		ex.printStackTrace();
+	}
+}
+public static void testeMaxAllowed(){
+	try{
+		String cmd = "show variables like 'max_allowed_packet%'";
+		Vector<Vector<String>> vecfeld = SqlInfo.holeFelder(cmd);
+		
+		int dfeld = (Integer.valueOf(vecfeld.get(0).get(1))/1024)/1024;
+		System.out.println("max_allowed_packet="+Integer.toString(dfeld)+" MB");
+		if( dfeld < 16){
+			String meldung = "Achtung die MySql-Server Einstellung 'max_allowed_packet' ist bei Ihnen auf "+Integer.toString(dfeld)+" MB eingestellt\n"+
+			"Dieser Wert ist möglicherweise zu niedrig wenn Sie größere Dokumentationen scannen wollen.\n\n"+
+			"Wir empfehlen Ihnen einen Wert von >= 32MB.\nEingestellt wird dieser Wert in der Datei my.ini (Linux=my.cnf)\n"+
+			"Diese Datei befindet sich in dem Verzeichnis indem der MySql-Server installiert wurde\n";
+			JOptionPane.showMessageDialog(null,meldung);
+		}
+	}catch(NullPointerException ex){
+		ex.printStackTrace();
+	}
 }
 
 public static void testeNummernKreis(){
@@ -3002,7 +3052,10 @@ final class DatenbankStarten implements Runnable{
 				int nurmaschine = SystemConfig.dieseMaschine.toString().lastIndexOf("/");
 				obj.sqlInfo.setConnection(obj.conn);
 				new ExUndHop().setzeStatement("delete from flexlock where maschine like '%"+SystemConfig.dieseMaschine.toString().substring(0, nurmaschine)+"%'");
-
+				//geht leider nicht, erfordert root-Rechte
+				//SqlInfo.sqlAusfuehren("SET GLOBAL sql_mode = ''");
+				//sql_mode ging zwar mit SET SESSION, aber dann haben wir max_allowed... immer noch nicht gelöst.
+				//SqlInfo.sqlAusfuehren("SET GLOBAL max_allowed_packet = 32*1024*1024");
 				String db = SystemConfig.vDatenBank.get(0).get(1).replace("jdbc:mysql://", "");
 				db = db.substring(0,db.indexOf("/"));
 				final String xdb = db;
@@ -3026,6 +3079,9 @@ final class DatenbankStarten implements Runnable{
 
 				Reha.DbOk = true;
 				Reha.testeNummernKreis();
+			    Reha.testeStrictMode();
+			    Reha.testeMaxAllowed();
+
 		}catch (final SQLException ex) {
 			System.out.println("SQLException: " + ex.getMessage());
 			Reha.DbOk = false;
@@ -3318,7 +3374,7 @@ final class ErsterLogin implements Runnable{
 				Reha.thisFrame.getRootPane().validate();
 				Reha.isStarted = true;
 				
-				Reha.thisFrame.setVisible(true);
+				Reha.thisFrame.setVisible(true);		
 				
 
 				if(Reha.dividerOk){

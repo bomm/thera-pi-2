@@ -58,9 +58,9 @@ import com.sun.star.text.XTextViewCursor;
 import com.sun.star.text.XTextViewCursorSupplier;
 import com.sun.star.uno.UnoRuntime;
 
-import events.RehaEvent;
-import events.RehaEventClass;
-import events.RehaEventListener;
+import CommonTools.RehaEvent;
+import CommonTools.RehaEventClass;
+import CommonTools.RehaEventListener;
 
 public class Eb3 implements RehaEventListener  {
 	RehaEventClass rEvent = null;

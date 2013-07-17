@@ -10,9 +10,9 @@ import javax.swing.ImageIcon;
 import javax.swing.event.InternalFrameEvent;
 
 import krankenKasse.KassenPanel;
-import events.RehaEvent;
-import events.RehaEventClass;
-import events.RehaEventListener;
+import CommonTools.RehaEvent;
+import CommonTools.RehaEventClass;
+import CommonTools.RehaEventListener;
 
 public class JKasseInternal extends JRehaInternal implements RehaEventListener{
 	/**

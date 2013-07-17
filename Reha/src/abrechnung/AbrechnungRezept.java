@@ -960,6 +960,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				macheHashMapIV(ivkasse);
 				parseHTML(vec_rez.get(0).get(1).trim());
 			}
+			if(SystemConfig.certState > 0){
+				tbbuts[3].setEnabled(true);
+			}				
 		}else{
 			eltern.abrechnungsModus = eltern.ABR_MODE_302;
 			this.setTageDrucken(false);
@@ -969,7 +972,9 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				addiereKassenWahl(false);
 				parseHTML(vec_rez.get(0).get(1).trim());
 			}
-
+			if(SystemConfig.certState > 0){
+				tbbuts[3].setEnabled(false);
+			}				
 		}
 	}
 	private void macheHashMapIV(String id){

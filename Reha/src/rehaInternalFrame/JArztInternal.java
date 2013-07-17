@@ -10,9 +10,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
 import arztFenster.ArztPanel;
-import events.RehaEvent;
-import events.RehaEventClass;
-import events.RehaEventListener;
+import CommonTools.RehaEvent;
+import CommonTools.RehaEventClass;
+import CommonTools.RehaEventListener;
 
 public class JArztInternal extends JRehaInternal implements RehaEventListener{
 	/**

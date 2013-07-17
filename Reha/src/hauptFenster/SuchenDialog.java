@@ -40,8 +40,8 @@ import systemEinstellungen.SystemConfig;
 import CommonTools.StringTools;
 import events.PatStammEvent;
 import events.PatStammEventClass;
-import events.RehaEvent;
-import events.RehaEventClass;
+import CommonTools.RehaEvent;
+import CommonTools.RehaEventClass;
 import events.RehaTPEvent;
 import events.RehaTPEventListener;
 

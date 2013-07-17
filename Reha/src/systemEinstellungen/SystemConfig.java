@@ -23,8 +23,10 @@ import javax.swing.JOptionPane;
 
 
 
+import CommonTools.FireRehaError;
 import CommonTools.INIFile;
 import CommonTools.INITool;
+import CommonTools.RehaEvent;
 
 import com.mysql.jdbc.PreparedStatement;
 
@@ -236,6 +238,12 @@ public class SystemConfig {
 	public static HashMap<String,String> hmHmPosIndex = new HashMap<String,String>();
 	
 	public static Vector <Vector<String>> vOwnDokuTemplate = new Vector <Vector<String>>();
+	
+	public static int certState = 0;
+	final public static int certOK = 0;
+	final public static int certWillExpire = 1;
+	final public static int certIsExpired = 2;
+	final public static int certNotFound = 3;
 	                     
 	public SystemConfig(){
 	
@@ -1446,6 +1454,7 @@ public class SystemConfig {
 
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(null,"Zertifikatsdatenbank nicht vorhanden oder fehlerhaft.\nAbrechnung nach § 302 kann nicht durchgeführt werden.");
+			SystemConfig.certState = SystemConfig.certNotFound;
 		}
 		//System.out.println("Keystore-Passwort = "+hmAbrechnung.get("hmkeystorepw"));
 	}

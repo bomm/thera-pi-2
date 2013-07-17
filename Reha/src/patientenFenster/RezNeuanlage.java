@@ -833,7 +833,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 							String suchenach = String1+String2;
 							//suchenach = suchenach.replace(" ", "").replace("*", "").replace("!", "").replace("R", "").replace("L","").replace("B","").replace("G","").replace("V","").replace("Z","");
 							//System.out.println(suchenach+" Länge = "+suchenach.length());
-							if(SqlInfo.holeEinzelFeld("select id from icd10 where schluessel1 = '"+suchenach+"' LIMIT 1").equals("")){
+							//if(SqlInfo.holeEinzelFeld("select id from icd10 where schluessel1 = '"+suchenach+"' LIMIT 1").equals("")){
+							if(SqlInfo.holeEinzelFeld("select id from icd10 where schluessel1 like '"+suchenach+"%' LIMIT 1").equals("")){
 								/*
 								int frage = JOptionPane.showConfirmDialog(null, "<html>Achtung!!<br><br>Der ICD-10 Code <b>"+jtf[cICD10].getText().trim()+
 										"</b> existiert nicht!<br>"+

@@ -57,8 +57,8 @@ import systemTools.ListenerTools;
 
 import com.jgoodies.looks.plastic.PlasticInternalFrameUI;
 
-import events.RehaEvent;
-import events.RehaEventClass;
+import CommonTools.RehaEvent;
+import CommonTools.RehaEventClass;
 
 public class JRehaInternal extends JInternalFrame implements ActionListener,ComponentListener,KeyListener,MouseListener,MouseMotionListener,InternalFrameListener,AncestorListener{
 	/**

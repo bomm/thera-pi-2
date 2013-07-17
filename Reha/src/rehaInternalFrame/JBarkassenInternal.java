@@ -10,9 +10,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
 import barKasse.Barkasse;
-import events.RehaEvent;
-import events.RehaEventClass;
-import events.RehaEventListener;
+import CommonTools.RehaEvent;
+import CommonTools.RehaEventClass;
+import CommonTools.RehaEventListener;
 
 public class JBarkassenInternal extends JRehaInternal implements RehaEventListener{
 	/**

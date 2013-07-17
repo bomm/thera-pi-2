@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.cert.X509Certificate;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -177,6 +178,45 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 		mandantenCheck();
 		SlgaVersion = ( DatFunk.TageDifferenz("31.12.2012",DatFunk.sHeute()) <= 0 ? "07" : "08");
 		SllaVersion = ( DatFunk.TageDifferenz("31.12.2012",DatFunk.sHeute()) <= 0 ? "07" : "08");
+		new SwingWorker<Void,Void>(){
+			@Override
+			protected Void doInBackground() throws Exception {
+				SystemConfig.certState = checkCert("IK"+Reha.aktIK);
+				if(SystemConfig.certState > 0){
+					abrRez.tbbuts[3].setEnabled(false);
+				}
+				return null;
+			}
+		}.execute();
+	}
+	public static int checkCert(String alias){
+		try{
+			String keystore = Reha.proghome+"keystore/"+Reha.aktIK+"/"+Reha.aktIK+".p12";
+			NebraskaKeystore store = new NebraskaKeystore(keystore, SystemConfig.hmAbrechnung.get("hmkeystorepw"),"123456", Reha.aktIK);
+			Vector<X509Certificate> certs = store.getAllCerts();
+			String[] dn = null;
+			String ik;
+			for(int i = 0; i < certs.size();i++){
+				dn=certs.get(i).getSubjectDN().toString().split(",");
+				if(dn.length==5){
+					ik = (String)dn[3].split("=")[1];
+					if(ik.equals(alias)){
+						String verfall = certs.get(i).getNotAfter().toLocaleString().split(" ")[0].trim();
+						long tage = DatFunk.TageDifferenz(DatFunk.sHeute(),verfall); 
+						if( tage <= 0){
+							JOptionPane.showMessageDialog(null,"Ihr Zertifikat ist abgelaufen.\nEine Verschlüsselung mit diesem Zertifikat ist nicht mehr möglich");
+							return SystemConfig.certIsExpired;
+						}else if(tage <= 30){
+							JOptionPane.showMessageDialog(null,"Achtung!!!\nIhr Zertifikat läuft in "+Long.toString(tage)+" Tage(n) ab.\nBitte rechtzeitig neues Zertifikat beantragen");
+						}
+						return SystemConfig.certOK;
+					}
+				}
+			}
+		}catch(Exception ex){
+			return SystemConfig.certNotFound;
+		}
+		return SystemConfig.certNotFound;
 	}
 	/**********
 	 * 

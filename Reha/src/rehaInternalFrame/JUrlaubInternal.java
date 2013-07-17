@@ -9,9 +9,9 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 
-import events.RehaEvent;
-import events.RehaEventClass;
-import events.RehaEventListener;
+import CommonTools.RehaEvent;
+import CommonTools.RehaEventClass;
+import CommonTools.RehaEventListener;
 
 public class JUrlaubInternal extends JRehaInternal implements RehaEventListener{
 	/**

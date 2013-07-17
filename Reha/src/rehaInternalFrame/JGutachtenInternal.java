@@ -14,9 +14,9 @@ import javax.swing.event.InternalFrameEvent;
 
 import systemTools.ListenerTools;
 import entlassBerichte.EBerichtPanel;
-import events.RehaEvent;
-import events.RehaEventClass;
-import events.RehaEventListener;
+import CommonTools.RehaEvent;
+import CommonTools.RehaEventClass;
+import CommonTools.RehaEventListener;
 
 public class JGutachtenInternal extends JRehaInternal implements RehaEventListener {
 	/**

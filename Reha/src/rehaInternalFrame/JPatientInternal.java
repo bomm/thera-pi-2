@@ -16,9 +16,9 @@ import javax.swing.event.InternalFrameEvent;
 
 import events.PatStammEvent;
 import events.PatStammEventClass;
-import events.RehaEvent;
-import events.RehaEventClass;
-import events.RehaEventListener;
+import CommonTools.RehaEvent;
+import CommonTools.RehaEventClass;
+import CommonTools.RehaEventListener;
 
 public class JPatientInternal extends JRehaInternal implements FocusListener, RehaEventListener{
 	/**
