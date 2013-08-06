@@ -313,7 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2013-07-27-DB=";
+	public static String aktuelleVersion = "2013-08-06-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -3411,7 +3411,12 @@ final class ErsterLogin implements Runnable{
 							} catch (ClassNotFoundException e) {
 								disableReader("Fehlerstufe rc = -1 = CT-API läßt sich nicht initialisieren\n"+e.getMessage());
 							} catch (java.lang.Exception e) {
-								disableReader("Anderweitiger Fehler\n"+e.getMessage());
+								if(e.getMessage().contains("property file")){
+									disableReader("Anderweitiger Fehler\n"+"Die Datei opencard.properties befindet sich nicht im Java-Verzeichnis ../lib."+
+											"Das Kartenlesegerät kann nicht verwendet werden.");
+								}else{
+									disableReader("Anderweitiger Fehler\n"+e.getMessage());	
+								}
 							}
 							if(Reha.thisClass.ocKVK != null){
 								Vector<Vector<String>> vec = Reha.thisClass.ocKVK.getReaderList();

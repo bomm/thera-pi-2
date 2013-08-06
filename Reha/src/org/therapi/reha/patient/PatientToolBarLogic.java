@@ -114,11 +114,13 @@ public class PatientToolBarLogic {
 	class ToolsDlgPatient{
 		public ToolsDlgPatient(String command,Point pt){
 			Map<Object, ImageIcon> icons = new HashMap<Object, ImageIcon>();
+			icons.put("Patientenbezogene Nachricht erstellen",SystemConfig.hmSysIcons.get("patnachrichten"));
 			icons.put("(e)Mail für Patient erstellen (Alt+M)",SystemConfig.hmSysIcons.get("email"));
 			icons.put("SMS für Patient erstellen (Alt+S)",SystemConfig.hmSysIcons.get("sms"));
 			icons.put("Zusatzinformationen zum aktuellen Patient (Alt+I)",SystemConfig.hmSysIcons.get("info"));
 			// create a list with some test data
-			JList list = new JList(	new Object[] {"(e)Mail für Patient erstellen (Alt+M)", 
+			JList list = new JList(	new Object[] {"Patientenbezogene Nachricht erstellen",
+					"(e)Mail für Patient erstellen (Alt+M)", 
 					"SMS für Patient erstellen (Alt+S)", 
 					"Zusatzinformationen zum aktuellen Patient (Alt+I)"});
 			list.setCellRenderer(new IconListRenderer(icons));	
@@ -133,22 +135,24 @@ public class PatientToolBarLogic {
 			tDlg.setVisible(true);
 			switch(Reha.toolsDlgRueckgabe){
 			case 0:
+				return;
+			case 1:
 				if(!Rechte.hatRecht(Rechte.Patient_email, true)){
 					return;
 				}
 				break;
-			case 1:
+			case 2:
 				if(!Rechte.hatRecht(Rechte.Patient_sms, true)){
 					return;
 				}
 				//new SMS(null);
 				break;
-			case 2:
+			case 3:
 				if(!Rechte.hatRecht(Rechte.Patient_zusatzinfo, true)){
 					return;
 				}
 				break;
-			case 3:
+			case 4:
 				break;
 				
 			}

@@ -2141,6 +2141,19 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				String preisgruppe = Reha.thisClass.patpanel.vecaktrez.get(41);
 
 				if(! doTageTest(vgldat3,vgldat2,anzterm,diszi,Integer.parseInt(preisgruppe)-1)){return;}
+
+				Vector<Vector<String>> doublette = null;
+				if(  ((doublette=doDoublettenTest(anzterm)).size() > 0) ){
+					String msg = "<html><b><font color='#ff0000'>Achtung!</font><br><br>Ein oder mehrere Behandlungstage wurden in anderen Rezepten entdeckt/abgerechnet</b><br><br>";
+					for(int i = 0; i < doublette.size();i++){
+						msg = msg+"Behandlungstag: "+doublette.get(i).get(1)+" - enthalten in Rezept: "+doublette.get(i).get(0)+" - Standort: "+doublette.get(i).get(2)+"<br>";
+					}
+					msg = msg+"<br><br>Wollen Sie das Rezept trotzdem abschließen?</html>";
+					int frage = JOptionPane.showConfirmDialog(null, msg, "Behandlungsdaten in anderen Rezepten erfaßt",JOptionPane.YES_NO_OPTION);
+					if(frage!=JOptionPane.YES_OPTION){
+						return;
+					}					
+				}
 				
 
 				/*********************/
@@ -2287,6 +2300,70 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					Reha.thisClass.abrechnungpanel.doEinlesen(Reha.thisClass.abrechnungpanel.getaktuellerKassenKnoten());
 				}
 			}
+	}
+	private Vector<Vector<String>> doDoublettenTest(int anzahl){
+		Vector<Vector<String>> doublette = new Vector<Vector<String>>();
+	
+		try{
+		
+		Vector<Vector<String>> tests = null;
+		Vector<String> dummy = new Vector<String>();
+		String lastrezdate = DatFunk.sDatInSQL(DatFunk.sDatPlusTage(DatFunk.sDatInDeutsch((String) Reha.thisClass.patpanel.vecaktrez.get(2)),-90));
+		String diszi = ((String) Reha.thisClass.patpanel.vecaktrez.get(1)).substring(0,2);
+		String cmd = "select rez_datum,rez_nr,termine from verordn where pat_intern = '"+
+		(String) Reha.thisClass.patpanel.vecaktrez.get(0)+"' and rez_nr != '"+(String) Reha.thisClass.patpanel.vecaktrez.get(1)+"'";
+
+		tests = SqlInfo.holeFelder(cmd);
+		//zuerst in den aktuellen Rezepten nachsehen
+		//wir holen uns Rezeptnummer,Rezeptdatum und die Termine
+		//Anzahl der Termine
+		//dtermm.getValueAt(i-1,0);
+		//1. for next für jeden einzelnen Tag des Rezeptes, darin enthalten eine neue for next für alle vorhandenen Rezepte
+		//2. nur dieselbe Disziplin überpüfen
+		//3. dann durch alle Rezepte hangeln und testen ob irgend ein Tag in den Terminen enthalten ist 
+		
+		for(int i = 0; i < tests.size();i++){
+			if(tests.get(i).get(1).startsWith(diszi)){
+				for(int i2 = 0; i2 < anzahl; i2++){
+					if(tests.get(i).get(2).contains(dtermm.getValueAt(i2,0).toString())){
+						dummy.clear();
+						dummy.add(tests.get(i).get(1));
+						dummy.add(dtermm.getValueAt(i2,0).toString());
+						dummy.add("aktuelle Rezepte");
+						doublette.add( (Vector<String>)dummy.clone() );
+					}
+				}
+			}
+		}
+		//dann in der Historie
+		//1. for next für jeden einzelnen Tag, darin enthalten eine neue for next für alle vorhandenen Rezepte
+		//2. nur dieselbe Disziplin überpüfen
+		//3. dann durch alle Rezepte hangeln und testen ob irgend ein Tag in den Terminen enthalten ist 
+		//4. dann testen ob der Rezeptdatumsvergleich > als 3 Monate trifft dies zu abbruch 
+		cmd = "select rez_datum,rez_nr,termine from lza where pat_intern = '"+
+		(String) Reha.thisClass.patpanel.vecaktrez.get(0)+"' and rez_nr != '"+(String) Reha.thisClass.patpanel.vecaktrez.get(1)+"' and rez_datum >= '"+lastrezdate+"'";
+
+		tests = SqlInfo.holeFelder(cmd);
+		for(int i = 0; i < tests.size();i++){
+			if(tests.get(i).get(1).startsWith(diszi)){
+				for(int i2 = 0; i2 < anzahl; i2++){
+					if(tests.get(i).get(2).contains(dtermm.getValueAt(i2,0).toString())){
+						dummy.clear();
+						dummy.add(tests.get(i).get(1));
+						dummy.add(dtermm.getValueAt(i2,0).toString());
+						dummy.add("Historie");
+						doublette.add( (Vector<String>)dummy.clone() );
+					}
+				}
+			}
+		}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null,"Fehler im Doublettentest\n"+ex.getMessage());
+		}
+
+		/*****************/
+		return doublette;
 	}
 	private boolean doTageTest(String latestdat,String starttag,int tageanzahl,String disziplin, int preisgruppe){
 		String vglalt;
