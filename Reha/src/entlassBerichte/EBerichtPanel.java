@@ -1862,11 +1862,12 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 			icons.put("Textbausteine abrufen",SystemConfig.hmSysIcons.get("arztbericht"));
 			icons.put("Bodymass-Index",SystemConfig.hmSysIcons.get("barcode"));
 			icons.put("ICD-10(GM) Recherche",SystemConfig.hmSysIcons.get("info2"));
+			icons.put("Thera-Pi OCR starten",SystemConfig.hmSysIcons.get("ocr"));
 			icons.put("RV E-Bericht prüfen",SystemConfig.hmSysIcons.get("ebcheck"));
 			icons.put("§301 Reha E-Bericht übertragen",SystemConfig.hmSysIcons.get("abrdreieins"));
 
 			JList list = new JList(	new Object[] {"Textbausteine abrufen", 
-					"Bodymass-Index", "ICD-10(GM) Recherche",
+					"Bodymass-Index", "ICD-10(GM) Recherche","Thera-Pi OCR starten",
 					"RV E-Bericht prüfen","§301 Reha E-Bericht übertragen"});
 			list.setCellRenderer(new IconListRenderer(icons));	
 			Reha.toolsDlgRueckgabe = -1;
@@ -1890,9 +1891,13 @@ public class EBerichtPanel extends JXPanel implements ChangeListener,RehaEventLi
 				new LadeProg(Reha.proghome+"ICDSuche.jar"+" "+Reha.proghome+" "+Reha.aktIK);
 				break;
 			case 3:
-				starteTest();
+				//new LadeProg(Reha.proghome+"ICDSuche.jar");
+				new LadeProg(Reha.proghome+"RehaOCR.jar "+" "+Reha.proghome+" "+Reha.aktIK+" "+String.valueOf(Integer.toString(Reha.xport)) );
 				break;
 			case 4:
+				starteTest();
+				break;
+			case 5:
 				do301FallSteuerung();
 				break;
 			}

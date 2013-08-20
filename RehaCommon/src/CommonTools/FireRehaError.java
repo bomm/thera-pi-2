@@ -7,6 +7,7 @@ public class FireRehaError {
 			RehaEvent revt = new RehaEvent(source);
 			revt.setRehaEvent(event);
 			revt.setDetails(details[0], details[1]);
+			RehaEventClass.fireRehaEvent(revt);
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}

@@ -364,7 +364,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		}else if(osVersion.contains("Windows")){
 			proghome = prog.substring(0, 2)+"/RehaVerwaltung/";
 		}else if(osVersion.contains("Mac OS X")){
-			proghome = homedir+"/RehaVerwaltung/";
+			System.out.println("Vermutlich MAC, Output = "+osVersion);
+			proghome = "/Programme/RehaVerwaltung/";
 		}
 		
 		//Reha.proghome = "C:/RehaVerwaltung/";
@@ -1868,7 +1869,10 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			men.setActionCommand("hmrsearch");
 			men.addActionListener(this);
 			toolsMenu.add(men);		
-
+			men = new JMenuItem("Thera-Pi OCR-Modul");
+			men.setActionCommand("ocr");
+			men.addActionListener(this);
+			toolsMenu.add(men);	
 
 		}
 		return toolsMenu;
@@ -2936,6 +2940,11 @@ public void actionPerformed(ActionEvent arg0) {
 				" "+Reha.proghome+" "+Reha.aktIK );
 		return;
 		
+	}
+	if(cmd.equals("ocr")){
+		new LadeProg(Reha.proghome+"RehaOCR.jar "+
+				" "+Reha.proghome+" "+Reha.aktIK+" "+String.valueOf(Integer.toString(Reha.xport)) );
+		return;
 	}
 	
 	
