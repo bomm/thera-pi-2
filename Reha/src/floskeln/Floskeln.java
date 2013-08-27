@@ -257,6 +257,18 @@ public class Floskeln extends JXDialog implements FocusListener, ActionListener,
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		try{
+			String cmd = e.getActionCommand();
+			if(cmd.equals("abfeuern")){
+				Reha.thisClass.lastSelectedFloskel = tab.getSelectedRow();
+				setVisible(false);
+				auswerten();
+				dispose();
+				memopan.setNewText( String.valueOf(tab.getValueAt(tab.getSelectedRow(), 1)));
+			}
+		}catch(Exception ex){
+			
+		}
 	}
 	@Override
 	public void focusGained(FocusEvent e) {

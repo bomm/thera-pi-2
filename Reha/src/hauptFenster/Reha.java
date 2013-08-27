@@ -313,7 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2013-08-06-DB=";
+	public static String aktuelleVersion = "2013-08-27-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -353,6 +353,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public boolean isLibreOffice = false;
 	public SqlInfo sqlInfo = null;
 	public static int nachladenDB = 0;
+	public static int dbLoadError = 1;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
@@ -583,6 +584,8 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				application.sqlInfo.setDieseMaschine(SystemConfig.dieseMaschine);
 				rehaBackImg = new ImageIcon(Reha.proghome+"icons/therapieMT1.gif");
 				thisClass = application;
+				RehaEventClass rehaEvent = new RehaEventClass();
+			    rehaEvent.addRehaEventListener(thisClass);
 				//new DatenbankStarten().run();
 				new Thread(new DatenbankStarten()).start();
 				application.getJFrame();
@@ -1346,17 +1349,23 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				@Override
 				protected Void doInBackground() throws java.lang.Exception {
 					try{
-						INIFile updateini = INITool.openIni(Reha.proghome+"ini/", "tpupdate.ini");
-						try{
-						if(updateini.getStringProperty("TheraPiUpdates", "ProxyIP") != null && updateini.getStringProperty("TheraPiUpdates", "ProxyPort") != null && updateini.getStringProperty("TheraPiUpdates", "NoProxy") != null &&
-								updateini.getStringProperty("TheraPiUpdates", "ProxyIP").equals("") && updateini.getStringProperty("TheraPiUpdates", "ProxyPort").equals("") && updateini.getStringProperty("TheraPiUpdates", "NoProxy").equals("")) {
-							System.setProperty("http.proxyHost", updateini.getStringProperty("TheraPiUpdates", "ProxyIP"));
-							System.setProperty("http.proxyPort", updateini.getStringProperty("TheraPiUpdates", "ProxyPort"));
-							System.setProperty("http.nonProxyHosts", updateini.getStringProperty("TheraPiUpdates", "NoProxy"));
-							System.setProperty("ftp.proxyHost", updateini.getStringProperty("TheraPiUpdates", "ProxyIP"));
-							System.setProperty("ftp.proxyPort", updateini.getStringProperty("TheraPiUpdates", "ProxyPort"));
-							System.setProperty("ftp.nonProxyHosts", updateini.getStringProperty("TheraPiUpdates", "NoProxy"));
+						INIFile updateini = null;
+						File f = new File(Reha.proghome+"ini/tpupdateneu.ini");
+						if(f.exists()){
+							updateini = INITool.openIni(Reha.proghome+"ini/", "tpupdateneu.ini");	
+						}else{
+							updateini = INITool.openIni(Reha.proghome+"ini/", "tpupdate.ini");
 						}
+						try{
+							if(updateini.getStringProperty("TheraPiUpdates", "ProxyIP") != null && updateini.getStringProperty("TheraPiUpdates", "ProxyPort") != null && updateini.getStringProperty("TheraPiUpdates", "NoProxy") != null &&
+									updateini.getStringProperty("TheraPiUpdates", "ProxyIP").equals("") && updateini.getStringProperty("TheraPiUpdates", "ProxyPort").equals("") && updateini.getStringProperty("TheraPiUpdates", "NoProxy").equals("")) {
+								System.setProperty("http.proxyHost", updateini.getStringProperty("TheraPiUpdates", "ProxyIP"));
+								System.setProperty("http.proxyPort", updateini.getStringProperty("TheraPiUpdates", "ProxyPort"));
+								System.setProperty("http.nonProxyHosts", updateini.getStringProperty("TheraPiUpdates", "NoProxy"));
+								System.setProperty("ftp.proxyHost", updateini.getStringProperty("TheraPiUpdates", "ProxyIP"));
+								System.setProperty("ftp.proxyPort", updateini.getStringProperty("TheraPiUpdates", "ProxyPort"));
+								System.setProperty("ftp.nonProxyHosts", updateini.getStringProperty("TheraPiUpdates", "NoProxy"));
+							}
 						}catch(NullPointerException ex){
 							ex.printStackTrace();
 						}
@@ -1404,8 +1413,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		setKeyboardActions();
 		setFocusWatcher();
  
-	    RehaEventClass rehaEvent = new RehaEventClass();
-	    rehaEvent.addRehaEventListener(this);
+	    
 	    AktiveFenster.Init();
 	    
 		
@@ -3095,10 +3103,14 @@ final class DatenbankStarten implements Runnable{
 			System.out.println("SQLException: " + ex.getMessage());
 			Reha.DbOk = false;
 			Reha.nachladenDB = -1;
+			System.out.println("Fehler bei der Initialisierung der Datenbank");
+			new FireRehaError(RehaEvent.ERROR_EVENT,"Datenbankfehler!", new String[] {"Datenabankfehler, Fehlertext:",ex.getMessage()});
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e1) {
+				
 				e1.printStackTrace();
+				 
 			}
 			/*
 			Reha.thisClass.mustReloadDb();
@@ -3115,9 +3127,34 @@ final class DatenbankStarten implements Runnable{
 			if(Reha.nachladenDB == JOptionPane.YES_OPTION){
 				new Thread(new DbNachladen()).start();
 			}else{
+				//new FireRehaError(this,"Datenbankfehler",new String[] {"Fehlertext:","Die Datenbank kann nicht gestartet werden"});
+				new SocketClient().setzeInitStand("Fehler!!!! Datenbank kann nicht gestartet werden - Thera-Pi wird beendet");
+				
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				new SocketClient().setzeInitStand("INITENDE");
-				System.out.println("Datenbank kann nicht gestartet werden");
+				/*
+				new SwingWorker<Void,Void>(){
+					@Override
+					protected Void doInBackground() throws java.lang.Exception {
+						//JOptionPane.showMessageDialog(null,"Die Datenbank ist nicht erreichbar");
+						Reha.dbLoadError=0;
+						return null;
+					}
+				}.execute();
+				while(Reha.dbLoadError == 1){
+					try {
+						Thread.sleep(25);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				*/
 				System.exit(0);
+				
 			}
 			return;
 		}

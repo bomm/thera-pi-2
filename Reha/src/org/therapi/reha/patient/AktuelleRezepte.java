@@ -2173,7 +2173,8 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					String String2 = Reha.thisClass.patpanel.vecaktrez.get(71).trim().substring(1).toUpperCase().replace(" ", "").replace("*", "").replace("!", "").replace("+","").replace("R", "").replace("L","").replace("B","").replace("G","").replace("V","").replace("Z","");;
 					String suchenach = String1+String2;
 					//suchenach = suchenach.replace(" ", "").replace("*", "").replace("!", "").replace("R", "").replace("L","").replace("B","").replace("G","").replace("V","").replace("Z","");
-					if(SqlInfo.holeEinzelFeld("select id from icd10 where schluessel1 = '"+suchenach+"' LIMIT 1").equals("")){
+					if(SqlInfo.holeEinzelFeld("select id from icd10 where schluessel1 like '"+suchenach+"%' LIMIT 1").equals("")){
+						//if(SqlInfo.holeEinzelFeld("select id from icd10 where schluessel1 like '"+suchenach+"%' LIMIT 1").equals("")){
 						/*
 						int frage = JOptionPane.showConfirmDialog(null, "<html>Achtung!!<br><br>Der ICD-10 Code <b>"+jtf[cICD10].getText().trim()+
 								"</b> existiert nicht!<br>"+

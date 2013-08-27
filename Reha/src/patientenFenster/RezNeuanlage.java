@@ -1663,6 +1663,16 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			sbuf.append("rezeptart='"+Integer.valueOf(jcmb[cVERORD].getSelectedIndex()).toString()+"', ");
 			sbuf.append("begruendadr='"+(jcb[cBEGRADR].isSelected() ? "T" : "F")+"', ");
 			sbuf.append("hausbes='"+(jcb[cHAUSB].isSelected() ? "T" : "F")+"', ");
+			if(jcb[cHAUSB].isSelected()){
+				if(!this.vec.get(64).equals(jtf[cANZ1].getText())){
+					int frage = JOptionPane.showConfirmDialog(null,"Achtung!\n\nDie Anzahl Hausbesuche = "+this.vec.get(64)+"\n"+
+							"Die Anzahl des ersten Heilmittels = "+jtf[cANZ1].getText()+"\n\n"+
+							"Soll die Anzahl Hausbesuche ebenfalls auf "+jtf[cANZ1].getText()+" gesetzt werden?","Benutzeranfrage",JOptionPane.YES_NO_OPTION);
+					if(frage == JOptionPane.YES_OPTION){
+						sbuf.append("anzahlhb='"+jtf[cANZ1].getText()+"', ");		
+					}
+				}
+			}
 			sbuf.append("arztbericht='"+(jcb[cTBANGEF].isSelected() ? "T" : "F")+"', ");
 			sbuf.append("anzahl1='"+jtf[cANZ1].getText()+"', ");		
 			sbuf.append("anzahl2='"+jtf[cANZ2].getText()+"', ");
