@@ -313,7 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2013-08-27-DB=";
+	public static String aktuelleVersion = "2013-08-28-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -366,7 +366,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 			proghome = prog.substring(0, 2)+"/RehaVerwaltung/";
 		}else if(osVersion.contains("Mac OS X")){
 			System.out.println("Vermutlich MAC, Output = "+osVersion);
-			proghome = "/Programme/RehaVerwaltung/";
+			proghome = homedir+"/RehaVerwaltung/";
 		}
 		
 		//Reha.proghome = "C:/RehaVerwaltung/";
