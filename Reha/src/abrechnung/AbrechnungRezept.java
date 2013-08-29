@@ -130,6 +130,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 	String aktDisziplin = "";
 	
 	JButton[] tbbuts = {null,null,null,null};
+	JComboBox tbcombo = null;
 	JToggleButton tog = null;
 	JLabel[] labs = {null,null,null,null,null,null,null,null,null,null,
 					null,null,null,null,null,null,null,null,null,null,
@@ -780,7 +781,13 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		tbbuts[0].setActionCommand("taxieren");
 		tbbuts[0].addActionListener(tbaction);
 		jtb.add(tbbuts[0]);
-
+		
+		tbcombo = new JComboBox(SystemConfig.vecTaxierung);
+		//tbcombo.setSize(new Dimension(75,26));
+		tbcombo.setMaximumSize(new Dimension(100,26));
+		jtb.add(tbcombo);
+		jtb.addSeparator(new Dimension(30,0));
+		
 		tbbuts[1] = new JButton();
 		tbbuts[1].setIcon(SystemConfig.hmSysIcons.get("scanner"));
 		tbbuts[1].setToolTipText("Rezept scannen");
@@ -929,6 +936,8 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 				formular = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA5.ott";
 			}
 			*/
+			formular = Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+tbcombo.getSelectedItem().toString();
+			/*
 			if(bcform.equals("1")){
 				formular = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA4.ott";
 			}else if(bcform.equals("0")){
@@ -936,6 +945,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			}else{
 				formular = Reha.proghome+"vorlagen/"+Reha.aktIK+"/TaxierungA5.ott";
 			}
+			*/
 			OOTools.starteTaxierung(formular, taxWerte);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1062,6 +1072,13 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		*/
 		////System.out.println(cmd);
 		vec_pat = SqlInfo.holeFelder(cmd);
+		int barcodeform = 0;
+		try{
+			barcodeform = Integer.parseInt(vec_rez.get(0).get(46));	
+		}catch(NullPointerException ex){
+			
+		}
+		this.tbcombo.setSelectedIndex(barcodeform <= 1 ? barcodeform : 0);
 		////System.out.println(vec_pat);
 		if(vec_pat.size() <= 0){
 			JOptionPane.showMessageDialog(null, "Diesem Rezept ist eine unbrauchbare Kasse und/oder Arzt zugeordnet. Bitte korrigieren");

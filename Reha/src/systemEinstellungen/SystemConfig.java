@@ -199,6 +199,7 @@ public class SystemConfig {
 	public static String sGutachtenOrt;
 	
 	public static HashMap<String,String> hmAbrechnung = new HashMap<String,String>();
+	public static Vector<String> vecTaxierung = new Vector<String>();
 	
 	public static HashMap<String,Object> hmPatientenWerkzeugDlgIni = new HashMap<String,Object>();
 
@@ -1415,6 +1416,7 @@ public class SystemConfig {
 		hmAbrechnung.put("rehapriik", inif.getStringProperty("RehaPRIRechnung", "RehaPRIik"));
 		
 		hmAbrechnung.put("hmallinoffice", inif.getStringProperty("GemeinsameParameter", "InOfficeStarten"));
+		
 		String sask = inif.getStringProperty("GemeinsameParameter", "FragenVorEmail");
 		if(sask==null){
 			System.out.println("Erstelle Parameter 'FrageVorEmail'");
@@ -1422,6 +1424,24 @@ public class SystemConfig {
 			mustsave=true;
 		}
 		hmAbrechnung.put("hmaskforemail", inif.getStringProperty("GemeinsameParameter", "FragenVorEmail"));
+		sask = inif.getStringProperty("GKVTaxierung", "AnzahlVorlagen");
+		if(sask==null){
+			System.out.println("Erstelle Parameter 'AnzahlVorlagen'");
+			inif.setStringProperty("GKVTaxierung", "AnzahlVorlagen","0",null);
+			inif.setStringProperty("GKVTaxierung", "Vorlage1","",null);
+			mustsave=true;
+		}
+		vecTaxierung.add("TaxierungA5.ott");
+		vecTaxierung.add("TaxierungA4.ott");
+		try{
+			int ownTemplate = Integer.parseInt(inif.getStringProperty("GKVTaxierung", "AnzahlVorlagen"));
+			for(int i = 0; i < ownTemplate;i++){
+				vecTaxierung.add(inif.getStringProperty("GKVTaxierung", "Vorlage"+Integer.toString(i+1)));
+			}
+		}catch(Exception ex){
+			
+		}
+		
 		if(mustsave){
 			INITool.saveIni(inif);
 		}
