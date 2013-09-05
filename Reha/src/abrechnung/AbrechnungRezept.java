@@ -781,8 +781,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		tbbuts[0].setActionCommand("taxieren");
 		tbbuts[0].addActionListener(tbaction);
 		jtb.add(tbbuts[0]);
+		if(tbcombo == null){
+			tbcombo = new JComboBox(SystemConfig.vecTaxierung);	
+		}
 		
-		tbcombo = new JComboBox(SystemConfig.vecTaxierung);
 		//tbcombo.setSize(new Dimension(75,26));
 		tbcombo.setMaximumSize(new Dimension(100,26));
 		jtb.add(tbcombo);

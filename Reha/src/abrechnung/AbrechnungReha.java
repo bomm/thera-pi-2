@@ -747,6 +747,9 @@ public class AbrechnungReha extends JXPanel{
 		this.druckFormular = SystemConfig.hmAbrechnung.get("rehapriformular");
 		this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehapriexemplare"));
 		hmRechnung.put("<pri8>",this.druckIk);
+		hmRechnung.put("<pri9>", "nicht relevant");
+		hmRechnung.put("<pri10>",SystemConfig.hmAdrRDaten.get("<Rerstdat>"));
+		hmRechnung.put("<pri11>",SystemConfig.hmAdrRDaten.get("<Rletztdat>"));
 
 		vecpos.add(jcmbpat[0].getSelectedItem().toString());
 		vecpos.add(tfpatanzahl[0].getText().trim());
@@ -889,6 +892,7 @@ public class AbrechnungReha extends JXPanel{
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehagkvdrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehagkvformular");
 				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehagkvexemplare"));
+				hmRechnung.put("<pri9>", "nicht relevant");
 			}else if(jcmb[0].getSelectedItem().toString().toUpperCase().startsWith("LVA")||
 					jcmb[0].getSelectedItem().toString().toUpperCase().startsWith("BFA") ||
 					jcmb[0].getSelectedItem().toString().toUpperCase().startsWith("KNAPPSCH")){
@@ -900,22 +904,38 @@ public class AbrechnungReha extends JXPanel{
 				}else{
 					this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehadrvexemplare"));	
 				}
+				
+				//hier die VSNR ermitteln
+				
+				Vector<Vector<String>> vecvsnr = SqlInfo.holeFelder("select berichtid from berhist where pat_intern = '"+
+						Reha.thisClass.patpanel.patDaten.get(29)+"' and bertitel like 'Reha-Ent%' order by id DESC LIMIT 1");
+				String vsnr = SqlInfo.holeEinzelFeld("select vnummer from bericht2 where berichtid = '"+vecvsnr.get(0).get(0)+"' LIMIT 1");
+				if(vsnr.trim().length()==12){
+				 vsnr = vsnr.substring(0,2)+" "+vsnr.substring(2,8)+" "+vsnr.substring(8,9)+" "+vsnr.substring(9);	
+				}
+				hmRechnung.put("<pri9>",vsnr );
 				//testik = 1;
 			}else if(jcmb[0].getSelectedItem().toString().toUpperCase().contains("PRI")){
 				this.druckIk = SystemConfig.hmAbrechnung.get("rehapriik");
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehapridrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehapriformular");
 				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehapriexemplare"));
+				hmRechnung.put("<pri9>", "nicht relevant");
 				//testik = 2;
 			}else{
+				//kann nur BG sein
 				this.druckIk = SystemConfig.hmAbrechnung.get("rehadrvik");
 				this.druckDrucker = SystemConfig.hmAbrechnung.get("rehadrvdrucker");
 				this.druckFormular = SystemConfig.hmAbrechnung.get("rehadrvformular");
 				this.druckExemplare = Integer.parseInt(SystemConfig.hmAbrechnung.get("rehadrvexemplare"));
+				hmRechnung.put("<pri9>", "nicht relevant");
 				
 				//testik = 3;
 			}
 			hmRechnung.put("<pri8>",this.druckIk);
+			hmRechnung.put("<pri10>",SystemConfig.hmAdrRDaten.get("<Rerstdat>"));
+			hmRechnung.put("<pri11>",SystemConfig.hmAdrRDaten.get("<Rletztdat>"));
+			//hier erster und letzter Tag einbauen
 			//JOptionPane.showMessageDialog(null,"Verwende IK "+this.druckIk+" in Testvariante = "+Integer.toString(testik));
 			/*******************************/
 
@@ -1009,6 +1029,12 @@ public class AbrechnungReha extends JXPanel{
 				placeholders[i].getTextRange().setText(hmAdresse.get("<pri7>"));
 			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri8>")){
 				placeholders[i].getTextRange().setText(hmAdresse.get("<pri8>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri9>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri9>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri10>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri10>"));
+			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri11>")){
+				placeholders[i].getTextRange().setText(hmAdresse.get("<pri11>"));
 			}
 		}
 		

@@ -3132,6 +3132,15 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					tDlg = null;
 					if(!Rechte.hatRecht(Rechte.Rezept_privatrechnung, true)){return;}
 					try{
+						/*
+						new SwingWorker<Void,Void>(){
+							@Override
+							protected Void doInBackground() throws Exception {
+								RezTools.constructRawHMap();
+								return null;
+							}
+						}.execute();
+						*/
 						fuelleTage();
 						privatRechnung();
 					}catch(Exception ex){

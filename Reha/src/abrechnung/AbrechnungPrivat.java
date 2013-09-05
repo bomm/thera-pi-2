@@ -1456,16 +1456,20 @@ public class AbrechnungPrivat extends JXDialog implements FocusListener, ActionL
 	    Iterator<?> it = null; //entries.iterator();
 	    //entries = SystemConfig.hmAdrRDaten.entrySet();
 	    //it = entries.iterator();
+	    //System.out.println("Original: "+placeholders[i].getDisplayText().toLowerCase());
 		/***************/
 		try {
 			placeholders = textFieldService.getPlaceholderFields();
 		} catch (TextException e) {
 			e.printStackTrace();
 		}
+		//entries = SystemConfig.hmAdrRDaten.entrySet();
+	    
+	    
 		for (int i = 0; i < placeholders.length; i++) {
+			//an dieser Stelle völlig idiotisch
 			entries = SystemConfig.hmAdrRDaten.entrySet();
-		    it = entries.iterator();
-		    //System.out.println("Original: "+placeholders[i].getDisplayText().toLowerCase());
+			it = entries.iterator();
 			if(placeholders[i].getDisplayText().toLowerCase().equals("<pri1>")){
 				placeholders[i].getTextRange().setText(hmAdresse.get("<pri1>"));
 			}else if(placeholders[i].getDisplayText().toLowerCase().equals("<pri2>")){

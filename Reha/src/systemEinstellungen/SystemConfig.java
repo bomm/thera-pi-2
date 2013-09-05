@@ -1436,7 +1436,7 @@ public class SystemConfig {
 		try{
 			int ownTemplate = Integer.parseInt(inif.getStringProperty("GKVTaxierung", "AnzahlVorlagen"));
 			for(int i = 0; i < ownTemplate;i++){
-				vecTaxierung.add(inif.getStringProperty("GKVTaxierung", "Vorlage"+Integer.toString(i+1)));
+					vecTaxierung.add(inif.getStringProperty("GKVTaxierung", "Vorlage"+Integer.toString(i+1)));	
 			}
 		}catch(Exception ex){
 			

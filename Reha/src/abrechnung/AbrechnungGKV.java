@@ -1125,6 +1125,10 @@ public class AbrechnungGKV extends JXPanel implements PatStammEventListener,Acti
 			}
 		}catch(Exception ex){
 				ex.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Emailversand fehlgeschlagen\n\n"+
+	        			"Mögliche Ursachen:\n"+
+	        			"- falsche Angaben zu Ihrem Emailpostfach und/oder dem Provider\n"+
+	        			"- Sie haben keinen Kontakt zum Internet - Fehlermeldung:\n"+ex.getMessage());
 		}
 	}
 	/********************************************************************/

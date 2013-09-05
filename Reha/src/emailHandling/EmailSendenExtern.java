@@ -29,6 +29,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.swing.JOptionPane;
 
 
 @SuppressWarnings("unused")
@@ -65,27 +66,30 @@ public class EmailSendenExtern {
         // Hier wird mit den Properties und dem implements Contructor
         // erzeugten
         // MailAuthenticator eine Session erzeugt
-        Session session = Session.getInstance(properties, auth);
-        //Session session = Session.getDefaultInstance(properties, auth);
-        //System.out.println("Properties == "+properties);
-        //System.out.println("Auth = "+auth);
-            // Eine neue Message erzeugen
-            Message msg = new MimeMessage(session);
+        Session session = null;
+        Transport tran = null;
+        Message msg = null;
+        try{
+         session = Session.getInstance(properties, auth);
+
+         // Eine neue Message erzeugen
+         msg = new MimeMessage(session);
+         
+             
             // Hier werden die Absender- und Empfängeradressen gesetzt
-            msg.setFrom(new InternetAddress(senderAddress));
-        	msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
-                    recipientsAddress, false));            	
+         msg.setFrom(new InternetAddress(senderAddress));
+         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientsAddress, false));            	
 
             
-            // Der Betreff und Body der Message werden gesetzt
-            msg.setSubject(subject);
-            //msg.setText(text);
+         // Der Betreff und Body der Message werden gesetzt
+         msg.setSubject(subject);
+         //msg.setText(text);
 /*********************/
-            BodyPart messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setText(text);
+         BodyPart messageBodyPart = new MimeBodyPart();
+         messageBodyPart.setText(text);
             
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(messageBodyPart);
+         Multipart multipart = new MimeMultipart();
+         multipart.addBodyPart(messageBodyPart);
             
             if(attachments.size()>0){
             	DataSource source = null;
@@ -120,8 +124,8 @@ public class EmailSendenExtern {
             }
             
             msg.setSentDate(new Date( ));
-            // Zum Schluss wird die Mail nat�rlich noch verschickt
-            Transport tran = null;
+            // Zum Schluss wird die Mail natürlich noch verschickt
+            
    			tran = session.getTransport("smtp");
    			/*
    			//System.out.println("Sender Domain ="+smtpHost);
@@ -134,6 +138,10 @@ public class EmailSendenExtern {
             
 
             Transport.send(msg);
+            
+        }catch(Exception ex){
+        	JOptionPane.showMessageDialog(null,"Fehler beim Versand der Email, evtl kein Kontakt zum Internet");
+        }
             /*
             JOptionPane.showMessageDialog(null,"Der Email-Account wurde korrekt konfiguriert!\n\n"+
             		"Sie erhalten in K�rze eine Erfolgsmeldung per Email");
