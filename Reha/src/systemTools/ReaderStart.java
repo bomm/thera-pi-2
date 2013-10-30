@@ -16,7 +16,8 @@ public class ReaderStart{
 			public void run(){
 				Process process;
 				try {
-					process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),"",xdatei).start();
+					String readerstring =  ( SystemConfig.hmFremdProgs.get("AcrobatReader").contains("AcroR") ? "/n" : "");
+					process = new ProcessBuilder(SystemConfig.hmFremdProgs.get("AcrobatReader"),readerstring,xdatei).start();
 					InputStream is = process.getInputStream();
 					
 					InputStreamReader isr = new InputStreamReader(is);

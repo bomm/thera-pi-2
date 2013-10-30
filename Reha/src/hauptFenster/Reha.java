@@ -313,7 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2013-09-04-DB=";
+	public static String aktuelleVersion = "2013-10-30-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -408,6 +408,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				try {
 					RehaSock = new RehaSockServer();
 				} catch (IOException e) {
+					System.out.println("Kann RehaSocket-Server nicht starten");
 					e.printStackTrace();
 				}
 			}
@@ -487,7 +488,9 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 		*/
 		new Thread(){
 			public void run(){
+				
 				new SocketClient().setzeInitStand("System-Icons laden");
+				
 				while(! Reha.DbOk){
 					try {
 						Thread.sleep(25);
@@ -1371,18 +1374,31 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 						}
 						try{
 							Reha.updatesChecken = (updateini.getIntegerProperty("TheraPiUpdates", "UpdateChecken") > 0 ? true : false);
+							System.out.println("System soll nach Updates suchen = "+Reha.updatesChecken);
 						}catch(NullPointerException ex){
 							Reha.updatesChecken = true;
 						}
 						if(!Reha.updatesChecken){
 							return null;
 						}
-						TestForUpdates tfupd = null;
-						tfupd = new TestForUpdates();
-						Reha.updatesBereit = tfupd.doFtpTest();
-						if(Reha.updatesBereit){
-							JOptionPane.showMessageDialog(null, "<html><b><font color='aa0000'>Es existieren Updates für Thera-Pi 1.0.</font></b><br><br>Bitte gehen Sie auf die Seite<br><br><b>System-Initialisierung -> 'Software-Updateservice'</b></html>");	
-						}
+						new Thread(){
+							public void run(){
+								try{
+									TestForUpdates tfupd = null;
+									tfupd = new TestForUpdates();
+									
+									Reha.updatesBereit = tfupd.doFtpTest();
+									
+									if(Reha.updatesBereit){
+										JOptionPane.showMessageDialog(null, "<html><b><font color='aa0000'>Es existieren Updates für Thera-Pi 1.0.</font></b><br><br>Bitte gehen Sie auf die Seite<br><br><b>System-Initialisierung -> 'Software-Updateservice'</b></html>");	
+									}
+								}catch(NullPointerException ex){
+									System.out.println("Fehler bei der Updatesuche");
+									ex.printStackTrace();
+								}
+							}
+						}.start();
+
 					}catch(NullPointerException ex){
 						StackTraceElement[] element = ex.getStackTrace();
 						String cmd = "";

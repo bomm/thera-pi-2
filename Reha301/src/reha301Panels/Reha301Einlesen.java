@@ -808,17 +808,17 @@ public class Reha301Einlesen{
 			}
 			if(!teile[6].trim().equals("")){
 				inhalt = inhalt + "\nNachname: "+	teile[6].split(":")[1];
-				dbHmap.put("nachname",teile[6].split(":")[1]);
+				dbHmap.put("nachname",StringTools.Escaped(teile[6].split(":")[1]));
 				ret[0] = inhalt;
 			}
 			if(!teile[7].trim().equals("")){
 				inhalt = inhalt + "\nVorname: "+	teile[7].split(":")[1];
-				dbHmap.put("vorname",teile[7].split(":")[1]);
+				dbHmap.put("vorname",StringTools.Escaped(teile[7].split(":")[1]));
 				ret[0] = inhalt;
 			}
 			if(teile.length <= 8){return ret;}
 			if(!teile[8].trim().equals("")){ //A:
-				inhalt = inhalt + "\nNamenszusatz: "+	teile[8].split(":")[1];
+				inhalt = inhalt + "\nNamenszusatz: "+	StringTools.Escaped(teile[8].split(":")[1]);
 				ret[0] = inhalt;
 			}
 			if(teile.length <= 9){return ret;}
@@ -829,7 +829,7 @@ public class Reha301Einlesen{
 			}
 			if(teile.length <= 10){return ret;}
 			if(!teile[10].trim().equals("")){//C:
-				inhalt = inhalt + "\nGeburtsname: "+	teile[10].split(":")[1];
+				inhalt = inhalt + "\nGeburtsname: "+	StringTools.Escaped(teile[10].split(":")[1]);
 				ret[0] = inhalt;
 			}
 			setPnaActive(teile[1]);

@@ -1023,9 +1023,9 @@ public class Reha301Auswerten extends JXPanel{
 			buf.append("insert into pat5 set ");
 			buf.append("pat_intern='"+patneuepatnr+"', ");
 			buf.append("anrede='"+dta301mod.getPatAnrede()+"', ");
-			buf.append("n_name='"+dta301mod.getPatNachname()+"', ");
-			buf.append("v_name='"+dta301mod.getPatVorname()+"', ");
-			buf.append("strasse='"+dta301mod.getPatStrasse()+"', ");
+			buf.append("n_name='"+StringTools.Escaped(dta301mod.getPatNachname())+"', ");
+			buf.append("v_name='"+StringTools.Escaped(dta301mod.getPatVorname())+"', ");
+			buf.append("strasse='"+StringTools.Escaped(dta301mod.getPatStrasse())+"', ");
 			buf.append("plz='"+dta301mod.getPatPlz()+"', ");
 			buf.append("ort='"+dta301mod.getPatOrt()+"', ");
 			buf.append("geboren='"+DatFunk.sDatInSQL(dta301mod.getPatGeboren())+"', ");
@@ -1349,7 +1349,7 @@ public class Reha301Auswerten extends JXPanel{
 					buf.append("insert into bericht2 set pat_intern='"+dta301mod.getPatIntern()+"',");
 					buf.append("berichtid='"+Integer.toString(berichtid)+"',");
 					buf.append("vnummer='"+dta301mod.getPatVsnr()+"',");
-					buf.append("namevor='"+dta301mod.getPatNachname()+", "+dta301mod.getPatVorname()+"',");
+					buf.append("namevor='"+StringTools.Escaped(dta301mod.getPatNachname())+", "+StringTools.Escaped(dta301mod.getPatVorname())+"',");
 					buf.append("geboren='"+DatFunk.sDatInSQL(dta301mod.getPatGeboren())+"',");
 					buf.append("strasse='"+dta301mod.getPatStrasse()+"',");
 					buf.append("plz='"+dta301mod.getPatPlz()+"', ");

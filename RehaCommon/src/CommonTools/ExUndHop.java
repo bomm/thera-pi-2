@@ -30,10 +30,12 @@ public class ExUndHop extends Thread implements Runnable{
 					System.out.println("SQLException: " + ev.getMessage());
 					System.out.println("SQLState: " + ev.getSQLState());
 					System.out.println("VendorError: " + ev.getErrorCode());
+					new FireRehaError(RehaEvent.ERROR_EVENT,"Datenbankfehler!", new String[] {"Datenabankfehler, Fehlertext:",ev.getMessage()});
 			}	
 
 		}catch(SQLException ex) {
 			System.out.println("von stmt -SQLState: " + ex.getSQLState());
+			new FireRehaError(RehaEvent.ERROR_EVENT,"Datenbankfehler!", new String[] {"Datenabankfehler, Fehlertext:",ex.getMessage()});
 		}
 
 		finally {

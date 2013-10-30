@@ -103,8 +103,8 @@ public class Reha301PatAuswahl extends JDialog{
 	private void holePatienten(){
 		nachrichtenvec = SqlInfo.holeFelder("select * from dta301 where id ='"+this.nachrichtenid+"' LIMIT 1");
 		String[] patdaten = nachrichtenvec.get(0).get(22).split("#");
-		String cmd = "select concat(n_name,', ',v_name) as name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+patdaten[1]+"' and "+
-		"v_name='"+patdaten[2]+"' and geboren = '"+patdaten[3]+"'";
+		String cmd = "select concat(n_name,', ',v_name) as name,geboren,strasse,plz,ort,pat_intern,id from pat5 where n_name='"+StringTools.Escaped(patdaten[1])+"' and "+
+		"v_name='"+StringTools.Escaped(patdaten[2])+"' and geboren = '"+patdaten[3]+"'";
 		patvec.clear();
 		patvec = SqlInfo.holeFelder(cmd);
 		for(int i = 0; i < patvec.size();i++){

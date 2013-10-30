@@ -212,6 +212,7 @@ public class Reha301 implements WindowListener  {
 		}
 		
 	}
+	
 	/********************/
 	
 	public JFrame getJFrame(){

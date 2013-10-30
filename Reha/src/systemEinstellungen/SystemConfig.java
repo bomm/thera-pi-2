@@ -479,6 +479,8 @@ public class SystemConfig {
 			
 		}catch(Exception ex){
 			ex.printStackTrace();
+			new FireRehaError(this,"SystemConfig.Terminkalender()",new String[]{"kalender.ini einlesen",ex.getMessage()});
+			
 		}
 		
 		
