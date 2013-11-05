@@ -51,6 +51,8 @@ import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
@@ -538,7 +540,27 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		jXTreeTable.getColumnModel().getColumn(5).setCellEditor(mycheck);
 		//jXTreeTable.getColumnModel().getColumn(5).setCellRenderer(new CheckRenderer(false));
 		
-        //Zuzahlungsbetrag
+        //Preis
+        jXTreeTable.getColumnModel().getColumn(4).setCellEditor(new DblCellEditor());
+        jXTreeTable.getColumnModel().getColumn(4).setCellRenderer(new DoubleTableCellRenderer() );
+        jXTreeTable.getColumnModel().getColumn(4).getCellEditor().addCellEditorListener(new CellEditorListener(){
+			@Override
+			public void editingStopped(ChangeEvent e) {
+				// TODO Auto-generated method stub
+				getVectorFromNodes();					
+				doTreeRezeptWertermitteln();
+//				doPositionenErmitteln();
+				parseHTML(vec_rez.get(0).get(1).trim());
+
+			}
+			@Override
+			public void editingCanceled(ChangeEvent e) {
+				// TODO Auto-generated method stub
+			}
+        	
+        });
+        
+		//Zuzahlungsbetrag
         jXTreeTable.getColumnModel().getColumn(6).setCellEditor(new DblCellEditor());
         jXTreeTable.getColumnModel().getColumn(6).setCellRenderer(new DoubleTableCellRenderer() );
         
@@ -2846,7 +2868,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
             case 3:
                 return true;
             case 4:
-                return false;   
+                return true;   
             case 5:
                 return true;
             case 6:
