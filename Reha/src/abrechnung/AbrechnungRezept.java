@@ -2241,10 +2241,10 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		/*******/
 		buf1.append("<tr>");
 		buf1.append("<td class=\"spalte1\" align=\"right\">");
-		buf1.append("Indikationsschlüssel");
+		buf1.append("Indikationsschlüssel / ICD-10");
 		buf1.append("</td><td class=\"spalte2\" align=\"left\">");
 		buf1.append((vec_rez.get(0).get(44).startsWith("kein Indi") ? "<b><font color=#FF0000>"+vec_rez.get(0).get(44)+"</font></b>" : vec_rez.get(0).get(44))+
-				(vec_rez.get(0).get(71).trim().equals("") ? "" : "  <b>(ICD-10: "+vec_rez.get(0).get(71).trim()+")</b>"));
+				(vec_rez.get(0).get(71).trim().equals("") ? " / <b>n.a.</b>" : " / <b>"+vec_rez.get(0).get(71).trim()+"</b>"));
 		buf1.append("</td>");
 		buf1.append("</tr>");
 		/*******/
