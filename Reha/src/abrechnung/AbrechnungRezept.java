@@ -3732,14 +3732,20 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 		if(edibuf.length()<=0){
 			JOptionPane.showMessageDialog(null,"EDIFACT-Code kann nicht abgeholt werden");
 		}
+		
 		String[] zeilen = edibuf.toString().split("\n");
 		String[] positionen = zeilen[0].split(":");
- 
-		zuZahlungsPos = zeilen[zeilen.length-2].split("\\+")[4];
+		//System.out.println(zeilen[  (zeilen[zeilen.length-2].startsWith("DIA+") ? zeilen.length-3 : zeilen.length-2) ] );
+		if(zeilen[ (zeilen[zeilen.length-2].startsWith("DIA+") ? zeilen.length-3 : zeilen.length-2) ].split("\\+").length < 5){
+			JOptionPane.showMessageDialog(null,"Fehler in holeEDIFACT, falsche Länge im Segment ZHE");
+			return false;
+		}
+		zuZahlungsPos = zeilen[ (zeilen[zeilen.length-2].startsWith("DIA+") ? zeilen.length-3 : zeilen.length-2) ].split("\\+")[4];
 		zuZahlungsIndex = zzpflicht[Integer.parseInt(zuZahlungsPos)];
 		this.preisgruppe = positionen[0].split("=")[1];
 		this.mitPauschale = (Double.parseDouble(zeilen[zeilen.length-1].split("\\+")[4].replace(",", ".").replace("'", "")) > Double.parseDouble("0.00") ? true : false);
 		int lang = zeilen.length;
+		
 		final String xrez_nr = rez_nr;
 		new SwingWorker<Void,Void>(){
 			@Override
@@ -3817,6 +3823,7 @@ public class AbrechnungRezept extends JXPanel implements HyperlinkListener,Actio
 			}
 
 		}
+		
 		return ret;
 	}
 	
