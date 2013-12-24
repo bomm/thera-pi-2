@@ -1192,6 +1192,7 @@ public class RVMeldung301 {
 				}
 				String smtphost = SystemConfig.hmEmailExtern.get("SmtpHost");
 				String authent = SystemConfig.hmEmailExtern.get("SmtpAuth");
+				String secure = SystemConfig.hmEmailExtern.get("SmtpSecure");
 				//String benutzer = SystemConfig.hmEmailExtern.get("Username") ;				
 				//String pass1 = SystemConfig.hmEmailExtern.get("Password");
 				String benutzer = "dta301@rta.de";
@@ -1225,7 +1226,7 @@ public class RVMeldung301 {
 				//System.out.println("Sender-IK = "+vecdta.get(0).get(4).toString());
 				EmailSendenExtern oMail = new EmailSendenExtern();
 				try{
-					oMail.sendMail(smtphost, benutzer, pass1, benutzer, recipient, vecdta.get(0).get(4).toString(), text,attachments,authx,bestaetigen);
+					oMail.sendMail(smtphost, benutzer, pass1, benutzer, recipient, vecdta.get(0).get(4).toString(), text,attachments,authx,bestaetigen,secure);
 					oMail = null;
 					return true;
 				}catch(Exception e){

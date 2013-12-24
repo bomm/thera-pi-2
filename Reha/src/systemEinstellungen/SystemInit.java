@@ -699,7 +699,7 @@ private void auswertenSysUtil(String util){
 						"Achtung: Wichtige Benuterzanfrage",JOptionPane.YES_NO_OPTION);
 				if(anfrage == JOptionPane.YES_OPTION){
 					try {
-						Runtime.getRuntime().exec("java -jar "+Reha.proghome+"TheraPiUpdates.jar TheraPiStarten");
+						Runtime.getRuntime().exec("java -Djava.net.preferIPv4Stack=true -jar "+Reha.proghome+"TheraPiUpdates.jar TheraPiStarten");
 						Reha.thisClass.beendeSofort();
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -711,7 +711,7 @@ private void auswertenSysUtil(String util){
 						"Achtung: Wichtige Benuterzanfrage",JOptionPane.YES_NO_OPTION);
 				if(anfrage == JOptionPane.YES_OPTION){
 					try {
-						Runtime.getRuntime().exec("java -jar "+Reha.proghome+"TheraPiUpdates.jar TheraPiStarten");
+						Runtime.getRuntime().exec("java -Djava.net.preferIPv4Stack=true -jar "+Reha.proghome+"TheraPiUpdates.jar TheraPiStarten");
 						Reha.thisClass.beendeSofort();
 					} catch (IOException e) {
 						e.printStackTrace();

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
@@ -31,54 +32,103 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.swing.JOptionPane;
 
+import com.sun.mail.util.MailSSLSocketFactory;
+
 
 @SuppressWarnings("unused")
 public class EmailSendenExtern {
-    public void sendMail(String smtpHost,String username,String password,String senderAddress,String recipientsAddress,String subject,String text,ArrayList<String[]>attachments,boolean authx,boolean bestaetigen ) throws AddressException, MessagingException{
-
-        MailAuthenticator auth = new MailAuthenticator(username, password);
-        
-        Properties properties = new Properties();
-        // Den Properties wird die ServerAdresse hinzugef�gt
-        if(properties.get("mail.smtp.host") != null){
-          //System.out.println("Bereits belegt mit "+properties.get("mail.smtp.host"));	
-        }
-        properties.clear();
-        properties.put("mail.smtp.host", smtpHost);
-        properties.put("mail.smtp.socketFactory.fallback", "false");
-        // !!Wichtig!! Falls der SMTP-Server eine Authentifizierung
-        // verlangt
-        // muss an dieser Stelle die Property auf "true" gesetzt
-        // werden
-        if(authx){
-        	properties.put("mail.smtp.auth", "true");
-        } else {
-        	properties.put("mail.smtp.auth", "false");
-        }
-        
-        /*
-        if(SystemConfig.hmEmailExtern.get("SmtpAuth").equals("1")){
-        	properties.put("mail.smtp.auth", "true");
-        } else {
-        	properties.put("mail.smtp.auth", "false");
-        }
-        */
-        // Hier wird mit den Properties und dem implements Contructor
-        // erzeugten
-        // MailAuthenticator eine Session erzeugt
-        Session session = null;
+    public boolean sendMail(String smtpHost,String username,String password,String senderAddress,String recipientsAddress,String subject,String text,ArrayList<String[]>attachments,boolean authx,boolean bestaetigen,String secure ) throws AddressException, MessagingException, Exception{
+    	
+    	Session session = null;
+    	Properties properties = null;
         Transport tran = null;
         Message msg = null;
-        try{
-         session = Session.getInstance(properties, auth);
+        MailAuthenticator auth = null;
+    	if(secure.equals("keine")){
+            auth = new MailAuthenticator(username, password);
+            
+            properties = new Properties();
+            if(properties.get("mail.smtp.host") != null){
+              //System.out.println("Bereits belegt mit "+properties.get("mail.smtp.host"));	
+            }
+            properties.clear();
+            
+            
+            properties.put("mail.smtp.host", smtpHost);
+            properties.put("mail.smtp.socketFactory.fallback", "false");
+            if(authx){
+            	properties.put("mail.smtp.auth", "true");
+            } else {
+            	properties.put("mail.smtp.auth", "false");
+            }
+            session = Session.getInstance(properties, auth);	
+            
+        }else if(secure.equals("TLS/STARTTLS")){
+        	properties = new Properties();
+            properties.put("mail.smtp.host", smtpHost);
+        	properties.put("mail.smtp.ssl.trust", smtpHost);            
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.port", "587");
+
+            if(authx){
+            	properties.put("mail.smtp.auth", "true");
+            } else {
+            	properties.put("mail.smtp.auth", "false");
+            }
+	
+    		final String xusername = username;
+    		final String xpassword = password;
+    		session = Session.getInstance(properties,
+    				new javax.mail.Authenticator() {
+    			protected PasswordAuthentication getPasswordAuthentication() {
+    				return new PasswordAuthentication(xusername, xpassword);
+    			}
+    		  });  
+    		
+        }else if(secure.equals("SSL")){
+        	//Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+        	properties = new Properties();
+        	properties.put("mail.smtp.host", smtpHost);
+        	
+        	MailSSLSocketFactory sf = new MailSSLSocketFactory();
+        	sf.setTrustAllHosts(true);
+        	properties.put("mail.smtp.ssl.enable", "true");
+        	properties.put("mail.smtp.ssl.socketFactory", sf);
+ 
+
+        	properties.put("mail.smtp.socketFactory.port", "465");
+        	properties.put("mail.smtp.socketFactory.class",
+    				"javax.net.ssl.SSLSocketFactory");
+           	properties.put("mail.smtp.ssl.trust", smtpHost);
+            if(authx){
+            	properties.put("mail.smtp.auth", "true");
+            } else {
+            	properties.put("mail.smtp.auth", "false");
+            }
+            properties.put("mail.smtp.port", "465");
+    		final String xusername = username;
+    		final String xpassword = password;
+    		session = Session.getDefaultInstance(properties,
+    			new javax.mail.Authenticator() {
+    				protected PasswordAuthentication getPasswordAuthentication() {
+    					return new PasswordAuthentication(xusername,xpassword);
+    				}
+    			});   
+    		
+        }else{
+        	JOptionPane.showMessageDialog(null,"Fehler in der Emailkonfiguration, Item Sicherheitsstufe!");
+        	return false;
+        }
+        
+        
+        //try{
+        
 
          // Eine neue Message erzeugen
-         msg = new MimeMessage(session);
-         
-             
-            // Hier werden die Absender- und Empfängeradressen gesetzt
-         msg.setFrom(new InternetAddress(senderAddress));
-         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientsAddress, false));            	
+        msg = new MimeMessage(session);
+        // Hier werden die Absender- und Empfängeradressen gesetzt
+        msg.setFrom(new InternetAddress(senderAddress));
+        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientsAddress, false));            	
 
             
          // Der Betreff und Body der Message werden gesetzt
@@ -138,24 +188,13 @@ public class EmailSendenExtern {
             
 
             Transport.send(msg);
+        /*    
             
         }catch(Exception ex){
         	JOptionPane.showMessageDialog(null,"Fehler beim Versand der Email, evtl kein Kontakt zum Internet");
         }
-            /*
-            JOptionPane.showMessageDialog(null,"Der Email-Account wurde korrekt konfiguriert!\n\n"+
-            		"Sie erhalten in K�rze eine Erfolgsmeldung per Email");
-            */		
-            //Transport.send(msg);
-          
-        
-            /*
-        	javax.swing.JOptionPane.showMessageDialog(null, "Emailversand fehlgeschlagen\n\n"+
-        			"Mögliche Ursachen:\n"+
-        			"- falsche Angaben zu Ihrem Emailpostfach und/oder dem Provider\n"+
-        			"- Sie haben kein Kontakt zum Internet");
-            //e.printStackTrace( );
-			*/
+        */
+           
 
         	if(session != null){
         		session = null;
@@ -169,11 +208,8 @@ public class EmailSendenExtern {
         	if(tran != null){
         		tran = null;
         	}
-        	/*
-		Runtime r = Runtime.getRuntime();
-	    r.gc();
-	    long freeMem = r.freeMemory();
-	    */
+
+        	return true;
 
 
     }

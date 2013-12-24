@@ -1864,6 +1864,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 					dtblm.setValueAt(Reha.thisClass.patpanel.imgzuzahl[0],currow,1);
 					tabaktrez.validate();
 					doVectorAktualisieren(new int[]{12,14,39},new String[] {"T","F","0"});
+					SqlInfo.sqlAusfuehren("delete from kasse where rez_nr='"+xreznr+"' LIMIT 1");
 				}	
 			}
 			
@@ -2674,6 +2675,7 @@ public class AktuelleRezepte  extends JXPanel implements ListSelectionListener,T
 				SystemConfig.hmAdrRDaten.get("<Rwert>"), " ", true, 6));
 		SystemConfig.hmAdrRDaten.put("<Bnr>",SystemConfig.hmAdrRDaten.get("<Rnummer>"));
 		SystemConfig.hmAdrRDaten.put("<Buser>", Reha.aktUser);
+		SystemConfig.hmAdrRDaten.put("<Rpatid>", Reha.thisClass.patpanel.vecaktrez.get(0));
 		//System.out.println("Es wird folgender Bacrode genommen "+url);
 		OOTools.starteBacrodeFormular(Reha.proghome+"vorlagen/"+Reha.aktIK+"/"+url,SystemConfig.rezBarcodeDrucker);
 		

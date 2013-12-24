@@ -7,9 +7,7 @@ import javax.mail.internet.AddressException;
 
 import CommonTools.INIFile;
 import CommonTools.INITool;
-
 import emailHandling.EmailSendenExtern;
-
 import systemEinstellungen.SystemConfig;
 import hauptFenster.Reha;
 
@@ -47,10 +45,12 @@ public class ErrorMail extends Thread{
 			"eingeloggter Benutzer: "+this.benutzer+"\n"+
 			"Absenderadresse: "+this.sender;
 			try {
-				oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, titel, emailtext,attachments,authx,bestaetigen);
+				oMail.sendMail(smtphost, benutzer, pass1, sender, recipient, titel, emailtext,attachments,authx,bestaetigen,SystemConfig.hmEmailIntern.get("SmtpSecure"));
 			} catch (AddressException e) {
 				e.printStackTrace();
 			} catch (MessagingException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		

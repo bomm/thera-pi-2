@@ -51,6 +51,7 @@ public class LadeProg {
 							List<String>list = Arrays.asList(xprog.split(" "));
 							ArrayList<String> alist = new ArrayList<String>(list);
 							alist.add(0,"-jar");
+							alist.add(0,"-Djava.net.preferIPv4Stack=true");
 							alist.add(0,"java");
 							Process process = new ProcessBuilder(alist).start();
 							

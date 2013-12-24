@@ -541,6 +541,7 @@ public class SystemConfig {
 	}
 
 	private void EmailParameter(){
+		boolean mustsave = false;
 		INIFile emailini = 		INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "email.ini");
 		hmEmailExtern = new HashMap<String,String>();
 		hmEmailExtern.put("SmtpHost",emailini.getStringProperty("EmailExtern","SmtpHost"));
@@ -553,7 +554,14 @@ public class SystemConfig {
 		String decrypted = man.decrypt (pw);
 		hmEmailExtern.put("Password",decrypted);
 		hmEmailExtern.put("SenderAdresse",emailini.getStringProperty("EmailExtern","SenderAdresse"));			
-		hmEmailExtern.put("Bestaetigen",emailini.getStringProperty("EmailExtern","EmpfangBestaetigen"));			
+		hmEmailExtern.put("Bestaetigen",emailini.getStringProperty("EmailExtern","EmpfangBestaetigen"));	
+		if(emailini.getStringProperty("EmailExtern","SmtpSecure")==null){
+			hmEmailExtern.put("SmtpSecure", "keine");
+			emailini.setStringProperty("EmailExtern","SmtpSecure","keine",null);
+			mustsave = true;
+		}else{
+			hmEmailExtern.put("SmtpSecure", emailini.getStringProperty("EmailExtern","SmtpSecure"));
+		}
 		/********************/
 		hmEmailIntern = new HashMap<String,String>();
 		hmEmailIntern.put("SmtpHost",emailini.getStringProperty("EmailIntern","SmtpHost"));
@@ -567,6 +575,19 @@ public class SystemConfig {
 		hmEmailIntern.put("Password",decrypted);
 		hmEmailIntern.put("SenderAdresse",emailini.getStringProperty("EmailIntern","SenderAdresse"));			
 		hmEmailIntern.put("Bestaetigen",emailini.getStringProperty("EmailIntern","EmpfangBestaetigen"));	
+		
+		if(emailini.getStringProperty("EmailIntern","SmtpSecure")==null){
+			hmEmailIntern.put("SmtpSecure", "keine");
+			emailini.setStringProperty("EmailIntern","SmtpSecure","keine",null);
+			mustsave = true;
+		}else{
+			hmEmailIntern.put("SmtpSecure", emailini.getStringProperty("EmailIntern","SmtpSecure"));
+		}
+
+		if(mustsave){
+			INITool.saveIni(emailini);
+		}
+		
 		if(new File(Reha.proghome+"ini/"+Reha.aktIK+"/dta301.ini").exists()){
 			INIFile dtaini = INITool.openIni(Reha.proghome+"ini/"+Reha.aktIK+"/", "dta301.ini");
 			dta301InBox = dtaini.getStringProperty("DatenPfade301", "inbox");

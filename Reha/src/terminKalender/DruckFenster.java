@@ -916,6 +916,7 @@ final class sendeTermine extends Thread implements Runnable{
 		String username = SystemConfig.hmEmailExtern.get("Username");
 		String password = SystemConfig.hmEmailExtern.get("Password");
 		String senderAddress =SystemConfig.hmEmailExtern.get("SenderAdresse");
+		String secure = SystemConfig.hmEmailExtern.get("SmtpSecure");
 		////System.out.println("Empf�ngeradresse = "+emailaddy);
 		String recipientsAddress = emailaddy;
 		String subject = "Ihre Behandlungstermine";
@@ -960,7 +961,7 @@ final class sendeTermine extends Thread implements Runnable{
 		
 		EmailSendenExtern oMail = new EmailSendenExtern();
 		try{
-		oMail.sendMail(smtpHost, username, password, senderAddress, recipientsAddress, subject, text,attachments,authx,bestaetigen);
+		oMail.sendMail(smtpHost, username, password, senderAddress, recipientsAddress, subject, text,attachments,authx,bestaetigen,secure);
 		DruckFenster.thisClass.cursorWait(false);
 		JOptionPane.showMessageDialog (null, "Die Terminliste wurde aufbereitet und per Email versandt\n");
 		}catch(Exception e){

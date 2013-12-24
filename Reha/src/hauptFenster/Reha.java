@@ -313,7 +313,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 	public static boolean demoversion = false;
 	public static boolean vollbetrieb = true;
 
-	public static String aktuelleVersion = "2013-11-05-DB=";
+	public static String aktuelleVersion = "2013-12-24-DB=";
 	
 	public static Vector<Vector<Object>> timerVec = new Vector<Vector<Object>>();
 	public static Timer fangoTimer = null;
@@ -419,7 +419,7 @@ public class Reha implements FocusListener,ComponentListener,ContainerListener,M
 				Process process;
 				try {
 					System.out.println("Starte RehaxSwing.jar");
-					process = new ProcessBuilder("java", "-jar",proghome+"RehaxSwing.jar").start();
+					process = new ProcessBuilder("java","-Djava.net.preferIPv4Stack=true", "-jar",proghome+"RehaxSwing.jar").start();
 					InputStream is = process.getInputStream();
 					
 					InputStreamReader isr = new InputStreamReader(is);
