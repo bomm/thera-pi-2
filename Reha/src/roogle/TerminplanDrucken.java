@@ -454,6 +454,7 @@ SuchenSeite eltern;
 		String username = SystemConfig.hmEmailExtern.get("Username");
 		String password = SystemConfig.hmEmailExtern.get("Password");
 		String senderAddress =SystemConfig.hmEmailExtern.get("SenderAdresse");
+		String secure = SystemConfig.hmEmailExtern.get("SmtpSecure");
 		String recipientsAddress = emailaddy;
 		String subject = "Ihre Behandlungstermine";
 		boolean authx = (SystemConfig.hmEmailExtern.get("SmtpAuth").equals("0") ? false : true);
@@ -496,7 +497,7 @@ SuchenSeite eltern;
 		
 		EmailSendenExtern oMail = new EmailSendenExtern();
 		try{
-		oMail.sendMail(smtpHost, username, password, senderAddress, recipientsAddress, subject, text,attachments,authx,bestaetigen);
+		oMail.sendMail(smtpHost, username, password, senderAddress, recipientsAddress, subject, text,attachments,authx,bestaetigen,secure);
 		oMail = null;
 		eltern.cursorWait(false);
 		JOptionPane.showMessageDialog (null, "Die Terminliste wurde aufbereitet und per Email versandt\n");
