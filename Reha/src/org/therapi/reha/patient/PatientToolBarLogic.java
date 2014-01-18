@@ -170,7 +170,7 @@ public class PatientToolBarLogic {
 			new Thread(){
 				public void run(){
 					//System.out.println(Reha.proghome+"RehaFbBrowser.jar"+" ?patnummer="+spat_intern+"#reznummer="+xsrez_nr);
-					new LadeProg(Reha.proghome+"RehaFbBrowser.jar"+" ?patnummer="+spat_intern+"#reznummer="+xsrez_nr);		
+					new LadeProg(Reha.proghome+"RehaFbBrowser.jar"+" ?pat_intern="+spat_intern+"#rez_nr="+xsrez_nr);		
 				}
 			}.start();			
 		}catch(Exception ex){

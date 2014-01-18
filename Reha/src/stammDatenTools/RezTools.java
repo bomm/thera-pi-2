@@ -1142,6 +1142,7 @@ public class RezTools {
 					SystemConfig.hmAdrRDaten.put("<Rid>",(String)Reha.thisClass.patpanel.vecaktrez.get(35) );
 					SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
 					SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)) );
+					SystemConfig.hmAdrRDaten.put("<Rdiagnose>",(String)Reha.thisClass.patpanel.vecaktrez.get(23) );
 
 					for(int i = 0;i<4;i++){
 						id = (String)Reha.thisClass.patpanel.vecaktrez.get(8+i);
@@ -2057,6 +2058,7 @@ public class RezTools {
 		SystemConfig.hmAdrRDaten.put("<Rid>",(String)Reha.thisClass.patpanel.vecaktrez.get(35) );
 		SystemConfig.hmAdrRDaten.put("<Rnummer>",(String)Reha.thisClass.patpanel.vecaktrez.get(1) );
 		SystemConfig.hmAdrRDaten.put("<Rdatum>",DatFunk.sDatInDeutsch((String)Reha.thisClass.patpanel.vecaktrez.get(2)) );
+		SystemConfig.hmAdrRDaten.put("<Rdiagnose>",(String)Reha.thisClass.patpanel.vecaktrez.get(23) );
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
