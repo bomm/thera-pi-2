@@ -1225,7 +1225,11 @@ public class OOTools{
 			XTextViewCursorSupplier xTextViewCursorSupplier = (XTextViewCursorSupplier) UnoRuntime.queryInterface(XTextViewCursorSupplier.class,
 			xController);
 			XTextViewCursor xtvc = xTextViewCursorSupplier.getViewCursor();
-			xtvc.gotoStart(false);
+			
+			
+			
+			//xtvc.gotoStart(false);	
+			
 			textDocument.getFrame().setFocus();
 
 			return (ITextDocument) textDocument;	

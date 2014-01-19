@@ -603,12 +603,16 @@ public class Dokumentation extends JXPanel implements ActionListener, TableModel
 				new SwingWorker<Void,Void>(){
 					@Override
 					protected Void doInBackground() throws Exception {
-						if(xdatei.toLowerCase().endsWith("odt")){
-							ITextDocument itext = new OOTools().starteWriterMitDatei(xdatei);
-							itext.addDocumentListener(new OoListener(Reha.officeapplication,xdatei,xid,getInstance()));
-						}else if(xdatei.toLowerCase().endsWith("ods")){
-							ISpreadsheetDocument ispread = new OOTools().starteCalcMitDatei(xdatei);
-							ispread.addDocumentListener(new OoListener(Reha.officeapplication,xdatei,xid,getInstance()));
+						try{
+							if(xdatei.toLowerCase().endsWith("odt")){
+								ITextDocument itext = new OOTools().starteWriterMitDatei(xdatei);
+								itext.addDocumentListener(new OoListener(Reha.officeapplication,xdatei,xid,getInstance()));
+							}else if(xdatei.toLowerCase().endsWith("ods")){
+								ISpreadsheetDocument ispread = new OOTools().starteCalcMitDatei(xdatei);
+								ispread.addDocumentListener(new OoListener(Reha.officeapplication,xdatei,xid,getInstance()));
+							}
+						}catch(Exception ex){
+							ex.printStackTrace();
 						}
 						Reha.thisClass.patpanel.dokumentation.setCursor(Reha.thisClass.normalCursor);
 						return null;
@@ -2753,29 +2757,37 @@ class OoListener implements IDocumentListener {
 			file = file.substring(1).replace("%20", " ");
 			//System.out.println(geaendert+" - "+datei+" - "+file+" - "+neu);
 			if(geaendert && datei.equals(file) && (!neu)){
-				final String xfile = file;
-				final int xid = Integer.parseInt(id);
-				//final IDocumentEvent xarg0 = arg0;
-				Thread.sleep(50);
-				new Thread(){
-					public void run(){
-						String nurDatei = datei.substring(datei.replace("\\", "/").lastIndexOf("/")+1);
-						int frage = JOptionPane.showConfirmDialog(null, "Die Dokumentationsdatei --> "+nurDatei+" <-- wurde geändert\n\nWollen Sie die geänderte Fassung in die Patienten-Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
-						if(frage == JOptionPane.YES_OPTION){
-							geaendert = false;
-									try {
-										Reha.thisClass.patpanel.dokumentation.setCursor(Reha.thisClass.wartenCursor);
-										eltern.speichernOoDocs(xid, -1, xfile, -1, null, neu);
-									} catch (Exception e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}							
+				try{
+					final String xfile = file;
+					final int xid = Integer.parseInt(id);
+					//final IDocumentEvent xarg0 = arg0;
+					Thread.sleep(50);
+					new Thread(){
+						public void run(){
+							try{
+								String nurDatei = datei.substring(datei.replace("\\", "/").lastIndexOf("/")+1);
+								int frage = JOptionPane.showConfirmDialog(null, "Die Dokumentationsdatei --> "+nurDatei+" <-- wurde geändert\n\nWollen Sie die geänderte Fassung in die Patienten-Dokumentation übernehmen?", "Wichtige Benutzeranfrage", JOptionPane.YES_NO_OPTION);
+								if(frage == JOptionPane.YES_OPTION){
+									geaendert = false;
+											try {
+												Reha.thisClass.patpanel.dokumentation.setCursor(Reha.thisClass.wartenCursor);
+												eltern.speichernOoDocs(xid, -1, xfile, -1, null, neu);
+											} catch (Exception e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}							
 
+								}
+							}catch(Exception ex){
+								ex.printStackTrace();
+							}
 						}
-					}
-				}.start();
-				arg0.getDocument().removeDocumentListener(this);
-				warschoninsave = true;
+					}.start();
+					arg0.getDocument().removeDocumentListener(this);
+					warschoninsave = true;
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
 			}else if(datei.equals(file) && !geaendert){
 				//System.out.println(geaendert+" - "+datei+" - "+file+" - "+neu);
 				arg0.getDocument().removeDocumentListener(this);

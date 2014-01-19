@@ -1031,6 +1031,18 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			JOptionPane.showMessageDialog(null, "Rezeptdatum nicht korrekt angegeben HMR-Check nicht möglich");
 			return;
 		}
+		/*
+		long dattest = DatFunk.TageDifferenz(DatFunk.sHeute(),jtf[cREZDAT].getText().trim() );
+		if( (dattest < 365) || (dattest > 365) ){
+			int frage = JOptionPane.showConfirmDialog(null, "<html><b>Das Rezeptdatum ist etwas kritisch....<br><br><font color='#ff0000'> "+
+					"Rezeptdatum = "+jtf[cREZDAT].getText().trim()+"</font></b><br>Das sind ab Heute "+Long.toString(dattest)+" Tage<br><br><br>"+
+					"Wollen Sie dieses Rezeptdatum tatsächlich abspeichern?", "Bedenkliches Rezeptdatum",JOptionPane.YES_NO_OPTION);
+			if(frage!=JOptionPane.YES_OPTION){
+				return;
+			}
+			
+		}
+		*/
 		if(icd10falsch){
 			int frage = JOptionPane.showConfirmDialog(null, "<html><b>Der eingetragene ICD-10-Code ist falsch: <font color='#ff0000'>"+
 					jtf[cICD10].getText().trim()+"</font></b><br>"+
@@ -1087,6 +1099,17 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 
 	
 	private boolean komplettTest(){
+		if(jtf[cREZDAT].getText().trim().equals(".  .")){
+			JOptionPane.showMessageDialog(null, "Ohne ein gültiges 'Rezeptdatum' kann ein Rezept nicht abgespeichert werden.");
+			 SwingUtilities.invokeLater(new Runnable(){
+			 	   public  void run()
+			 	   {
+						jtf[cREZDAT].requestFocus();
+			 	   }
+			});	   		
+			return false;
+		}
+		
 		if(jtf[cKTRAEG].getText().trim().equals("")){
 			JOptionPane.showMessageDialog(null, "Ohne die Angabe 'Kostenträger' kann ein Rezept nicht abgespeichert werden.");
 			 SwingUtilities.invokeLater(new Runnable(){
@@ -1860,6 +1883,22 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				////System.out.println("Komplett-Test fehlgeschlagen");
 				return;
 			}
+			long dattest = DatFunk.TageDifferenz(DatFunk.sHeute(),jtf[cREZDAT].getText().trim() );
+			if( (dattest < 365) || (dattest > 365) ){
+				int frage = JOptionPane.showConfirmDialog(null, "<html><b>Das Rezeptdatum ist etwas kritisch....<br><br><font color='#ff0000'> "+
+						"Rezeptdatum = "+jtf[cREZDAT].getText().trim()+"</font></b><br>Das sind ab Heute "+Long.toString(dattest)+" Tage<br><br><br>"+
+						"Wollen Sie dieses Rezeptdatum tatsächlich abspeichern?", "Bedenkliches Rezeptdatum",JOptionPane.YES_NO_OPTION);
+				if(frage!=JOptionPane.YES_OPTION){
+					 SwingUtilities.invokeLater(new Runnable(){
+					 	   public  void run()
+					 	   {
+								jtf[cREZDAT].requestFocus();
+					 	   }
+					});	   		
+					return;
+				}
+				
+			}			
 			setCursor(Reha.thisClass.wartenCursor);
 			String stest = "";
 			int itest = -1;
@@ -1886,6 +1925,8 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 			if(stest.equals(".  .")){
 				stest = DatFunk.sHeute();
 			}
+			
+			
 			boolean neuerpreis = RezTools.neuePreisNachRezeptdatumOderStichtag(aktuelleDisziplin, preisgruppe, String.valueOf(stest),true,null);
 			//Zunächst ermitteln welche Fristen und ob Kalender oder Werktage gelten
 			//Dann das Rezeptdatum übergeben, Rückgabewert ist spätester Beginn. 
