@@ -1884,7 +1884,9 @@ public class RezNeuanlage extends JXPanel implements ActionListener, KeyListener
 				return;
 			}
 			long dattest = DatFunk.TageDifferenz(DatFunk.sHeute(),jtf[cREZDAT].getText().trim() );
-			if( (dattest < 365) || (dattest > 365) ){
+			//long min = -364;
+			//long max = 364;
+			if( (dattest <= -364) || (dattest >= 364) ){
 				int frage = JOptionPane.showConfirmDialog(null, "<html><b>Das Rezeptdatum ist etwas kritisch....<br><br><font color='#ff0000'> "+
 						"Rezeptdatum = "+jtf[cREZDAT].getText().trim()+"</font></b><br>Das sind ab Heute "+Long.toString(dattest)+" Tage<br><br><br>"+
 						"Wollen Sie dieses Rezeptdatum tatsächlich abspeichern?", "Bedenkliches Rezeptdatum",JOptionPane.YES_NO_OPTION);
